@@ -1,0 +1,12 @@
+{
+  "color": {
+    "canvas": "#EDF0ED", "text": "#303B3A", "text-muted": "#626D69",
+    "action-primary": "#4D685C", "action-hover": "#3E594D", "focus": "#557967",
+    "glass": "rgba(255,255,255,0.68)", "field": "rgba(255,255,255,0.87)",
+    "border": "rgba(83,105,89,0.13)", "solid": "#F9FAF7",
+    "danger": "#8B5252", "success": "#385649", "warning": "#77551F",
+    "studies": "#EEE8F6", "personal": "#FAEDE4", "health": "#EAF0F8", "home": "#EAF2E9", "butter": "#FBF4DF"
+  },
+  "space": { "1": "0.25rem", "2": "0.5rem", "3": "0.75rem", "4": "1rem", "5": "1.25rem", "6": "1.5rem", "8": "2rem", "10": "2.5rem", "12": "3rem", "16": "4rem" },
+  "radius": { "panel": "26px", "card": "13px", "field": "10px", "note": "4px 20px 20px 20px" }
+}

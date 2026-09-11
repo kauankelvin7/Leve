@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function active(uid) {
+      return request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/memberships/$(uid)).data.state == 'active'
+        && get(/databases/$(database)/documents/users/$(uid)).data.accountState == 'active';
+    }
+    function bounded() {
+      return request.query.limit != null && request.query.limit <= 50;
+    }
+    match /users/{uid} {
+      allow get: if active(uid);
+      match /categories/{id} {
+        allow get: if active(uid);
+        allow list: if active(uid) && bounded();
+      }
+      match /activities/{id} {
+        allow get: if active(uid);
+        allow list: if active(uid) && bounded();
+      }
+      match /notes/{id} {
+        allow get: if active(uid);
+        allow list: if active(uid) && bounded();
+      }
+      match /shoppingLists/{listId} {
+        allow get: if active(uid);
+        allow list: if active(uid) && bounded();
+        match /items/{itemId} {
+          allow get: if active(uid);
+          allow list: if active(uid) && bounded();
+        }
+      }
+    }
+    match /memberships/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
