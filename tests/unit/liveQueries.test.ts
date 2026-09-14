@@ -25,7 +25,9 @@ it('preserva erro de um grupo quando outro grupo recebe novos snapshots, e retry
 
 it('encerra carregamento sem resposta e remove conteúdo no encerramento da conta', () => {
   useLiveQueries('today:test', () => [1] as never[]);
-  vi.advanceTimersByTime(10_001);
+  vi.advanceTimersByTime(24_999);
+  expect(harness.snapshot!().loading).toBe(true); expect(harness.snapshot!().error).toBe('');
+  vi.advanceTimersByTime(2);
   expect(harness.snapshot!().loading).toBe(false); expect(harness.snapshot!().error).not.toBe('');
   harness.callbacks[0]!.next(snapshot('private'));
   expect(harness.snapshot!().items).toHaveLength(1);

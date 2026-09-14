@@ -8,6 +8,7 @@ type State = { items: Row[]; loading: boolean; error: string; partial: boolean; 
 type Entry = { state: State; listeners: Set<() => void>; stop?: () => void; touched: number };
 const cache = new Map<string, Entry>();
 const empty: State = { items: [], loading: true, error: '', partial: false, cached: false };
+const LIVE_QUERY_TIMEOUT_MS = 25_000;
 let cacheUid: string | null = null;
 export function clearQueryCache() {
   for (const entry of cache.values()) { entry.stop?.(); entry.state = empty; entry.listeners.forEach(notify => notify()); }
@@ -33,7 +34,7 @@ export function useLiveQueries(key: string, makeQueries: () => Query[], pageSize
       entry.state = { ...entry.state, ...patch }; entry.listeners.forEach(notify => notify());
     };
     publish({ loading: !entry.state.items.length, error: '', cached: entry.state.items.length > 0 });
-    const timeout = window.setTimeout(() => publish({ loading: false, error: 'A conexão está demorando. Verifique sua internet e tente novamente.' }), 10_000);
+    const timeout = window.setTimeout(() => publish({ loading: false, error: 'A conexão está demorando. Verifique sua internet e tente novamente.' }), LIVE_QUERY_TIMEOUT_MS);
     const stops = targets.map((target, index) => onSnapshot(target, { includeMetadataChanges: true }, snapshot => {
       groups[index] = snapshot.docs.map(document => ({ ...document.data(), id: document.id }));
       ready.add(index); failed.delete(index);

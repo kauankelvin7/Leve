@@ -1,5 +1,13 @@
 # Leve — ponto exato de retomada
 
+## Correção de produção — 14/09/2026
+
+Em andamento: corrigir o carregamento de `/hoje` observado em produção. O listener compartilhado agora espera 25 segundos pelo primeiro snapshot do Firestore, com teste cobrindo o limite. A CSP passa a permitir `https://leve-db.firebaseapp.com` em `connect-src`. O typecheck ganhou uma configuração separada para `server`, `api` e `workers`, sem tipos do Vite.
+
+A skill pública `humanizer-br` foi instalada em `C:/Users/kelvi/.codex/skills/humanizer-br`. O `AGENTS.md` exige seu uso em todo texto exibido ao usuário e registra as convenções para rótulos, dicas, estados vazios e mensagens. A skill estará disponível automaticamente para novos turnos do Codex.
+
+Provas locais concluídas: `npm run typecheck` sem erros, `npm run build` concluído e `npm test` com 25/25 testes. O teste focal do timeout passou com 2/2 casos. Falta commit, push, acompanhar o build Vercel e validar `/hoje` autenticado em produção. Se o erro persistir, registrar o código exato do `FirebaseError` sem expor conteúdo privado.
+
 ## Loading, gradiente móvel e funções essenciais — 14/09/2026
 
 - Criado LoadingState.tsx para carregamento inicial, rotas, Meu dia e detalhes, com marca, indicador e esqueleto estrutural acessível.
