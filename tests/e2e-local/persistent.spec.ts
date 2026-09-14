@@ -28,6 +28,7 @@ test('cadastro, verificação, ativação, recuperação, saída e nova entrada 
   await expect(page.getByLabel('Seu nome')).toHaveValue('Cadastro local');
   await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
+  await page.getByRole('button', { name: 'Pular tutorial' }).click();
   await page.getByRole('button', { name: 'Sair', exact: true }).click();
   await expect(page).toHaveURL(/\/entrar$/);
   await page.getByRole('link', { name: 'Esqueci minha senha' }).click();
@@ -79,7 +80,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
-  const checkbox = page.getByRole('checkbox', { name: new RegExp(activityTitle) });
+  const checkbox = page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('checkbox');
   await checkbox.click();
   await expect(checkbox).toBeChecked();
 
@@ -178,7 +179,7 @@ test('lixeira global restaura item de compras', async ({ page }) => {
   await page.getByRole('button', { name: 'Excluir' }).click();
   await page.getByRole('navigation').getByRole('link', { name: 'Lixeira' }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
-  await page.getByRole('listitem').filter({ hasText: 'Item para restaurar' }).getByRole('button', { name: 'Restaurar' }).click();
+  await page.getByRole('listitem').filter({ hasText: 'Item para restaurar' }).getByRole('button', { name: 'Restaurar Item para restaurar', exact: true }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toHaveCount(0);
   await page.goto(shoppingListUrl);
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();

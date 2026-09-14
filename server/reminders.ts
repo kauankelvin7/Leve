@@ -93,18 +93,26 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       continue;
     }
     const tokenRecords = (await db.collection('notificationTokens').where('uid', '==', reserved.uid).where('state', '==', 'active').limit(3).get()).docs
-      .filter(record => typeof record.data().token === 'string');
+      .filter(record => typeof record.data().token === 'string' && !(reserved.deliveredTokenHashes ?? []).includes(hashValue(record.data().token)));
     const tokens = tokenRecords.map(record => record.data().token as string);
     if (!tokens.length) {
-      if (await updateLeasedJob(snapshot.ref, leaseId, { state: 'no-device', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
+      if (await updateLeasedJob(snapshot.ref, leaseId, { state: reserved.deliveredTokenHashes?.length ? 'sent' : 'no-device', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
       continue;
     }
     try {
       const result = await sender({ tokens, data: { title: 'Leve', body: String(activity.data()?.title ?? 'Você tem uma atividade.'), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
       const invalid = result.responses.flatMap((response, index) => !response.success && ['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(response.error?.code ?? '') ? [tokenRecords[index]!] : []);
       await invalidateNotificationTokens(reserved.uid, invalid, now);
+      const deliveredTokenHashes = [...new Set([...(reserved.deliveredTokenHashes ?? []), ...result.responses.flatMap((response, index) => response.success ? [hashValue(tokens[index]!)] : [])])];
+      const retryable = result.responses.some(response => !response.success && !['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(response.error?.code ?? ''));
+      if (retryable && result.successCount) {
+        const attempts = (reserved.attempts ?? 0) + 1;
+        const nextAttemptAt = new Date(Date.now() + Math.min(3600_000, 30_000 * 2 ** attempts)).toISOString();
+        if (await updateLeasedJob(snapshot.ref, leaseId, { state: attempts >= 5 || nextAttemptAt > reserved.deliveryWindowEnd ? 'failed' : 'pending', deliveredTokenHashes, attempts, nextAttemptAt, leaseId: null, leaseUntil: null, updatedAt: now })) retried++;
+        continue;
+      }
       if (result.successCount) {
-        if (await updateLeasedJob(snapshot.ref, leaseId, { state: 'sent', sentAt: now, successCount: result.successCount, leaseId: null, leaseUntil: null, updatedAt: now })) sent++;
+        if (await updateLeasedJob(snapshot.ref, leaseId, { state: 'sent', sentAt: now, successCount: result.successCount, deliveredTokenHashes, leaseId: null, leaseUntil: null, updatedAt: now })) sent++;
       }
       else throw result.responses.find(response => response.error)?.error ?? new Error('FCM recusou o lote.');
     } catch (failure) {

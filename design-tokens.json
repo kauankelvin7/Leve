@@ -1,6 +1,6 @@
 {
   "color": {
-    "canvas": "#EDF0ED", "text": "#303B3A", "text-muted": "#626D69",
+    "canvas": "#EDF0ED", "text": "#303B3A", "text-muted": "#52625D",
     "action-primary": "#4D685C", "action-hover": "#3E594D", "focus": "#557967",
     "glass": "rgba(255,255,255,0.68)", "field": "rgba(255,255,255,0.87)",
     "border": "rgba(83,105,89,0.13)", "solid": "#F9FAF7",

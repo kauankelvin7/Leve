@@ -1,5 +1,46 @@
 # Leve — ponto exato de retomada
 
+## Loading, gradiente móvel e funções essenciais — 14/09/2026
+
+- Criado LoadingState.tsx para carregamento inicial, rotas, Meu dia e detalhes, com marca, indicador e esqueleto estrutural acessível.
+- Animações usam opacidade e transformação máxima de 4 px; prefers-reduced-motion desativa efeitos.
+- Gradiente global movido para html; body e root cobrem 100svh, preenchendo a safe area superior no celular.
+- Ambiente local reparado: cache Vite obsoleto removido e Vite, API, Auth Emulator e Firestore Emulator reiniciados.
+- Criação de atividades corrigida: schedules voltaram a enviar timeZone e disambiguation exigidos pelo domínio.
+- Contraste de textos secundários e atividades concluídas reforçado; seletores E2E tornados inequívocos.
+- Aprovados: typecheck, build, 25/25 testes unitários, fluxo focal de refinamentos, persistência de atividade, reflow/acessibilidade, tutorial, compras e lixeira.
+
+---
+
+## System Prompt v2 — 14/09/2026, implementado e 100% validado com emuladores
+
+Bloco de refinamentos globais do System Prompt v2 implementado e totalmente validado com emuladores ativos (`npm run dev:local`). Todos os 25 testes unitários passam; build, typecheck e E2E Playwright (`refinements.spec.ts`) aprovados.
+
+**Implementado:**
+
+- **Cores de atividades no Meu dia (tela inicial)** — `DayNavigation.tsx` recebeu a prop `dotsOf?: (date: string) => string[]`, renderizando os marcadores coloridos (`.calendar-colors`) tanto na navegação semanal quanto mensal de `Today.tsx` sem novas consultas de rede.
+- **Performance / cache ao vivo** — `useLiveQueries.ts`: cache em memória por uid, `useSyncExternalStore`, timeout de 10 s, pageSize de 50, retry, `loadMore` e `clearQueryCache` no logout. `useUserCollection` migrado para usar o mesmo cache. O `LoadError` (`components/ui/LoadError.tsx`) exibe mensagem + botão Tentar novamente.
+- **Notificações in-app** — `NotificationBanner.tsx`: escuta `onMessage` do FCM via import dinâmico, mostra banner fixo por 15 s com link de destino validado, integrado ao `Shell` no `App.tsx`.
+- **Calendário — cores por atividade** — `activityColors.ts` no domain; `ActivityColorPicker.tsx`; calendário exibe fundo do dia com a cor da primeira atividade e marcadores coloridos para as demais (`.calendar-colors`); painel de detalhes mostra nome da cor.
+- **Lixeira** — layout horizontal fixo (`min-width: 0`, `grid-template-columns: minmax(0, 1fr)` + `flex-wrap: nowrap`, sem overflow a 320 px), "Excluir tudo" com `ConfirmDialog`, operação paginada em `server/commands/trash.ts` com cutoff fixo e remoção em lotes de 20.
+- **Correção de regras do Firestore** — `useUserSubcollections` corrigido de `limit(200)` para `limit(50)` em estrita conformidade com a função `bounded()` de `firestore.rules`.
+- **Shopping — unidade condicional e acessibilidade** — seleção de unidade padrão (`g`, `kg`, `ml`, `L`, `un`, `outra`); campo "Qual unidade?" aparece apenas quando `outra` é selecionado; select de unidade com `aria-label="Unidade"` e `id="item-unit"`.
+- **Animações** — `@keyframes leve-enter` + `.main-wrapper > main`, `.activity-composer`, `.confirm-dialog`, `.tutorial-card`, `.notification-banner`; transições `220ms ease-out` em botões/inputs; `prefers-reduced-motion` desativa tudo.
+- **Tutorial interativo** — `Tutorial.tsx`: 5 passos, destaque `.tutorial-highlight` por `MutationObserver`, navegação entre rotas, inclusão de `NotificationSettings` no passo de lembretes, salva `tutorialCompletedAt` no perfil, botão "Ajuda / Tutorial" sempre acessível; não reaparece após conclusão.
+
+**Testes e Provas:**
+- `tests/unit/liveQueries.test.ts` — 2 testes: preservação de erro após novo snapshot + retry; timeout de carregamento + limpeza de conta (25/25 testes unitários passando).
+- `tests/e2e-local/refinements.spec.ts` — 100% aprovado com emuladores reais (`1 passed, 34.0s`): cobre tutorial completo, cor de atividade persistida, marcadores no calendário, unidade condicional no shopping, lixeira móvel sem overflow a 320 px, "Excluir tudo" com confirmação, Axe (zero violações WCAG 2.0 AA) e zero erros de console.
+- Evidências geradas: `docs/evidence/v2-calendar-390.png` e `docs/evidence/v2-trash-320.png`.
+
+**Pendências:**
+- Chunk `activityColors` do Vite inclui `@js-temporal/polyfill` (161 kB bruto / 46 kB gzip) por co-importação com Calendar. Otimizável via `manualChunks`, sem regressão funcional.
+- Provas externas de hardware continuam pendentes: push com app fechado, instalação PWA em aparelho físico, leitor de tela externo, cotas e aceite.
+
+**Próximo passo recomendado:** avaliar os itens restantes de homologação e produção: E08 (duas abas concorrentes, offline avançado), E10 (acessibilidade manual detalhada, carga) e E11 (homologação e deploy autorizado quando solicitado).
+
+---
+
 ## Frontend glass — 14/09/2026, revisão concluída
 
 Pedido atual: acabamento geral inspirado em interfaces de iPhone, incluindo preferências, com commit, push e publicação autorizados. A pausa abaixo é histórica e foi substituída por este pedido.

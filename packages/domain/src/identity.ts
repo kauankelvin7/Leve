@@ -17,6 +17,7 @@ export const profilePreferencesSchema = z.object({
 
 export type ProfilePreferences = z.infer<typeof profilePreferencesSchema>;
 export type UserProfile = ProfilePreferences & {
+  tutorialCompletedAt?: string;
   timeZone: string;
   uid: string;
   schemaVersion: 1;

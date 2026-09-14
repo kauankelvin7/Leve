@@ -25,6 +25,7 @@ const allDaySchedule = z.object({
 
 export const activityInputSchema = z.object({
   title, descriptionPlain: z.string().max(5000), categoryId: entityIdSchema.nullable(),
+  colorHex: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().optional(),
   schedule: z.union([taskSchedule, timedSchedule, allDaySchedule]),
   reminderSpecs: z.array(reminderSchema).max(3),
 }).strict().superRefine((value, context) => {

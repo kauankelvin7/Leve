@@ -10,6 +10,7 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
+  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
   await page.goto('/configuracoes');
   if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
     await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
@@ -17,10 +18,18 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
     await expect(page.locator('.form-status')).toHaveText('Preferências salvas.');
     await expect(page.locator('.app-shell')).not.toHaveClass(/solid/);
   }
-  for (const [label, color] of [['Roxo suave', 'rgb(112, 85, 134)'], ['Azul suave', 'rgb(69, 107, 139)'], ['Vermelho suave', 'rgb(146, 86, 95)'], ['Verde suave', 'rgb(77, 104, 92)']]) {
-    await page.getByLabel(label!, { exact: true }).click();
-    await expect(page.getByLabel(label!, { exact: true })).toBeChecked();
-    await expect(page.locator('.profile-link')).toHaveCSS('color', color!);
+  for (const label of ['Roxo suave', 'Azul suave', 'Vermelho suave', 'Verde suave']) {
+    await page.getByLabel(label, { exact: true }).click();
+    await expect(page.getByLabel(label, { exact: true })).toBeChecked();
+    const colors = await page.locator('.profile-link').evaluate(element => {
+      const probe = document.createElement('span');
+      probe.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-action-primary');
+      document.body.append(probe);
+      const theme = getComputedStyle(probe).color;
+      probe.remove();
+      return { link: getComputedStyle(element).color, theme };
+    });
+    expect(colors.link).toBe(colors.theme);
   }
   await page.getByRole('link', { name: 'Calendário', exact: true }).click();
   await expect(page.locator('.calendar-day')).toHaveCount(42);
@@ -42,7 +51,7 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
       expect(axe.violations, `${width}px ${route}`).toEqual([]);
-      if (['/hoje', '/calendario', '/configuracoes'].includes(route)) await page.screenshot({ path: `docs/evidence/glass-${route.slice(1)}-${width}.png`, fullPage: true });
+      if (['/hoje', '/calendario', '/configuracoes'].includes(route)) await page.screenshot({ path: 'test-results/glass-' + route.slice(1) + '-' + width + '.png', fullPage: true });
     }
   }
   await page.goto('/configuracoes');

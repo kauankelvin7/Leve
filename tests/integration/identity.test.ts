@@ -162,6 +162,41 @@ describe('API autenticada', () => {
     expect(JSON.stringify(invalid.body)).not.toMatch(/auth\/|stack|Firebase/i);
   });
 
+  it('persiste cor individual e conclusão idempotente do tutorial sem alterar preferências', async () => {
+    const user = await createUser('cores-tutorial@example.test'); await seedAccount(user.uid);
+    const command = activityCommand('create', 'colorida', crypto.randomUUID(), 0, { ...activityPayload, colorHex: '#CE92A5' });
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect((await db.doc(`users/${user.uid}/activities/colorida`).get()).data()?.colorHex).toBe('#CE92A5');
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send({ ...command, entityId: 'invalida', operationId: crypto.randomUUID(), payload: { ...activityPayload, colorHex: 'url(evil)' } }).expect(422);
+    const complete = { command: 'profile.completeTutorial', entityId: user.uid, operationId: crypto.randomUUID(), payload: {} };
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(complete).expect(200);
+    const first = (await db.doc(`users/${user.uid}`).get()).data()!;
+    const retry = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(complete).expect(200);
+    expect(retry.body.result).toBe('alreadyApplied');
+    expect((await db.doc(`users/${user.uid}`).get()).data()).toEqual(first);
+    expect(first.displayName).toBe(profile.displayName);
+  });
+
+  it('esvazia em lotes somente a lixeira confirmada da própria conta', async () => {
+    const user = await createUser('lixeira-lotes@example.test'); const other = await createUser('lixeira-outra@example.test');
+    await Promise.all([seedAccount(user.uid), seedAccount(other.uid)]);
+    const cutoff = new Date(Date.now() - 1000).toISOString(); const old = new Date(Date.now() - 5000).toISOString();
+    await Promise.all(Array.from({ length: 23 }, (_, index) => db.doc(`users/${user.uid}/activities/trash-${index}`).set({ ...activityPayload, deletedAt: old, revision: 1 })));
+    await db.doc(`users/${user.uid}/activities/new-trash`).set({ ...activityPayload, deletedAt: new Date().toISOString(), revision: 1 });
+    await db.doc(`users/${user.uid}/activities/active`).set({ ...activityPayload, deletedAt: null, revision: 1 });
+    await db.doc(`users/${other.uid}/activities/private`).set({ ...activityPayload, deletedAt: old, revision: 1 });
+    const command = { command: 'trash.empty', entityId: user.uid, operationId: crypto.randomUUID(), payload: { cutoff } };
+    const first = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect(first.body).toEqual({ removed: 20, more: true });
+    const second = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect(second.body).toEqual({ removed: 3, more: false });
+    const retry = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect(retry.body.removed).toBe(0);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(2);
+    expect((await db.doc(`users/${other.uid}/activities/private`).get()).exists).toBe(true);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${other.token}`).send(command).expect(403);
+  });
+
   it('bloqueia comando de perfil com e-mail não verificado e conta suspensa', async () => {
     const unverified = await createUser('nao-verificada@example.test', false);
     await seedAccount(unverified.uid);
@@ -310,6 +345,21 @@ describe('comandos de conteúdo', () => {
     const retried = (await rejected.get()).data()!;
     expect(retried).toMatchObject({ state: 'pending', attempts: 1, failureCode: 'messaging/internal-error', leaseId: null, leaseUntil: null });
     expect(retried.nextAttemptAt > new Date(now).toISOString()).toBe(true);
+    await rejected.update({ state: 'failed' });
+    await db.doc('notificationTokens/token-segundo').set({ uid: user.uid, deviceId: 'aparelho-b', token: 'token-ficticio-b', state: 'active' });
+    const partial = await createJob('entrega-parcial');
+    let acceptedToken = '';
+    await processReminderTick(async message => {
+      acceptedToken = message.tokens[0]!;
+      return { successCount: 1, responses: [{ success: true }, { success: false, error: { code: 'messaging/internal-error' } }] };
+    });
+    expect((await partial.get()).data()).toMatchObject({ state: 'pending', attempts: 1 });
+    await partial.update({ nextAttemptAt: new Date(now - 1000).toISOString() });
+    await processReminderTick(async message => {
+      expect(message.tokens).toHaveLength(1); expect(message.tokens).not.toContain(acceptedToken);
+      return { successCount: 1, responses: [{ success: true }] };
+    });
+    expect((await partial.get()).data()?.state).toBe('sent');
   });
 
   it('materializa recorrência somente na janela e cria os lembretes correspondentes', async () => {

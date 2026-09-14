@@ -8,6 +8,19 @@ export function commandHash(command: CommandEnvelope): string {
   return hashCanonicalValue(command);
 }
 
+export async function completeTutorial(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
+  if (command.entityId !== identity.uid || !identity.email_verified) throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+  const now = new Date().toISOString();
+  return db.runTransaction(async transaction => {
+    const root = db.doc(`users/${identity.uid}`);
+    const [profile, member] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`));
+    if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+    const data = profile.data()!;
+    if (!data.tutorialCompletedAt) transaction.update(root, { tutorialCompletedAt: now, dataVersion: (data.dataVersion ?? 0) + 1 });
+    return { operationId: command.operationId, entityId: identity.uid, revision: data.revision, serverTime: now, result: data.tutorialCompletedAt ? 'alreadyApplied' : 'applied' };
+  });
+}
+
 export async function activateAccount(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
   const input = accountActivationSchema.parse(command.payload);
   if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail antes de continuar.');

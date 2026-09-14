@@ -3,12 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { z, ZodError } from 'zod';
 import { commandEnvelopeSchema, type SessionResult, type UserProfile } from '../packages/domain/src/identity.ts';
 import { auth, db } from './platform/firebase.ts';
-import { activateAccount, updateProfile } from './commands/identity.ts';
+import { activateAccount, updateProfile, completeTutorial } from './commands/identity.ts';
 import { AppError } from './errors.ts';
 import { contentCommand } from './commands/content.ts';
 import { backendLog, fingerprint } from './logger.ts';
 import { deleteAccount, exportAccount, importAccount, resumeAccountDeletions } from './account-data.ts';
 import { notificationCommand } from './commands/notifications.ts';
+import { emptyTrash } from './commands/trash.ts';
 import { materializeRecurringActivities, processReminderTick, purgeExpiredContent, verifyTick } from './reminders.ts';
 
 export const app = express();
@@ -78,6 +79,13 @@ app.post('/api/commands', async (request, response) => {
   const command = commandEnvelopeSchema.parse(request.body);
   const identity = response.locals.identity;
   response.locals.command = command.command;
+  if (command.command === 'profile.completeTutorial') { response.json(await completeTutorial(identity, command)); return; }
+  if (command.command === 'trash.empty') { response.json(await emptyTrash(identity, command)); return; }
+  if (command.command === 'diagnostic.report') {
+    const diagnostic = z.object({ surface: z.enum(['calendar', 'content']), code: z.enum(['permission-denied', 'failed-precondition', 'unavailable', 'resource-exhausted', 'unauthenticated', 'cancelled', 'unknown', 'deadline-exceeded', 'internal']) }).strict().parse(command.payload);
+    backendLog('warn', 'client.query_failed', { ...diagnostic, identity: fingerprint(identity.uid), correlationId: response.locals.correlationId });
+    response.json({ received: true }); return;
+  }
   backendLog('debug', 'command.dispatch.started', {
     correlationId: response.locals.correlationId,
     command: command.command,

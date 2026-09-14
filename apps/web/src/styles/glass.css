@@ -4,10 +4,13 @@
   --glass-edge: #ffffffd9;
   --glass-shadow: 0 12px 36px #26382e09, inset 0 1px 0 #fff;
 }
-body {
+html {
+  min-height: 100%;
   background: radial-gradient(ellipse at 5% 0%, color-mix(in srgb, var(--color-action-primary) 17%, transparent), transparent 52%), radial-gradient(ellipse at 100% 70%, color-mix(in srgb, var(--color-personal) 80%, transparent), transparent 55%), var(--color-canvas);
   background-attachment: fixed;
 }
+body, #root { min-height: 100svh; }
+body { background: transparent; }
 .app-shell { max-width: 1560px; gap: 36px; }
 .sidebar { background: var(--glass-surface); border-color: var(--glass-edge); backdrop-filter: blur(32px) saturate(145%); -webkit-backdrop-filter: blur(32px) saturate(145%); box-shadow: var(--glass-shadow); border-radius: 30px; }
 .sidebar nav a { border-radius: 16px; }

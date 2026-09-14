@@ -1,0 +1,486 @@
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  --shadow-card: 0 24px 80px #24362c30;
+  --shadow-dialog: 0 18px 70px #24362c40;
+  --shadow-banner: 0 12px 40px #24362c35;
+
+  --color-surface: #f9faf7;
+  --color-border: #ced8cf;
+  --color-border-dot: #303b3a60;
+  --color-border-dot-alt: #303b3a70;
+  --color-overlay: #18261e66;
+  --color-warning-bg: #fff6ed;
+
+  --duration-fast: 220ms;
+  --duration-enter: 360ms;
+  --duration-compose: 240ms;
+  --easing: ease-out;
+
+  --font-brand: 'Nunito', 'DM Sans', sans-serif;
+  --font-weight-brand: 800;
+  --letter-spacing-brand: -0.075em;
+
+  --touch-target: 44px;
+  --color-dot-size: 12px;
+  --calendar-dot-size: 8px;
+
+  --tutorial-card-width: min(410px, calc(100vw - 36px));
+  --banner-width: min(580px, calc(100vw - 36px));
+  --dialog-width: min(480px, calc(100vw - 36px));
+  --trash-max-width: 760px;
+}
+
+
+/* ============================================================
+   BRAND TYPOGRAPHY
+   ============================================================ */
+.brand {
+  font-family: var(--font-brand);
+  font-weight: var(--font-weight-brand);
+  letter-spacing: var(--letter-spacing-brand);
+}
+
+.auth-brand .brand {
+  line-height: 1;
+}
+
+
+/* ============================================================
+   SCROLL ANCHORING
+   ============================================================ */
+.activity-composer,
+.content-form {
+  scroll-margin-top: 24px;
+}
+
+
+/* ============================================================
+   ACTIVITY COLORS
+   ============================================================ */
+.color-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.activity-colors label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--touch-target);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.activity-colors label:hover {
+  background-color: color-mix(in srgb, var(--color-border) 30%, transparent);
+}
+
+.activity-colors input[type="radio"],
+.activity-colors input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  cursor: pointer;
+}
+
+.color-dot {
+  display: inline-block;
+  width: var(--color-dot-size);
+  height: var(--color-dot-size);
+  border: 1px solid var(--color-border-dot);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   CALENDAR COLORS
+   ============================================================ */
+.calendar-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 6px;
+}
+
+.calendar-colors > span {
+  width: var(--calendar-dot-size);
+  height: var(--calendar-dot-size);
+  border-radius: 50%;
+  border: 1px solid var(--color-border-dot-alt);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   CALENDAR DAY
+   ============================================================ */
+.calendar-day.selected {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: -2px;
+}
+
+
+/* ============================================================
+   TRASH LIST
+   ============================================================ */
+.trash-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: var(--trash-max-width);
+  min-width: 0;
+}
+
+.trash-list li {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.trash-list li > span {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.trash-list strong,
+.trash-list small {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Row actions */
+.trash-list .row-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.trash-list .row-actions button {
+  width: var(--touch-target);
+  height: var(--touch-target);
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.trash-list .row-actions button > span {
+  font-size: 1.5rem;
+}
+
+
+/* ============================================================
+   CONFIRM DIALOG
+   ============================================================ */
+.confirm-dialog {
+  width: var(--dialog-width);
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid #fff;
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card);
+}
+
+.confirm-dialog::backdrop {
+  background: var(--color-overlay);
+}
+
+
+/* ============================================================
+   LOAD ERROR
+   ============================================================ */
+.load-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-warning-bg);
+  border-radius: var(--radius-lg);
+}
+
+.load-error p {
+  flex: 1 1 220px;
+}
+
+
+/* ============================================================
+   TUTORIAL
+   ============================================================ */
+.tutorial-launch {
+  margin-bottom: 12px;
+}
+
+.tutorial-highlight {
+  outline: 3px solid var(--color-action-primary) !important;
+  outline-offset: 4px;
+  scroll-margin-top: 20px;
+}
+
+.tutorial-card {
+  position: fixed;
+  z-index: 100;
+  right: 24px;
+  bottom: 24px;
+  width: var(--tutorial-card-width);
+  max-height: 60dvh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: 24px;
+  box-shadow: var(--shadow-dialog);
+}
+
+.tutorial-card h2 {
+  font-size: 1.7rem;
+}
+
+.tutorial-card .dialog-actions {
+  flex-wrap: wrap;
+}
+
+.tutorial-card p {
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   NOTIFICATION BANNER
+   ============================================================ */
+.notification-banner {
+  position: fixed;
+  z-index: 110;
+  top: max(16px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: var(--banner-width);
+  border: 1px solid #cad5cc;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  padding: 16px;
+  box-shadow: var(--shadow-banner);
+}
+
+.notification-banner > div {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.notification-banner p {
+  margin: 4px 0 0;
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes leve-enter {
+  from {
+    translate: 0 4px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes loading-breathe {
+  0%, 100% { opacity: .38; transform: scale(.94); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes loading-surface {
+  0%, 100% { opacity: .46; }
+  50% { opacity: .78; }
+}
+
+.loading-state {
+  width: min(100%, 760px);
+  min-height: 240px;
+  margin: 0 auto;
+  padding: clamp(48px, 10vh, 96px) clamp(20px, 5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.loading-state-screen { min-height: 100svh; }
+
+.loading-brand {
+  margin-bottom: 24px;
+  font-family: 'Nunito', 'DM Sans', sans-serif;
+  font-size: clamp(2.5rem, 9vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -.075em;
+  line-height: 1;
+}
+
+.loading-brand span { color: var(--color-coral); }
+
+.loading-indicator {
+  display: flex;
+  gap: 7px;
+  min-height: 12px;
+  align-items: center;
+}
+
+.loading-indicator i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-text);
+  animation: loading-breathe 900ms ease-in-out infinite;
+}
+
+.loading-indicator i:nth-child(2) { animation-delay: 120ms; background: var(--color-coral); }
+.loading-indicator i:nth-child(3) { animation-delay: 240ms; }
+
+.loading-label {
+  margin: 14px 0 26px;
+  color: var(--color-text-muted);
+  font-size: .9rem;
+}
+
+.loading-preview {
+  width: min(100%, 430px);
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.loading-line,
+.loading-card-row span {
+  display: block;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--color-border);
+  animation: loading-surface 1.35s ease-in-out infinite;
+}
+
+.loading-line-short { width: 32%; }
+.loading-line-medium { width: 68%; }
+.loading-line:nth-child(2) { animation-delay: 100ms; }
+.loading-line:nth-child(3) { animation-delay: 200ms; }
+
+.loading-card-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.loading-card-row span { height: 64px; border-radius: 14px; }
+.loading-card-row span:nth-child(2) { animation-delay: 120ms; }
+.loading-card-row span:nth-child(3) { animation-delay: 240ms; }
+
+@media (max-width: 520px) {
+  .loading-preview { padding: 18px; }
+  .loading-card-row { grid-template-columns: 1fr; }
+  .loading-card-row span { height: 46px; }
+}
+
+.main-wrapper > main {
+  animation: leve-enter var(--duration-enter) var(--easing);
+}
+
+.activity-composer,
+.content-form,
+.confirm-dialog,
+.tutorial-card,
+.notification-banner {
+  animation: leve-enter var(--duration-compose) var(--easing);
+}
+
+
+/* ============================================================
+   INTERACTIVE ELEMENT TRANSITIONS
+   ============================================================ */
+button,
+a,
+input,
+select,
+textarea {
+  transition:
+    background-color var(--duration-fast) var(--easing),
+    border-color var(--duration-fast) var(--easing),
+    box-shadow var(--duration-fast) var(--easing);
+}
+
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+@media (max-width: 739px) {
+  .tutorial-card {
+    right: 18px;
+    bottom: calc(100px + env(safe-area-inset-bottom));
+    padding: 18px;
+    max-height: 48dvh;
+  }
+
+  .trash-list li {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+
+  .calendar-colors {
+    gap: 2px;
+  }
+
+  .calendar-colors > span {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+
+/* ============================================================
+   ACCESSIBILITY — REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

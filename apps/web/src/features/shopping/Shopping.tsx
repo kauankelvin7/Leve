@@ -26,7 +26,7 @@ export function Shopping() {
     const listKind = editing?.listKind ?? String(new FormData(form).get('listKind')) as ShoppingList['listKind'];
     const payload = { title, listKind, cycleKey: editing?.cycleKey ?? null };
     const command = editing ? 'shoppingList.update' : 'shoppingList.create';
-    const entityId = editing?.id ?? crypto.randomUUID();
+    const entityId = editing?.id ?? pending.current?.entityId ?? crypto.randomUUID();
     const expectedRevision = editing?.revision ?? 0;
     if (!pending.current || pending.current.command !== command || pending.current.entityId !== entityId || JSON.stringify(pending.current.payload) !== JSON.stringify(payload)) {
       pending.current = { command, operationId: crypto.randomUUID(), entityId, expectedRevision, payload };
@@ -83,6 +83,7 @@ export function ShoppingDetail() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [editing, setEditing] = useState<StoredItem | null>(null);
+  const [unit, setUnit] = useState<ShoppingItem['unit']>('un');
   const pending = useRef<CommandEnvelope | null>(null);
   const list = lists.items.find(item => item.id === id);
 
@@ -97,7 +98,7 @@ export function ShoppingDetail() {
       name: String(fields.get('name')).trim(),
       quantityValue: Number(fields.get('quantityValue')) > 0 ? Number(fields.get('quantityValue')) : null,
       unit: String(fields.get('unit')) as ShoppingItem['unit'],
-      unitLabel: String(fields.get('unitLabel')).trim(),
+      unitLabel: unit === 'outra' ? String(fields.get('unitLabel') ?? '').trim() : '',
       detail: String(fields.get('detail')).trim(),
       sortOrder: editing?.sortOrder ?? items.length,
     };
@@ -113,6 +114,7 @@ export function ShoppingDetail() {
       pending.current = null;
       setEditing(null);
       form.reset();
+      setUnit('un');
       setMessage(editing ? 'Item atualizado.' : 'Item adicionado.');
     } catch (failure) {
       setMessage(failure instanceof Error ? failure.message : 'Nao foi possivel salvar. Seu rascunho foi preservado.');
@@ -145,8 +147,8 @@ export function ShoppingDetail() {
   const active: StoredItem[] = items.filter(item => !item.deletedAt) as StoredItem[];
   const deleted: StoredItem[] = items.filter(item => item.deletedAt) as StoredItem[];
   return <main><header className="page-heading"><Link to="/compras">Voltar para listas</Link><h1 id="page-title" tabIndex={-1}>{list?.title ?? 'Lista de compras'}</h1></header>
-    <section className="panel content-form"><h2>{editing ? 'Editar item' : 'Novo item'}</h2><form key={editing?.id ?? 'new'} onSubmit={save}><label>Novo item<input name="name" required maxLength={100} defaultValue={editing?.name ?? ''} /></label><div className="date-fields"><label>Quantidade<input name="quantityValue" type="number" min="0" step="0.01" defaultValue={editing?.quantityValue ?? ''} /></label><label>Unidade<select name="unit" defaultValue={editing?.unit ?? 'un'}><option value="un">unidade</option><option value="kg">kg</option><option value="g">g</option><option value="l">l</option><option value="ml">ml</option><option value="pacote">pacote</option><option value="duzia">duzia</option><option value="outra">outra</option></select></label></div><label>Nome da unidade<input name="unitLabel" maxLength={30} defaultValue={editing?.unitLabel ?? ''} /></label><label>Detalhe<textarea name="detail" maxLength={300} rows={2} defaultValue={editing?.detail ?? ''} /></label><div className="dialog-actions"><button className="primary" disabled={busy}>{editing ? 'Atualizar item' : 'Adicionar item'}</button>{editing ? <button type="button" disabled={busy} onClick={() => { setEditing(null); pending.current = null; }}>Cancelar</button> : null}</div></form></section>
-    {loading ? <p>Carregando...</p> : <div className="shopping"><div className="section-heading"><h2>Itens da lista</h2><span className="count-badge">{active.filter(item => item.checked).length} de {active.length} comprados</span></div><progress className="shopping-progress" aria-label="Itens comprados" max={Math.max(1, active.length)} value={active.filter(item => item.checked).length} />{active.length === 0 && <p className="muted">Sua lista está vazia. Adicione o primeiro item acima.</p>}{active.map(item => <div className="shopping-item" key={item.id}><label className="check-label"><input type="checkbox" checked={item.checked} disabled={busy} onChange={() => void toggle(item)} /><span className={item.checked ? 'completed' : ''}>{item.name}<small>{item.quantityValue ? `${item.quantityValue} ${item.unitLabel || item.unit}` : item.detail}</small></span></label><div className="row-actions"><button disabled={busy} onClick={() => { setEditing(item); pending.current = null; window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy} onClick={() => void trash(item)}>Excluir</button></div></div>)}</div>}
+    <section className="panel content-form"><h2>{editing ? 'Editar item' : 'Novo item'}</h2><form key={editing?.id ?? 'new'} onSubmit={save}><label>Novo item<input name="name" required maxLength={100} defaultValue={editing?.name ?? ''} /></label><div className="date-fields"><label>Quantidade<input name="quantityValue" type="number" min="0" step="0.01" defaultValue={editing?.quantityValue ?? ''} /></label><label htmlFor="item-unit">Unidade<select id="item-unit" aria-label="Unidade" name="unit" value={unit} onChange={event => setUnit(event.target.value as ShoppingItem['unit'])}><option value="un">unidade</option><option value="kg">kg</option><option value="g">g</option><option value="l">l</option><option value="ml">ml</option><option value="pacote">pacote</option><option value="duzia">duzia</option><option value="outra">outra</option></select></label></div>{unit === 'outra' && <label>Qual unidade?<input name="unitLabel" required placeholder="Ex.: caixa, bandeja" maxLength={30} defaultValue={editing?.unitLabel ?? ''} /></label>}<label>Detalhe<textarea name="detail" maxLength={300} rows={2} defaultValue={editing?.detail ?? ''} /></label><div className="dialog-actions"><button className="primary" disabled={busy}>{editing ? 'Atualizar item' : 'Adicionar item'}</button>{editing ? <button type="button" disabled={busy} onClick={() => { setEditing(null); pending.current = null; }}>Cancelar</button> : null}</div></form></section>
+    {loading ? <p>Carregando...</p> : <div className="shopping"><div className="section-heading"><h2>Itens da lista</h2><span className="count-badge">{active.filter(item => item.checked).length} de {active.length} comprados</span></div><progress className="shopping-progress" aria-label="Itens comprados" max={Math.max(1, active.length)} value={active.filter(item => item.checked).length} />{active.length === 0 && <p className="muted">Sua lista está vazia. Adicione o primeiro item acima.</p>}{active.map(item => <div className="shopping-item" key={item.id}><label className="check-label"><input type="checkbox" checked={item.checked} disabled={busy} onChange={() => void toggle(item)} /><span className={item.checked ? 'completed' : ''}>{item.name}<small>{item.quantityValue ? `${item.quantityValue} ${item.unitLabel || item.unit}` : item.detail}</small></span></label><div className="row-actions"><button disabled={busy} onClick={() => { setEditing(item); setUnit(item.unit); pending.current = null; window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy} onClick={() => void trash(item)}>Excluir</button></div></div>)}</div>}
     {deleted.length ? <section aria-labelledby="deleted-items" className="panel content-form"><h2 id="deleted-items">Itens na lixeira</h2><ul className="trash-list">{deleted.map(item => <li key={item.id}><span><strong>{item.name}</strong><small>Disponivel ate {item.purgeAfter?.slice(0, 10) ?? 'prazo indisponivel'}</small></span><button disabled={busy} onClick={() => void restore(item)}>Restaurar</button></li>)}</ul></section> : null}
     <p role="status">{error || lists.error || message}</p></main>;
 }

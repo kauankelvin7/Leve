@@ -5,6 +5,7 @@ import type { SessionResult } from '../../../../../packages/domain/src/identity'
 import { firebaseAuth, firestore } from '../../platform/firebase';
 import { apiRequest } from '../../platform/api';
 import { revokeNotificationDevice } from '../../platform/notifications';
+import { clearQueryCache } from '../content/useLiveQueries';
 
 type AuthState = { user: User | null; session: SessionResult | null; loading: boolean; error: string; refresh: () => Promise<void>; logout: () => Promise<void> };
 const AuthContext = createContext<AuthState | null>(null);
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!firebaseAuth) return;
     return onIdTokenChanged(firebaseAuth, currentUser => {
+      clearQueryCache();
       setUser(currentUser); setSession(null); setError(''); setLoading(Boolean(currentUser));
       if (currentUser?.emailVerified) void refresh();
       else setLoading(false);

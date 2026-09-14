@@ -1,9 +1,12 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
+import { LoadingState } from '../components/ui/LoadingState';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
 import { OutboxStatus } from '../features/content/OutboxStatus';
+import { Tutorial } from '../features/content/Tutorial';
+import { NotificationBanner } from '../features/content/NotificationBanner';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -25,7 +28,7 @@ function RouteFocus() {
 
 function Protected() {
   const { user, session, loading } = useAuth();
-  if (loading) return <main className="entry" role="status">Carregando sua agenda…</main>;
+  if (loading) return <LoadingState variant="screen" label="Preparando sua agenda…" />;
   if (!user || session?.membership !== 'active' || session.profile?.accountState !== 'active') return <Navigate to="/entrar" replace />;
   return <Outlet />;
 }
@@ -46,7 +49,7 @@ function Shell() {
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink to="/configuracoes" aria-label="Perfil e preferências"><Icon name="profile" /></NavLink></div></div>
       <div className="workspace-bar"><span>Meu espaço <span aria-hidden="true">/</span> <strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-private">Agenda pessoal</span></div>
-      <OutboxStatus /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
+      <Tutorial /><NotificationBanner /><OutboxStatus /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
   </div>;
 }
@@ -56,7 +59,7 @@ function NotFound() {
 }
 
 export function App() {
-  return <><RouteFocus /><Suspense fallback={<main className="entry" role="status">Carregando interface…</main>}><Routes>
+  return <><RouteFocus /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
     <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} />
     <Route element={<Protected />}><Route element={<Shell />}>

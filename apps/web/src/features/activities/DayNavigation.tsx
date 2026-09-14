@@ -13,7 +13,7 @@ export function useCurrentDay(timeZone: string) {
   return today;
 }
 
-export function DayNavigation({ selected, today, weekStartsOn, onSelect, month = false }: { selected: string; today: string; weekStartsOn: number; onSelect: (value: string) => void; month?: boolean }) {
+export function DayNavigation({ selected, today, weekStartsOn, onSelect, month = false, dotsOf }: { selected: string; today: string; weekStartsOn: number; onSelect: (value: string) => void; month?: boolean; dotsOf?: (date: string) => string[] }) {
   const date = Temporal.PlainDate.from(selected);
   const base = month ? date.with({ day: 1 }) : date;
   const start = base.subtract({ days: (base.dayOfWeek % 7 - weekStartsOn + 7) % 7 });
@@ -26,9 +26,10 @@ export function DayNavigation({ selected, today, weekStartsOn, onSelect, month =
     </div></div>
     <div className={`day-picker ${month ? 'month-picker' : ''}`}>
       {month && days.slice(0, 7).map(day => <span className="mini-weekday" aria-hidden="true" key={`weekday-${day.dayOfWeek}`}>{day.toLocaleString('pt-BR', { weekday: 'narrow' })}</span>)}
-      {days.map(day => <button type="button" key={day.toString()} className={day.equals(date) ? 'selected' : month && day.month !== date.month ? 'adjacent' : ''} aria-pressed={day.equals(date)} aria-current={day.toString() === today ? 'date' : undefined} aria-label={day.toLocaleString('pt-BR', { dateStyle: 'full' })} onClick={() => onSelect(day.toString())}>
+      {days.map(day => { const dots = dotsOf ? dotsOf(day.toString()) : []; const adjacent = month && day.month !== date.month; return <button type="button" key={day.toString()} className={day.equals(date) ? 'selected' : adjacent ? 'adjacent' : ''} aria-pressed={day.equals(date)} aria-current={day.toString() === today ? 'date' : undefined} aria-label={day.toLocaleString('pt-BR', { dateStyle: 'full' })} onClick={() => onSelect(day.toString())}>
         {!month && <span>{day.toLocaleString('pt-BR', { weekday: 'short' })}</span>}<strong>{day.day}</strong>
-      </button>)}
+        {dots.length > 0 && !adjacent && <span className="calendar-colors" aria-hidden="true">{dots.slice(0, 5).map((hex, i) => <span key={i} style={{ backgroundColor: hex }} />)}</span>}
+      </button>; })}
     </div>
   </section>;
 }

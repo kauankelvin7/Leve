@@ -5,11 +5,17 @@ import '@fontsource/dm-sans/latin-400.css';
 import '@fontsource/dm-sans/latin-500.css';
 import '@fontsource/dm-sans/latin-600.css';
 import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/nunito/latin-400.css';
+import '@fontsource/nunito/latin-500.css';
+import '@fontsource/nunito/latin-600.css';
+import '@fontsource/nunito/latin-700.css';
+import '@fontsource/nunito/latin-800.css';
 import { App } from './app/App';
 import { ErrorBoundary } from './app/ErrorBoundary';
 import { AuthProvider } from './features/identity/AuthProvider';
 import './styles/app.css';
 import './styles/glass.css';
+import './styles/refinements.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
 
