@@ -312,17 +312,18 @@ nav a.active {
   box-shadow: var(--shadow-xs);
 }
 
-.sidebar-bottom { margin-top: auto; }
+.sidebar-bottom { margin-top: 0%; }
 .sidebar-bottom > .eyebrow { display: block; margin: 24px 14px; font-size: .65rem; }
 
 .profile-link {
   display: flex;
   gap: 12px;
   align-items: center;
+  margin-top: 12px;
   min-width: 0;
   width: 100%;
   border-top: 1px solid var(--color-border);
-  padding: 20px 10px 0;
+  padding: 50px 10px 12px;
   text-decoration: none;
   font-size: .875rem;
   border-radius: 12px;
@@ -638,7 +639,7 @@ main { scroll-margin-top: 20px; }
 .auth-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--color-text-muted); font-size: .75rem; }
 .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--color-border); }
 
-.google-button { width: 100%; background: #fff; }
+.google-button { width: 100%; margin-top: 4px; background: #fff; }
 .google-button > span { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid #ccd4ce; border-radius: 50%; color: #315943; font-weight: 600; }
 .recovery-link { display: flex; justify-content: center; margin: 14px 0 0 !important; }
 
@@ -658,7 +659,6 @@ main { scroll-margin-top: 20px; }
 .auth-alert button { margin-top: 10px; }
 
 .text-button { min-height: 44px; padding-inline: 8px; border-color: transparent; background: transparent; text-decoration: underline; text-underline-offset: 4px; }
-.google-button { margin-top: 4px; }
 
 /* ── 29. COMPOSER DE ATIVIDADES ──────────────────────────── */
 .activity-composer { max-width: 760px; margin-bottom: 36px; }
@@ -955,6 +955,9 @@ dialog label { display: block; margin: 16px 0; }
 .sidebar-bottom > a:hover { background: var(--color-accent-hover); }
 .profile-link { border-radius: 12px; }
 
+.profile-link > span:last-child { display: grid; min-width: 0; line-height: 1.25; }
+.profile-link strong, .profile-link small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ── 46. MINI ELEMENTOS ──────────────────────────────────── */
 .mini-weekday { text-align: center; color: var(--color-text-muted); font-size: .75rem; padding-block: 8px; }
 .month-picker strong { font-size: .875rem; }
@@ -1072,7 +1075,30 @@ html {
   .auth-backdrop { display: none; }
 }
 
-/* ── 56. RESPONSIVO ──────────────────────────────────────── */
+/* ── 56. TIMER / REGISTRO DE TEMPO ───────────────────────── */
+.timer-panel { margin-top: 24px; }
+.manual-time { display: flex; align-items: end; gap: 12px; margin-top: 20px; }
+.manual-time label { flex: 1; margin: 0; }
+.time-history { list-style: none; padding: 0; margin: 22px 0 0; }
+.time-history li { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid var(--color-border); }
+.time-history small { color: var(--color-text-muted); }
+
+/* ── 57. RESUMO / MÉTRICAS DE REVISÃO ────────────────────── */
+.review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+.metric { display: grid; gap: 8px; }
+.metric > strong { font: 400 2.35rem/1 'Instrument Serif', Georgia, serif; }
+.metric > span, .metric > small { color: var(--color-text-muted); }
+.review-breakdown ul { list-style: none; padding: 0; }
+.review-breakdown li { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--color-border); }
+.review-breakdown li span { display: flex; align-items: center; gap: 10px; }
+.review-breakdown i { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ── 58. FILTROS DE ATIVIDADE ────────────────────────────── */
+.activity-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
+.activity-filters label { flex: 1 1 180px; margin: 0; font-size: .75rem; color: var(--color-text-muted); }
+.activity-filters select { margin-top: 5px; }
+
+/* ── 59. RESPONSIVO ──────────────────────────────────────── */
 @media (max-width: 1199px) {
   .app-shell { grid-template-columns: 180px minmax(0, 1fr); gap: 28px; }
   .sidebar { padding-inline: 10px; }
@@ -1086,6 +1112,29 @@ html {
   .agenda-aside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .aside-caption { display: none; }
   .sidebar-bottom > .eyebrow { display: none; }
+}
+
+@media (max-width: 899px), (pointer: coarse) {
+  .auth-page {
+    display: block;
+    min-height: 100dvh;
+    overflow: auto;
+    background:
+      radial-gradient(ellipse at 20% 5%,
+        color-mix(in srgb, var(--color-action-primary) 16%, var(--color-canvas)),
+        transparent 34%),
+      radial-gradient(ellipse at 90% 92%, #f6dccd, transparent 38%),
+      var(--color-canvas);
+  }
+  .auth-backdrop { display: none; }
+  .auth-brand { padding: 42px 24px 0; }
+  .auth-brand .brand { font-size: 5.5rem; line-height: .8; }
+  .auth-brand p { margin: 24px 0 0 4px; font-size: 1.7rem; }
+  .auth-page .auth-entry { width: auto; max-height: none; margin: 26px 16px 40px; padding: 28px 22px; }
+}
+
+@media (max-width: 760px) {
+  .review-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 739px) {
@@ -1162,47 +1211,17 @@ html {
   .calendar-list li { grid-template-columns: 1fr; gap: 3px; }
 }
 
-@media (max-width: 899px), (pointer: coarse) {
-  .auth-page {
-    display: block;
-    min-height: 100dvh;
-    overflow: auto;
-    background:
-      radial-gradient(ellipse at 20% 5%,
-        color-mix(in srgb, var(--color-action-primary) 16%, var(--color-canvas)),
-        transparent 34%),
-      radial-gradient(ellipse at 90% 92%, #f6dccd, transparent 38%),
-      var(--color-canvas);
-  }
-  .auth-backdrop { display: none; }
-  .auth-brand { padding: 42px 24px 0; }
-  .auth-brand .brand { font-size: 5.5rem; line-height: .8; }
-  .auth-brand p { margin: 24px 0 0 4px; font-size: 1.7rem; }
-  .auth-page .auth-entry { width: auto; max-height: none; margin: 26px 16px 40px; padding: 28px 22px; }
+@media (max-width: 560px) {
+  .manual-time { align-items: stretch; flex-direction: column; }
+  .time-history li { grid-template-columns: 1fr auto; }
+  .time-history small { grid-column: 1 / -1; }
+  .workspace-actions { gap: 8px; }
 }
 
 @media (forced-colors: active) {
   nav a.active, .day-picker button.selected { outline: 2px solid Highlight; }
 }
-.profile-link > span:last-child { display: grid; min-width: 0; line-height: 1.25; }
-.profile-link strong, .profile-link small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.timer-panel { margin-top: 24px; }
-.manual-time { display: flex; align-items: end; gap: 12px; margin-top: 20px; }
-.manual-time label { flex: 1; margin: 0; }
-.time-history { list-style: none; padding: 0; margin: 22px 0 0; }
-.time-history li { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid var(--color-border); }
-.time-history small { color: var(--color-text-muted); }
-@media (max-width: 560px) { .manual-time { align-items: stretch; flex-direction: column; } .time-history li { grid-template-columns: 1fr auto; } .time-history small { grid-column: 1 / -1; } }
-.review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
-.metric { display: grid; gap: 8px; }
-.metric > strong { font: 400 2.35rem/1 'Instrument Serif', Georgia, serif; }
-.metric > span, .metric > small { color: var(--color-text-muted); }
-.review-breakdown ul { list-style: none; padding: 0; }
-.review-breakdown li { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--color-border); }
-.review-breakdown li span { display: flex; align-items: center; gap: 10px; }
-.review-breakdown i { width: 10px; height: 10px; border-radius: 50%; }
-@media (max-width: 760px) { .review-grid { grid-template-columns: 1fr; } }
-@media (max-width: 560px) { .workspace-private { display: none; } .workspace-actions { gap: 8px; } }
+
 @media (min-width: 740px) and (max-height: 720px) {
   .sidebar { padding-block: 22px 14px; overflow-y: auto; scrollbar-width: thin; }
   .brand-caption { margin-bottom: 22px; }
@@ -1210,6 +1229,3 @@ html {
   .profile-link { padding-top: 10px; }
   .profile-avatar { width: 36px; height: 36px; flex-basis: 36px; }
 }
-.activity-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
-.activity-filters label { flex: 1 1 180px; margin: 0; font-size: .75rem; color: var(--color-text-muted); }
-.activity-filters select { margin-top: 5px; }
