@@ -31,14 +31,15 @@ export async function exportAccount(identity: DecodedIdToken): Promise<AccountAr
   const before = await root.get();
   const profile = before.data() as UserProfile | undefined;
   if (!profile || profile.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
-  const [categories, activities, series, notes, lists] = await Promise.all([
+  const [categories, activities, timeEntries, series, notes, lists] = await Promise.all([
     documents(`users/${identity.uid}/categories`), documents(`users/${identity.uid}/activities`),
+    documents(`users/${identity.uid}/timeEntries`),
     documents(`users/${identity.uid}/series`), documents(`users/${identity.uid}/notes`), documents(`users/${identity.uid}/shoppingLists`),
   ]);
   const shoppingLists = await Promise.all(lists.map(async list => ({ ...list, items: await documents(`users/${identity.uid}/shoppingLists/${list.id}/items`) })));
   const after = await root.get();
   if (!after.exists || after.data()?.accountState !== 'active' || after.data()?.dataVersion !== profile.dataVersion) throw new AppError(409, 'EXPORT_CHANGED', 'Seus dados mudaram durante a exportação. Tente novamente.');
-  return accountArchiveSchema.parse({ format: 'leve-account-export', version: 1, exportedAt: new Date().toISOString(), profile: publicProfile(profile), data: { categories, activities, series, notes, shoppingLists } });
+  return accountArchiveSchema.parse({ format: 'leve-account-export', version: 1, exportedAt: new Date().toISOString(), profile: publicProfile(profile), data: { categories, activities, timeEntries, series, notes, shoppingLists } });
 }
 
 function importedId(uid: string, importId: string, type: string, sourceId: string) {
@@ -84,8 +85,14 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
     writes.push({ path: `categories/${categoryIds.get(source.id)}`, value: { ...parsed, normalizedName: parsed.name.toLocaleLowerCase('pt-BR'), archivedAt: null, deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.activities) {
-    const parsed = activityInputSchema.parse({ title: source.title, descriptionPlain: source.descriptionPlain, schedule: source.schedule, reminderSpecs: source.reminderSpecs, categoryId: source.categoryId && categoryIds.get(String(source.categoryId)) || null });
+    const parsed = activityInputSchema.parse({ title: source.title, descriptionPlain: source.descriptionPlain, schedule: source.schedule, reminderSpecs: source.reminderSpecs, categoryId: source.categoryId && categoryIds.get(String(source.categoryId)) || null, colorHex: source.colorHex ?? null, estimatedMinutes: source.estimatedMinutes ?? null });
     writes.push({ path: `activities/${activityIds.get(source.id)}`, value: { ...parsed, ...scheduleInstants(parsed.schedule), kind: parsed.schedule.type, status: source.status === 'completed' || source.status === 'canceled' ? source.status : 'pending', completedAt: source.status === 'completed' ? now : null, seriesId: source.seriesId ? seriesIds.get(String(source.seriesId)) ?? null : null, occurrenceKey: source.occurrenceKey ?? null, deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
+  }
+  for (const source of archive.data.timeEntries ?? []) {
+    const activityId = activityIds.get(String(source.activityId));
+    if (!activityId) continue;
+    const entryId = importedId(identity.uid, input.importId, 'timeEntry', source.id);
+    writes.push({ path: `timeEntries/${entryId}`, value: { activityId, civilDate: source.civilDate, timeZone: source.timeZone, startedAt: source.startedAt, endedAt: source.endedAt ?? now, durationSeconds: Number(source.durationSeconds) || 0, source: source.source === 'manual' ? 'manual' : 'timer', deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.series) {
     const sourceActivity = source.activity as Record<string, unknown>;

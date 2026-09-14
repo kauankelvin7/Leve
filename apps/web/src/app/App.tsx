@@ -19,6 +19,7 @@ const Settings = lazy(() => import('../features/settings/Settings').then(module 
 const Trash = lazy(() => import('../features/trash/Trash').then(module => ({ default: module.Trash })));
 const Search = lazy(() => import('../features/content/Search').then(module => ({ default: module.Search })));
 const ActivityDetail = lazy(() => import('../features/activities/ActivityDetail').then(module => ({ default: module.ActivityDetail })));
+const Review = lazy(() => import('../features/activities/Review').then(module => ({ default: module.Review })));
 
 function RouteFocus() {
   const { pathname } = useLocation();
@@ -44,11 +45,11 @@ function Shell() {
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to}><Icon name={icon} />{label}</NavLink>)}</nav>
-      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><span className="profile-avatar" aria-hidden="true">{session?.profile?.displayName?.slice(0, 1).toLocaleUpperCase('pt-BR')}</span><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/revisao"><Icon name="calendar" />Revisão</NavLink><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><span className="profile-avatar" aria-hidden="true">{session?.profile?.displayName?.slice(0, 1).toLocaleUpperCase('pt-BR')}</span><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink to="/configuracoes" aria-label="Perfil e preferências"><Icon name="profile" /></NavLink></div></div>
-      <div className="workspace-bar"><span>Meu espaço <span aria-hidden="true">/</span> <strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-private">Agenda pessoal</span></div>
+      <div className="workspace-bar"><span>Meu espaço <span aria-hidden="true">/</span> <strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname === '/revisao' ? 'Revisão' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-actions"><Link to="/hoje?nova=1">+ Captura rápida</Link><span className="workspace-private">Agenda pessoal</span></span></div>
       <Tutorial /><NotificationBanner /><OutboxStatus /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
   </div>;
@@ -70,6 +71,7 @@ export function App() {
       <Route path="/compras" element={<Shopping />} />
       <Route path="/compras/:id" element={<ShoppingDetail />} />
       <Route path="/atividade/:id" element={<ActivityDetail />} />
+      <Route path="/revisao" element={<Review />} />
       <Route path="/buscar" element={<Search />} />
       <Route path="/configuracoes" element={<Settings />} />
       <Route path="/lixeira" element={<Trash />} />

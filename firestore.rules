@@ -21,6 +21,10 @@ service cloud.firestore {
         allow get: if active(uid);
         allow list: if active(uid) && bounded();
       }
+      match /timeEntries/{id} {
+        allow get: if active(uid);
+        allow list: if active(uid) && bounded();
+      }
       match /notes/{id} {
         allow get: if active(uid);
         allow list: if active(uid) && bounded();

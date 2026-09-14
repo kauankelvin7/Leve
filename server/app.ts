@@ -10,6 +10,7 @@ import { backendLog, fingerprint } from './logger.ts';
 import { deleteAccount, exportAccount, importAccount, resumeAccountDeletions } from './account-data.ts';
 import { notificationCommand } from './commands/notifications.ts';
 import { emptyTrash } from './commands/trash.ts';
+import { timeEntryCommand } from './commands/time.ts';
 import { materializeRecurringActivities, processReminderTick, purgeExpiredContent, verifyTick } from './reminders.ts';
 
 export const app = express();
@@ -97,8 +98,10 @@ app.post('/api/commands', async (request, response) => {
     ? await activateAccount(identity, command)
     : command.command === 'account.import'
       ? await importAccount(identity, command)
-      : command.command === 'account.delete'
-        ? await deleteAccount(identity, command)
+        : command.command === 'account.delete'
+          ? await deleteAccount(identity, command)
+        : command.command.startsWith('timeEntry.')
+          ? await timeEntryCommand(identity, command)
         : command.command.startsWith('notificationDevice.')
           ? await notificationCommand(identity, command)
     : command.command === 'profile.update'

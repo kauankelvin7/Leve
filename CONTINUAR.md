@@ -419,3 +419,18 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 ## Pedido sugerido para retomar
 
 > Leia `CONTINUAR.md` e retome do item 7. Quero o Leve completo e persistente, não apenas a demonstração. Revise o backend/identidade já iniciado, valide com emuladores e prossiga pelas etapas. Já possuo as contas dos três serviços, mas os projetos Leve ainda precisam ser criados. Preserve o custo zero e não declare funcionalidades prontas sem evidência.
+# Progresso em 14/09/2026 — tempo e planejamento
+
+- Concluído no código: estimativa opcional por atividade e soma de capacidade planejada no Meu dia.
+- Em andamento: registros persistentes de tempo via `POST /api/commands`, com início, parada, entrada manual, revisão e bloqueio de dois cronômetros simultâneos.
+- Concluído no código: tela de detalhe com cronômetro e histórico de sessões.
+- Concluído no código: revisão semanal com realizado versus estimado, comparação com a semana anterior, conclusão e tempo por categoria.
+- Concluído no código: atalho global de captura rápida que abre o compositor do Meu dia.
+- Concluído no código: títulos das atividades agora abrem diretamente o detalhe e o controle de tempo.
+- Concluído no código: exportação e importação incluem estimativas e registros de tempo; registros importados em andamento são encerrados para não ressuscitar cronômetros antigos.
+- Concluído no código: regra de leitura privada para `timeEntries`; o cliente continua sem escrita direta no domínio.
+- Concluído no código: alinhamento do avatar, nome e subtítulo no cartão de Preferências da barra lateral, inclusive quando o nome é longo.
+- Ajuste adicional concluído: em desktops de pouca altura, a barra reduz espaçamentos e itens, mantém o perfil dentro do painel e oferece rolagem interna como proteção.
+- Validação concluída: `npm run typecheck`, `npm run build`, `npm test` (25/25) e `npm run test:integration` (21/21).
+- Validação E2E concluída: 9/9 fluxos passaram; os dois cenários que detectaram o nome acessível duplicado foram repetidos após a correção e passaram.
+- Concluído no código: filtros de estado e categoria no Meu dia, preservados no navegador e aplicados sobre os dados já carregados.

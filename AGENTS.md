@@ -60,6 +60,7 @@ Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, 
 - Se o usuario pedir para "grill", "grillar", "me questione", "stress-test", "critique meu plano" ou equivalente, use a skill `grilling` antes de propor implementacao.
 - Se o usuario pedir para criar ou ajustar uma skill, use `skill-creator`.
 - Se o usuario pedir para instalar skills, use `skill-installer`.
+- Use a skill `humanizer` em textos voltados ao usuario, documentacao, release notes e descricoes de produto. Leia o `SKILL.md` antes de revisar prosa e preserve fatos, codigo, comandos, caminhos, dados e requisitos tecnicos.
 - Se o usuario pedir para criar imagens raster, use `imagegen`; para documentos, PDFs, apresentacoes, sites ou planilhas, use a skill correspondente quando aplicavel.
 - Ao usar uma skill, leia o `SKILL.md` completo antes de agir e siga suas instrucoes.
 

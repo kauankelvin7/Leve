@@ -26,6 +26,7 @@ const allDaySchedule = z.object({
 export const activityInputSchema = z.object({
   title, descriptionPlain: z.string().max(5000), categoryId: entityIdSchema.nullable(),
   colorHex: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().optional(),
+  estimatedMinutes: z.number().int().min(5).max(1440).nullable().optional(),
   schedule: z.union([taskSchedule, timedSchedule, allDaySchedule]),
   reminderSpecs: z.array(reminderSchema).max(3),
 }).strict().superRefine((value, context) => {
@@ -55,6 +56,23 @@ export type EntityMeta = { id: string; revision: number; schemaVersion: 1; delet
 export type Activity = ActivityInput & EntityMeta & ReturnType<typeof scheduleInstants> & {
   kind: 'task' | 'event'; status: 'pending' | 'completed' | 'canceled'; completedAt: string | null;
   seriesId: string | null; occurrenceKey: string | null;
+};
+
+export const timeEntryManualInputSchema = z.object({
+  activityId: entityIdSchema,
+  civilDate: civilDateSchema,
+  timeZone: timeZoneSchema,
+  durationSeconds: z.number().int().min(60).max(86_400),
+}).strict();
+
+export type TimeEntry = EntityMeta & {
+  activityId: string;
+  civilDate: string;
+  timeZone: string;
+  startedAt: string;
+  endedAt: string | null;
+  durationSeconds: number;
+  source: 'timer' | 'manual';
 };
 
 export const recurrenceRuleSchema = z.object({

@@ -57,6 +57,8 @@ export function Today() {
   const composer = useRef<HTMLElement>(null);
   const [optimisticStatus, setOptimisticStatus] = useState<Record<string, Activity['status']>>({});
   const [message, setMessage] = useState('');
+  const [statusFilter, setStatusFilter] = useState(() => localStorage.getItem('leve.today.statusFilter') ?? 'all');
+  const [categoryFilter, setCategoryFilter] = useState(() => localStorage.getItem('leve.today.categoryFilter') ?? 'all');
   const [busy, setBusy] = useState(false);
   const [kind, setKind] = useState<'task' | 'event'>('task');
   const [eventAllDay, setEventAllDay] = useState(false);
@@ -141,6 +143,7 @@ export function Today() {
       descriptionPlain: String(fields.get('description')).trim(),
       categoryId: String(fields.get('categoryId')) || null,
       colorHex: String(fields.get('colorHex') ?? '') || null,
+      estimatedMinutes: Number(fields.get('estimatedMinutes')) || null,
       schedule,
       reminderSpecs,
     };
@@ -201,7 +204,12 @@ export function Today() {
   }
 
   const pendingCount = activities.filter(a => a.status === 'pending').length;
+  const plannedMinutes = activities.filter(a => a.status === 'pending').reduce((total, activity) => total + (activity.estimatedMinutes ?? 0), 0);
+  const visibleActivities = activities.filter(activity => (statusFilter === 'all' || activity.status === statusFilter) && (categoryFilter === 'all' || (categoryFilter === 'none' ? !activity.categoryId : activity.categoryId === categoryFilter)));
   const activeCategories = categories.filter(c => !c.archivedAt && !c.deletedAt);
+
+  useEffect(() => { localStorage.setItem('leve.today.statusFilter', statusFilter); }, [statusFilter]);
+  useEffect(() => { localStorage.setItem('leve.today.categoryFilter', categoryFilter); }, [categoryFilter]);
 
   return (
     <main>
@@ -239,6 +247,7 @@ export function Today() {
                 {pendingCount} {pendingCount === 1 ? 'pendente' : 'pendentes'}
               </span>
             </div>
+            {plannedMinutes > 0 ? <p className="muted">{Math.floor(plannedMinutes / 60) ? `${Math.floor(plannedMinutes / 60)}h ` : ''}{plannedMinutes % 60 ? `${plannedMinutes % 60}min` : ''} planejados</p> : null}
           </section>
 
           {/* Composer */}
@@ -284,6 +293,11 @@ export function Today() {
                 </label>
 
                 <ActivityColorPicker value={editing?.colorHex} />
+
+                <label>
+                  Tempo estimado <small>(minutos)</small>
+                  <input name="estimatedMinutes" type="number" min="5" max="1440" step="5" defaultValue={editing?.estimatedMinutes ?? ''} placeholder="Ex.: 45" />
+                </label>
 
                 {/* Description */}
                 <label>
@@ -469,7 +483,11 @@ export function Today() {
           <section className="real-activities" aria-labelledby="activity-title">
             <div className="section-heading">
               <h2 id="activity-title">Atividades</h2>
-              <span className="muted">{activities.length} {activities.length === 1 ? 'item' : 'itens'}</span>
+              <span className="muted">{visibleActivities.length} {visibleActivities.length === 1 ? 'item' : 'itens'}</span>
+            </div>
+            <div className="activity-filters" aria-label="Filtros de atividades">
+              <label>Estado<select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
+              <label>Categoria<select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{activeCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
             </div>
 
             {activityQuery.error && <LoadError message={activityQuery.error} retry={activityQuery.retry} />}
@@ -486,9 +504,9 @@ export function Today() {
 
             {loading ? (
               <LoadingState label="Carregando seu dia…" />
-            ) : activities.length ? (
+            ) : visibleActivities.length ? (
               <ul>
-                {activities.map(activity => {
+                {visibleActivities.map(activity => {
                   const color = activity.colorHex ?? categories.find(c => c.id === activity.categoryId)?.colorHex ?? '#ddd';
                   const categoryName = categories.find(c => c.id === activity.categoryId)?.name ?? 'Sem categoria';
                   const isCompleted = activity.status === 'completed';
@@ -511,8 +529,8 @@ export function Today() {
                             />
                           )}
                           <span className={isCompleted ? 'completed' : ''}>
-                            <strong>{activity.title}</strong>
-                            <small>{describe(activity)} · {categoryName}</small>
+                            <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
+                            <small>{describe(activity)} · {categoryName}{activity.estimatedMinutes ? ` · ${activity.estimatedMinutes} min estimados` : ''}</small>
                           </span>
                         </label>
                         <div className="row-actions">
@@ -538,12 +556,12 @@ export function Today() {
               </ul>
             ) : !activityQuery.error ? (
               <div className="empty">
-                <p>Nenhuma atividade neste dia.</p>
+                <p>{activities.length ? 'Nenhuma atividade corresponde aos filtros.' : 'Nenhuma atividade neste dia.'}</p>
                 <button
                   className="text-link"
                   onClick={() => { setEditing(null); setComposerOpen(true); }}
                 >
-                  Adicionar atividade
+                  Criar primeira atividade
                 </button>
               </div>
             ) : null}

@@ -247,6 +247,20 @@ describe('Security Rules por uid', () => {
 });
 
 describe('comandos de conteúdo', () => {
+  it('registra tempo com exclusividade, revisão e encerramento persistente', async () => {
+    const user = await createUser('tempo@example.test');
+    await seedAccount(user.uid);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'atividade-tempo', '39000000-0000-4000-8000-000000000001', 0, { ...activityPayload, estimatedMinutes: 30 })).expect(200);
+    const start = contentCommand('timeEntry.start', 'tempo-a', '39000000-0000-4000-8000-000000000002', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' });
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(start).expect(200);
+    const duplicate = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.start', 'tempo-b', '39000000-0000-4000-8000-000000000003', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' }));
+    expect(duplicate.status).toBe(409); expect(duplicate.body.code).toBe('TIMER_ALREADY_RUNNING');
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-a', '39000000-0000-4000-8000-000000000004', 1, {})).expect(200);
+    const stored = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
+    expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(1); expect(stored.revision).toBe(2);
+    expect((await db.doc(`users/${user.uid}/internal/activeTimer`).get()).exists).toBe(false);
+  });
+
   it('mantém isolamento com vinte contas gravando simultaneamente', async () => {
     const users = await Promise.all(Array.from({ length: 20 }, (_, index) => createUser(`carga-${index}@example.test`)));
     await Promise.all(users.map(user => seedAccount(user.uid)));

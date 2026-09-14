@@ -319,6 +319,8 @@ nav a.active {
   display: flex;
   gap: 12px;
   align-items: center;
+  min-width: 0;
+  width: 100%;
   border-top: 1px solid var(--color-border);
   padding: 20px 10px 0;
   text-decoration: none;
@@ -820,6 +822,8 @@ dialog label { display: block; margin: 16px 0; }
 .workspace-bar > span:first-child { display: flex; gap: 16px; align-items: center; }
 .workspace-bar strong { color: var(--color-text); font-weight: 500; }
 .workspace-private { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; }
+.workspace-actions { display: flex; align-items: center; gap: 18px; }
+.workspace-actions > a { color: var(--color-action-primary); font-weight: 700; text-decoration: none; }
 
 /* ── 42. GRADE DO CALENDÁRIO ─────────────────────────────── */
 .calendar-filters { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
@@ -1180,3 +1184,32 @@ html {
 @media (forced-colors: active) {
   nav a.active, .day-picker button.selected { outline: 2px solid Highlight; }
 }
+.profile-link > span:last-child { display: grid; min-width: 0; line-height: 1.25; }
+.profile-link strong, .profile-link small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timer-panel { margin-top: 24px; }
+.manual-time { display: flex; align-items: end; gap: 12px; margin-top: 20px; }
+.manual-time label { flex: 1; margin: 0; }
+.time-history { list-style: none; padding: 0; margin: 22px 0 0; }
+.time-history li { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid var(--color-border); }
+.time-history small { color: var(--color-text-muted); }
+@media (max-width: 560px) { .manual-time { align-items: stretch; flex-direction: column; } .time-history li { grid-template-columns: 1fr auto; } .time-history small { grid-column: 1 / -1; } }
+.review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+.metric { display: grid; gap: 8px; }
+.metric > strong { font: 400 2.35rem/1 'Instrument Serif', Georgia, serif; }
+.metric > span, .metric > small { color: var(--color-text-muted); }
+.review-breakdown ul { list-style: none; padding: 0; }
+.review-breakdown li { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--color-border); }
+.review-breakdown li span { display: flex; align-items: center; gap: 10px; }
+.review-breakdown i { width: 10px; height: 10px; border-radius: 50%; }
+@media (max-width: 760px) { .review-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .workspace-private { display: none; } .workspace-actions { gap: 8px; } }
+@media (min-width: 740px) and (max-height: 720px) {
+  .sidebar { padding-block: 22px 14px; overflow-y: auto; scrollbar-width: thin; }
+  .brand-caption { margin-bottom: 22px; }
+  .sidebar nav a, .sidebar-bottom > a:not(.profile-link) { min-height: 42px; padding-block: 8px; }
+  .profile-link { padding-top: 10px; }
+  .profile-avatar { width: 36px; height: 36px; flex-basis: 36px; }
+}
+.activity-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
+.activity-filters label { flex: 1 1 180px; margin: 0; font-size: .75rem; color: var(--color-text-muted); }
+.activity-filters select { margin-top: 5px; }

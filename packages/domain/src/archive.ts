@@ -17,6 +17,7 @@ export const accountArchiveSchema = z.object({
   data: z.object({
     categories: z.array(archiveEntitySchema).max(50),
     activities: z.array(archiveEntitySchema).max(5000),
+    timeEntries: z.array(archiveEntitySchema).max(20_000).optional(),
     series: z.array(archiveEntitySchema).max(1000).default([]),
     notes: z.array(archiveEntitySchema).max(500),
     shoppingLists: z.array(archiveEntitySchema.extend({ items: z.array(archiveEntitySchema).max(200) })).max(50),
@@ -35,6 +36,9 @@ export function archiveReferenceErrors(archive: AccountArchive): string[] {
   for (const activity of archive.data.activities) {
     if (!has(activity.categoryId, categoryIds)) errors.push(`activity:${activity.id}:categoryId`);
     if (!has(activity.seriesId, seriesIds)) errors.push(`activity:${activity.id}:seriesId`);
+  }
+  for (const entry of archive.data.timeEntries ?? []) {
+    if (!has(entry.activityId, activityIds)) errors.push(`timeEntry:${entry.id}:activityId`);
   }
   for (const series of archive.data.series) {
     const activity = series.activity as Record<string, unknown> | undefined;
