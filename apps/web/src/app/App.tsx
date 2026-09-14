@@ -1,16 +1,21 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
-import { Today } from '../features/activities/Today';
-import { Calendar } from '../features/activities/Calendar';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
-import { Notes } from '../features/notes/Notes';
-import { Shopping, ShoppingDetail } from '../features/shopping/Shopping';
-import { Settings } from '../features/settings/Settings';
-import { Trash } from '../features/trash/Trash';
+import { OutboxStatus } from '../features/content/OutboxStatus';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
+const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
+const Calendar = lazy(() => import('../features/activities/Calendar').then(module => ({ default: module.Calendar })));
+const Notes = lazy(() => import('../features/notes/Notes').then(module => ({ default: module.Notes })));
+const NoteDetail = lazy(() => import('../features/notes/NoteDetail').then(module => ({ default: module.NoteDetail })));
+const Shopping = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.Shopping })));
+const ShoppingDetail = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.ShoppingDetail })));
+const Settings = lazy(() => import('../features/settings/Settings').then(module => ({ default: module.Settings })));
+const Trash = lazy(() => import('../features/trash/Trash').then(module => ({ default: module.Trash })));
+const Search = lazy(() => import('../features/content/Search').then(module => ({ default: module.Search })));
+const ActivityDetail = lazy(() => import('../features/activities/ActivityDetail').then(module => ({ default: module.ActivityDetail })));
 
 function RouteFocus() {
   const { pathname } = useLocation();
@@ -27,23 +32,23 @@ function Protected() {
 
 function Shell() {
   const { session, logout } = useAuth();
+  const { pathname } = useLocation();
   const links = [
     ['/hoje', 'calendar', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
-    ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'],
+    ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'], ['/lixeira', 'trash', 'Lixeira'],
   ] as const;
   return <div className={session?.profile?.reduceTransparency ? 'app-shell solid' : 'app-shell'}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to}><Icon name={icon} />{label}</NavLink>)}</nav>
-      <div className="sidebar-bottom"><NavLink className="profile-link" to="/configuracoes"><Icon name="profile" /><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><Icon name="profile" /><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
     </aside>
-    <div className="main-wrapper" id="main-content"><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer></div>
+    <div className="main-wrapper" id="main-content" tabIndex={-1}>
+      <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink to="/configuracoes" aria-label="Perfil e preferências"><Icon name="profile" /></NavLink></div></div>
+      <div className="workspace-bar"><span>Meu espaço <span aria-hidden="true">/</span> <strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-private">Agenda pessoal</span></div>
+      <OutboxStatus /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
+    </div>
   </div>;
-}
-
-function EmptyPage({ title, text }: { title: string; text: string }) {
-  useEffect(() => { document.title = `${title} · Leve`; }, [title]);
-  return <main><header className="page-heading"><p className="eyebrow">Seu espaço</p><h1 id="page-title" tabIndex={-1}>{title}</h1></header><div className="empty"><p>{text}</p></div></main>;
 }
 
 function NotFound() {
@@ -58,10 +63,11 @@ export function App() {
       <Route path="/hoje" element={<Today />} />
       <Route path="/calendario" element={<Calendar />} />
       <Route path="/notas" element={<Notes />} />
-      <Route path="/notas/:id" element={<EmptyPage title="Nota" text="Esta nota não está disponível." />} />
+      <Route path="/notas/:id" element={<NoteDetail />} />
       <Route path="/compras" element={<Shopping />} />
       <Route path="/compras/:id" element={<ShoppingDetail />} />
-      <Route path="/atividade/:id" element={<EmptyPage title="Atividade" text="Esta atividade não está disponível." />} />
+      <Route path="/atividade/:id" element={<ActivityDetail />} />
+      <Route path="/buscar" element={<Search />} />
       <Route path="/configuracoes" element={<Settings />} />
       <Route path="/lixeira" element={<Trash />} />
     </Route></Route>

@@ -19,7 +19,7 @@ test('entrada destaca a marca e limita o efeito interativo ao desktop', async ({
   await page.goto('/registrar');
   await expect(page.getByRole('heading', { name: 'Crie seu acesso' })).toBeVisible();
   await expect(page.getByLabel('Confirmar senha', { exact: true })).toBeVisible();
-  await expect(page.getByLabel('Código do convite')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Criar conta com Google' })).toBeVisible();
   await page.screenshot({ path: 'docs/evidence/auth-registro-desktop.png', fullPage: true });
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -34,7 +34,7 @@ test('rotas reais não recebem dados demonstrativos', async ({ page }) => {
     await page.goto(route);
     await expect(page).toHaveURL(/\/entrar$/);
     await expect(page.getByRole('heading', { name: 'Entre na sua agenda' })).toBeVisible();
-    await expect(page.getByLabel('E-mail')).toBeEnabled();
+    await expect(page.getByLabel('E-mail')).toBeVisible();
     await expect(page.getByText('Revisar o conteúdo da aula')).toHaveCount(0);
   }
 });

@@ -7,6 +7,6 @@ export default defineConfig({
   envDir: fileURLToPath(new URL('../..', import.meta.url)),
   plugins: [react()],
   build: { outDir: '../../dist', emptyOutDir: true },
-  server: { host: '127.0.0.1', proxy: { '/api': 'http://127.0.0.1:8787' } },
-  preview: { host: '127.0.0.1' },
+  server: { host: 'localhost', proxy: { '/api': 'http://localhost:8788' } },
+  preview: { host: 'localhost' },
 });

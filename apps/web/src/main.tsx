@@ -10,6 +10,7 @@ import { ErrorBoundary } from './app/ErrorBoundary';
 import { AuthProvider } from './features/identity/AuthProvider';
 import './styles/app.css';
 import tokens from '../../../design-tokens.json';
+import { captureInstallPrompt } from './platform/pwa';
 
 for (const [group, values] of Object.entries(tokens)) {
   for (const [name, value] of Object.entries(values)) {
@@ -17,6 +18,18 @@ for (const [group, values] of Object.entries(tokens)) {
   }
 }
 
+window.addEventListener('beforeinstallprompt', captureInstallPrompt);
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode><ErrorBoundary><BrowserRouter><AuthProvider><App /></AuthProvider></BrowserRouter></ErrorBoundary></StrictMode>,
 );
+
+if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListener('load', () => {
+  void navigator.serviceWorker.register('/sw.js').then(registration => {
+    function announce() { if (registration.waiting) window.dispatchEvent(new CustomEvent('leve:update-ready', { detail: registration })); }
+    announce();
+    registration.addEventListener('updatefound', () => registration.installing?.addEventListener('statechange', () => {
+      if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) announce();
+    }));
+  });
+});

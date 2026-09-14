@@ -46,6 +46,8 @@ Hipótese conservadora não medida: três sessões, 600 leituras e 30 comandos p
 
 Com 20 ativas: cerca de 18.000 comandos/mês mais 43.200 ticks em 30 dias. Isso cabe nominalmente nas invocações, porém CPU, memória, saída, índices e leituras precisam de medição. Leituras de regras/transações, retries, recibos e jobs entram no orçamento. Bulk fica fora do padrão cotidiano.
 
+**Prova local em 12/09/2026:** vinte contas fictícias autenticadas gravaram simultaneamente uma atividade isolada por uid no Auth/Firestore Emulator; todas concluíram e o lote levou 3,806 s. O ensaio comprova concorrência funcional e isolamento nesse cenário, mas não mede franquias, latência de rede, painéis nem comportamento sustentado por 14 dias.
+
 ### 36.1 Limites por conta
 
 | Recurso | Limite inicial |
@@ -63,18 +65,18 @@ Avisar a 80% do estoque. Arquivar não reduz armazenamento. Esses máximos não 
 
 ## 37. Admissão de contas
 
-Cadastro público fechado. Convite possui ID opaco, hash do segredo, validade, uso único, estado e e-mail permitido opcional. Após autenticar e confirmar e-mail, a API consome convite e cria membership/perfil numa transação; retry retorna a mesma membership.
+Cadastro direto por e-mail confirmado ou Google. Após autenticar, a API cria membership, perfil e categorias padrão numa transação idempotente; retry retorna a mesma membership. Não existe código ou coleção de convites no fluxo vigente.
 
 Expansão: 1 → 5 → 20 → 50 cadastradas. Para avançar, observar 14 dias representativos com todas as franquias abaixo de 50% no normal, picos abaixo de 70%, sem defeito crítico, recuperação ensaiada e lembretes validados. Objetivo: até 20 ativas/dia. Cinquenta ativas é teste de estresse.
 
-Convites fecham por `serviceControls` quando o teto ou contenção for atingido. Duas aceitações pela última vaga usam transação; uma vence. Suspensão bloqueia comandos e leituras após as regras verificarem membership. Não há painel administrativo para ler conteúdo privado.
+Novas ativações fecham por `serviceControls` quando o teto ou contenção for atingido. Duas ativações pela última vaga usam transação; uma vence. Suspensão bloqueia comandos e leituras após as regras verificarem membership. Não há painel administrativo para ler conteúdo privado.
 
 ## 38. Degradação
 
 | Nível | Ação | Experiência |
 |---|---|---|
 | 50% sustentado | Investigar loops; não expandir | Normal |
-| 70% | Fechar convites; programar bulk | Aviso contextual |
+| 70% | Fechar novas ativações; programar bulk | Aviso contextual |
 | 85% | Pausar importação/exportação e rotinas dispensáveis | Agenda priorizada |
 | 95% ou erro quota | Modo restrito e backoff | Rascunhos preservados; remoto marcado parcial |
 
@@ -86,7 +88,7 @@ Percentuais dependem de painéis/contadores e não formam corte perfeito. Erro 4
 |---|---|
 | Contas múltiplas | uid + membership; nada fixo para Gih |
 | Última vaga concorrente | Transação; uma vencedora |
-| Convite vazado/repetido | Hash, validade, e-mail e consumo idempotente |
+| Ativação repetida | Membership e perfil retornam idempotentemente sem duplicar dados |
 | Abuso autenticado | Query limitada, rate limit, suspensão; sem proteção absoluta contra leitura própria |
 | Cota acaba editando | Preservar rascunho; sem confirmação falsa |
 | Cota acaba exportando | Invalidar sessão e repetir após recuperação |
@@ -132,3 +134,15 @@ Resultado documental: todos os requisitos obrigatórios têm caso, regra ou test
 - Lembretes fechados têm arquitetura plausível, ainda dependente de prova real.
 - Recuperação usa exportação pessoal; não há backup automático gratuito.
 - Problemas conhecidos estão rastreados; novos defeitos podem surgir e entram nos gates.
+
+## 42. Evidência operacional de 12/09/2026
+
+- Vercel Hobby: produção promovida em `https://leve-agenda.vercel.app`; healthcheck HTTP 200, versão `0.1.0`.
+- Firebase: Admin SDK autenticado por segredo de servidor; leitura de Auth e sonda Firestore persistida/removida com sucesso, sem criação de usuário.
+- Auth: `leve-agenda.vercel.app` consta como domínio autorizado. `leve.com` permanece pendente até o DNS estar ativo.
+- Segurança: CSP de produção permite os scripts Google somente nas origens necessárias; a tela de entrada foi recarregada sem erros de console.
+- Reversibilidade: deployment anterior preservado para rollback na Vercel.
+- Capacidade ainda não provada: consumo representativo das cotas Firebase/Cloudflare e entrega FCM em aparelho fechado. Vercel Hobby e Firebase Spark foram confirmados sem billing. O Worker Free, o cron por minuto, o HMAC compartilhado e a chave VAPID estão configurados; um tick assinado respondeu HTTP 200.
+- Hospedagem canônica: `https://leve-agenda.vercel.app`. O DNS de `leve.com` foi preparado, porém a ativação no registrador Alibaba/HiChina foi explicitamente adiada e não bloqueia esta release.
+- Painel Vercel Hobby conferido em 13/09/2026: 306,2 MB/100 GB de Fast Data Transfer, 290,7 MB/10 GB de Fast Origin Transfer, 4,4 mil/1 milhão de Function Invocations e 15m22s/4h de Fluid Active CPU no ciclo exibido. Permanecem necessárias observação representativa e leitura das cotas Firebase/Cloudflare antes de expandir contas.
+- Rotas Vercel aninhadas verificadas: `/api/internal/tick`, `/api/account/export` e `/api/commands/:operationId` existem e rejeitam chamadas sem credencial com HTTP 401. `/entrar` foi recarregada após o fallback de `auth/internal-error` para redirect, sem a mensagem antiga nem erros de CSP/console.

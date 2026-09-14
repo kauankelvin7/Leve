@@ -1,5 +1,7 @@
 import type { CommandEnvelope, CommandResult } from '../../../../packages/domain/src/identity';
 import { firebaseAuth } from './firebase';
+import { offlineEnabled, pendingCommands, queueCommand, removeCommand, withOutboxLeadership } from './outbox';
+import { requiresOutboxReconciliation } from './outboxPolicy';
 
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string, public details?: unknown) { super(message); }
@@ -32,6 +34,46 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
   return data as Result;
 }
 
-export function sendCommand(command: CommandEnvelope): Promise<CommandResult> {
-  return apiRequest('/commands', { method: 'POST', body: JSON.stringify(command) });
+export async function sendCommand(command: CommandEnvelope, options: { queueOnNetworkError?: boolean } = {}): Promise<CommandResult> {
+  const originatingUid = firebaseAuth?.currentUser?.uid;
+  try { return await apiRequest('/commands', { method: 'POST', body: JSON.stringify(command) }); }
+  catch (failure) {
+    const user = firebaseAuth?.currentUser;
+    const queueable = options.queueOnNetworkError !== false && !command.command.startsWith('account.') && offlineEnabled();
+    if (failure instanceof ApiError && failure.code === 'NETWORK_ERROR' && user && user.uid === originatingUid && queueable) {
+      await queueCommand(user.uid, command);
+      throw new ApiError(202, 'SAVED_LOCALLY', 'Salvo neste aparelho e aguardando conexão.');
+    }
+    throw failure;
+  }
+}
+
+export async function flushOutbox(uid: string) {
+  return withOutboxLeadership(uid, async () => {
+    const queued = (await pendingCommands(uid)).sort((left, right) => left.createdAt.localeCompare(right.createdAt));
+    const waiting = new Set(queued.map(entry => entry.operationId));
+    for (const entry of queued) {
+      if (firebaseAuth?.currentUser?.uid !== uid) break;
+      if (entry.command.dependsOn?.some(operationId => waiting.has(operationId))) continue;
+      try {
+        if (requiresOutboxReconciliation(entry.createdAt)) {
+          const receipt = await apiRequest<{ result: CommandResult | null }>(`/commands/${entry.operationId}`);
+          if (!receipt.result) {
+            window.dispatchEvent(new CustomEvent('leve:outbox-conflict', { detail: 'Uma alteração antiga precisa ser revisada antes de tentar enviá-la novamente.' }));
+            break;
+          }
+          await removeCommand(uid, entry.operationId);
+          waiting.delete(entry.operationId);
+          continue;
+        }
+        await apiRequest('/commands', { method: 'POST', body: JSON.stringify(entry.command) });
+        await removeCommand(uid, entry.operationId);
+        waiting.delete(entry.operationId);
+      } catch (failure) {
+        if (failure instanceof ApiError && (failure.code === 'NETWORK_ERROR' || failure.status >= 500)) break;
+        window.dispatchEvent(new CustomEvent('leve:outbox-conflict', { detail: failure instanceof Error ? failure.message : 'Uma alteração pendente precisa ser revisada.' }));
+        break;
+      }
+    }
+  });
 }

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Temporal } from '@js-temporal/polyfill';
-import { entityIdSchema, timeZoneSchema } from './identity';
+import { entityIdSchema, timeZoneSchema } from './identity.ts';
 
 export const civilDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => {
   try { return Temporal.PlainDate.from(value).toString() === value; } catch { return false; }
@@ -56,6 +56,49 @@ export type Activity = ActivityInput & EntityMeta & ReturnType<typeof scheduleIn
   seriesId: string | null; occurrenceKey: string | null;
 };
 
+export const recurrenceRuleSchema = z.object({
+  frequency: z.enum(['daily', 'weekly', 'monthly']), interval: z.number().int().min(1).max(30),
+  until: civilDateSchema.nullable(), count: z.number().int().min(2).max(366).nullable(),
+  monthlyPolicy: z.enum(['lastDay', 'skip']),
+}).strict().refine(value => !(value.until && value.count), 'Escolha uma data final ou uma quantidade, não ambas.');
+export const recurringActivityInputSchema = z.object({ activity: activityInputSchema, recurrence: recurrenceRuleSchema }).strict();
+export const recurringFutureUpdateSchema = z.object({ activity: activityInputSchema, newSeriesId: entityIdSchema }).strict();
+export type RecurrenceRule = z.infer<typeof recurrenceRuleSchema>;
+
+export function recurrenceDates(start: string, rule: RecurrenceRule, maximum = 180, offset = 0): string[] {
+  const first = Temporal.PlainDate.from(start);
+  const result: string[] = [];
+  const limit = Math.min(rule.count ?? offset + maximum, offset + maximum);
+  let step = 0;
+  while (result.length < limit) {
+    let candidate: Temporal.PlainDate;
+    if (rule.frequency === 'daily') candidate = first.add({ days: step * rule.interval });
+    else if (rule.frequency === 'weekly') candidate = first.add({ weeks: step * rule.interval });
+    else {
+      const month = first.with({ day: 1 }).add({ months: step * rule.interval });
+      if (first.day > month.daysInMonth && rule.monthlyPolicy === 'skip') { step++; continue; }
+      candidate = month.with({ day: Math.min(first.day, month.daysInMonth) });
+    }
+    const value = candidate.toString();
+    if (rule.until && value > rule.until) break;
+    result.push(value); step++;
+  }
+  return result.slice(offset);
+}
+
+export function recurrenceDatesThrough(start: string, rule: RecurrenceRule, through: string, maximum = 180, offset = 0): string[] {
+  return recurrenceDates(start, rule, maximum, offset).filter(date => date <= through);
+}
+
+export function moveScheduleToDate(schedule: Schedule, date: string): Schedule {
+  const sourceDate = schedule.type === 'task' ? schedule.dueDate : schedule.startDate;
+  if (!sourceDate) throw new Error('Uma atividade recorrente precisa de data.');
+  const days = Temporal.PlainDate.from(sourceDate).until(Temporal.PlainDate.from(date)).days;
+  if (schedule.type === 'task') return { ...schedule, dueDate: date };
+  if (schedule.allDay) return { ...schedule, startDate: date, endDateExclusive: Temporal.PlainDate.from(schedule.endDateExclusive).add({ days }).toString() };
+  return { ...schedule, startDate: date, endDate: Temporal.PlainDate.from(schedule.endDate).add({ days }).toString() };
+}
+
 export const categoryInputSchema = z.object({
   name: z.string().trim().min(1).max(40), colorHex: z.string().regex(/^#[0-9a-fA-F]{6}$/), sortOrder: z.number().int().min(0).max(1000),
 }).strict();
@@ -97,9 +140,17 @@ export const noteInputSchema = z.object({
 export type Note = z.infer<typeof noteInputSchema> & EntityMeta & { plainText: string };
 
 export const shoppingListInputSchema = z.object({ title: z.string().trim().min(1).max(100), listKind: z.enum(['regular', 'template', 'cycle']), cycleKey: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).nullable() }).strict();
-export type ShoppingList = z.infer<typeof shoppingListInputSchema> & EntityMeta & { archivedAt: string | null; sourceTemplateId: string | null; itemCount: number };
+export type ShoppingList = z.infer<typeof shoppingListInputSchema> & EntityMeta & { archivedAt: string | null; sourceTemplateId: string | null; itemCount: number; pendingItemCount: number };
+export const shoppingCycleInputSchema = z.object({ templateId: entityIdSchema, cycleKey: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/) }).strict();
 export const shoppingItemInputSchema = z.object({
   listId: entityIdSchema, name: z.string().trim().min(1).max(100), quantityValue: z.number().positive().max(100_000).nullable(),
   unit: z.enum(['un', 'kg', 'g', 'l', 'ml', 'pacote', 'duzia', 'outra']), unitLabel: z.string().max(30), detail: z.string().max(300), sortOrder: z.number().int().min(0).max(100_000),
 }).strict().refine(value => value.unit !== 'outra' || value.unitLabel.trim().length > 0, 'Informe a unidade.');
 export type ShoppingItem = z.infer<typeof shoppingItemInputSchema> & EntityMeta & { checked: boolean; checkedAt: string | null };
+
+export function pendingShoppingItemDelta(action: 'create' | 'setChecked' | 'trash' | 'restore', wasChecked = false, nextChecked = false) {
+  if (action === 'create') return 1;
+  if (action === 'setChecked') return wasChecked === nextChecked ? 0 : nextChecked ? -1 : 1;
+  if (action === 'trash') return wasChecked ? 0 : -1;
+  return wasChecked ? 0 : 1;
+}

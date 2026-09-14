@@ -4,6 +4,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import type { SessionResult } from '../../../../../packages/domain/src/identity';
 import { firebaseAuth, firestore } from '../../platform/firebase';
 import { apiRequest } from '../../platform/api';
+import { revokeNotificationDevice } from '../../platform/notifications';
 
 type AuthState = { user: User | null; session: SessionResult | null; loading: boolean; error: string; refresh: () => Promise<void>; logout: () => Promise<void> };
 const AuthContext = createContext<AuthState | null>(null);
@@ -14,10 +15,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(Boolean(firebaseAuth));
   const [error, setError] = useState('');
   const generation = useRef(0);
+  useEffect(() => {
+    document.documentElement.dataset.theme = session?.profile?.colorTheme ?? 'green';
+  }, [session?.profile?.colorTheme]);
   const refresh = useCallback(async () => {
     const currentGeneration = ++generation.current;
     const currentUser = firebaseAuth?.currentUser;
     if (!currentUser) { setSession(null); setLoading(false); return; }
+    if (!currentUser.emailVerified) { setSession(null); setError(''); setLoading(false); return; }
     try {
       const result = await apiRequest<SessionResult>('/session');
       if (currentGeneration === generation.current && firebaseAuth?.currentUser?.uid === currentUser.uid) { setSession(result); setError(''); }
@@ -30,7 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!firebaseAuth) return;
     return onIdTokenChanged(firebaseAuth, currentUser => {
       setUser(currentUser); setSession(null); setError(''); setLoading(Boolean(currentUser));
-      void refresh();
+      if (currentUser?.emailVerified) void refresh();
+      else setLoading(false);
     });
   }, [refresh]);
 
@@ -42,6 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, session?.membership, refresh]);
 
   const logout = useCallback(async () => {
+    const uid = firebaseAuth?.currentUser?.uid;
+    if (uid) await revokeNotificationDevice(uid).catch(() => undefined);
     generation.current++; setSession(null); setUser(null); setError('');
     if (firebaseAuth) await signOut(firebaseAuth);
   }, []);

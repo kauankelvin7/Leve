@@ -1,10 +1,168 @@
 # Leve — ponto exato de retomada
 
+## PAUSA SOLICITADA — 13/09/2026, refinamento do frontend
+
+Usuário pediu interromper imediatamente, anotar e fazer commit; continuar em outra sessão. Nenhum deploy desta revisão visual foi realizado. A produção mantém a versão anterior; o frontend editado está no ambiente local, http://localhost:5174.
+
+Concluído nesta rodada: skills Open Design instaladas (detalhes em `DESIGN.md`); referência visual inspecionada; menu com seleção/hover seguindo a paleta; cinco destinos móveis alinhados; calendário mensal com filtro e detalhes; criação por data; acabamento compartilhado de notas, compras, formulários e cabeçalhos. Build com typecheck passou antes das últimas mudanças de contraste/testes.
+
+Verificações: o novo teste `design.spec.ts` passou para quatro paletas e sete páginas em 1440px/390px, incluindo Axe e ausência de overflow. Na suíte completa, 6 de 8 passaram. Dois testes antigos falharam porque usavam a data UTC em vez da data civil America/Sao_Paulo; o aplicativo estava no dia 13 e os testes criavam no dia 14. Corrigida a data nos testes e ajustada a busca da atividade para a agenda do calendário, que agora também exibe prévias. A repetição desses dois testes foi INTERROMPIDA pelo pedido de pausa; não há aprovação final dessa repetição.
+
+Retomada: revisar o diff do checkpoint; repetir `npm run test:e2e:local` (com `LEVE_LOCAL_URL=http://localhost:5174` se o ambiente já estiver ativo); confirmar o seletor da atividade no novo calendário; executar build/unit/diff-check finais. Depois, revisar visualmente desktop e celular com dados fictícios, concluir o refinamento das páginas e registrar evidências. Não declarar a revisão frontend finalizada nem publicada. A instalação feita foi das skills do Open Design, não do aplicativo desktop/daemon.
+
+O commit solicitado preserva o estado acumulado do projeto (backend/produção anteriores e frontend atual), que ainda estava sem commit. Segredos e arquivos ignorados não devem ser adicionados.
+
+## Frontend — refinamento visual de 13/09/2026
+
+O usuário pediu foco no design e autorizou instalação do Open Design. As skills `frontend-design` e `impeccable-design-polish` foram instaladas e aplicadas; `design-review` foi instalado como entrada de catálogo, sem instalar o gstack. A referência https://leve-agenda-gih.kauankelvin20.chatgpt.site/ foi inspecionada nas quatro páginas principais. A direção está em `DESIGN.md`.
+
+Seleção/hover do menu agora derivam da paleta escolhida, incluindo perfil e navegação móvel. Corrigidas as cinco entradas em quatro colunas no celular. Calendário ganhou grade mensal de 42 dias, filtro, seleção e detalhes; criação abre Meu dia com a data escolhida. Notas fixadas vêm primeiro e compras mostram progresso real. Cabeçalhos, cartões, botões, formulários e minicalendário receberam acabamento compartilhado. Esta revisão visual está no ambiente local; a produção anterior permanece publicada.
+
+## Produção Vercel e Firebase Admin — 12/09/2026
+
+O deploy autorizado foi concluído no projeto Vercel Hobby `kauans-projects-6a261bab/leve-agenda-vercel`. A produção está em `https://leve-agenda.vercel.app`; o deployment promovido é `https://leve-agenda-vercel-i5u0jiyyz-kauans-projects-6a261bab.vercel.app` e o rollback preservado é `https://leve-agenda-vercel-6s9nxvkrj-kauans-projects-6a261bab.vercel.app`. `GET /api/health` respondeu HTTP 200 com versão `0.1.0` e o runtime registrou `firebase.admin.initialized` com `adminMode: service-account`.
+
+As variáveis públicas Firebase, `VITE_APP_VERSION` e as três credenciais Admin foram configuradas como segredos de Preview e Production. Uma verificação administrativa real leu Auth e persistiu/removeu uma sonda no Firestore, sem criar usuário. Os domínios autorizados do Firebase incluem `leve-agenda.vercel.app`. A CSP de produção foi corrigida para permitir os scripts Google estritamente em `https://apis.google.com` e `https://accounts.google.com`; `/entrar` foi recarregada sem erro de console. O aviso de `beforeinstallprompt` é o fluxo esperado: o evento é retido e `prompt()` só é chamado após o clique explícito em **Instalar Leve**.
+
+O domínio `leve.com` continua preparado na Vercel e na zona Cloudflare, mas o usuário decidiu não depender do registrador Alibaba/HiChina nesta release. A hospedagem canônica e suficiente permanece `https://leve-agenda.vercel.app`; troca de nameservers, propagação de `leve.com` e autorização desses hosts no Firebase ficam adiadas e não bloqueiam E09–E11.
+
+Em 13/09/2026, o Worker gratuito `leve-scheduler` foi publicado e, após receber `LEVE_API_ORIGIN=https://leve-agenda.vercel.app` e o segredo HMAC compartilhado com a Vercel Production, ficou na versão ativa `5e0cebc5` com Cron Trigger por minuto. O tick assinado foi observado em produção com HTTP 200 às `2026-09-13T23:50Z`. Os índices versionados de `firestore.indexes.json`, incluindo os índices `COLLECTION_GROUP` de `purgeAfter` para `activities`, `categories`, `notes`, `shoppingLists` e `items`, foram publicados no projeto `leve-db`.
+
+Na mesma retomada, `npm run build` passou com typecheck e `npm test` passou com 23/23 testes. Produção respondeu HTTP 200 em `/api/health`, `/entrar` carregou sem mensagens de console e o ambiente local voltou a ficar ativo em `http://localhost:5174` com API, Auth Emulator e Firestore Emulator.
+
+Uma chave Web Push VAPID foi gerada no Firebase e gravada como `VITE_FIREBASE_VAPID_KEY` na Vercel Production; o bundle publicado a contém. As rotas aninhadas `/api/internal/tick`, `/api/account/export` e `/api/commands/:operationId` receberam entrypoints Vercel próprios: o health responde 200 e chamadas sem credencial a essas rotas respondem 401, não 404. O fallback do login Google também foi ampliado para usar redirect quando o navegador reporta `auth/internal-error`; após novo deploy, `/entrar` foi recarregada sem a mensagem antiga, sem violação de CSP e sem erros ou avisos no console.
+
+Continuam pendentes somente as provas que exigem interação externa específica: push com app fechado em aparelho suportado, instalação/atualização PWA em aparelho, ensaio com leitor de tela, observação representativa das cotas Firebase/Cloudflare, homologação e aceite. Não revogar a chave Admin usada pela Vercel enquanto essas variáveis dependerem dela.
+
+## Continuação E06–E10 — navegador, concorrência, recuperação e cadeia de lembretes
+
+A restrição anterior de não executar Playwright/Auth Emulator foi revogada pelo pedido de concluir as verificações locais. O ambiente local permaneceu limitado ao projeto fictício `demo-leve`, sem publicação, billing ou credenciais administrativas reais.
+
+As jornadas reais agora cobrem cadastro e recuperação, persistência de atividades/notas/compras, lixeira global, duas abas, fila offline com reconexão, encerramento de sessão entre abas, conflito simultâneo de nota com preservação das duas versões, teclado, reflow equivalente a zoom de 200%, Axe nas rotas principais e exportação seguida de importação pela interface. A suíte passou com 7/7 testes. O destaque do Meu dia foi corrigido para escolher deterministicamente a nota fixada atualizada mais recentemente; Buscar e Preferências voltaram a ser alcançáveis no layout móvel.
+
+Na E09, uma prova integrada confirma que entrega incerta termina em `unknown` sem reenvio, enquanto rejeição FCM confirmada incrementa tentativas e agenda backoff. O Worker Cron assina um tick aceito pela mesma validação HMAC da API. O service worker passou a ler o envelope `data` do FCM e possui teste do título, corpo, tag e destino. A integração focal de capacidade executou vinte contas simultâneas, com isolamento e todas as gravações concluídas em 3,806 s no Emulator; isso não substitui medição de cotas ou carga de produção.
+
+O painel Vercel confirmou o plano Hobby. No ciclo de 14/08 a 13/09/2026, mostrou 306,2 MB/100 GB de Fast Data Transfer, 290,7 MB/10 GB de Fast Origin Transfer, 4,4 mil/1 milhão de Function Invocations e 15m22s/4h de Fluid Active CPU. Esses números fecham a leitura inicial da Vercel, mas a expansão continua condicionada a períodos representativos e às cotas Firebase/Cloudflare.
+
+Provas finais desta continuação: `npm run build` com typecheck aprovado; `npm test` 23/23; integração completa 18/18; E2E local 7/7. O teste focal de vinte contas concluiu em 3,806 s. O seed fictício foi restaurado e o healthcheck local respondeu HTTP 200 com versão e timestamp. O sistema permanece ativo em `http://localhost:5174` para acompanhamento.
+
+Pendências exclusivamente externas após essa consolidação: confirmar billing/planos e cotas nos painéis; configurar VAPID, FCM, Worker e índice no ambiente autorizado; provar instalação, atualização e push com o aplicativo fechado em aparelhos suportados; ensaiar leitor de tela; executar rollback de um preview real; homologar com a usuária e obter aceite. E11 não autoriza publicação por si só.
+
+## Continuação E06/E07/E09 — integração, digest e leases concorrentes
+
+A suíte integrada pendente foi executada com Auth/Firestore Emulator fictícios e desligamento automático. Ela revelou que o checkpoint preparado manualmente no teste calculava o digest sobre uma ordem de chaves diferente daquela produzida pelo schema. A identidade de arquivos de importação agora usa serialização canônica, sem depender da ordem das propriedades, e ainda aceita o digest legado de checkpoints já iniciados.
+
+Em E09, a recuperação de leases vencidos deixou de usar um batch cego: cada job é relido e recuperado por transação, impedindo que um tick atrasado apague o lease novo de outro tick. Todas as finalizações confirmam `leaseId` e estado `processing` na transação e limpam o lease terminal. A invalidação de token FCM também relê token e metadado do aparelho, só invalidando a credencial que efetivamente falhou e preservando um registro concorrente mais novo.
+
+Provas executadas nesta continuação: `npm run typecheck`, `npm test` (21/21) e `npm run test:integration` (16/16), aprovadas. O runner encerrou Auth, Firestore, hub e logging. Playwright permanece desativado conforme a restrição registrada. O próximo passo local é revisar a cobertura de entrega incerta/retry do tick sem afirmar push pronto; E08/E10/E11 continuam dependentes das provas reais de navegador, aparelho, capacidade, rollback, deploy autorizado e aceite.
+
+## Continuação E06/E07 — capacidade de importação e janela recorrente
+
+A importação agora mantém uma única operação ativa por conta e no máximo duas globalmente, usando a mesma transação que cria o checkpoint e reserva os estoques. A conclusão libera a vaga uma única vez; a exclusão concorrente marca a conta como `deleting`, incrementa `dataVersion` e libera a vaga antes do expurgo. A exportação também rejeita o resultado se a conta deixar de estar ativa durante a leitura. Foram acrescentadas regressões integradas para retomada com todas as entidades e vínculos remapeados, concorrência, limites de bulk e exclusão durante importação preparada.
+
+Em E07/E09, a materialização passou a respeitar de fato a janela civil de 45 dias. Criação e separação de séries, além do tick incremental, usam um único helper para criar jobs de lembrete por ocorrência; o cálculo inclui reservas de atividades e mantém IDs determinísticos. Isso remove os jobs ausentes e evita transações grandes causadas pela criação antecipada de até 180 ocorrências com três lembretes cada. O tick agora filtra tokens ativos antes do limite de três aparelhos e invalida token, metadado e contador na mesma transação. O identificador local de notificações passou a ser isolado por uid, com migração da chave antiga e revogação de melhor esforço antes do logout, reduzindo vazamento entre contas no mesmo navegador.
+
+Provas executadas nesta continuação: `npm run typecheck`, `npm test` (20/20) e `npm run build`, aprovadas; `git diff --check` também passou. Os novos cenários integrados compilam, mas **não foram executados**, porque a restrição registrada de não iniciar Auth Emulator/Playwright ainda não foi explicitamente revogada. O próximo passo local é executar `npm run test:integration` com Auth/Firestore Emulator fictícios e desligamento automático. Depois, corrigir qualquer regressão observada e avançar para recuperação concorrente de leases/tokens em E09. E08/E10/E11 continuam dependentes das provas de navegador, aparelho, capacidade, rollback, deploy e aceite já listadas abaixo.
+
+## Bloqueio de verificacao apos cadastro
+
+Usuario relatou falha em sendOobCode real usando continueUrl em localhost. Status/corpo da resposta nao foram fornecidos; causa real ainda nao confirmada. Cadastro/reenvio agora usam fallback sem continueUrl exclusivamente para unauthorized-continue-uri/invalid-continue-uri; verificacao continua obrigatoria pelo handler Firebase. UI deixou de afirmar que o email foi enviado sem evidencia. 19 testes unitarios e typecheck passaram; nenhum token pessoal foi reutilizado. Falta usuario confirmar resultado do reenvio ou fornecer apenas code/message da resposta, sem credenciais. Demais pendencias E06–E11 seguem abaixo.
+
+## E06 — importacao concorrente corrigida
+
+Lotes e cursor agora sao atomicos em transacao; cada lote revalida conta/membership e incrementa dataVersion para invalidar exportacoes concorrentes. Corrigida rejeicao dos metadados exportados pelos schemas estritos de atividade, categoria, nota, lista e item. Teste integrado com duas chamadas simultaneas e 401 atividades passou, com 401 entidades e reserva zerada; suite total 11/11. Runner encerrou os emuladores.
+
+Ainda falta em E06: prova de interrupcao/retomada e arquivo completo com todas as entidades, exclusao concorrente e limites globais de bulk. E07–E11 permanecem pendentes conforme auditoria abaixo. Nao declarar todas as etapas concluidas.
+
+## Passo 1 — linha de base integrada executada
+
+O usuario autorizou novamente Auth/Firestore Emulator com dados ficticios, exigindo desligamento ao terminar; Playwright continua desativado. `npm run test:integration` passou: 10 testes em 1 arquivo, aproximadamente 16 segundos. O runner encerrou Auth, Firestore, hub e logging ao final. Foi necessario encerrar um Firestore Emulator antigo do proprio projeto demo-leve que ocupava 8080. Nenhuma publicacao executada.
+
+A suite atual cobre a base de identidade/conteudo; nao prova importacao concorrente, recorrencia, leases nem push. Proximo passo: acrescentar regressao integrada de E06 antes de corrigir checkpoint atomico/reenvio de importacao. Depois E07/E09, E08, E10 e E11, mantendo pendencias de aparelho e homologacao explicitas. O sistema ainda nao esta liberado para cliente.
+
+## Auditoria de migracao e preparacao para cliente
+
+Hooks e plugin_hooks globais habilitados por autorizacao explicita do usuario. A execucao dos hooks do context-mode ainda precisa ser confirmada em uma sessao recarregada.
+
+Corrigida a migracao de tokens: cada registro passa por transacao com releitura, preserva token ja existente no destino e remove o campo legado atomicamente. Eliminado o lote que poderia conter 800 gravacoes. Scripts de migracao agora entram no typecheck. Execucao de dados exige `npm run migrate:notification-tokens -- --apply` e ambiente autorizado; nao executada nesta rodada.
+
+Build/typecheck aprovados. A auditoria geral NAO esta concluida e o sistema NAO esta liberado para cliente. Proximas prioridades locais: concorrencia/checkpoint da importacao (E06); jobs ausentes em ocorrencias recorrentes e reservas de capacidade (E07/E09); recuperacao concorrente de leases e entrega incerta (E09); tokens ativos filtrados depois de limit(5), contagem de aparelhos invalidos e troca de conta (E09); revisao de CSP para Google Auth (E10). Esses pontos precisam de correcao/prova antes de classificar as pendencias como apenas externas.
+
+Continuam pendentes E08 (duas abas, sessao, offline e atualizacao), E10 (acessibilidade, capacidade, recuperacao e rollback) e E11 (homologacao, ambiente/deploy autorizado e aceite). Nao executar Playwright/Auth Emulator sem revisao da restricao do usuario.
+
+## Atualizacao de refinamento — 12/09/2026
+
+`REFINAMENTO.md` foi incorporado ao fluxo em `docs/REFINAMENTO-APLICABILIDADE.md`. Auth, sanitizacao por schema, regras sem escrita direta, rate limit de comandos, singleton Admin, persistencia multitab, indices existentes e atualizacao segura de PWA ja estavam coerentes com a base. O healthcheck agora inclui versao e timestamp, e `.env.example` voltou a conter apenas placeholders. A proposta de migrar Express para Next/Vercel API Routes nao sera aplicada: conflita com a stack aprovada e nao resolve um defeito observado. DOMPurify, indices especulativos e limite de login no Express tambem nao se aplicam ao modelo atual.
+
+**Fluxo ajustado:** E10 incorpora o ensaio de custo dos listeners agregados de itens e da exportacao paginada; E11 concentra preview, variaveis, rollback e deploy autorizado. E08/E09 continuam dependendo de navegador/aparelho reais. Esta rodada preserva a orientacao de nao executar Playwright nem Auth Emulator.
+
+**E09 reforcada:** metadados de aparelho e token FCM agora usam colecoes distintas; o token bruto fica apenas em `notificationTokens`, inacessivel pelas regras, e sua revogacao/invalidez atualiza o estado do aparelho. A exclusao de conta inclui as duas colecoes. Ainda faltam configuracao real de VAPID/FCM/Worker e prova em aparelho fechado.
+
+Uma migracao manual e idempotente (`npm run migrate:notification-tokens`) foi preparada para registros antigos que ainda tenham token junto dos metadados. Nao foi executada, pois exige um ambiente autorizado e pode nao haver nenhum registro legado.
+
+O contrato HMAC do tick agora possui teste puro: segredo, timestamp e tamanho da assinatura sao validados antes de o endpoint aceitar o Worker. Isso fecha a prova local da assinatura, nao a prova do Cron/FCM em infraestrutura.
+
+## Gates de validação — atualização local
+
+Foram reforçados os gates locais sem Playwright/Auth Emulator: a importação valida todos os vínculos antes de gravar, reserva limites na transação e libera a reserva ao concluir; a outbox consulta o recibo da própria conta antes de reenviar operação com mais de 72 horas; o endpoint de recibo não expõe conteúdo, apenas confirmação da operação. A validação de qualidade ganhou contraste AA para texto/ações das quatro paletas e verificação de foco visível.
+
+Provas desta rodada: `npm test` passou com 16 testes em 5 arquivos; `npm run build` e TypeScript passaram antes da prova final; `git diff --check` passou. O runbook em `docs/runbooks/validacao-local.md` registra comandos, evidências locais e limites.
+
+**Gates atuais:** G0 parcial (documentação/custo local; confirmação de contas externas pendente). G1 parcial (núcleo implementado, ainda sem ensaio integrado desta rodada). G2 parcial (invariantes de importação, conflito e outbox cobertas localmente; faltam duas abas, sessão expirada e rede real). G3 pendente de Worker/FCM/aparelho. G4 parcial (build, contraste, logs e runbook; faltam teclado/leitor de tela/zoom reais, carga/cotas, restauração e rollback). G5 pendente de roteiro com a usuária e aceite.
+
+**Etapas que faltam até finalizar:** E06 precisa de ensaio de arquivo real interrompido/retomado; E07 de prova integrada de exceções e materialização; E08 de ensaio em navegador de duas abas, atualização e troca de conta; E09 de Worker, VAPID, FCM e aparelho fechado; E10 de acessibilidade manual, capacidade, recuperação e rollback; E11 de homologação, matriz de aparelhos, deploy autorizado e aceite. Após cada nova rodada, atualizar este bloco antes de declarar avanço.
+
+## Continuação — paletas e integridade de edição
+
+Preferências agora oferecem Verde suave, Roxo suave, Azul suave e Vermelho suave. `colorTheme` é opcional para compatibilidade com perfis antigos, salvo por `profile.update`, incluído na exportação e aplicado ao fundo, ações e foco. Categorias e cores de notas preservam seus significados.
+
+Corrigido avanço automático de revisão de nota ao receber snapshot remoto: o editor preserva a revisão de origem, inclusive ao recuperar rascunho, para que o servidor detecte conflitos. A outbox interrompe o envio quando o uid muda e não associa falha de rede da conta anterior à conta atual.
+
+Ainda existem lacunas locais além da homologação: importação precisa validação completa de entidades/referências, reserva transacional de limites e lotes atômicos com checkpoint; edição de notas precisa testes específicos de interrupção/conflito; outbox precisa reconciliação e testes de troca de conta; lembretes recorrentes e recuperação de leases exigem revisão transacional. A declaração anterior de que restavam somente provas externas não deve ser usada para encerrar essas etapas.
+
+## Atualização mais recente — auditoria honesta e fechamento local sem Playwright/Auth Emulator
+
+Por orientação do usuário, esta continuação não repetiu Playwright nem Auth Emulator. A auditoria corrigiu lacunas que estavam indevidamente agrupadas como “E04–E10 concluídas”: notas agora têm rascunho por conta, autosave local em 300 ms com espera máxima de 1 s, autosave remoto em 1,2 s e resolução de conflito com versão remota ou cópia; o Meu dia mostra listas e itens de compras pendentes; a outbox IndexedDB possui migração de schema, chave por conta, dependências e líder entre abas; exportação lê páginas de 50; importação limita 5 MB e persiste cursor por lote; exclusões de conta interrompidas são retomadas pelo tick; leases de lembrete vencidos voltam à fila e entrega incerta não é reenviada cegamente. Agenda e calendário passaram a carregar por rota, reduzindo o chunk inicial de aproximadamente 325,86 para 275,74 kB gzip.
+
+Provas executadas nesta continuação: `npm run typecheck`, `npm test` (12/12), `npm run build`, validação JSON de manifesto/índices e `git diff --check`, todas aprovadas. Os casos puros cobrem mês sem dia 31, ano bissexto, retomada de janela recorrente, preservação de fuso, resumo de compras e dependências da outbox.
+
+**Estado por etapa:** E00–E03 permanecem concluídas localmente. E04 e E05 têm funcionalidade local implementada, mas o autosave/conflito e o novo resumo não foram ensaiados em navegador por restrição desta rodada. E06 tem paginação/checkpoints/retomada implementados, ainda sem ensaio destrutivo de interrupção. E07 tem motor, corte de futuras e casos puros; falta prova integrada de exceções persistentes. E08 tem PWA/outbox/cache e coordenação multiaba implementados; faltam ensaios reais de duas abas, troca de conta e atualização. E09 tem cliente, fila, HMAC, lease e Worker preparados; push em aparelho fechado continua externo e pendente. E10 está parcial: build, testes, logs e medição de bundle foram executados, mas contraste/teclado a 200%, carga, cotas e recuperação operacional não. E11 continua pendente por depender de homologação, autorização de deploy, matriz de aparelhos e rollback real.
+
+**Ponto exato para retomar:** sem Playwright/Auth Emulator, não há outra prova local de jornada que possa honestamente fechar os gates restantes. O próximo passo é E10/E11 em ambiente autorizado: publicar somente com autorização, configurar `VITE_FIREBASE_VAPID_KEY` e `SCHEDULER_HMAC_SECRET`, aplicar o novo índice de lease, provar duas abas/contas, recuperação interrompida, instalação/offline/push em aparelho suportado, acessibilidade manual, carga/cotas e rollback. Não declarar esses itens aprovados antes da execução real.
+
+## Atualização mais recente — lixeira global de itens
+
+Foi implementada a leitura dos itens das listas de compras na lixeira global e a restauração com `listId` da lista pai. `Lixeira` também foi adicionada à navegação principal com ícone próprio. Typecheck e build passaram. O próximo passo imediato é repetir a prova E2E focal e a suíte de integração em um terminal limpo: o runner Playwright travou nesta sessão e a primeira integração encontrou o Firestore Emulator desligado; os emuladores foram reiniciados, mas a repetição ficou pendente por estado de continuação do PowerShell. Não declarar esta prova como aprovada ainda.
+
+## Pausa solicitada em 11/09/2026, 22h45 — Meu dia e fuso
+
+O trabalho estava no refinamento da tela real `/hoje` para aproximá-la da estrutura do protótipo e dos requisitos RF-07/RF-11: semana selecionável, mini calendário lateral, atividades filtradas pelo dia, cores de categoria, abertura de criação por `Nova atividade`, nota fixada e atalho para compras. O componente novo `apps/web/src/features/activities/DayNavigation.tsx` calcula dias civis com `Temporal` e atualiza a data atual no fuso do perfil. `Today.tsx` já foi alterado para usá-lo; a validação visual e E2E dessa nova composição ainda precisa terminar.
+
+Por pedido recente, o fuso deixou de ser campo de cadastro e de preferências. A API define `America/Sao_Paulo` na ativação e preserva esse valor nas edições de perfil; o contrato aceita a ausência do campo enviada pelo cliente. A conta já existente não foi migrada porque possui fuso válido. A persistência do Auth/Firestore Emulator foi adicionada em `.cache/firebase-data` para que contas locais não desapareçam ao reiniciar `npm run dev`; testes E2E usam modo efêmero e continuam isolados.
+
+O primeiro E2E após a alteração falhou somente porque o backend aberto ainda era a versão anterior e respondia `422` pela ausência do fuso. Os processos locais antigos foram encerrados e `npm run dev` foi reiniciado às 22h43 com o backend novo; Auth e Firestore já reportaram prontos em `localhost:9099` e `localhost:8080`, API em `8788` e Vite em `5174`. Falta executar `LEVE_LOCAL_URL=http://localhost:5174 npm run test:e2e:local`, corrigir qualquer falha real resultante e então executar `npm run build`.
+
+O login informado pelo usuário aponta ao Auth Emulator. A conta existe no emulador atual, mas a resposta HTTP da tentativa não foi fornecida; portanto a causa específica da falha de senha ainda não foi afirmada. A UI passou a diferenciar credenciais incorretas de conta inexistente no modo local. Não registrar senhas, tokens ou e-mails pessoais em documentação, logs ou testes.
+
+## Correção de autenticação e ambiente local em 11/09/2026, 21h
+
+O cadastro por convite foi removido do produto, dos contratos, comandos, seeds e testes. Cadastro por e-mail confirmado e Google convergem para `account.activate`, que cria membership, perfil e categorias padrão de forma transacional e idempotente. `/registrar` exibe “Criar conta com Google”; a configuração pública do Firebase é carregada por `.env.local` fora dos emuladores e não mostra mais o aviso de conexão ausente após reiniciar o Vite.
+
+O Caveman global estava ativo em `localhost:8787`, colidindo com a API local e causando “Serviço indisponível”. A API do Leve passou para `localhost:8788`; o Vite aponta para essa porta. `dev:local` também detecta o OpenJDK instalado, isola a configuração do Firebase CLI em `.cache/` e evita o `tsx` que falhava neste Windows.
+
+O fluxo de autenticação não consulta mais `/api/session` antes de o Firebase informar `emailVerified`; assim, a tela de confirmação não mistura indisponibilidade da API com verificação de e-mail. A inicialização do Auth inclui `browserPopupRedirectResolver`, necessário para o login Google. Falhas de Auth são traduzidas para mensagens de produto, enquanto a API registra somente no backend logs JSON correlacionados de HTTP, validação de token, Firestore e comandos, com causa/stack técnicas e redação de tokens, e-mails, chaves e credenciais. Respostas da API continuam genéricas e não vazam detalhes internos.
+
+Verificações desta correção: typecheck/build aprovados, Vitest 5/5, integração 10/10 e Playwright local 2/2. O login Google chegou corretamente ao carregamento do SDK do provedor; a conclusão interativa não pôde ser ensaiada no sandbox porque `apis.google.com` foi bloqueado pela rede do ambiente, não por erro do aplicativo.
+
+O Auth Emulator não envia e-mails reais. Para impedir que o cadastro local fique preso esperando uma mensagem inexistente, a tela identifica o modo emulado, explica essa diferença e oferece `Confirmar neste ambiente`; a ação consome apenas o `VERIFY_EMAIL` do usuário atual no projeto fictício `demo-leve`. Em produção, o botão local não existe e o fluxo continua usando o link enviado pelo Firebase. O cenário focal de cadastro, confirmação, ativação, recuperação e novo login passou pela interface após o ajuste.
+
+O agente global continua usando o proxy Caveman, mas o `shrink-hook` defeituoso foi removido porque reescrevia comandos PowerShell sem o operador de chamada. A compressão nativa do proxy permanece ativa. O modelo padrão global foi atualizado de GPT-5.2 para GPT-5.5.
+
 ## Autenticação finalizada em 11/09/2026
 
-A autenticação foi concluída antes desta pausa. `/entrar`, `/registrar` e `/recuperar` são rotas próprias. A interface diferencia entrada e criação de conta, pede nome, confirmação de senha e convite, permite mostrar/ocultar cada senha, mantém nome/convite durante a verificação do e-mail e apresenta mensagens específicas para credencial inválida, conta existente, provedor desabilitado, domínio não autorizado, pop-up bloqueado, excesso de tentativas e falha de rede. O login Google força seleção explícita da conta. A sessão agora usa a persistência local do Firebase e continua após fechar/reabrir o navegador até logout ou revogação. A API renova o ID token e repete uma única vez requisições recusadas com `401`, cobrindo a troca de claims após verificação sem criar loop de repetição.
+A autenticação foi concluída antes desta pausa. `/entrar`, `/registrar` e `/recuperar` são rotas próprias. A interface diferencia entrada e criação de conta, pede nome e confirmação de senha, permite mostrar/ocultar cada senha, mantém o nome durante a verificação do e-mail e apresenta mensagens específicas para credencial inválida, conta existente, provedor desabilitado, domínio não autorizado, pop-up bloqueado, excesso de tentativas e falha de rede. Não existe código de convite: após e-mail confirmado ou autenticação Google, `account.activate` cria membership, perfil e categorias padrão de forma idempotente. O Google força seleção explícita da conta, usa popup e recorre a redirect quando o popup é bloqueado. A sessão usa persistência local do Firebase e continua após fechar/reabrir o navegador até logout ou revogação. A API renova o ID token e repete uma única vez requisições recusadas com `401`, cobrindo a troca de claims após verificação sem criar loop de repetição.
 
-O cadastro completo passou no Auth/Firestore Emulator pela própria interface: senhas divergentes foram bloqueadas antes da criação; a conta foi criada; o código OOB de verificação foi consumido; nome e convite foram preservados; a agenda foi ativada; a recuperação gerou um código `PASSWORD_RESET`; logout, novo login e reload mantiveram o comportamento esperado. A jornada persistente anterior também passou novamente. Resultado local: Playwright 2/2.
+O cadastro completo passou no Auth/Firestore Emulator pela própria interface: senhas divergentes foram bloqueadas antes da criação; a conta foi criada; o código OOB de verificação foi consumido; o nome foi preservado; a agenda foi ativada sem convite; a recuperação gerou um código `PASSWORD_RESET`; logout, novo login e reload mantiveram o comportamento esperado. A jornada persistente anterior também passou novamente. Resultado local: Playwright 2/2.
 
 Uma consulta sanitizada e somente leitura pela sessão autenticada do Firebase CLI confirmou no projeto real `leve-db`: E-mail/Senha habilitado, senha obrigatória, Google habilitado e domínios autorizados `localhost`, `leve-db.firebaseapp.com` e `leve-db.web.app`. Nenhum usuário real foi criado. Quando existir uma URL própria de preview/produção, seu domínio exato ainda deverá ser incluído na lista antes do teste Google/e-mail nesse endereço.
 
@@ -147,7 +305,7 @@ O trabalho foi interrompido **logo depois de adicionar `server/commands/content.
 | `server/errors.ts` | Erros públicos de aplicação |
 | `server/commands/identity.ts` | Hash canônico, aceitação transacional de convite, membership/perfil/categorias iniciais, atualização de perfil, receipts/revisão/rate limit |
 | `server/app.ts` | Express 5, health/session/commands, verificação de ID token, limite de corpo, dispatcher e tratamento de erros |
-| `server/dev.ts` | Servidor da API em `127.0.0.1:8787` |
+| `server/dev.ts` | Servidor da API em `localhost:8787` |
 | `api/[...path].ts` | Export da aplicação Express para Vercel; compatibilidade concreta ainda não testada |
 | `firebase.json` | Auth `9099`, Firestore `8080`, UI desativada; nenhum deploy |
 | `firestore.rules` | Default deny; leitura de perfil, membership e categorias sob condições; escrita do cliente negada |

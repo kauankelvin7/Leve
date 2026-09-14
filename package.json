@@ -11,10 +11,11 @@
     "apps/web"
   ],
   "scripts": {
-    "dev": "vite --config apps/web/vite.config.ts",
+    "dev": "node scripts/dev-local.mjs",
+    "dev:web": "vite --config apps/web/vite.config.ts",
     "dev:local": "node scripts/dev-local.mjs",
-    "seed:local": "node node_modules/tsx/dist/cli.mjs scripts/seed-local.mjs",
-    "invite:create": "node scripts/create-invite.mjs",
+    "seed:local": "node scripts/seed-local.mjs",
+    "migrate:notification-tokens": "node scripts/migrations/001-separate-notification-tokens.ts",
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && vite build --config apps/web/vite.config.ts",
     "preview": "vite preview --config apps/web/vite.config.ts",
@@ -31,7 +32,7 @@
     "@js-temporal/polyfill": "0.5.1",
     "express": "5.2.1",
     "firebase": "12.19.0",
-    "firebase-admin": "14.4.0",
+    "firebase-admin": "13.6.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-router-dom": "7.18.3",

@@ -9,13 +9,15 @@ export const timeZoneSchema = z.string().max(100).refine(value => {
 export const profilePreferencesSchema = z.object({
   displayName: z.string().trim().min(1).max(80),
   locale: z.literal('pt-BR'),
-  timeZone: timeZoneSchema,
+  timeZone: timeZoneSchema.optional(),
   weekStartsOn: z.union([z.literal(0), z.literal(1)]),
   reduceTransparency: z.boolean(),
+  colorTheme: z.enum(['green', 'purple', 'blue', 'red']).optional(),
 }).strict();
 
 export type ProfilePreferences = z.infer<typeof profilePreferencesSchema>;
 export type UserProfile = ProfilePreferences & {
+  timeZone: string;
   uid: string;
   schemaVersion: 1;
   revision: number;
@@ -32,6 +34,7 @@ export const commandEnvelopeSchema = z.object({
   expectedRevision: z.number().int().nonnegative().optional(),
   payload: z.unknown(),
   clientCreatedAt: z.iso.datetime().optional(),
+  dependsOn: z.array(z.uuid()).max(20).optional(),
 }).strict();
 
 export type CommandEnvelope = z.infer<typeof commandEnvelopeSchema>;
@@ -43,9 +46,7 @@ export type CommandResult = {
   result: 'applied' | 'alreadyApplied';
 };
 
-export const acceptInviteSchema = z.object({
-  inviteId: entityIdSchema,
-  secret: z.string().min(20).max(200),
+export const accountActivationSchema = z.object({
   profile: profilePreferencesSchema,
 }).strict();
 

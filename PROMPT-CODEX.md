@@ -1,5 +1,7 @@
 # Prompt mestre — Leve v2.0
 
+> **Checkpoint operacional em 13/09/2026:** produção autorizada ativa em `https://leve-agenda.vercel.app`, API/health e Firebase Admin verificados, CSP do Google Auth corrigida e rollback Vercel preservado. O Worker `leve-scheduler` versão ativa `8c568c50` aponta para a produção e executa a cada minuto; os índices Firestore foram publicados. Falta configurar o segredo HMAC compartilhado e VAPID/FCM. Por decisão do usuário, `leve.com` e o registrador Alibaba/HiChina ficam adiados e não bloqueiam esta release. Ainda não declarar prontos tick real, push fechado, PWA em aparelho, leitor de tela, cotas, homologação ou aceite. Consulte `CONTINUAR.md` antes de executar a próxima ação externa.
+
 Você está atuando como engenheiro de software sênior no projeto Leve, uma agenda pessoal para uso diário, baseada em necessidades reais de uma usuária piloto. Sua tarefa é transformar a documentação em software verificável por etapas.
 
 CONTEXTO DE PRODUTO
@@ -18,7 +20,7 @@ REQUISITOS CENTRAIS
 - PWA e modo offline controlado; dados locais nunca apresentados como confirmados no servidor.
 - Push real depende de permissão, worker, servidor e validação em aparelho. Não simular envio como se fosse funcional.
 - Lixeira, exportação/importação versionadas e exclusão de conta.
-- Multiusuário por uid, cadastro por convite e expansão gradual orientada por métricas.
+- Multiusuário por uid, cadastro direto e expansão gradual orientada por métricas.
 - R$ 0 de infraestrutura: nenhum faturamento, trial pago, domínio comprado ou upgrade automático.
 
 ARQUITETURA PROPOSTA
@@ -34,7 +36,7 @@ Separar data civil, horário local, fuso IANA e instante UTC. Não converter pra
 O Cron Worker somente assina e chama o tick. A API reserva jobs em transação e processa lotes. Não usar cron diário da Vercel para minuto, timers de aba ou monitor externo. Push exige prova no aparelho com app fechado.
 
 CUSTO E CAPACIDADE
-Não vincule faturamento. Registre planos e cotas. Implemente convite, membership, limites, serviceControls e degradação. Valide uma usuária e expanda 1 → 5 → 20 → 50 cadastradas só após 14 dias e margens do documento 05. Não contorne cotas com projetos duplicados. Exportação pessoal substitui backup gerenciado, com limitação visível.
+Não vincule faturamento. Registre planos e cotas. Implemente membership, limites, serviceControls e degradação sem código de convite. Valide uma usuária e expanda 1 → 5 → 20 → 50 cadastradas só após 14 dias e margens do documento 05. Não contorne cotas com projetos duplicados. Exportação pessoal substitui backup gerenciado, com limitação visível.
 
 DESIGN
 Preservar Vidro & Papel: DM Sans na interface; Instrument Serif em marca e títulos; tons pastéis e texto escuro; vidro fosco apenas no suporte; cartões/notas legíveis. Consolidar CSS e nomes de tokens. Não adicionar frases motivacionais, emojis decorativos, painéis enormes ou gradientes animados. Cor informativa sempre tem nome/estado equivalente. Garantir foco, teclado, safe area, leitura a 200% e modo sólido. Use controles acessíveis existentes quando adequados, sem aparência padrão de biblioteca.

@@ -1,5 +1,7 @@
 # Leve — Relatório completo de engenharia de software
 
+> **Decisão vigente de produto (11/09/2026):** o cadastro não usa código de convite. As referências históricas a convites neste relatório foram substituídas por cadastro direto com Firebase Authentication e ativação idempotente de membership/perfil. `CONTINUAR.md`, `PROMPT-CODEX.md` e `05-capacidade-e-revisao.md` definem o comportamento atual.
+
 **Versão 2.0 · 11 de setembro de 2026**  
 **Responsável:** Kauan Kelvin · **Usuária de referência:** Gih
 
@@ -1869,3 +1871,21 @@ Resultado documental: todos os requisitos obrigatórios têm caso, regra ou test
 - Lembretes fechados têm arquitetura plausível, ainda dependente de prova real.
 - Recuperação usa exportação pessoal; não há backup automático gratuito.
 - Problemas conhecidos estão rastreados; novos defeitos podem surgir e entram nos gates.
+
+## 42. Registro de release autorizada — 12/09/2026
+
+A primeira publicação autorizada foi promovida no projeto Vercel Hobby `kauans-projects-6a261bab/leve-agenda-vercel`. A URL canônica atual é `https://leve-agenda.vercel.app`; o deployment promovido é `https://leve-agenda-vercel-i5u0jiyyz-kauans-projects-6a261bab.vercel.app` e o deployment `https://leve-agenda-vercel-6s9nxvkrj-kauans-projects-6a261bab.vercel.app` permanece disponível como rollback. O healthcheck retornou HTTP 200 com versão `0.1.0`.
+
+O runtime confirmou inicialização do Firebase Admin por conta de serviço. A credencial foi validada com leitura do Auth e uma sonda Firestore criada, lida e removida; nenhum usuário foi criado. `leve-agenda.vercel.app` consta na lista de domínios autorizados do Firebase. As credenciais administrativas permanecem apenas como segredos Vercel de Preview/Production.
+
+A CSP efetiva foi ajustada para autorizar scripts do Google Auth em `https://apis.google.com` e `https://accounts.google.com`, mantendo `script-src 'self'` para as demais origens. A tela `/entrar` foi recarregada em produção sem violações no console. O evento `beforeinstallprompt` continua deliberadamente retido para que a instalação seja iniciada por gesto explícito no botão do produto.
+
+O domínio `leve.com` está associado e verificado na Vercel. A zona Cloudflare preserva os registros de e-mail/subdomínios e agora aponta o apex, sem proxy, para o CNAME exclusivo `565539df3a00f4f4.vercel-dns-017.com`; `www.leve.com` foi anexado à Vercel e aponta, também sem proxy, para o A legado suportado `76.76.21.21`. A Vercel redirecionará o apex a `www` com HTTP 308. RDAP/ICANN confirmou o registrador Alibaba Cloud/HiChina e DNSSEC `Unsigned`; a ativação aguarda autenticação manual no registrador e troca de `dns25.hichina.com`/`dns26.hichina.com` por `heather.ns.cloudflare.com`/`ridge.ns.cloudflare.com`. Depois da propagação, será necessário autorizar exatamente `leve.com` e `www.leve.com` no Firebase e repetir login/health/deep links. Permanecem fora desta evidência: Worker Cron, VAPID/FCM, push com app fechado, instalação/atualização em aparelho, leitor de tela, consumo de cotas e aceite da usuária.
+
+### Atualização operacional — 13/09/2026
+
+Por decisão posterior do usuário, a ativação de `leve.com` no registrador Alibaba/HiChina foi adiada e deixou de ser gate desta release; a hospedagem canônica permanece `https://leve-agenda.vercel.app`. O Worker gratuito `leve-scheduler` recebeu `LEVE_API_ORIGIN=https://leve-agenda.vercel.app` e o segredo HMAC compartilhado com a Vercel Production, ficando na versão ativa `5e0cebc5` com um Cron Trigger por minuto. Um tick assinado foi observado em produção com HTTP 200 às `2026-09-13T23:50Z`.
+
+A chave Web Push VAPID foi gerada no Firebase, gravada na Vercel Production e confirmada no bundle publicado. Os índices de `firestore.indexes.json` foram publicados no projeto `leve-db`, incluindo `COLLECTION_GROUP` de `purgeAfter` para `activities`, `categories`, `notes`, `shoppingLists` e `items`. Entry points próprios corrigiram as rotas Vercel aninhadas `/api/internal/tick`, `/api/account/export` e `/api/commands/:operationId`; a prova posterior mostrou health HTTP 200 e HTTP 401 sem credencial nas três rotas, em vez de 404.
+
+O login Google passou a usar redirect também quando o navegador retorna `auth/internal-error`. Após o deploy, `/entrar` foi recarregada em produção: a mensagem antiga desapareceu, o botão Google permaneceu habilitado e não houve erro de CSP, console ou overlay. O clique foi exercitado sem novo erro, mas nenhuma autenticação de conta foi automatizada. Vercel Hobby e Firebase Spark foram confirmados sem billing. Continuam pendentes: push com o aplicativo fechado e instalação/atualização PWA em aparelho suportado, leitor de tela, observação representativa das cotas Firebase/Cloudflare, homologação e aceite.

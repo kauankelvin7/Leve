@@ -1,0 +1,13 @@
+{
+  "name": "Leve - agenda pessoal",
+  "short_name": "Leve",
+  "description": "Agenda pessoal para atividades, notas e compras.",
+  "start_url": "/hoje",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#EDF0ED",
+  "theme_color": "#EDF0ED",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
