@@ -84,7 +84,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(checkbox).toBeChecked();
 
   await page.getByRole('navigation').getByRole('link', { name: 'Calendário' }).click();
-  await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
+  await expect(page.locator('.calendar-agenda').getByText(activityTitle, { exact: true })).toBeVisible();
   await page.getByRole('navigation').getByRole('link', { name: 'Notas' }).click();
   await page.getByLabel('Título').fill(noteTitle);
   await page.getByLabel('Texto').fill(noteText);
@@ -132,14 +132,14 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page.getByText(noteTitle, { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Tipo').selectOption('event');
-  await page.getByLabel('Título').fill('Compromisso persistente');
+  await page.getByLabel('Título').fill(`Compromisso persistente ${suffix}`);
   await page.locator('select[name="categoryId"]').selectOption({ label: categoryName });
   await page.getByLabel('Início').fill(today);
   await page.getByLabel('Horário', { exact: true }).fill('10:00');
   await page.getByLabel('Fim').fill(today);
   await page.getByLabel('Horário final').fill('11:00');
   await page.getByRole('button', { name: 'Adicionar atividade' }).click();
-  await expect(page.getByText('Compromisso persistente', { exact: true })).toBeVisible();
+  await expect(page.getByText(`Compromisso persistente ${suffix}`, { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('button', { name: 'Excluir' }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toHaveCount(0);
   await page.goto('/lixeira');

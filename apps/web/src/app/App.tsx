@@ -34,14 +34,14 @@ function Shell() {
   const { session, logout } = useAuth();
   const { pathname } = useLocation();
   const links = [
-    ['/hoje', 'calendar', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
+    ['/hoje', 'day', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
     ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'], ['/lixeira', 'trash', 'Lixeira'],
   ] as const;
   return <div className={session?.profile?.reduceTransparency ? 'app-shell solid' : 'app-shell'}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to}><Icon name={icon} />{label}</NavLink>)}</nav>
-      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><Icon name="profile" /><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><span className="profile-avatar" aria-hidden="true">{session?.profile?.displayName?.slice(0, 1).toLocaleUpperCase('pt-BR')}</span><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink to="/configuracoes" aria-label="Perfil e preferências"><Icon name="profile" /></NavLink></div></div>

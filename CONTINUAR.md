@@ -1,6 +1,18 @@
 # Leve — ponto exato de retomada
 
-## PAUSA SOLICITADA — 13/09/2026, refinamento do frontend
+## Frontend glass — 14/09/2026, revisão concluída
+
+Pedido atual: acabamento geral inspirado em interfaces de iPhone, incluindo preferências, com commit, push e publicação autorizados. A pausa abaixo é histórica e foi substituída por este pedido.
+
+Implementado: camada compartilhada de vidro fosco com bordas luminosas e sombras discretas; refinamento da navegação desktop/dock móvel, avatar, botões, campos, calendário, notas, compras, busca e lixeira. Preferências têm atalhos de seção, grupos responsivos e exclusão permanente recolhida, sem remover confirmação ou reautenticação. Paletas continuam persistentes e independentes das cores de notas/categorias. Modo sólido, fallback sem blur e preferências de acessibilidade permanecem respeitados. Direção e decisões em `DESIGN.md`.
+
+Provas: build/typecheck aprovado, 23/23 testes unitários e diff-check limpo. Os sete testes funcionais E2E passaram juntos; o teste visual passou na repetição focal final, cobrindo quatro paletas, sete páginas em 1440px/390px, Axe, ausência de overflow e persistência do modo sólido. As primeiras rodadas revelaram timeout isolado de cadastro, título fixo duplicado nos testes e contraste insuficiente do contador do calendário; repetição, isolamento por sufixo e contraste corrigidos. Não declarar uma única rodada 8/8: a aprovação final foi 7 funcionais + 1 visual focal. Evidências `docs/evidence/glass-*.png` e conteúdo persistente atualizado.
+
+Publicação concluída no projeto Vercel Hobby existente: deployment `dpl_qXB7i69xuRqbirgEANtpHxfGndwt`, URL `https://leve-agenda-vercel-c17mf3uqw-kauans-projects-6a261bab.vercel.app`, estado READY. A URL canônica `https://leve-agenda.vercel.app` respondeu 200 em `/api/health` e `/entrar`; o CSS público `index-D2NqzjOD.css` contém a camada glass e o layout novo de preferências. Sem mudança de plano, segredo ou infraestrutura. O build remoto emitiu avisos de lockfile/dependências (15 vulnerabilidades moderadas) e TS2688 na etapa de empacotamento das funções, mas completou; o typecheck do build principal e o health público passaram. Revisar esses avisos em manutenção técnica separada, sem atualização forçada nesta revisão visual.
+
+Pendências externas anteriores continuam: push com app fechado e instalação/atualização PWA em aparelho suportado, leitor de tela, observação representativa de cotas e aceite da usuária. Essas provas não fazem parte da aprovação visual automatizada.
+
+## Histórico: PAUSA SOLICITADA — 13/09/2026, refinamento do frontend
 
 Usuário pediu interromper imediatamente, anotar e fazer commit; continuar em outra sessão. Nenhum deploy desta revisão visual foi realizado. A produção mantém a versão anterior; o frontend editado está no ambiente local, http://localhost:5174.
 

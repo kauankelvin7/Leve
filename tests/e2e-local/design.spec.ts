@@ -2,12 +2,21 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test('paletas acompanham navegação e calendário funciona em desktop e celular', async ({ page }) => {
+  test.setTimeout(180_000);
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');
   await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
+  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
   await page.goto('/configuracoes');
+  if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
+    await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
+    await page.getByRole('button', { name: 'Salvar preferências' }).click();
+    await expect(page.locator('.form-status')).toHaveText('Preferências salvas.');
+    await expect(page.locator('.app-shell')).not.toHaveClass(/solid/);
+  }
   for (const [label, color] of [['Roxo suave', 'rgb(112, 85, 134)'], ['Azul suave', 'rgb(69, 107, 139)'], ['Vermelho suave', 'rgb(146, 86, 95)'], ['Verde suave', 'rgb(77, 104, 92)']]) {
     await page.getByLabel(label!, { exact: true }).click();
     await expect(page.getByLabel(label!, { exact: true })).toBeChecked();
@@ -33,6 +42,17 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
       expect(axe.violations, `${width}px ${route}`).toEqual([]);
+      if (['/hoje', '/calendario', '/configuracoes'].includes(route)) await page.screenshot({ path: `docs/evidence/glass-${route.slice(1)}-${width}.png`, fullPage: true });
     }
   }
+  await page.goto('/configuracoes');
+  await page.getByLabel('Reduzir transparência', { exact: true }).check();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
+  await expect(page.locator('.sidebar')).toHaveCSS('backdrop-filter', 'none');
+  await page.reload();
+  await expect(page.getByLabel('Reduzir transparência', { exact: true })).toBeChecked();
+  await expect(page.locator('.sidebar')).toHaveCSS('background-color', /^rgb\(/);
+  await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
+  await expect(page.locator('.app-shell')).not.toHaveClass(/solid/);
 });

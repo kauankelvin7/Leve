@@ -18,6 +18,10 @@ DM Sans para interface e leitura; Instrument Serif para títulos, marca e notas.
 
 Vidro & Papel: fundo pastel, superfícies claras, vidro somente na estrutura, notas como papel. Cabeçalho contextual, conteúdo alinhado e espaço entre grupos. Abaixo de 740px, navegação inferior com cinco destinos e ações de busca/perfil no topo. Calendário mensal usa sete colunas; no celular, contadores substituem prévias de texto e a agenda do dia mantém a leitura completa.
 
+Refinamento de 14/09/2026: superfícies translúcidas com blur e saturação, bordas luminosas, sombras suaves e respostas discretas ao toque, inspiradas em interfaces de iPhone. A camada compartilhada `glass.css` mantém consistência entre agenda, calendário, notas, compras, busca, lixeira e preferências. O modo sólido, a preferência de transparência reduzida do sistema e o fallback sem backdrop-filter usam superfícies opacas. Movimento reduzido desativa as transições acrescentadas.
+
+Preferências têm atalhos por seção, grupos adaptáveis, avatar com inicial, opções de paleta e controles refinados. Exclusão permanente fica recolhida, preservando confirmação e reautenticação. As skills frontend-design e impeccable-design-polish orientaram a hierarquia, o acabamento e a revisão; nenhuma dependência visual nova foi adicionada.
+
 ## Componentes e comportamento
 
 - Calendário: navegação de mês, Hoje, filtro de categoria, seleção de dia, link para detalhe e criação com a data selecionada. Carregamento, erro e limite de consulta são explícitos.

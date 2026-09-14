@@ -258,7 +258,7 @@ button:disabled { opacity: .6; cursor: wait; }
 .calendar-day[aria-current=date] .calendar-date { background: var(--color-action-primary); color: white; border-radius: 50%; }
 .calendar-previews { display: grid; gap: 4px; min-width: 0; }
 .calendar-event { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px; border-radius: 4px; background: var(--color-accent-soft); font-size: .6875rem; }
-.calendar-previews small { font-size: .625rem; color: var(--color-text-muted); }
+.calendar-previews small { font-size: .6875rem; color: var(--color-text); }
 .calendar-count { display: none; }
 .calendar-agenda { margin-top: 30px; }
 .calendar-agenda .section-heading h2 { margin-bottom: 0; }

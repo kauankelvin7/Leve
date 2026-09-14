@@ -17,5 +17,5 @@ export function ThemeSettings() {
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Não foi possível salvar a cor.'); }
     finally { setBusy(false); }
   }
-  return <section className="panel content-form"><h2>Cor do sistema</h2><fieldset className="theme-options"><legend>Paleta</legend>{themes.map(([value, label, color]) => <label key={value}><input type="radio" name="colorTheme" checked={(profile.colorTheme ?? 'green') === value} disabled={busy} onChange={() => void choose(value)} /><span className="theme-swatch" style={{ backgroundColor: color }} aria-hidden="true" />{label}</label>)}</fieldset><p role="status">{message}</p></section>;
+  return <section className="panel content-form"><h2>Cor do sistema</h2><p>A paleta acompanha os botões, a navegação e o calendário. As cores das suas notas e categorias continuam independentes.</p><fieldset className="theme-options"><legend>Paleta</legend>{themes.map(([value, label, color]) => <label key={value}><input type="radio" name="colorTheme" checked={(profile.colorTheme ?? 'green') === value} disabled={busy} onChange={() => void choose(value)} /><span className="theme-swatch" style={{ backgroundColor: color }} aria-hidden="true" />{label}</label>)}</fieldset><p role="status">{message}</p></section>;
 }

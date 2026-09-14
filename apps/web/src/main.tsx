@@ -9,6 +9,7 @@ import { App } from './app/App';
 import { ErrorBoundary } from './app/ErrorBoundary';
 import { AuthProvider } from './features/identity/AuthProvider';
 import './styles/app.css';
+import './styles/glass.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
 
