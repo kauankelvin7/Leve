@@ -17,11 +17,17 @@ export function ActivityDetail() {
   const [message, setMessage] = useState('');
   const [timerBusy, setTimerBusy] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [optimisticTimer, setOptimisticTimer] = useState<{ id: string; revision: number; startedAt: string } | null>(null);
+  const [stoppedTimerId, setStoppedTimerId] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
   const entries = allEntries.filter(entry => entry.activityId === id && !entry.deletedAt).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
-  const active = entries.find(entry => !entry.endedAt);
+  const otherActive = allEntries.find(entry => entry.activityId !== id && !entry.endedAt && !entry.deletedAt);
+  const storedActive = entries.find(entry => !entry.endedAt);
+  const active = storedActive?.id === stoppedTimerId ? optimisticTimer : storedActive ?? optimisticTimer;
   useEffect(() => { document.title = `${activity?.title ?? 'Atividade'} · Leve`; }, [activity?.title]);
   useEffect(() => { if (!active) return; const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, [active?.id]);
+  useEffect(() => { if (storedActive?.id === optimisticTimer?.id) setOptimisticTimer(null); }, [storedActive?.id, optimisticTimer?.id]);
+  useEffect(() => { if (!storedActive && stoppedTimerId) setStoppedTimerId(null); }, [storedActive?.id, stoppedTimerId]);
 
   async function status(value: 'pending' | 'completed' | 'canceled') {
     if (!activity) return;
@@ -35,7 +41,10 @@ export function ActivityDetail() {
     if (!activity || timerBusy) return;
     setTimerBusy(true);
     try {
-      await sendCommand({ command: 'timeEntry.start', operationId: crypto.randomUUID(), entityId: crypto.randomUUID(), expectedRevision: 0, payload: { activityId: activity.id, civilDate: new Intl.DateTimeFormat('en-CA', { timeZone: activity.schedule.timeZone }).format(new Date()), timeZone: activity.schedule.timeZone }, clientCreatedAt: new Date().toISOString() });
+      const entityId = crypto.randomUUID();
+      const result = await sendCommand({ command: 'timeEntry.start', operationId: crypto.randomUUID(), entityId, expectedRevision: 0, payload: { activityId: activity.id, civilDate: new Intl.DateTimeFormat('en-CA', { timeZone: activity.schedule.timeZone }).format(new Date()), timeZone: activity.schedule.timeZone }, clientCreatedAt: new Date().toISOString() });
+      setOptimisticTimer({ id: entityId, revision: result.revision, startedAt: result.serverTime });
+      setStoppedTimerId(null);
       setPaused(false);
       setNow(Date.now());
       setMessage('Cronômetro iniciado. Ele continuará contando mesmo se você sair desta página.');
@@ -45,8 +54,22 @@ export function ActivityDetail() {
   async function stopTimer(successMessage: string) {
     if (!active) return;
     setTimerBusy(true);
-    try { await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() }); setMessage(successMessage); }
+    try {
+      await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setStoppedTimerId(active.id);
+      setOptimisticTimer(null);
+      setMessage(successMessage);
+    }
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o cronômetro.'); throw failure; }
+    finally { setTimerBusy(false); }
+  }
+  async function stopOtherTimer() {
+    if (!otherActive || timerBusy) return;
+    setTimerBusy(true);
+    try {
+      await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: otherActive.id, expectedRevision: otherActive.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setMessage('O outro cronômetro foi parado. Agora você pode iniciar este.');
+    } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o outro cronômetro.'); }
     finally { setTimerBusy(false); }
   }
   async function pauseTimer() {
@@ -79,8 +102,9 @@ export function ActivityDetail() {
     <section className="panel content-form timer-panel">
       <div className="timer-heading"><div><p className="eyebrow">Cronômetro</p><h2 className="timer-display" aria-label={`${stopwatch(runningSeconds)} no cronômetro`}>{stopwatch(runningSeconds)}</h2><p className="timer-total">Total registrado: <strong>{duration(total)}</strong></p></div><span className={`timer-state ${active ? 'is-running' : ''}`}>{active ? 'Em andamento' : paused ? 'Pausado' : 'Pronto para iniciar'}</span></div>
       <p className="muted">Inicie quando começar. O cronômetro continua contando mesmo se você navegar para outra página.</p>
+      {otherActive ? <div className="timer-conflict" role="status"><span>Há um cronômetro ativo em outra atividade.</span><button type="button" disabled={timerBusy} onClick={() => void stopOtherTimer()}>Parar o outro cronômetro</button></div> : null}
       <div className="timer-actions">
-        {active ? <button type="button" className="primary" disabled={timerBusy} onClick={() => void pauseTimer()}><Icon name="clock" />Pausar</button> : <button type="button" className="primary" disabled={timerBusy || activity.status !== 'pending'} onClick={() => void startTimer()}><Icon name="clock" />{paused ? 'Retomar' : 'Iniciar cronômetro'}</button>}
+        {active ? <button type="button" className="primary timer-stop" disabled={timerBusy} onClick={() => void pauseTimer()}><Icon name="clock" />Parar cronômetro</button> : <button type="button" className="primary" disabled={timerBusy || activity.status !== 'pending' || Boolean(otherActive)} onClick={() => void startTimer()}><Icon name="clock" />{paused ? 'Retomar' : 'Iniciar cronômetro'}</button>}
         {(active || paused) ? <button type="button" disabled={timerBusy} onClick={() => void finishTimer()}>Finalizar</button> : null}
       </div>
       <details className="manual-time-details"><summary>Adicionar tempo manualmente</summary><form className="manual-time" onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>

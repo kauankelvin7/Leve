@@ -1094,6 +1094,10 @@ html {
 .timer-state.is-running { color: var(--color-action-primary); background: var(--color-accent-soft); }
 .timer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .timer-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.timer-actions .timer-stop { background: var(--color-danger); border-color: var(--color-danger); color: #fff; }
+.timer-conflict { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 18px; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-accent-soft); }
+.timer-conflict span { font-size: .875rem; font-weight: 700; }
+.timer-conflict button { flex-shrink: 0; }
 .manual-time-details { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-border); }
 .manual-time-details summary { width: fit-content; color: var(--color-text-muted); cursor: pointer; font-weight: 700; }
 .manual-time { display: flex; align-items: end; gap: 12px; margin-top: 20px; }

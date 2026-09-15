@@ -19,7 +19,7 @@ test('cronômetro explícito, conclusão e registro manual persistem após recar
   await page.clock.install();
   await page.clock.fastForward(35_000);
   await expect(page.locator('.timer-display')).toHaveText('00:00:35');
-  await page.getByRole('button', { name: 'Pausar' }).click();
+  await page.getByRole('button', { name: 'Parar cronômetro' }).click();
   await expect(page.locator('.time-history')).toContainText('Cronômetro');
   await page.getByRole('button', { name: 'Finalizar' }).click();
   await page.getByRole('button', { name: 'Concluir', exact: true }).click();
