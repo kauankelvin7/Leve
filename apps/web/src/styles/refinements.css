@@ -1630,13 +1630,13 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .tutorial-launch.settings-context {
     display: inline-grid;
     position: absolute;
-    top: 10px;
+    top: 92px;
     right: 18px;
     bottom: auto;
     width: 46px;
     height: 46px;
     min-height: 46px;
-    border-radius: 15px;
+    border-radius: 12px;
     box-shadow: 0 6px 18px color-mix(in srgb, var(--color-action-primary) 18%, transparent);
   }
   .shopping-list-composer form { grid-template-columns: 1fr; }
@@ -1657,7 +1657,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .app-shell { padding-inline: 14px; }
   .mobile-actions { gap: 6px; }
   .mobile-actions a { width: 42px; height: 42px; min-height: 42px; }
-  .tutorial-launch.settings-context { top: 12px; right: 14px; width: 42px; height: 42px; min-height: 42px; }
+  .tutorial-launch.settings-context { top: 88px; right: 14px; width: 42px; height: 42px; min-height: 42px; }
   .workspace-bar > span:first-child { gap: 8px; font-size: .75rem; }
   .page-heading h1 { font-size: 2.45rem; }
   .shopping-composer-heading .shopping-list-icon { display: none; }
