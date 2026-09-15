@@ -18,11 +18,7 @@ export function ActivityDetail() {
   const { items: allEntries } = useUserCollection<TimeEntry>('timeEntries');
   const [message, setMessage] = useState('');
   const [timerBusy, setTimerBusy] = useState(false);
-  // Placeholder exibido só entre o clique em "Iniciar" e o Firestore confirmar a criação do registro.
   const [optimisticTimer, setOptimisticTimer] = useState<OpenEntry | null>(null);
-  // Sobrepõe pause/resume/stop no registro exibido enquanto o Firestore ainda não confirmou a
-  // revisão nova. Some sozinho assim que `storedActive.revision` alcança a revisão esperada — por
-  // isso sobrevive a qualquer coisa; ele não é o que define o estado, só evita um flash visual.
   const [pendingPatch, setPendingPatch] = useState<{ id: string; revision: number; patch: Partial<OpenEntry> } | null>(null);
   const [now, setNow] = useState(Date.now());
   const entries = allEntries.filter(entry => entry.activityId === id && !entry.deletedAt).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
