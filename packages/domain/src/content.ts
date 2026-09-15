@@ -82,8 +82,6 @@ export type TimeEntry = EntityMeta & {
   durationSeconds: number;
   source: 'session' | 'manual' | 'timer';
   sessionId?: string;
-  // Só usados por registros com source: 'timer'. Opcionais para não quebrar addManual/addSession
-  // (que nunca os preenchem) nem entradas antigas gravadas antes dessa mudança.
   paused?: boolean;
   accumulatedSeconds?: number;
   pausedAt?: string | null;
