@@ -478,3 +478,4 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - Erros agora têm estado visual de alerta, contraste, borda de prioridade, ícone textual e anúncio assertivo para tecnologias assistivas; confirmações de sucesso mantêm um estado visual distinto.
 - Respostas de validação da API passaram a apontar a área compreensível do formulário (por exemplo, a opção de repetição mensal), sem expor o caminho técnico do schema.
 - Validação desta retomada concluída: `npm run typecheck`, `npm run build`, `npm run lint` e `npm test` (36/36) passaram. Commit/push ficam registrados no histórico desta etapa.
+- Ajuste visual adicional concluído: o botão de ajuda/tutorial no desktop agora mantém distância segura do rodapé e não sobrepõe mais o botão `Sair`; o comportamento contextual do mobile foi preservado.

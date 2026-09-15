@@ -238,7 +238,8 @@
   position: fixed;
   z-index: 80;
   right: 24px;
-  bottom: 24px;
+  /* Mantém a ajuda acima do rodapé, sem cobrir o botão "Sair". */
+  bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
 .visually-hidden {
