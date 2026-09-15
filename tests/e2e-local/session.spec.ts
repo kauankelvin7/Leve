@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('sessão visível, conclusão e registro manual persistem após recarregar', async ({ page }) => {
+test('cronômetro explícito, conclusão e registro manual persistem após recarregar', async ({ page }) => {
   test.setTimeout(120_000);
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');
@@ -14,21 +14,26 @@ test('sessão visível, conclusão e registro manual persistem após recarregar'
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true })).toBeVisible({ timeout: 25_000 });
   await page.getByText(title, { exact: true }).click();
-  await expect(page.locator('.passive-time')).toBeVisible();
+  await expect(page.locator('.timer-display')).toHaveText('00:00:00');
+  await page.getByRole('button', { name: 'Iniciar cronômetro' }).click();
   await page.clock.install();
   await page.clock.fastForward(35_000);
+  await expect(page.locator('.timer-display')).toHaveText('00:00:35');
+  await page.getByRole('button', { name: 'Pausar' }).click();
+  await expect(page.locator('.time-history')).toContainText('Cronômetro');
+  await page.getByRole('button', { name: 'Finalizar' }).click();
   await page.getByRole('button', { name: 'Concluir', exact: true }).click();
-  await expect(page.locator('.time-history')).toContainText('Sessão');
-  await page.getByLabel('Tempo manual').fill('2');
-  await page.locator('.manual-time').getByRole('button', { name: 'Registrar', exact: true }).click();
+  await page.getByText('Adicionar tempo manualmente').click();
+  await page.getByLabel('Tempo em minutos').fill('2');
+  await page.locator('.manual-time').getByRole('button', { name: 'Adicionar', exact: true }).click();
   await expect(page.locator('.time-history')).toContainText('Manual');
-  await expect(page.getByLabel('Tempo manual')).toHaveValue('');
+  await expect(page.getByLabel('Tempo em minutos')).toHaveValue('');
   await expect(page.locator('.time-history li')).toHaveCount(2);
   await page.reload();
   await expect(page.locator('.time-history li')).toHaveCount(2);
 });
 
-test('sessão interrompida fica disponível para recuperação fora do detalhe', async ({ page, context }) => {
+test('cronômetro continua contando fora do detalhe da atividade', async ({ page }) => {
   test.setTimeout(120_000);
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');
@@ -36,19 +41,19 @@ test('sessão interrompida fica disponível para recuperação fora do detalhe',
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page.locator('#page-title')).toHaveText('Meu dia');
   await page.getByRole('button', { name: 'Nova atividade', exact: true }).click();
-  const title = `Recuperar sessão ${Date.now()}`;
+  const title = `Cronômetro persistente ${Date.now()}`;
   await page.getByLabel('Título', { exact: true }).fill(title);
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true })).toBeVisible({ timeout: 25_000 });
   await page.getByText(title, { exact: true }).click();
+  await page.getByRole('button', { name: 'Iniciar cronômetro' }).click();
   await page.clock.install();
   await page.clock.fastForward(35_000);
-  await context.setOffline(true);
   await page.getByRole('link', { name: 'Notas', exact: true }).click();
-  await context.setOffline(false);
   await page.clock.fastForward(5_000);
-  const recovery = page.getByLabel('Sessão não registrada');
-  await expect(recovery).toContainText(`Você estava em ${title}`);
-  await recovery.getByRole('button', { name: 'Registrar', exact: true }).click();
-  await expect(recovery).not.toBeVisible();
+  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  await page.getByText(title, { exact: true }).click();
+  await expect(page.locator('.timer-display')).toHaveText('00:00:40');
+  await page.getByRole('button', { name: 'Finalizar' }).click();
+  await expect(page.locator('.time-history')).toContainText('Cronômetro');
 });

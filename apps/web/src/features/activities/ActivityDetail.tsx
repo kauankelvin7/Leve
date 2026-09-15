@@ -1,70 +1,66 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { Activity, Category, TimeEntry } from '../../../../../packages/domain/src/content';
 import { sendCommand } from '../../platform/api';
 import { useUserCollection, useUserDocument } from '../content/useUserCollection';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
-import { ActivitySession, activeSessionIds, MIN_SESSION_MS, saveUnfinishedSession, sessionTabId } from './sessionLifecycle';
-import { submitActivitySession } from './sessionPersistence';
-import { useAuth } from '../identity/AuthProvider';
 
 const duration = (seconds: number) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)}h ` : ''}${Math.floor(seconds % 3600 / 60)}min`;
+const stopwatch = (seconds: number) => [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
 
 export function ActivityDetail() {
-  const { user } = useAuth();
   const { id = '' } = useParams();
   const { item: activity, loading, error } = useUserDocument<Activity>(`activities/${id}`);
   const { items: categories } = useUserCollection<Category>('categories');
   const { items: allEntries } = useUserCollection<TimeEntry>('timeEntries');
   const [message, setMessage] = useState('');
+  const [timerBusy, setTimerBusy] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [now, setNow] = useState(Date.now());
-  const sessionRef = useRef<ActivitySession | null>(null);
   const entries = allEntries.filter(entry => entry.activityId === id && !entry.deletedAt).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
   const active = entries.find(entry => !entry.endedAt);
   useEffect(() => { document.title = `${activity?.title ?? 'Atividade'} · Leve`; }, [activity?.title]);
-  useEffect(() => { if (!active && !activity) return; const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, [active?.id, activity?.id]);
-
-  function finishPassiveSession(keepalive = false) {
-    const session = sessionRef.current?.finish();
-    sessionRef.current = null;
-    if (!session) return;
-    activeSessionIds.delete(session.sessionId);
-    saveUnfinishedSession(localStorage, session);
-    void submitActivitySession(session, keepalive).catch(() => setMessage('A sessão continua salva neste aparelho. Você pode registrá-la quando a conexão voltar.'));
-  }
-
-  useEffect(() => {
-    if (!user || !activity || activity.deletedAt || activity.status !== 'pending' || sessionRef.current) return;
-    const sessionId = crypto.randomUUID();
-    activeSessionIds.add(sessionId);
-    sessionRef.current = new ActivitySession(activity.id, activity.title, activity.schedule.timeZone, Date.now(), sessionId, user.uid, sessionTabId());
-    if (document.visibilityState === 'hidden') sessionRef.current.pause();
-    const checkpoint = window.setInterval(() => {
-      if (sessionRef.current && sessionRef.current.elapsedMs() >= MIN_SESSION_MS) saveUnfinishedSession(localStorage, sessionRef.current.snapshot());
-    }, 5000);
-    const visibility = () => {
-      if (document.visibilityState === 'hidden') { sessionRef.current?.pause(); if (sessionRef.current) saveUnfinishedSession(localStorage, sessionRef.current.snapshot()); }
-      else sessionRef.current?.resume();
-    };
-    const pagehide = () => finishPassiveSession(true);
-    document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', pagehide);
-    return () => {
-      window.clearInterval(checkpoint);
-      document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', pagehide);
-      finishPassiveSession();
-    };
-  }, [activity?.id, activity?.status, activity?.deletedAt, user?.uid]);
+  useEffect(() => { if (!active) return; const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, [active?.id]);
 
   async function status(value: 'pending' | 'completed' | 'canceled') {
     if (!activity) return;
-    try { await sendCommand({ command: 'activity.setStatus', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: { status: value } }); if (value === 'completed') finishPassiveSession(); }
+    try {
+      if (active && value !== 'pending') await stopTimer('Cronômetro finalizado e tempo salvo.');
+      await sendCommand({ command: 'activity.setStatus', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: { status: value } });
+    }
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível atualizar.'); }
   }
-  async function stopLegacyTimer() {
+  async function startTimer() {
+    if (!activity || timerBusy) return;
+    setTimerBusy(true);
+    try {
+      await sendCommand({ command: 'timeEntry.start', operationId: crypto.randomUUID(), entityId: crypto.randomUUID(), expectedRevision: 0, payload: { activityId: activity.id, civilDate: new Intl.DateTimeFormat('en-CA', { timeZone: activity.schedule.timeZone }).format(new Date()), timeZone: activity.schedule.timeZone }, clientCreatedAt: new Date().toISOString() });
+      setPaused(false);
+      setNow(Date.now());
+      setMessage('Cronômetro iniciado. Ele continuará contando mesmo se você sair desta página.');
+    } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível iniciar o cronômetro.'); }
+    finally { setTimerBusy(false); }
+  }
+  async function stopTimer(successMessage: string) {
     if (!active) return;
-    try { await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() }); setMessage('Registro anterior encerrado.'); }
-    catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível encerrar o registro anterior.'); }
+    setTimerBusy(true);
+    try { await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() }); setMessage(successMessage); }
+    catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o cronômetro.'); throw failure; }
+    finally { setTimerBusy(false); }
+  }
+  async function pauseTimer() {
+    try { await stopTimer('Cronômetro pausado. O tempo desta etapa foi salvo.'); setPaused(true); }
+    catch { return; }
+  }
+  async function finishTimer() {
+    if (active) {
+      try { await stopTimer('Cronômetro finalizado e tempo salvo.'); setPaused(false); }
+      catch { return; }
+      return;
+    }
+    setPaused(false);
+    setMessage('Cronômetro finalizado.');
   }
   async function addManual(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!activity) return;
@@ -77,8 +73,18 @@ export function ActivityDetail() {
   if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><Link to="/hoje">Voltar ao Meu dia</Link></main>;
   const category = categories.find(item => item.id === activity.categoryId);
   const total = entries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : Math.max(0, Math.floor((now - Date.parse(entry.startedAt)) / 1000))), 0);
-  const passiveSeconds = Math.floor((sessionRef.current?.elapsedMs(now) ?? 0) / 1000);
-  return <main><header className="page-heading"><Link className="back-link" to="/hoje" aria-label="Voltar ao Meu dia"><Icon name="chevronLeft" /> Voltar</Link><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p><span className="passive-time" aria-label={`${duration(passiveSeconds)} nesta sessão`}><Icon name="clock" />{duration(passiveSeconds)}</span></header>
+  const runningSeconds = active ? Math.max(0, Math.floor((now - Date.parse(active.startedAt)) / 1000)) : 0;
+  return <main><header className="page-heading activity-detail-heading"><Link className="back-link" to="/hoje" aria-label="Voltar ao Meu dia"><Icon name="chevronLeft" /> Meu dia</Link><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
     <section className="panel content-form"><h2>Detalhes</h2><p>{activity.descriptionPlain || 'Sem descrição.'}</p><p>{activity.schedule.type === 'task' ? activity.schedule.dueDate ?? 'Sem prazo' : activity.schedule.startDate}</p>{activity.estimatedMinutes ? <p>Estimativa: {activity.estimatedMinutes} minutos.</p> : null}<div className="dialog-actions">{activity.kind === 'task' ? <button className="primary" onClick={() => void status(activity.status === 'completed' ? 'pending' : 'completed')}>{activity.status === 'completed' ? 'Reabrir' : 'Concluir'}</button> : <button onClick={() => void status(activity.status === 'canceled' ? 'pending' : 'canceled')}>{activity.status === 'canceled' ? 'Reativar' : 'Cancelar compromisso'}</button>}<Link className="button" to="/hoje">Abrir no Meu dia</Link></div></section>
-    <section className="panel content-form timer-panel"><div className="section-heading"><div><p className="eyebrow">Tempo da atividade</p><h2>{duration(total)}</h2></div>{active ? <button onClick={() => void stopLegacyTimer()}>Encerrar registro anterior</button> : null}</div><p className="muted">Esta página registra uma sessão enquanto fica visível. Você também pode adicionar um período manual.</p><form className="manual-time" onSubmit={addManual}><label>Tempo manual <input name="minutes" type="number" min="1" max="1440" required placeholder="Minutos" /></label><button>Registrar</button></form>{entries.length ? <ul className="time-history">{entries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : Math.floor((now - Date.parse(entry.startedAt)) / 1000))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'session' ? 'Sessão' : entry.endedAt ? 'Sessão' : 'Em andamento'}</small></li>)}</ul> : <p>O tempo registrado aparecerá aqui.</p>}</section><p role="status">{error || message}</p></main>;
+    <section className="panel content-form timer-panel">
+      <div className="timer-heading"><div><p className="eyebrow">Cronômetro</p><h2 className="timer-display" aria-label={`${stopwatch(runningSeconds)} no cronômetro`}>{stopwatch(runningSeconds)}</h2><p className="timer-total">Total registrado: <strong>{duration(total)}</strong></p></div><span className={`timer-state ${active ? 'is-running' : ''}`}>{active ? 'Em andamento' : paused ? 'Pausado' : 'Pronto para iniciar'}</span></div>
+      <p className="muted">Inicie quando começar. O cronômetro continua contando mesmo se você navegar para outra página.</p>
+      <div className="timer-actions">
+        {active ? <button type="button" className="primary" disabled={timerBusy} onClick={() => void pauseTimer()}><Icon name="clock" />Pausar</button> : <button type="button" className="primary" disabled={timerBusy || activity.status !== 'pending'} onClick={() => void startTimer()}><Icon name="clock" />{paused ? 'Retomar' : 'Iniciar cronômetro'}</button>}
+        {(active || paused) ? <button type="button" disabled={timerBusy} onClick={() => void finishTimer()}>Finalizar</button> : null}
+      </div>
+      <details className="manual-time-details"><summary>Adicionar tempo manualmente</summary><form className="manual-time" onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>
+      <div className="time-history-heading"><h3>Histórico</h3><span>{entries.length ? `${entries.length} ${entries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
+      {entries.length ? <ul className="time-history">{entries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : Math.floor((now - Date.parse(entry.startedAt)) / 1000))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Inicie o cronômetro ou adicione um período manual para acompanhar seu tempo.</p>}
+    </section><p role="status">{error || message}</p></main>;
 }
