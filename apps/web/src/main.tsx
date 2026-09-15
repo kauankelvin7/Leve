@@ -34,9 +34,33 @@ createRoot(document.getElementById('root')!).render(
 if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListener('load', () => {
   void navigator.serviceWorker.register('/sw.js').then(registration => {
     function announce() { if (registration.waiting) window.dispatchEvent(new CustomEvent('leve:update-ready', { detail: registration })); }
+    function checkForUpdate() { if (navigator.onLine) void registration.update().catch(() => undefined); }
     announce();
+    checkForUpdate();
+    window.addEventListener('focus', checkForUpdate);
+    window.addEventListener('online', checkForUpdate);
     registration.addEventListener('updatefound', () => registration.installing?.addEventListener('statechange', () => {
       if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) announce();
     }));
   });
 });
+
+const RELEASE_KEY = 'leve.release';
+async function checkRelease() {
+  if (!navigator.onLine) return;
+  try {
+    const response = await fetch('/api/version', { cache: 'no-store' });
+    const payload = await response.json() as { release?: string };
+    if (!response.ok || !payload.release) return;
+    const current = sessionStorage.getItem(RELEASE_KEY);
+    sessionStorage.setItem(RELEASE_KEY, payload.release);
+    if (current && current !== payload.release) window.dispatchEvent(new CustomEvent('leve:release-ready'));
+  } catch { /* A próxima abertura tenta novamente. */ }
+}
+
+if (import.meta.env.PROD) {
+  void checkRelease();
+  window.addEventListener('focus', () => void checkRelease());
+  window.addEventListener('online', () => void checkRelease());
+  window.setInterval(() => void checkRelease(), 5 * 60_000);
+}

@@ -270,7 +270,7 @@
 .shopping-item > .icon-button { flex: 0 0 44px; }
 .completed-shopping { margin-top: 20px; border-top: 1px solid var(--color-border); padding-top: 14px; }
 .completed-shopping summary { cursor: pointer; font-weight: 700; min-height: 44px; }
-.shopping-composer { position: sticky; top: 12px; z-index: 3; }
+.shopping-composer { position: static; }
 .calendar-colors .overdue { outline: 2px solid #a65d62; outline-offset: 1px; }
 .calendar-event.overdue { color: #87484e; text-decoration: line-through; }
 .calendar-sheet-close { display: none; }

@@ -7,9 +7,9 @@ import { where } from 'firebase/firestore';
 
 export function useUserCollection<T>(path: string, _nested = false, deletedOnly = false) {
   const { user } = useAuth();
-  const [maximum, setMaximum] = useState(50);
-  const result = useLiveQueries(`collection:${path}:${deletedOnly}:${maximum}`, () => !user || !firestore ? [] : [query(collection(firestore, `users/${user.uid}/${path}`), ...(deletedOnly ? [where('deletedAt', '>', '')] : []), limit(maximum))], maximum);
-  return { ...result, items: result.items as (T & { id: string })[], loadMore: () => setMaximum(current => Math.min(5000, current + 50)) };
+  const maximum = 50;
+  const result = useLiveQueries(`collection:${path}:${deletedOnly}`, () => !user || !firestore ? [] : [query(collection(firestore, `users/${user.uid}/${path}`), ...(deletedOnly ? [where('deletedAt', '>', '')] : []), limit(maximum))], maximum);
+  return { ...result, partial: false, items: result.items as (T & { id: string })[] };
 }
 
 export function useUserSubcollections<T>(parentPath: string, parentIds: string[], childCollection: string, deletedOnly = false) {

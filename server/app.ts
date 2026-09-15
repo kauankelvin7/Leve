@@ -40,6 +40,9 @@ app.get('/api/health', (_request, response) => response.json({
   version: process.env.VITE_APP_VERSION ?? process.env.npm_package_version ?? 'unknown',
   timestamp: new Date().toISOString(),
 }));
+app.get('/api/version', (_request, response) => response.json({
+  release: process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.VITE_APP_VERSION ?? 'local',
+}));
 app.post('/api/internal/tick', async (request, response) => { verifyTick(request); const reminders = await processReminderTick(); const recurrence = await materializeRecurringActivities(); const trash = await purgeExpiredContent(); const deletions = await resumeAccountDeletions(); response.json({ reminders, recurrence, trash, deletions }); });
 app.use('/api', async (request, response, next) => {
   const token = request.headers.authorization?.match(/^Bearer (\S+)$/)?.[1];
@@ -83,7 +86,12 @@ app.post('/api/commands', async (request, response) => {
   if (command.command === 'profile.completeTutorial') { response.json(await completeTutorial(identity, command)); return; }
   if (command.command === 'trash.empty') { response.json(await emptyTrash(identity, command)); return; }
   if (command.command === 'diagnostic.report') {
-    const diagnostic = z.object({ surface: z.enum(['calendar', 'content']), code: z.enum(['permission-denied', 'failed-precondition', 'unavailable', 'resource-exhausted', 'unauthenticated', 'cancelled', 'unknown', 'deadline-exceeded', 'internal']) }).strict().parse(command.payload);
+    const diagnostic = z.object({
+      surface: z.enum(['calendar', 'content']),
+      code: z.enum(['permission-denied', 'failed-precondition', 'unavailable', 'resource-exhausted', 'unauthenticated', 'cancelled', 'unknown', 'deadline-exceeded', 'internal']),
+      queryIndex: z.number().int().nonnegative().max(9),
+      precondition: z.enum(['index', 'other']).optional(),
+    }).strict().parse(command.payload);
     backendLog('warn', 'client.query_failed', { ...diagnostic, identity: fingerprint(identity.uid), correlationId: response.locals.correlationId });
     response.json({ received: true }); return;
   }

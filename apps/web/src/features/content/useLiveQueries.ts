@@ -45,8 +45,11 @@ export function useLiveQueries(key: string, makeQueries: () => Query[], pageSize
     }, failure => {
       failed.add(index); window.clearTimeout(timeout);
       publish({ loading: false, error: 'Não conseguimos carregar suas atividades agora. Verifique sua conexão e tente novamente.' });
-      // Only a bounded code/surface reaches the server, never document contents or SDK URLs.
-      void apiRequest('/commands', { method: 'POST', body: JSON.stringify({ command: 'diagnostic.report', operationId: crypto.randomUUID(), entityId: uid, payload: { surface: key.startsWith('calendar') ? 'calendar' : 'content', code: failure.code } }) }).catch(() => undefined);
+      // Only a bounded diagnostic reaches the server, never document contents or SDK URLs.
+      const precondition = failure.code === 'failed-precondition'
+        ? (failure.message.toLowerCase().includes('index') ? 'index' : 'other')
+        : undefined;
+      void apiRequest('/commands', { method: 'POST', body: JSON.stringify({ command: 'diagnostic.report', operationId: crypto.randomUUID(), entityId: uid, payload: { surface: key.startsWith('calendar') ? 'calendar' : 'content', code: failure.code, queryIndex: index, precondition } }) }).catch(() => undefined);
     }));
     if (!targets.length) { window.clearTimeout(timeout); publish({ items: [], loading: false, cached: false }); }
     entry.stop = () => { alive = false; window.clearTimeout(timeout); stops.forEach(stop => stop()); entry.stop = undefined; };

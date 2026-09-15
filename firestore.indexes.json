@@ -44,8 +44,24 @@
       "collectionGroup": "activities",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "schedule.endDate", "order": "ASCENDING" },
+        { "fieldPath": "schedule.startDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "schedule.startDate", "order": "ASCENDING" },
         { "fieldPath": "schedule.endDateExclusive", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activities",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "schedule.endDateExclusive", "order": "ASCENDING" },
+        { "fieldPath": "schedule.startDate", "order": "ASCENDING" }
       ]
     },
     {
