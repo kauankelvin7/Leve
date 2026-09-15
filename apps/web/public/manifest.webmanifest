@@ -1,10 +1,14 @@
 {
   "name": "Leve - agenda pessoal",
   "short_name": "Leve",
-  "description": "Agenda pessoal para atividades, notas e compras.",
+  "description": "Agenda pessoal e privada para atividades, notas, compras e controle de tempo.",
   "start_url": "/hoje",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "categories": ["productivity", "lifestyle"],
+  "lang": "pt-BR",
+  "dir": "ltr",
   "background_color": "#EDF0ED",
   "theme_color": "#EDF0ED",
   "icons": [

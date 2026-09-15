@@ -1,5 +1,5 @@
-const CACHE = 'leve-shell-v4';
-const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg'];
+const CACHE = 'leve-shell-v5';
+const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg', '/robots.txt'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));

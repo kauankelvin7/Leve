@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /entrar
+Allow: /registrar
+Disallow: /hoje
+Disallow: /calendario
+Disallow: /notas
+Disallow: /compras
+Disallow: /atividade
+Disallow: /buscar
+Disallow: /configuracoes
+Disallow: /lixeira
+Disallow: /revisao
+Disallow: /demo
+
+Sitemap: https://leve-agenda.vercel.app/sitemap.xml

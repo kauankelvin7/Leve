@@ -9,6 +9,8 @@ import { Tutorial } from '../features/content/Tutorial';
 import { NotificationBanner } from '../features/content/NotificationBanner';
 import { SessionRecovery } from '../features/activities/SessionRecovery';
 import { ActiveTimerBar } from '../features/activities/ActiveTimerBar';
+import { Avatar } from '../components/ui/Avatar';
+import { RouteMetadata } from './RouteMetadata';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -48,10 +50,10 @@ function Shell() {
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}</nav>
-      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><span className="profile-avatar" aria-hidden="true">{session?.profile?.displayName?.slice(0, 1).toLocaleUpperCase('pt-BR')}</span><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
-      <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink to="/configuracoes" aria-label="Perfil e preferências"><Icon name="profile" /></NavLink></div></div>
+      <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink className="mobile-profile" to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink></div></div>
       <div className="workspace-bar"><span><span className="workspace-prefix">Meu espaço <span aria-hidden="true">/</span></span><strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname === '/revisao' ? 'Revisão' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-actions"><Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /><span className="visually-hidden">Adicionar atividade</span></Link><span className="workspace-private">Agenda pessoal</span></span></div>
       <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
@@ -63,7 +65,7 @@ function NotFound() {
 }
 
 export function App() {
-  return <><RouteFocus /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
+  return <><RouteFocus /><RouteMetadata /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
     <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} />
     <Route element={<Protected />}><Route element={<Shell />}>

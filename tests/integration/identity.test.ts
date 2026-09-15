@@ -10,7 +10,7 @@ import { processReminderTick } from '../../server/reminders';
 
 const projectId = 'demo-leve';
 const authBase = 'http://localhost:9099/identitytoolkit.googleapis.com/v1';
-const profile = { displayName: 'Conta de teste', locale: 'pt-BR', timeZone: 'America/Sao_Paulo', weekStartsOn: 1, reduceTransparency: false };
+const profile = { displayName: 'Conta de teste', locale: 'pt-BR', timeZone: 'America/Sao_Paulo', weekStartsOn: 1, reduceTransparency: false, avatarStyle: 'avataaars', avatarSeed: 'leve-bento' } as const;
 let rules: RulesTestEnvironment;
 
 async function createUser(email: string, verified = true) {
@@ -217,6 +217,7 @@ describe('ativação de conta', () => {
     expect(first.body.result).toBe('applied');
     const retry = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(body).expect(200);
     expect(retry.body.result).toBe('alreadyApplied');
+    expect((await db.doc(`users/${user.uid}`).get()).data()).toMatchObject({ avatarStyle: 'avataaars', avatarSeed: 'leve-bento' });
     expect((await db.doc(`users/${user.uid}/categories/saude`).get()).data()?.normalizedName).toBe('saúde');
   });
 

@@ -13,6 +13,8 @@ export const profilePreferencesSchema = z.object({
   weekStartsOn: z.union([z.literal(0), z.literal(1)]),
   reduceTransparency: z.boolean(),
   colorTheme: z.enum(['green', 'purple', 'blue', 'red']).optional(),
+  avatarStyle: z.literal('avataaars').optional(),
+  avatarSeed: z.string().trim().min(1).max(80).optional(),
 }).strict();
 
 export type ProfilePreferences = z.infer<typeof profilePreferencesSchema>;

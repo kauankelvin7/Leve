@@ -126,7 +126,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('link', { name: /Preferências/ }).click();
   await page.getByLabel('Nome', { exact: true }).first().fill('Conta local atualizada');
   await page.getByLabel('Reduzir transparência').check();
-  await page.getByRole('button', { name: 'Salvar preferências' }).click();
+  await page.getByRole('button', { name: 'Salvar perfil' }).click();
   await expect(page.locator('.app-shell')).toHaveClass(/solid/);
   await page.getByLabel('Nome', { exact: true }).last().fill(categoryName);
   await page.getByRole('button', { name: 'Criar categoria' }).click();

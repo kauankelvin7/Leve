@@ -1,5 +1,13 @@
 # Leve — ponto exato de retomada
 
+## Avatar, descoberta pública e acabamento — 15/09/2026
+
+O perfil agora permite escolher e renovar um avatar Avataaars gerado localmente com DiceBear. O Firestore guarda somente `avatarStyle` e `avatarSeed`, validados pelo domínio e enviados por `profile.update`; o avatar acompanha a navegação desktop e móvel, mantém a inicial como fallback e integra exportação da conta. Os pacotes `@dicebear/core` e `@dicebear/avataaars` foram fixados em `9.4.2` porque a resolução mista com core `9.4.3` era incompatível em runtime.
+
+A camada pública recebeu canonical, Open Graph, Twitter Card, JSON-LD factual, manifesto mais completo, `robots.txt` e sitemap. Rotas autenticadas e demonstração ficam com `noindex`; somente entrada e cadastro são indexáveis. O seletor é carregado junto da rota preguiçosa de Preferências, sem aumentar o caminho inicial das páginas de agenda. O cache do worker passou para `v5`.
+
+Provas: typecheck/build aprovados e 34/34 testes unitários aprovados. O E2E visual legado ficou bloqueado antes da tela nova porque ainda procura o texto histórico “Pular tutorial”, enquanto o produto usa “Pular guia”. As tentativas focais também expuseram que o guia reaparece quando a árvore de rotas suspende antes de a conclusão chegar à sessão; essa dívida preexistente não foi mascarada por um teste instável. A persistência do avatar foi acrescentada ao teste integrado de identidade.
+
 ## Cronômetro global e acesso rápido — 15/09/2026
 
 O cronômetro persistente agora acompanha a navegação em uma barra flutuante com atividade, tempo, estado e ações de pausar, retomar, encerrar e abrir. O Meu dia ganhou atalho direto para a seção de tempo de cada atividade. A consulta global busca apenas registros abertos, sem depender do limite da listagem histórica. O painel completo recebeu âncora própria e controles com ícones. O layout reserva espaço para a barra em desktop e celular, respeita modo sólido, movimento reduzido e alvos de toque. Evidências locais: `docs/evidence/timer-floating-desktop.png`, `docs/evidence/timer-floating-mobile.png` e `docs/evidence/timer-detail-mobile.png`.
