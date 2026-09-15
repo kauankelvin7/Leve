@@ -5,6 +5,7 @@ import type { Activity, Category, TimeEntry } from '../../../../../packages/doma
 import { useUserCollection } from '../content/useUserCollection';
 import { useAuth } from '../identity/AuthProvider';
 import { Icon } from '../../components/ui/Icon';
+import { timeEntrySeconds } from './timeTracking';
 
 function minutes(seconds: number) { return Math.round(seconds / 60); }
 function span(value: number) { return value >= 60 ? `${Math.floor(value / 60)}h ${value % 60}min` : `${value}min`; }
@@ -23,11 +24,12 @@ export function Review() {
   const relevant = activities.filter(item => !item.deletedAt && ((item.schedule.type === 'task' ? item.schedule.dueDate : item.schedule.startDate) ?? '') >= start && ((item.schedule.type === 'task' ? item.schedule.dueDate : item.schedule.startDate) ?? '') < end);
   const currentEntries = entries.filter(entry => !entry.deletedAt && entry.civilDate >= start && entry.civilDate < end);
   const previousEntries = entries.filter(entry => !entry.deletedAt && entry.civilDate >= previousStart && entry.civilDate < start);
-  const actual = minutes(currentEntries.reduce((sum, entry) => sum + entry.durationSeconds, 0));
-  const previous = minutes(previousEntries.reduce((sum, entry) => sum + entry.durationSeconds, 0));
+  const now = Date.now();
+  const actual = minutes(currentEntries.reduce((sum, entry) => sum + timeEntrySeconds(entry, now), 0));
+  const previous = minutes(previousEntries.reduce((sum, entry) => sum + timeEntrySeconds(entry, now), 0));
   const estimated = relevant.reduce((sum, item) => sum + (item.estimatedMinutes ?? 0), 0);
   const completed = relevant.filter(item => item.status === 'completed').length;
-  const byCategory = categories.map(category => ({ category, seconds: currentEntries.filter(entry => activities.find(activity => activity.id === entry.activityId)?.categoryId === category.id).reduce((sum, entry) => sum + entry.durationSeconds, 0) })).filter(row => row.seconds > 0).sort((a, b) => b.seconds - a.seconds);
+  const byCategory = categories.map(category => ({ category, seconds: currentEntries.filter(entry => activities.find(activity => activity.id === entry.activityId)?.categoryId === category.id).reduce((sum, entry) => sum + timeEntrySeconds(entry, now), 0) })).filter(row => row.seconds > 0).sort((a, b) => b.seconds - a.seconds);
   const completion = relevant.length ? Math.round(completed / relevant.length * 100) : 0;
   const comparison = actual - previous;
   const maxCategorySeconds = Math.max(1, ...byCategory.map(row => row.seconds));

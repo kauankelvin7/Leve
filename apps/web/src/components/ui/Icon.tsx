@@ -19,6 +19,8 @@ const paths = {
   orderedList: 'M10 6h10M10 12h10M10 18h10M4 5h2v3M4 11h2l-2 3h2M4 17h2v4H4',
   highlight: 'm9 11 4 4 7-7-4-4-7 7M7 13l4 4-2 2H5v-4l2-2M4 21h16',
   volume: 'M11 5 6 9H3v6h3l5 4V5m4 4a4 4 0 0 1 0 6m-4.5-9.5a8 8 0 0 1 0 13',
+  play: 'm8 5 11 7-11 7V5z',
+  pause: 'M8 5v14m8-14v14',
   stop: 'M7 7h10v10H7z',
 } as const;
 

@@ -543,6 +543,9 @@ export function Today() {
                           </span>
                         </label>
                         <div className="row-actions">
+                          <Link className="button activity-timer-link" to={`/atividade/${activity.id}#cronometro`} aria-label={`Abrir cronômetro de ${activity.title}`}>
+                            <Icon name="clock" /><span>Cronômetro</span>
+                          </Link>
                           <button
                             disabled={busy}
                             onClick={() => startEdit(activity)}

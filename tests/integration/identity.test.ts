@@ -247,15 +247,24 @@ describe('Security Rules por uid', () => {
 });
 
 describe('comandos de conteúdo', () => {
-  it('registra tempo com exclusividade, revisão e encerramento persistente', async () => {
+  it('persiste pausa e retomada do cronômetro sem perder o tempo acumulado', async () => {
     const user = await createUser('tempo@example.test');
     await seedAccount(user.uid);
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'atividade-tempo', '39000000-0000-4000-8000-000000000001', 0, { ...activityPayload, estimatedMinutes: 30 })).expect(200);
     const start = contentCommand('timeEntry.start', 'tempo-a', '39000000-0000-4000-8000-000000000002', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' });
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(start).expect(200);
+    await db.doc(`users/${user.uid}/timeEntries/tempo-a`).update({ startedAt: new Date(Date.now() - 2_000).toISOString() });
+    const pause = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.pause', 'tempo-a', '39000000-0000-4000-8000-000000000008', 1, {})).expect(200);
+    const paused = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
+    expect(paused).toMatchObject({ paused: true, pausedAt: expect.any(String), accumulatedSeconds: expect.any(Number) });
+    expect(paused.accumulatedSeconds).toBeGreaterThanOrEqual(2);
+    expect(paused.durationSeconds).toBe(paused.accumulatedSeconds);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.resume', 'tempo-a', '39000000-0000-4000-8000-000000000009', pause.body.revision, {})).expect(200);
+    const resumed = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
+    expect(resumed).toMatchObject({ paused: false, pausedAt: null, accumulatedSeconds: paused.accumulatedSeconds });
     const duplicate = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.start', 'tempo-b', '39000000-0000-4000-8000-000000000003', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' }));
     expect(duplicate.status).toBe(409); expect(duplicate.body.code).toBe('TIMER_ALREADY_RUNNING');
-    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-a', '39000000-0000-4000-8000-000000000004', 1, {})).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-a', '39000000-0000-4000-8000-000000000004', resumed.revision, {})).expect(200);
     const stored = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
     expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(1); expect(stored.revision).toBe(2);
     expect((await db.doc(`users/${user.uid}/internal/activeTimer`).get()).exists).toBe(false);

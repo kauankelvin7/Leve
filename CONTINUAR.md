@@ -1,5 +1,11 @@
 # Leve — ponto exato de retomada
 
+## Cronômetro global e acesso rápido — 15/09/2026
+
+O cronômetro persistente agora acompanha a navegação em uma barra flutuante com atividade, tempo, estado e ações de pausar, retomar, encerrar e abrir. O Meu dia ganhou atalho direto para a seção de tempo de cada atividade. A consulta global busca apenas registros abertos, sem depender do limite da listagem histórica. O painel completo recebeu âncora própria e controles com ícones. O layout reserva espaço para a barra em desktop e celular, respeita modo sólido, movimento reduzido e alvos de toque. Evidências locais: `docs/evidence/timer-floating-desktop.png`, `docs/evidence/timer-floating-mobile.png` e `docs/evidence/timer-detail-mobile.png`.
+
+Validações desta entrega: build aprovado, testes de integração com Auth/Firestore Emulator aprovados e E2E focal do cronômetro aprovado em desktop e 390 px, com Axe WCAG A/AA e sem overflow horizontal. A suíte unitária revelou um fixture antigo incompleto do service worker; o mock de `clients.matchAll` foi corrigido.
+
 ## Ajuda e avisos responsivos — 15/09/2026
 
 Ajuda movida para uma seção das Preferências. Removido o botão flutuante e suas coordenadas fixas no mobile. Guia e banner usam portal no body, dimensões limitadas pela viewport e safe areas. Guia tem cabeçalho/ações separados da leitura com rolagem; a etapa de notificações aponta para as configurações existentes, sem duplicar o formulário dentro do guia. Banner móvel separa texto, fechar e abrir. Revisão do diff sem erros de whitespace; testes e build não executados conforme orientação do usuário. Validação visual no aparelho permanece pendente.

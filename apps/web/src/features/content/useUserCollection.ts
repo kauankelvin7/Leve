@@ -4,12 +4,22 @@ import { firestore } from '../../platform/firebase';
 import { useAuth } from '../identity/AuthProvider';
 import { useLiveQueries } from './useLiveQueries';
 import { where } from 'firebase/firestore';
+import type { TimeEntry } from '../../../../../packages/domain/src/content';
 
 export function useUserCollection<T>(path: string, _nested = false, deletedOnly = false) {
   const { user } = useAuth();
   const maximum = 50;
   const result = useLiveQueries(`collection:${path}:${deletedOnly}`, () => !user || !firestore ? [] : [query(collection(firestore, `users/${user.uid}/${path}`), ...(deletedOnly ? [where('deletedAt', '>', '')] : []), limit(maximum))], maximum);
   return { ...result, partial: false, items: result.items as (T & { id: string })[] };
+}
+
+export function useActiveTimeEntry() {
+  const { user } = useAuth();
+  const result = useLiveQueries('active-time-entry', () => !user || !firestore ? [] : [
+    query(collection(firestore, `users/${user.uid}/timeEntries`), where('endedAt', '==', null), limit(5)),
+  ], 5);
+  const item = result.items.find(entry => !entry.deletedAt) as (TimeEntry & { id: string }) | undefined;
+  return { ...result, item: item ?? null };
 }
 
 export function useUserSubcollections<T>(parentPath: string, parentIds: string[], childCollection: string, deletedOnly = false) {
@@ -40,7 +50,7 @@ export function useUserDocument<T>(path: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   useEffect(() => {
-    if (!user || !firestore) return;
+    if (!user || !firestore || !path) { setItem(null); setLoading(false); setError(''); return; }
     setLoading(true);
     return onSnapshot(doc(firestore, `users/${user.uid}/${path}`), snapshot => {
       setItem(snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } as T & { id: string } : null);

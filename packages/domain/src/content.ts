@@ -80,6 +80,11 @@ export type TimeEntry = EntityMeta & {
   startedAt: string;
   endedAt: string | null;
   durationSeconds: number;
+  /** Tempo já consolidado pelo servidor antes da etapa atual do cronômetro. */
+  accumulatedSeconds?: number;
+  /** Um cronômetro pausado continua aberto, mas não soma tempo até ser retomado. */
+  paused?: boolean;
+  pausedAt?: string | null;
   source: 'session' | 'manual' | 'timer';
   sessionId?: string;
 };
