@@ -6,7 +6,7 @@
   "installCommand": "npm ci",
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/:page(hoje|calendario|notas|compras|configuracoes|lixeira|buscar|entrar|registrar|recuperar)", "destination": "/index.html" },
+    { "source": "/:page(hoje|calendario|notas|compras|configuracoes|lixeira|buscar|entrar|registrar|recuperar|privacidade)", "destination": "/index.html" },
     { "source": "/:page(notas|compras|atividade)/:id", "destination": "/index.html" },
     { "source": "/demo", "destination": "/index.html" },
     { "source": "/demo/:page(hoje|calendario|notas|compras|configuracoes)", "destination": "/index.html" },

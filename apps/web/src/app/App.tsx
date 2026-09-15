@@ -13,6 +13,7 @@ import { SessionRecovery } from '../features/activities/SessionRecovery';
 import { ActiveTimerBar } from '../features/activities/ActiveTimerBar';
 import { Avatar } from '../components/ui/Avatar';
 import { RouteMetadata } from './RouteMetadata';
+import { Privacy } from '../features/content/Privacy';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -75,7 +76,7 @@ function NotFound() {
 export function App() {
   return <><RouteFocus /><RouteMetadata /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
-    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} />
+    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} />
     <Route element={<Protected />}><Route element={<Shell />}>
       <Route path="/hoje" element={<Today />} />
       <Route path="/calendario" element={<Calendar />} />

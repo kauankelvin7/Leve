@@ -95,6 +95,11 @@
 }
 .app-shell .user-greeting { display: inline-flex; flex-wrap: wrap; gap: .28em; align-items: baseline; margin-top: 8px; color: var(--color-text-muted); }
 .app-shell .user-greeting strong { color: var(--color-text); font-size: 1.08em; font-weight: 800; letter-spacing: -.02em; }
+.legal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.legal-grid .panel { margin: 0; }
+.legal-grid h2 { margin-bottom: 12px; }
+.auth-privacy-link { margin: 18px 0 0; text-align: center; font-size: .82rem; }
+@media (max-width: 739px) { .legal-grid { grid-template-columns: 1fr; } }
 @media (max-width: 739px) {
   .app-shell .page-heading { margin-block: 20px; padding-bottom: 18px; }
   .app-shell .page-heading h1 { font-size: 3.3rem; }
