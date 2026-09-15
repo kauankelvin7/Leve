@@ -9,6 +9,8 @@ test-results/
 playwright-report/
 *.log
 .cache/
+.agents/
+firebase-export*/
 
 .vercel
 .env*

@@ -148,8 +148,10 @@ describe('API autenticada', () => {
   it('mantém health público e rejeita sessão sem token ou com token inválido', async () => {
     const health = await request(app).get('/api/health').expect(200);
     expect(health.body.status).toBe('ok');
-    expect(typeof health.body.version).toBe('string');
-    expect(Number.isNaN(Date.parse(health.body.timestamp))).toBe(false);
+    expect(health.body).toEqual({ status: 'ok' });
+    const version = await request(app).get('/api/version').expect(200);
+    expect(version.body.release).toMatch(/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$|^stable$/);
+    expect(JSON.stringify(version.body)).not.toContain('VERCEL_');
     expect((await request(app).get('/api/session')).status).toBe(401);
     const invalid = await request(app).get('/api/session').set('authorization', 'Bearer invalido');
     expect(invalid.status).toBe(401);

@@ -479,3 +479,17 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - Respostas de validação da API passaram a apontar a área compreensível do formulário (por exemplo, a opção de repetição mensal), sem expor o caminho técnico do schema.
 - Validação desta retomada concluída: `npm run typecheck`, `npm run build`, `npm run lint` e `npm test` (36/36) passaram. Commit/push ficam registrados no histórico desta etapa.
 - Ajuste visual adicional concluído: o botão de ajuda/tutorial no desktop agora mantém distância segura do rodapé e não sobrepõe mais o botão `Sair`; o comportamento contextual do mobile foi preservado.
+## Atualização de segurança — 15/09/2026
+
+- Reproduzido em leitura o retorno público de `GET /api/version`: o campo `release` expunha identificador interno de deployment (32 caracteres).
+- Corrigido em `server/app.ts`: health mínimo e release limitado a versão semântica explícita, com fallback `stable`.
+- Corrigido em `apps/web/vite.config.ts`: build sem source maps e bloqueio de variáveis sensíveis com prefixo `VITE_`.
+- Evidências: `npm run typecheck`, `npm run build` e `npm run test:integration` (21 testes) aprovados localmente; endpoints protegidos públicos testados sem credencial e retornaram `401`.
+- Registro detalhado: `docs/security/SECURITY-AUDIT.md`.
+- A correção ainda precisa ser publicada no provedor quando houver autorização; a verificação de produção feita antes da publicação refletirá o código antigo.
+
+## Correção de atividades vinculadas em notas — 15/09/2026
+
+- Causa: cada ocorrência materializada de uma atividade recorrente é um documento próprio para o calendário; a tela de notas listava todos como opções independentes.
+- Correção: `uniqueActivitiesForLinking` agrupa somente ocorrências que compartilham `seriesId`, preserva atividades avulsas e mantém a ocorrência já selecionada durante a edição.
+- Testes: `tests/unit/activity-linking.test.ts`; suíte unitária passou com 38 testes e o build/typecheck continuam aprovados.

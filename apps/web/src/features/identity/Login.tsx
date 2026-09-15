@@ -46,6 +46,10 @@ function googleProvider() {
   return provider;
 }
 
+function GoogleLogo() {
+  return <svg className="google-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.27c0-.7-.06-1.38-.18-2.02H12v3.83h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.2Z"/><path fill="#34A853" d="M12 21.7c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.7-1.72-5.47-4.03H3.29v2.53A9.74 9.74 0 0 0 12 21.7Z"/><path fill="#FBBC05" d="M6.53 13.79a5.85 5.85 0 0 1 0-3.58V7.68H3.29a9.74 9.74 0 0 0 0 8.64l3.24-2.53Z"/><path fill="#EA4335" d="M12 6.18c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.71 5.38l3.24 2.53C7.3 7.9 9.46 6.18 12 6.18Z"/></svg>;
+}
+
 function PasswordField({ name, label, autoComplete }: { name: string; label: string; autoComplete: 'current-password' | 'new-password' }) {
   const id = useId();
   const [visible, setVisible] = useState(false);
@@ -196,7 +200,7 @@ export function Login({ mode = 'login' }: { mode?: AuthMode }) {
       <button type="button" className="text-button" disabled={busy} onClick={() => void logout()}>Sair desta conta</button>
     </> : <>
       <form onSubmit={submit}>{mode === 'register' ? <><p className="auth-description">Crie seu acesso com e-mail e senha ou use sua conta Google.</p><label>Seu nome<input name="name" autoComplete="name" required maxLength={80} /></label></> : null}<label>E-mail<input name="email" type="email" autoComplete="email" required disabled={!configured || busy} /></label>{mode !== 'recovery' ? <PasswordField name="password" label="Senha" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} /> : null}{mode === 'register' ? <><PasswordField name="passwordConfirmation" label="Confirmar senha" autoComplete="new-password" /><small className="field-hint">A senha deve ter pelo menos 8 caracteres. Você confirmará seu e-mail antes de usar a agenda.</small></> : null}<button className="primary auth-submit" disabled={!configured || busy}>{busy ? 'Aguarde…' : mode === 'recovery' ? 'Enviar instruções' : mode === 'register' ? 'Criar e verificar e-mail' : 'Entrar'}</button></form>
-      {mode !== 'recovery' ? <><div className="auth-divider"><span>ou</span></div><button type="button" className="google-button" disabled={!configured || busy} onClick={() => void google()}><span aria-hidden="true">G</span>{mode === 'register' ? ' Criar conta com Google' : ' Continuar com Google'}</button>{mode === 'login' ? <Link className="text-link recovery-link" to="/recuperar">Esqueci minha senha</Link> : null}</> : <Link className="text-link" to="/entrar">Voltar para entrar</Link>}
+      {mode !== 'recovery' ? <><div className="auth-divider"><span>ou</span></div><button type="button" className="google-button" disabled={!configured || busy} onClick={() => void google()}><GoogleLogo />{mode === 'register' ? ' Criar conta com Google' : ' Continuar com Google'}</button>{mode === 'login' ? <Link className="text-link recovery-link" to="/recuperar">Esqueci minha senha</Link> : null}</> : <Link className="text-link" to="/entrar">Voltar para entrar</Link>}
     </>}
     {feedback ? <p className={`auth-feedback ${feedback.kind}`} role={feedback.kind === 'error' ? 'alert' : 'status'} aria-live="polite">{feedback.text}</p> : null}
   </main></div>;

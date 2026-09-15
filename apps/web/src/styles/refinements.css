@@ -239,7 +239,7 @@
   z-index: 80;
   right: 24px;
   /* Mantém a ajuda acima do rodapé, sem cobrir o botão "Sair". */
-  bottom: calc(80px + env(safe-area-inset-bottom));
+  bottom: calc(112px + env(safe-area-inset-bottom));
 }
 
 .visually-hidden {
@@ -298,7 +298,7 @@
   position: fixed;
   z-index: 100;
   right: 24px;
-  bottom: 24px;
+  bottom: calc(112px + env(safe-area-inset-bottom));
   width: var(--tutorial-card-width);
   max-height: 60dvh;
   overflow-y: auto;

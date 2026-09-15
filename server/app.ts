@@ -48,14 +48,12 @@ app.use((request, response, next) => {
   });
   next();
 });
-app.get('/api/health', (_request, response) => response.json({
-  status: 'ok',
-  version: process.env.VITE_APP_VERSION ?? process.env.npm_package_version ?? 'unknown',
-  timestamp: new Date().toISOString(),
-}));
-app.get('/api/version', (_request, response) => response.json({
-  release: process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.VITE_APP_VERSION ?? 'local',
-}));
+app.get('/api/health', (_request, response) => response.json({ status: 'ok' }));
+app.get('/api/version', (_request, response) => {
+  const configured = process.env.PUBLIC_RELEASE ?? process.env.VITE_APP_VERSION;
+  const release = configured && /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(configured) ? configured : 'stable';
+  response.json({ release });
+});
 app.post('/api/internal/tick', async (request, response) => { verifyTick(request); const reminders = await processReminderTick(); const recurrence = await materializeRecurringActivities(); const trash = await purgeExpiredContent(); const deletions = await resumeAccountDeletions(); response.json({ reminders, recurrence, trash, deletions }); });
 app.use('/api', async (request, response, next) => {
   const token = request.headers.authorization?.match(/^Bearer (\S+)$/)?.[1];
