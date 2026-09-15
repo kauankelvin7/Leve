@@ -15,6 +15,19 @@ import { materializeRecurringActivities, processReminderTick, purgeExpiredConten
 
 export const app = express();
 app.disable('x-powered-by');
+const corsOrigins = new Set((process.env.CORS_ORIGINS ?? '').split(',').map((origin) => origin.trim()).filter(Boolean));
+app.use((request, response, next) => {
+  const origin = request.headers.origin;
+  if (origin && corsOrigins.has(origin)) {
+    response.setHeader('Access-Control-Allow-Origin', origin);
+    response.setHeader('Vary', 'Origin');
+    response.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.setHeader('Access-Control-Max-Age', '600');
+    if (request.method === 'OPTIONS') { response.status(204).end(); return; }
+  }
+  next();
+});
 app.use((request, response, next) => {
   response.setHeader('Cache-Control', 'no-store');
   response.setHeader('X-Content-Type-Options', 'nosniff');
