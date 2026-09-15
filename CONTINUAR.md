@@ -1,5 +1,15 @@
 # Leve — ponto exato de retomada
 
+## Revisão visual sem serifa — 15/09/2026
+
+A interface recebeu uma mudança visual ampla preservando as quatro paletas. A navegação desktop agora usa uma superfície escura derivada da cor escolhida, os painéis têm aparência de papel com bordas mais definidas, os botões têm hierarquia mais clara e cada área ganhou tratamento próprio. Meu dia inclui resumo da data e atalhos para notas, compras e tempo registrado. Notas lembram folhas de caderno; compras usam contadores e progresso com mais contraste. A composição móvel mantém os mesmos acessos e não transborda a 390 px.
+
+Toda a interface usa Nunito e DM Sans. A dependência, o carregamento e a licença local de Instrument Serif foram removidos. A hierarquia agora depende de peso, escala, espaçamento e cor.
+
+O `Suspense` das rotas foi movido para dentro do shell, preservando navegação, guia e cronômetro durante trocas de página. O fallback de avatar trata falhas de carregamento. O teste integrado do cronômetro passou a conferir a revisão relativa ao estado retomado, cobrindo corretamente start, pause, resume e stop.
+
+Provas concluídas: build/typecheck aprovado; 34/34 testes unitários; 21/21 testes integrados; E2E visual focal aprovado em sete rotas, 1440 px e 390 px, com Axe WCAG A/AA e sem overflow horizontal.
+
 ## Avatar, descoberta pública e acabamento — 15/09/2026
 
 O perfil agora permite escolher e renovar um avatar Avataaars gerado localmente com DiceBear. O Firestore guarda somente `avatarStyle` e `avatarSeed`, validados pelo domínio e enviados por `profile.update`; o avatar acompanha a navegação desktop e móvel, mantém a inicial como fallback e integra exportação da conta. Os pacotes `@dicebear/core` e `@dicebear/avataaars` foram fixados em `9.4.2` porque a resolução mista com core `9.4.3` era incompatível em runtime.

@@ -19,7 +19,7 @@ export function AvatarPicker({ name, value, onChange }: { name: string; value?: 
   return <fieldset className="avatar-picker">
     <legend>Seu avatar</legend>
     <div className="avatar-picker-heading">
-      <p>Escolha uma ilustração. Ela é criada no aparelho e salva como uma pequena chave, sem enviar sua foto.</p>
+      <p>Escolha um rosto para deixar seu perfil com a sua cara. Você pode trocar quando quiser.</p>
       <button type="button" onClick={refresh}>Ver outras opções</button>
     </div>
     <div className="avatar-options" role="radiogroup" aria-label="Escolha do avatar">

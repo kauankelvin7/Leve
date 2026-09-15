@@ -1,5 +1,13 @@
 # Leve — direção do frontend
 
+## Revisão editorial de 15/09/2026
+
+Pedido vigente: mudar de forma perceptível a aparência dos componentes. A direção agora distingue navegação em tinta escura, superfícies de papel e áreas de trabalho. `editorial.css` concentra essa camada compartilhada. As quatro paletas continuam determinando o acento e o fundo da navegação.
+
+Nunito e DM Sans continuam em toda a interface, inclusive títulos e números. Os painéis têm bordas definidas e pouca sombra. Botões primários ganham base de pressão; os secundários ficam planos. Notas têm borda de caderno e compras usam progresso fino com porcentagens legíveis. Meu dia tem uma data em destaque e atalhos reais para notas, compras e tempo registrado. No celular a composição se comprime sem esconder os acessos. Movimento é curto e respeita a preferência do sistema.
+
+O carregamento das rotas fica dentro do shell para conservar navegação, guia e cronômetro durante a troca de páginas. Nenhuma nova biblioteca de animação foi adicionada.
+
 ## Referências e propósito
 
 Agenda pessoal, calendário, notas e compras para uso cotidiano. A referência visual consultada é https://leve-agenda-gih.kauankelvin20.chatgpt.site/ (Meu dia, Calendário, Minhas notas e Compras). Reaproveitar princípios de hierarquia e espaçamento, sem copiar textos motivacionais, identidade ou dados de exemplo.
@@ -12,7 +20,7 @@ Preservar as quatro paletas do perfil. Seleção, hover, foco, controles, navega
 
 ## Tipografia
 
-DM Sans para interface e leitura; Instrument Serif para títulos, marca e notas. Hierarquia com títulos expressivos, descrições curtas e metadados discretos, mas com contraste AA. Datas civis usam Temporal e o fuso do perfil.
+Nunito e DM Sans em toda a interface, inclusive títulos, marca e notas. A hierarquia usa peso, escala e espaçamento, com contraste AA. Datas civis usam Temporal e o fuso do perfil.
 
 ## Layout
 

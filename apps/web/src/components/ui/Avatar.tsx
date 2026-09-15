@@ -27,7 +27,10 @@ export function Avatar({ name, seed, className = '', decorative = false }: Avata
   useEffect(() => {
     let current = true;
     if (!seed) { setSource(''); return () => { current = false; }; }
-    void renderer().then(render => { if (current) setSource(render(seed)); });
+    void renderer().then(render => { if (current) setSource(render(seed)); }).catch(() => {
+      diceBear = null;
+      if (current) setSource('');
+    });
     return () => { current = false; };
   }, [seed]);
 

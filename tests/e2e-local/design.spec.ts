@@ -10,8 +10,10 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
-  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
-  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
+  await expect(page.getByRole('button', { name: 'Pular guia' })).toBeVisible();
+  const guideSaved = page.waitForResponse(response => response.url().endsWith('/api/session') && response.ok());
+  await page.getByRole('button', { name: 'Pular guia' }).click();
+  await guideSaved;
   await page.goto('/configuracoes');
   if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
     await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
@@ -22,15 +24,15 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   for (const label of ['Roxo suave', 'Azul suave', 'Vermelho suave', 'Verde suave']) {
     await page.getByLabel(label, { exact: true }).click();
     await expect(page.getByLabel(label, { exact: true })).toBeChecked();
-    const colors = await page.locator('.profile-link').evaluate(element => {
+    const colors = await page.locator('.sidebar').evaluate(element => {
       const probe = document.createElement('span');
-      probe.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-action-primary');
+      probe.style.background = getComputedStyle(document.documentElement).getPropertyValue('--ink-surface');
       document.body.append(probe);
-      const theme = getComputedStyle(probe).color;
+      const theme = getComputedStyle(probe).backgroundColor;
       probe.remove();
-      return { link: getComputedStyle(element).color, theme };
+      return { sidebar: getComputedStyle(element).backgroundColor, theme };
     });
-    expect(colors.link).toBe(colors.theme);
+    expect(colors.sidebar).toBe(colors.theme);
   }
   await page.getByRole('link', { name: 'Calendário', exact: true }).click();
   await expect(page.locator('.calendar-day')).toHaveCount(42);

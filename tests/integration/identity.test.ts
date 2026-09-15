@@ -267,7 +267,7 @@ describe('comandos de conteúdo', () => {
     expect(duplicate.status).toBe(409); expect(duplicate.body.code).toBe('TIMER_ALREADY_RUNNING');
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-a', '39000000-0000-4000-8000-000000000004', resumed.revision, {})).expect(200);
     const stored = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
-    expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(1); expect(stored.revision).toBe(2);
+    expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(paused.accumulatedSeconds); expect(stored.revision).toBe(resumed.revision + 1);
     expect((await db.doc(`users/${user.uid}/internal/activeTimer`).get()).exists).toBe(false);
     const sessionId = '39000000-0000-4000-8000-000000000005';
     const sessionPayload = { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo', durationSeconds: 47 * 60, sessionId };

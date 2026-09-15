@@ -233,6 +233,11 @@ export function Today() {
         </button>}
       </header>
 
+      <section className="day-overview" aria-label="Resumo do dia selecionado">
+        <div className="day-overview-date"><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { month: 'long' })}</span><strong>{Temporal.PlainDate.from(selectedDay).day}</strong><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
+        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'atividade para hoje' : 'atividades para hoje'}` : 'Espaço para seus planos'}</h2><p>{plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
+      </section>
+
       <div className="agenda-layout">
         {/* Main column */}
         <div>

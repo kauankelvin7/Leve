@@ -55,7 +55,9 @@ function Shell() {
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink className="mobile-profile" to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink></div></div>
       <div className="workspace-bar"><span><span className="workspace-prefix">Meu espaço <span aria-hidden="true">/</span></span><strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname === '/revisao' ? 'Revisão' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-actions"><Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /><span className="visually-hidden">Adicionar atividade</span></Link><span className="workspace-private">Agenda pessoal</span></span></div>
-      <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar /><Outlet /><footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
+      <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
+      <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
+      <footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
   </div>;
 }
