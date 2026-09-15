@@ -57,6 +57,23 @@
 .app-shell .loading-preview { border-radius: 12px; box-shadow: none; background: var(--paper-surface); }
 .app-shell .loading-state-cards { min-height: 45vh; }
 .app-shell .active-timer-bar { border-radius: 12px; border-top: 3px solid var(--color-action-primary); }
+.app-shell .timer-panel { position: relative; overflow: hidden; padding: 30px 34px 26px; border: 0; background: #fffdf8; box-shadow: 0 10px 0 color-mix(in srgb, var(--ink-surface) 12%, transparent), 0 22px 45px color-mix(in srgb, var(--ink-surface) 10%, transparent); }
+.app-shell .timer-panel::before { content: ''; position: absolute; inset: 0 0 auto; height: 5px; background: var(--ink-surface); }
+.app-shell .timer-heading { align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--editorial-line); }
+.app-shell .timer-heading-copy .eyebrow { margin-bottom: 10px; color: var(--ink-surface); }
+.app-shell .timer-display { margin: 0 0 9px; font-size: clamp(3.5rem, 9vw, 6.5rem); letter-spacing: -.075em; color: var(--ink-surface); }
+.app-shell .timer-total { font-size: .9rem; }
+.app-shell .timer-total strong { color: var(--ink-surface); font-size: 1.05rem; }
+.app-shell .timer-state { align-self: start; margin-top: 4px; background: #f8f5ee; font-weight: 700; }
+.app-shell .timer-state.is-running { background: #e6efe9; }
+.app-shell .timer-actions { margin-top: 22px; }
+.app-shell .timer-actions .primary { min-height: 48px; padding-inline: 18px; }
+.app-shell .manual-time-details { margin-top: 24px; }
+.app-shell .time-history-heading { margin-top: 28px; padding-top: 25px; }
+.app-shell .time-history-heading .eyebrow { margin: 0 0 3px; color: var(--color-text-muted); }
+.app-shell .time-history-heading h3 { font-size: 1.35rem; }
+.app-shell .time-history li { padding: 15px 0; }
+@media (max-width: 739px) { .app-shell .timer-panel { padding: 24px 20px 20px; } .app-shell .timer-heading { align-items: start; flex-direction: column; gap: 16px; } .app-shell .timer-state { align-self: auto; } .app-shell .timer-display { font-size: 4rem; } }
 @media (min-width: 740px) {
   .app-shell .sidebar { background: var(--ink-surface); color: #fffdf8; border: 0; border-radius: 18px; backdrop-filter: none; box-shadow: none; height: max-content; max-height: calc(100dvh - clamp(40px, 4.4vw, 68px)); padding: 24px 14px 14px; }
   .app-shell .sidebar .brand-caption { margin-bottom: 22px; }
