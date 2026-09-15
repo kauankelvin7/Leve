@@ -66,6 +66,7 @@ export function Today() {
   const [statusFilter, setStatusFilter] = useState(() => localStorage.getItem('leve.today.statusFilter') ?? 'all');
   const [categoryFilter, setCategoryFilter] = useState(() => localStorage.getItem('leve.today.categoryFilter') ?? 'all');
   const [busy, setBusy] = useState(false);
+  const [messageTone, setMessageTone] = useState<'success' | 'error' | 'info'>('info');
   const [kind, setKind] = useState<'task' | 'event'>('task');
   const [eventAllDay, setEventAllDay] = useState(false);
   const [recurrenceFrequency, setRecurrenceFrequency] = useState('none');
@@ -156,8 +157,9 @@ export function Today() {
 
     const recurring = !editing && recurrenceFrequency !== 'none';
     const future = Boolean(editing?.seriesId) && editScope === 'future';
+    const monthlyPolicy = fields.get('monthlyPolicy') === 'skip' ? 'skip' : 'lastDay';
     const payload = recurring
-      ? { activity, recurrence: { frequency: recurrenceFrequency, interval: Number(fields.get('recurrenceInterval')) || 1, until: String(fields.get('recurrenceUntil')) || null, count: null, monthlyPolicy: String(fields.get('monthlyPolicy')) || 'lastDay' } }
+      ? { activity, recurrence: { frequency: recurrenceFrequency, interval: Number(fields.get('recurrenceInterval')) || 1, until: String(fields.get('recurrenceUntil')) || null, count: null, monthlyPolicy } }
       : future ? { activity, newSeriesId: futureSeriesId.current }
       : activity;
 
@@ -169,7 +171,7 @@ export function Today() {
       pending.current = { command, operationId: crypto.randomUUID(), entityId, expectedRevision, payload, clientCreatedAt: new Date().toISOString() };
     }
 
-    setBusy(true); setMessage('');
+    setBusy(true); setMessage(''); setMessageTone('info');
     try {
       await sendCommand(pending.current);
       pending.current = null;
@@ -177,9 +179,9 @@ export function Today() {
       setKind('task'); setEventAllDay(false);
       setRecurrenceFrequency('none'); setEditScope('occurrence');
       form.reset();
-      setMessage(editing ? 'Atividade atualizada.' : 'Atividade adicionada.');
+      setMessage(editing ? 'Atividade atualizada.' : 'Atividade adicionada.'); setMessageTone('success');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Não foi possível salvar. Seu rascunho foi preservado.');
+      setMessage(error instanceof Error ? error.message : 'Não foi possível salvar. Seu rascunho foi preservado.'); setMessageTone('error');
     } finally {
       setBusy(false);
     }
@@ -187,24 +189,24 @@ export function Today() {
 
   async function trash(activity: StoredActivity) {
     if (busy) return;
-    setBusy(true); setMessage('');
+    setBusy(true); setMessage(''); setMessageTone('info');
     try {
       await sendCommand({ command: 'activity.trash', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
-      setMessage('Atividade movida para a lixeira.');
+      setMessage('Atividade movida para a lixeira.'); setMessageTone('success');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Não foi possível remover.');
+      setMessage(error instanceof Error ? error.message : 'Não foi possível remover.'); setMessageTone('error');
     } finally { setBusy(false); }
   }
 
   async function toggle(activity: StoredActivity) {
     if (busy) return;
     const next = activity.status === 'completed' ? 'pending' : 'completed';
-    setBusy(true); setMessage('');
+    setBusy(true); setMessage(''); setMessageTone('info');
     setOptimisticStatus(cur => ({ ...cur, [activity.id]: next }));
     try {
       await sendCommand({ command: 'activity.setStatus', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: { status: next }, clientCreatedAt: new Date().toISOString() });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Não foi possível atualizar.');
+      setMessage(error instanceof Error ? error.message : 'Não foi possível atualizar.'); setMessageTone('error');
       setOptimisticStatus(cur => { const n = { ...cur }; delete n[activity.id]; return n; });
     } finally { setBusy(false); }
   }
@@ -484,6 +486,7 @@ export function Today() {
                     Cancelar
                   </button>
                 </div>
+                {message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
               </form>
             </section>
           )}
@@ -498,6 +501,8 @@ export function Today() {
               <label>Estado<select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
               <label>Categoria<select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{activeCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
             </div>
+
+            {!composerOpen && message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
 
             {activityQuery.error && <LoadError message={activityQuery.error} retry={activityQuery.retry} />}
 
@@ -607,12 +612,7 @@ export function Today() {
         </aside>
       </div>
 
-      {/* Status message */}
-      {(message || noteError || shoppingError) && (
-        <p role="status" className="form-status">
-          {message || noteError || shoppingError || shoppingItems.error}
-        </p>
-      )}
+      {(noteError || shoppingError || shoppingItems.error) && <p role="alert" className="form-status activity-form-status error" aria-live="assertive">{noteError || shoppingError || shoppingItems.error}</p>}
     </main>
   );
 }

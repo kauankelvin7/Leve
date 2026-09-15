@@ -11,6 +11,22 @@ export class ApiError extends Error {
   }
 }
 
+const validationLabels: Record<string, string> = {
+  'recurrence.monthlyPolicy': 'a opção para meses sem esse dia',
+  'recurrence.interval': 'o intervalo da repetição',
+  'recurrence.until': 'a data final da repetição',
+  'activity.title': 'o título da atividade',
+  'activity.schedule': 'a data e o horário',
+};
+
+function responseMessage(status: number, data: { code?: string; message?: string; details?: unknown } | null) {
+  const base = data?.message ?? apiErrorMessage(status);
+  if (data?.code !== 'VALIDATION_ERROR' || !Array.isArray(data.details)) return base;
+  const path = data.details.find((detail): detail is { path?: string } => Boolean(detail && typeof detail === 'object' && 'path' in detail))?.path;
+  const label = path ? validationLabels[path] : undefined;
+  return label ? `${base} Revise ${label} e tente novamente.` : `${base} Revise os campos destacados e tente novamente.`;
+}
+
 export async function apiRequest<Result>(path: string, options: RequestInit = {}): Promise<Result> {
   const user = firebaseAuth?.currentUser;
   if (!user) throw new ApiError(401, 'AUTH_REQUIRED', 'Entre na sua conta para continuar.');
@@ -33,7 +49,7 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
     throw new ApiError(0, 'NETWORK_ERROR', 'A conexão falhou. Seu rascunho continua salvo neste aparelho.');
   }
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw new ApiError(response.status, data?.code ?? 'SERVICE_UNAVAILABLE', data?.message ?? apiErrorMessage(response.status), data?.details);
+  if (!response.ok) throw new ApiError(response.status, data?.code ?? 'SERVICE_UNAVAILABLE', responseMessage(response.status, data), data?.details);
   if (!data) throw new ApiError(503, 'INVALID_RESPONSE', 'Não recebemos uma confirmação. Tente novamente.');
   return data as Result;
 }

@@ -470,3 +470,11 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - O acabamento “Vidro & Papel” foi uniformizado em Meu dia, calendário, notas, busca, preferências e lixeira, incluindo estados vazios, hierarquia, foco, superfícies e comportamento responsivo.
 - Ícones do sistema substituem glifos soltos nas ações de voltar e fechar notificação.
 - A validação automatizada e manual desta rodada ficou deliberadamente para depois, a pedido do usuário. Não houve commit nem push desta etapa.
+
+# Progresso em 15/09/2026 — validação do formulário de atividades
+
+- Corrigida a origem da falha `VALIDATION_ERROR` em atividades recorrentes: quando o campo mensal não é renderizado, o formulário não envia mais o texto inválido `"null"`; o payload usa sempre `lastDay` ou `skip`, conforme o contrato do domínio.
+- O feedback da criação/edição de atividade deixou de ficar isolado no rodapé. Ele aparece junto às ações do formulário enquanto a pessoa ainda pode corrigir os campos e, após fechar o compositor, acima da lista de atividades.
+- Erros agora têm estado visual de alerta, contraste, borda de prioridade, ícone textual e anúncio assertivo para tecnologias assistivas; confirmações de sucesso mantêm um estado visual distinto.
+- Respostas de validação da API passaram a apontar a área compreensível do formulário (por exemplo, a opção de repetição mensal), sem expor o caminho técnico do schema.
+- Validação desta retomada concluída: `npm run typecheck`, `npm run build`, `npm run lint` e `npm test` (36/36) passaram. Commit/push ficam registrados no histórico desta etapa.
