@@ -62,6 +62,10 @@ Em produção, use `LOG_LEVEL=error` (ou `warn` para diagnóstico controlado). E
 
 A base cobre E00–E11 com testes automatizados, emuladores e homologação manual. A hospedagem autorizada está em `https://leve-agenda.vercel.app`. Consulte [CONTINUAR.md](CONTINUAR.md) para o histórico operacional.
 
+## Privacidade e acessibilidade
+
+O resumo público de privacidade está disponível em `/privacidade`. A conta permite exportar e excluir dados, revogar notificações, reduzir movimento, reduzir transparência e aumentar contraste. Estados de carregamento e perda de conexão informam o que está acontecendo e oferecem recuperação sem apagar alterações locais.
+
 ## Licença
 
 Distribuído sob a licença MIT. Consulte [LICENSE](LICENSE).

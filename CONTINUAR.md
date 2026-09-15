@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Loading, conexão e documentação — 15/09/2026
+
+O progresso recente foi registrado no README e nesta retomada. A entrada pública `/privacidade` documenta dados armazenados, exportação, exclusão, retenção da lixeira e serviços usados. O carregamento global recebeu uma animação orbital com mensagem auxiliar, respeitando `prefers-reduced-motion`. As telas 502/503 agora mostram um indicador visual de reconexão, mantendo a ação de tentar novamente e o acesso à agenda. Build e typecheck aprovados nesta etapa. Próximos itens de manutenção: medir o bundle grande antes de separar dependências, documentar retenção operacional e revisar o armazenamento de tokens de notificações com estratégia compatível com o envio.
+
 ## Registro remoto integrado — 15/09/2026
 
 O histórico remoto de aceite final, CI, tratamento de erros, novo ícone, organização das Preferências e correções do cronômetro foi integrado antes desta entrega. A revisão visual sem serifa e o avatar foram reaplicados sobre essa base.

@@ -12,6 +12,7 @@ export function StatusPage({ status, onAction }: StatusPageProps) {
 
   return <main className="status-page" aria-labelledby="page-title" role={status >= 500 ? 'alert' : undefined}>
     <div className="loading-brand" aria-hidden="true">leve<span>.</span></div>
+    {status === 502 || status === 503 ? <div className="connection-beacon" aria-hidden="true"><span /></div> : null}
     <section className="status-page-card">
       <span className="status-page-code" aria-hidden="true">{status}</span>
       <p className="status-page-eyebrow">{content.eyebrow}</p>

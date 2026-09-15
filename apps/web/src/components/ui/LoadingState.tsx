@@ -8,8 +8,9 @@ export function LoadingState({ label, variant = 'list' }: LoadingStateProps) {
   return (
     <main className={'loading-state loading-state-' + variant} role="status" aria-live="polite" aria-busy="true">
       {screen ? <div className="loading-brand" aria-hidden="true">leve<span>.</span></div> : null}
-      <div className="loading-indicator" aria-hidden="true"><i /><i /><i /></div>
+      <div className="loading-orbit" aria-hidden="true"><span /><span /><span /></div>
       <p className="loading-label">{label}</p>
+      <p className="loading-hint">Estamos preparando seu espaço.</p>
       <div className="loading-preview" aria-hidden="true">
         <span className="loading-line loading-line-short" />
         <span className="loading-line" />
