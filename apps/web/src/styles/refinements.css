@@ -1630,14 +1630,14 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .tutorial-launch.settings-context {
     display: inline-grid;
     position: absolute;
-    top: 16px;
+    top: 10px;
     right: 18px;
     bottom: auto;
     width: 46px;
     height: 46px;
     min-height: 46px;
     border-radius: 15px;
-    box-shadow: none;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-action-primary) 18%, transparent);
   }
   .shopping-list-composer form { grid-template-columns: 1fr; }
   .shopping-list-composer .dialog-actions { grid-column: 1; }
