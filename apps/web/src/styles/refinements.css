@@ -458,6 +458,95 @@
 
 .loading-card-row span { height: 64px; border-radius: 14px; }
 .loading-card-row span:nth-child(2) { animation-delay: 120ms; }
+
+/* ============================================================
+   PÁGINAS DE ESTADO
+   ============================================================ */
+.status-page {
+  box-sizing: border-box;
+  min-height: 100svh;
+  padding: clamp(32px, 7vh, 76px) clamp(20px, 5vw, 48px);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.status-page > .loading-brand { margin-bottom: clamp(28px, 5vh, 52px); }
+
+.status-page-card {
+  width: min(100%, 520px);
+  padding: clamp(30px, 6vw, 48px);
+  display: grid;
+  justify-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  box-shadow: var(--shadow-card), inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
+}
+
+.status-page-code {
+  min-width: 72px;
+  min-height: 44px;
+  padding: 10px 16px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--color-accent-border);
+  border-radius: 999px;
+  color: var(--color-action-primary);
+  background: var(--color-accent-soft);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.status-page-eyebrow {
+  margin: 24px 0 10px;
+  color: var(--color-action-primary);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.status-page h1 {
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -.04em;
+  line-height: 1.04;
+}
+
+.status-page-description {
+  max-width: 42ch;
+  margin: 18px 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.status-page-actions {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.status-page-actions .primary {
+  min-width: min(100%, 230px);
+  justify-content: center;
+}
+
+.status-page-actions .text-link { min-height: 44px; }
+
+@media (max-width: 560px) {
+  .status-page { padding-inline: 18px; }
+  .status-page-card { padding: 28px 22px; border-radius: 24px; }
+  .status-page-actions .primary { width: 100%; }
+}
 .loading-card-row span:nth-child(3) { animation-delay: 240ms; }
 
 @media (max-width: 520px) {

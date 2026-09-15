@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { LoadingState } from '../components/ui/LoadingState';
+import { StatusPage } from '../components/ui/StatusPage';
+import { asStatusPageCode } from './statusPage';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
 import { OutboxStatus } from '../features/content/OutboxStatus';
@@ -29,9 +31,12 @@ function RouteFocus() {
 }
 
 function Protected() {
-  const { user, session, loading } = useAuth();
+  const { user, session, loading, errorStatus, refresh, logout } = useAuth();
   if (loading) return <LoadingState variant="screen" label="Preparando sua agenda…" />;
-  if (!user || session?.membership !== 'active' || session.profile?.accountState !== 'active') return <Navigate to="/entrar" replace />;
+  if (!user || !user.emailVerified) return <Navigate to="/entrar" replace />;
+  if (errorStatus !== null) return <StatusPage status={asStatusPageCode(errorStatus)} onAction={errorStatus === 401 ? () => void logout() : () => void refresh()} />;
+  if (!session) return <Navigate to="/entrar" replace />;
+  if (session.membership !== 'active' || session.profile?.accountState !== 'active') return <StatusPage status={403} onAction={() => void refresh()} />;
   return <Outlet />;
 }
 
@@ -58,7 +63,7 @@ function Shell() {
 }
 
 function NotFound() {
-  return <main className="entry"><h1 id="page-title" tabIndex={-1}>Página não encontrada</h1><Link className="button" to="/hoje">Voltar ao início</Link></main>;
+  return <StatusPage status={404} />;
 }
 
 export function App() {

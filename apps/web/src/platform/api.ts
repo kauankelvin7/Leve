@@ -2,9 +2,13 @@ import type { CommandEnvelope, CommandResult } from '../../../../packages/domain
 import { firebaseAuth } from './firebase';
 import { offlineEnabled, pendingCommands, queueCommand, removeCommand, withOutboxLeadership } from './outbox';
 import { requiresOutboxReconciliation } from './outboxPolicy';
+import { apiErrorMessage } from '../app/statusPage';
 
 export class ApiError extends Error {
-  constructor(public status: number, public code: string, message: string, public details?: unknown) { super(message); }
+  constructor(public status: number, public code: string, message: string, public details?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 export async function apiRequest<Result>(path: string, options: RequestInit = {}): Promise<Result> {
@@ -29,7 +33,7 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
     throw new ApiError(0, 'NETWORK_ERROR', 'A conexão falhou. Seu rascunho continua salvo neste aparelho.');
   }
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw new ApiError(response.status, data?.code ?? 'SERVICE_UNAVAILABLE', data?.message ?? 'Serviço indisponível. Tente novamente.', data?.details);
+  if (!response.ok) throw new ApiError(response.status, data?.code ?? 'SERVICE_UNAVAILABLE', data?.message ?? apiErrorMessage(response.status), data?.details);
   if (!data) throw new ApiError(503, 'INVALID_RESPONSE', 'Não recebemos uma confirmação. Tente novamente.');
   return data as Result;
 }

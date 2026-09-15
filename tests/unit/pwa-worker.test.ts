@@ -9,7 +9,7 @@ it('exibe os dados aninhados recebidos do FCM e preserva o destino', async () =>
   const self = {
     location: { origin: 'https://leve.example' },
     registration: { showNotification },
-    clients: {},
+    clients: { matchAll: vi.fn(async () => []) },
     addEventListener: (name: string, listener: (event: any) => void) => listeners.set(name, listener),
   };
   runInNewContext(worker, { self, caches: {}, fetch: vi.fn(), URL });

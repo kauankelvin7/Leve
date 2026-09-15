@@ -31,7 +31,7 @@ applyColorTheme(storedColorTheme(), false);
 window.addEventListener('beforeinstallprompt', captureInstallPrompt);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><ErrorBoundary><BrowserRouter><AuthProvider><App /></AuthProvider></BrowserRouter></ErrorBoundary></StrictMode>,
+  <StrictMode><BrowserRouter><ErrorBoundary><AuthProvider><App /></AuthProvider></ErrorBoundary></BrowserRouter></StrictMode>,
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListener('load', () => {
