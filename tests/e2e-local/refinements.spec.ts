@@ -13,7 +13,8 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
   if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
-  await page.getByRole('button', { name: 'Abrir ajuda' }).click();
+  await page.goto('/configuracoes');
+  await page.getByRole('button', { name: 'Ver tutorial novamente' }).click();
   const tutorial = page.getByRole('dialog', { name: 'Tutorial do Leve' });
   await expect(tutorial).toBeVisible();
   await tutorial.getByRole('button', { name: 'Próximo' }).click();

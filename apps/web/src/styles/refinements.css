@@ -234,14 +234,6 @@
 /* ============================================================
    TUTORIAL
    ============================================================ */
-.tutorial-launch {
-  position: fixed;
-  z-index: 80;
-  right: 24px;
-  /* Mantém a ajuda acima do rodapé, sem cobrir o botão "Sair". */
-  bottom: calc(112px + env(safe-area-inset-bottom));
-}
-
 .visually-hidden {
   position: absolute !important;
   width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -285,7 +277,6 @@
   .calendar-agenda { display: none; }
   .calendar-agenda.open { display: block; position: fixed; z-index: 89; left: 0; right: 0; bottom: 0; max-height: 72dvh; overflow: auto; margin: 0; padding: 22px 18px calc(22px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; box-shadow: 0 -18px 60px rgba(25, 42, 30, .2); }
   .calendar-sheet-close { display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 50%; }
-  .tutorial-launch { right: 16px; bottom: calc(130px + env(safe-area-inset-bottom)); }
 }
 
 .tutorial-highlight {
@@ -1769,19 +1760,6 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   }
   .sidebar .nav-label { display: none; }
   .workspace-prefix { display: none; }
-  .tutorial-launch { display: none; }
-  .tutorial-launch.settings-context {
-    display: inline-grid;
-    position: absolute;
-    top: 92px;
-    right: 18px;
-    bottom: auto;
-    width: 46px;
-    height: 46px;
-    min-height: 46px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-action-primary) 18%, transparent);
-  }
   .shopping-list-composer form { grid-template-columns: 1fr; }
   .shopping-list-composer .dialog-actions { grid-column: 1; }
   .shopping-list-composer .dialog-actions > * { flex: 1; }
@@ -1800,7 +1778,6 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .app-shell { padding-inline: 14px; }
   .mobile-actions { gap: 6px; }
   .mobile-actions a { width: 42px; height: 42px; min-height: 42px; }
-  .tutorial-launch.settings-context { top: 88px; right: 14px; width: 42px; height: 42px; min-height: 42px; }
   .workspace-bar > span:first-child { gap: 8px; font-size: .75rem; }
   .page-heading h1 { font-size: 2.45rem; }
   .shopping-composer-heading .shopping-list-icon { display: none; }

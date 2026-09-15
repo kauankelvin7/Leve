@@ -493,3 +493,10 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - Causa: cada ocorrência materializada de uma atividade recorrente é um documento próprio para o calendário; a tela de notas listava todos como opções independentes.
 - Correção: `uniqueActivitiesForLinking` agrupa somente ocorrências que compartilham `seriesId`, preserva atividades avulsas e mantém a ocorrência já selecionada durante a edição.
 - Testes: `tests/unit/activity-linking.test.ts`; suíte unitária passou com 38 testes e o build/typecheck continuam aprovados.
+## Tutorial por dispositivo — 15/09/2026
+
+- O tutorial inicia automaticamente na primeira utilização de cada conta em cada dispositivo, controlado por `localStorage` com chave por `uid`.
+- Depois da conclusão não existe mais botão flutuante; a reabertura fica em Preferências > Tutorial > “Ver tutorial novamente”.
+- O botão e o cartão foram afastados do rodapé para não cobrir “Sair”.
+- O logo textual “G” do acesso Google foi substituído pelo símbolo oficial em SVG multicolorido.
+- Typecheck, unitários (38), lint e build aprovados. E2E local não iniciou porque o `webServer` excedeu 60 segundos; não houve falha funcional observada.

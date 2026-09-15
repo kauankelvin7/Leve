@@ -3,7 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../identity/AuthProvider';
 import { sendCommand } from '../../platform/api';
 import { NotificationSettings } from '../settings/NotificationSettings';
-import { Icon } from '../../components/ui/Icon';
+
+export const TUTORIAL_OPEN_EVENT = 'leve:open-tutorial';
+const tutorialStorageKey = (uid: string) => `leve.tutorial.completed:${uid}`;
+
+export function requestTutorial() {
+  window.dispatchEvent(new Event(TUTORIAL_OPEN_EVENT));
+}
 
 const steps = [
   { route: '/hoje', target: '.page-heading', title: 'Seu dia no Leve', text: 'Atividades, calendário, notas e compras ficam no mesmo espaço. Este passeio é curto e você pode pular quando quiser.' },
@@ -16,10 +22,19 @@ const steps = [
 export function Tutorial() {
   const { user, session, refresh } = useAuth();
   const navigate = useNavigate(); const location = useLocation();
-  const [step, setStep] = useState<number | null>(() => session?.profile?.tutorialCompletedAt ? null : 0);
+  const [step, setStep] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
   const active = step === null ? null : steps[step]!;
+  useEffect(() => {
+    if (!user || !session) return;
+    if (!localStorage.getItem(tutorialStorageKey(user.uid))) setStep(0);
+  }, [user?.uid, session]);
+  useEffect(() => {
+    const reopen = () => { setMessage(''); setStep(0); };
+    window.addEventListener(TUTORIAL_OPEN_EVENT, reopen);
+    return () => window.removeEventListener(TUTORIAL_OPEN_EVENT, reopen);
+  }, []);
   useEffect(() => {
     if (!active) return;
     navigate(active.route);
@@ -41,12 +56,13 @@ export function Tutorial() {
   }, [step, location.pathname]);
   async function close() {
     setStep(null);
-    if (!user || session?.profile?.tutorialCompletedAt) return;
+    if (!user) return;
+    localStorage.setItem(tutorialStorageKey(user.uid), 'true');
+    if (session?.profile?.tutorialCompletedAt) return;
     try { await sendCommand({ command: 'profile.completeTutorial', operationId: crypto.randomUUID(), entityId: user.uid, payload: {} }); await refresh(); }
     catch { setMessage('Não foi possível salvar a conclusão do tutorial. Ele poderá aparecer no próximo acesso.'); }
   }
-  const launcherClassName = `tutorial-launch icon-button${location.pathname === '/configuracoes' ? ' settings-context' : ''}`;
-  return <><button className={launcherClassName} aria-label="Abrir ajuda" title="Ajuda" onClick={() => { setMessage(''); setStep(0); }}><Icon name="question" /><span className="visually-hidden">Abrir ajuda</span></button>{message && <p role="status">{message}</p>}
+  return <>{message && <p role="status">{message}</p>}
     {active && <aside className="tutorial-card" role="dialog" aria-label="Tutorial do Leve" onKeyDown={event => { if (event.key === 'Escape') void close(); }}><p className="eyebrow">{step! + 1} de {steps.length}</p><h2 ref={heading} tabIndex={-1}>{active.title}</h2><p>{active.text}</p>{step === 3 && <NotificationSettings compact />}<div className="dialog-actions"><button onClick={() => void close()}>Pular tutorial</button>{step! > 0 && <button onClick={() => setStep(step! - 1)}>Voltar</button>}<button className="primary" onClick={() => step === steps.length - 1 ? void close() : setStep(step! + 1)}>{step === steps.length - 1 ? 'Concluir tutorial' : 'Próximo'}</button></div></aside>}
   </>;
 }
