@@ -1587,7 +1587,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .main-wrapper { width: 100%; }
   .mobile-brand { min-height: 58px; align-items: center; }
   .mobile-brand .brand { font-size: 2.75rem; }
-  .workspace-bar { min-height: 50px; margin-top: 2px; }
+  .workspace-bar { display: none; }
   .workspace-actions .quick-add { width: 44px; height: 44px; min-height: 44px; }
   .page-heading { margin-block: 30px 26px; }
   .page-heading h1 { font-size: clamp(2.5rem, 12vw, 3.25rem); }
@@ -1629,8 +1629,8 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .tutorial-launch { display: none; }
   .tutorial-launch.settings-context {
     display: inline-grid;
-    top: 23px;
-    right: 120px;
+    top: 84px;
+    right: 18px;
     bottom: auto;
     width: 46px;
     height: 46px;
@@ -1656,7 +1656,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .app-shell { padding-inline: 14px; }
   .mobile-actions { gap: 6px; }
   .mobile-actions a { width: 42px; height: 42px; min-height: 42px; }
-  .tutorial-launch.settings-context { top: 24px; right: 110px; width: 42px; height: 42px; min-height: 42px; }
+  .tutorial-launch.settings-context { top: 78px; right: 14px; width: 42px; height: 42px; min-height: 42px; }
   .workspace-bar > span:first-child { gap: 8px; font-size: .75rem; }
   .page-heading h1 { font-size: 2.45rem; }
   .shopping-composer-heading .shopping-list-icon { display: none; }
