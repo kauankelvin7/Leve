@@ -6,10 +6,10 @@ import { firebaseAuth, firestore } from '../../platform/firebase';
 import { apiRequest } from '../../platform/api';
 import { revokeNotificationDevice } from '../../platform/notifications';
 import { clearQueryCache } from '../content/useLiveQueries';
+import { applyColorTheme } from '../../platform/theme';
 
 type AuthState = { user: User | null; session: SessionResult | null; loading: boolean; error: string; refresh: () => Promise<void>; logout: () => Promise<void> };
 const AuthContext = createContext<AuthState | null>(null);
-const browserThemeColors = { green: '#ECF1EE', purple: '#ECEAF6', blue: '#E7EEF5', red: '#F4EBEB' } as const;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -19,8 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const generation = useRef(0);
   useEffect(() => {
     const colorTheme = session?.profile?.colorTheme ?? 'green';
-    document.documentElement.dataset.theme = colorTheme;
-    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', browserThemeColors[colorTheme]);
+    applyColorTheme(colorTheme);
   }, [session?.profile?.colorTheme]);
   const refresh = useCallback(async () => {
     const currentGeneration = ++generation.current;

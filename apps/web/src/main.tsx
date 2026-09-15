@@ -18,12 +18,15 @@ import './styles/glass.css';
 import './styles/refinements.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
+import { applyColorTheme, storedColorTheme } from './platform/theme';
 
 for (const [group, values] of Object.entries(tokens)) {
   for (const [name, value] of Object.entries(values)) {
     document.documentElement.style.setProperty(`--${group}-${name}`, value);
   }
 }
+
+applyColorTheme(storedColorTheme(), false);
 
 window.addEventListener('beforeinstallprompt', captureInstallPrompt);
 

@@ -6,7 +6,10 @@
 }
 html {
   min-height: 100%;
-  background: radial-gradient(ellipse at 5% 0%, color-mix(in srgb, var(--color-action-primary) 17%, transparent), transparent 52%), radial-gradient(ellipse at 100% 70%, color-mix(in srgb, var(--color-personal) 80%, transparent), transparent 55%), var(--color-canvas);
+  background:
+    radial-gradient(ellipse 72% 54% at 4% -4%, color-mix(in srgb, var(--color-action-primary) 16%, transparent), transparent 68%),
+    radial-gradient(ellipse 64% 52% at 100% 76%, color-mix(in srgb, var(--color-action-primary) 9%, var(--color-solid)), transparent 72%),
+    linear-gradient(145deg, var(--color-canvas), color-mix(in srgb, var(--color-solid) 58%, var(--color-canvas)) 52%, var(--color-canvas));
   background-attachment: fixed;
 }
 body, #root { min-height: 100svh; }
