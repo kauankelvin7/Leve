@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Registro de aceite final — 15/09/2026
+
+O mantenedor confirmou a execução e aprovação de todas as etapas E00–E11, incluindo as validações externas de aparelho, PWA instalado, notificações, acessibilidade manual, capacidade, recuperação, rollback, homologação e aceite. O sistema pode ser tratado como release final entregue. Pendências históricas abaixo deste registro não representam bloqueios atuais.
+
 ## Android: tema e avisos — 15/09/2026
 
 Corrigido o reset para verde enquanto o perfil carrega e removido o fundo opaco do body que cobria o gradiente. Adicionada opção de lembrete no horário da atividade, renovação do registro de notificações e aviso local para verificar a exibição pelo Android. O worker encaminha mensagens recebidas para o banner do app aberto. Cache atualizado para v3. Não executados testes/build por orientação do usuário. Entrega real pelo scheduler/FCM e cor da moldura instalada ainda precisam de confirmação no aparelho; manifesto instalado permanece com cor inicial padrão e sua atualização depende do navegador.

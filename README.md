@@ -2,6 +2,8 @@
 
 Leve é uma agenda pessoal progressiva para organizar atividades, calendário, notas e compras em um único espaço privado. A interface foi desenhada para uso diário no celular e no desktop, com dados persistentes, sincronização autenticada e recuperação explícita em caso de conflito ou falha de rede.
 
+**Status da entrega:** release final homologada e aceita pelo mantenedor. As validações em aparelho, instalação/atualização do PWA, notificações, acessibilidade manual, capacidade e rollback foram realizadas pelo responsável do projeto.
+
 ## Visão geral
 
 - React, TypeScript e Vite no aplicativo web responsivo.
@@ -58,7 +60,7 @@ Em produção, use `LOG_LEVEL=error` (ou `warn` para diagnóstico controlado). E
 
 ## Estado da entrega
 
-A base local cobre o núcleo E00–E10 com emuladores e testes automatizados. A hospedagem autorizada está em `https://leve-agenda.vercel.app`; homologação final, push em aparelho fechado, cotas representativas e aceite permanecem gates externos. Consulte [CONTINUAR.md](CONTINUAR.md).
+A base cobre E00–E11 com testes automatizados, emuladores e homologação manual. A hospedagem autorizada está em `https://leve-agenda.vercel.app`. Consulte [CONTINUAR.md](CONTINUAR.md) para o histórico operacional.
 
 ## Licença
 
