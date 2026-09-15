@@ -27,6 +27,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       setPermission(permission);
       if (permission !== 'granted') throw new Error('A permissão de notificações não foi concedida.');
       const registration = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
       const messaging = getMessaging(firebaseApp);
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
       if (!token) throw new Error('Não foi possível registrar este aparelho.');
@@ -34,7 +35,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       const deviceId = activeDeviceId ?? crypto.randomUUID();
       await sendCommand({ command: 'notificationDevice.register', operationId: crypto.randomUUID(), entityId: deviceId, expectedRevision: 0, payload: { token, platform: 'web', label: navigator.userAgent.slice(0, 80) } }, { queueOnNetworkError: false });
       rememberNotificationDevice(user.uid, deviceId);
-      setMessage('Notificações ativadas neste aparelho.');
+      setMessage('Aparelho registrado. Escolha também um lembrete na atividade, como “No horário da atividade”.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível ativar notificações.'); }
     finally { setBusy(false); }
   }
@@ -49,5 +50,27 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
     finally { setBusy(false); }
   }
 
-  return <section className={compact ? 'notification-compact' : 'panel content-form notification-settings'}>{!compact && <h2>Notificações neste aparelho</h2>}<p>{permission === 'denied' ? 'Permissão bloqueada. Nas configurações deste site no navegador, permita notificações e volte ao Leve.' : permission === 'unsupported' ? 'Este navegador não oferece notificações. A agenda continua disponível.' : permission === 'granted' ? activeDeviceId ? 'Permissão concedida e aparelho registrado.' : 'Permissão concedida. Ative abaixo para registrar este aparelho.' : 'Permissão ainda não solicitada. O navegador pedirá somente ao ativar.'}</p>{activeDeviceId ? <button type="button" disabled={busy} onClick={() => void disable()}>Desativar neste aparelho</button> : <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Ativando…' : 'Ativar notificações'}</button>}<p role="status">{message}</p></section>;
+  async function previewNotification() {
+    setBusy(true); setMessage('');
+    try {
+      if (Notification.permission !== 'granted') throw new Error('Permita notificações antes de experimentar.');
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (!registration?.active) throw new Error('Feche e abra o Leve para concluir a atualização.');
+      await registration.showNotification('Leve', { body: 'Este aparelho pode mostrar os avisos da sua agenda.', icon: '/favicon.svg', tag: 'leve-device-preview' });
+      setMessage('Aviso solicitado ao Android. Isso verifica a exibição no aparelho, mas não o envio de lembretes pelo servidor.');
+    } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível mostrar o aviso.'); }
+    finally { setBusy(false); }
+  }
+
+  return <section className={compact ? 'notification-compact' : 'panel content-form notification-settings'}>
+    {!compact && <h2>Notificações neste aparelho</h2>}
+    <p>{permission === 'denied' ? 'Permissão bloqueada. Permita notificações nas configurações do Android e deste site no navegador.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Permissão concedida. Este aparelho tem um registro salvo; renove se os avisos pararam.' : 'Permissão concedida. Ative abaixo para registrar este aparelho.' : 'O navegador pedirá permissão ao ativar.'}</p>
+    <p>Na atividade, escolha “No horário da atividade” ou uma antecedência. Atividades sem lembrete selecionado não enviam avisos.</p>
+    <div className="dialog-actions">
+      <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar registro do aparelho' : 'Ativar notificações'}</button>
+      {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Experimentar aviso neste aparelho</button>}
+      {activeDeviceId && <button type="button" disabled={busy} onClick={() => void disable()}>Desativar neste aparelho</button>}
+    </div>
+    <p role="status">{message}</p>
+  </section>;
 }

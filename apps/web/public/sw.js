@@ -1,4 +1,4 @@
-const CACHE = 'leve-shell-v2';
+const CACHE = 'leve-shell-v3';
 const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg'];
 
 self.addEventListener('install', event => {
@@ -31,7 +31,12 @@ self.addEventListener('push', event => {
   let payload = {};
   try { payload = event.data?.json() ?? {}; } catch { /* Usa a mensagem segura abaixo. */ }
   const data = payload.data ?? payload.notification ?? payload;
-  event.waitUntil(self.registration.showNotification(data.title ?? 'Leve', { body: data.body ?? 'Você tem um lembrete.', icon: '/favicon.svg', data: { url: data.url ?? '/hoje' }, tag: data.tag }));
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(data.title ?? 'Leve', { body: data.body ?? 'Você tem um lembrete.', icon: '/favicon.svg', data: { url: data.url ?? '/hoje' }, tag: data.tag }),
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      for (const client of clients) client.postMessage({ type: 'LEVE_REMINDER', data });
+    }),
+  ]));
 });
 
 self.addEventListener('notificationclick', event => {

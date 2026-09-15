@@ -393,6 +393,7 @@ export function Today() {
                 <fieldset>
                   <legend>Lembretes</legend>
                   {[
+                    { value: '0', label: 'No horário da atividade' },
                     { value: '30', label: '30 minutos antes' },
                     { value: '60', label: '1 hora antes' },
                     { value: '1440', label: '1 dia antes' },

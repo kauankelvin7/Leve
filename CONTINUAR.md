@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Android: tema e avisos — 15/09/2026
+
+Corrigido o reset para verde enquanto o perfil carrega e removido o fundo opaco do body que cobria o gradiente. Adicionada opção de lembrete no horário da atividade, renovação do registro de notificações e aviso local para verificar a exibição pelo Android. O worker encaminha mensagens recebidas para o banner do app aberto. Cache atualizado para v3. Não executados testes/build por orientação do usuário. Entrega real pelo scheduler/FCM e cor da moldura instalada ainda precisam de confirmação no aparelho; manifesto instalado permanece com cor inicial padrão e sua atualização depende do navegador.
+
 ## Interface e sessões passivas — 14/09/2026
 
 Implementação local concluída, ainda sem commit: ícones e textos da interface foram revisados; Meu dia, calendário, notas, compras, configurações e lixeira receberam hierarquia, estados vazios e ajustes móveis. O calendário mantém 42 dias, compartilha a data escolhida com Meu dia, abre os itens em uma folha móvel, preserva as cores das atividades e diferencia atrasos. Notas têm edição inline, barra fixa, prévia de duas linhas, busca com realce e separação das fixadas. Compras têm inclusão visível, edição inline, progresso e itens concluídos recolhidos.

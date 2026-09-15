@@ -18,6 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState('');
   const generation = useRef(0);
   useEffect(() => {
+    if (!session?.profile) return;
     const colorTheme = session?.profile?.colorTheme ?? 'green';
     applyColorTheme(colorTheme);
   }, [session?.profile?.colorTheme]);

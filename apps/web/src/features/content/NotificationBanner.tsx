@@ -8,6 +8,17 @@ export function NotificationBanner() {
   const { user } = useAuth();
   const [notice, setNotice] = useState<{ title: string; body: string; url: string } | null>(null);
   useEffect(() => {
+    if (!user || !('serviceWorker' in navigator)) return;
+    const receive = (event: MessageEvent) => {
+      if (event.data?.type !== 'LEVE_REMINDER') return;
+      const data = event.data.data;
+      if (typeof data?.body !== 'string') return;
+      setNotice({ title: typeof data.title === 'string' ? data.title : 'Leve', body: data.body, url: typeof data.url === 'string' && /^\/atividade\/[A-Za-z0-9_-]+$/.test(data.url) ? data.url : '/hoje' });
+    };
+    navigator.serviceWorker.addEventListener('message', receive);
+    return () => navigator.serviceWorker.removeEventListener('message', receive);
+  }, [user?.uid]);
+  useEffect(() => {
     let alive = true; let stop: (() => void) | undefined;
     setNotice(null);
     void import('firebase/messaging').then(async ({ getMessaging, isSupported, onMessage }) => {

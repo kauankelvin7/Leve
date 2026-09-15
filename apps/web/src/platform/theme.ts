@@ -21,7 +21,6 @@ export function applyColorTheme(colorTheme: ColorTheme, persist = true) {
   const colors = colorThemes[colorTheme];
   document.documentElement.dataset.theme = colorTheme;
   document.documentElement.style.backgroundColor = colors.canvas;
-  if (document.body) document.body.style.backgroundColor = colors.canvas;
 
   let themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   if (!themeColor) {
