@@ -1583,7 +1583,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
 }
 
 @media (max-width: 739px) {
-  .app-shell { display: block; padding: 16px 18px calc(108px + env(safe-area-inset-bottom)); }
+  .app-shell { display: block; padding: 16px 18px calc(96px + env(safe-area-inset-bottom)); }
   .main-wrapper { width: 100%; }
   .mobile-brand { min-height: 58px; align-items: center; }
   .mobile-brand .brand { font-size: 2.75rem; }
@@ -1594,10 +1594,50 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .page-heading > p:not(.eyebrow), .page-heading > div > p:not(.eyebrow) { font-size: .94rem; }
   .page-heading > button, .page-heading > .button, .page-heading > .primary { width: 100%; margin-top: 18px; }
   .panel { border-radius: 22px; }
-  .sidebar { top: auto; height: auto; padding: 7px 8px calc(7px + env(safe-area-inset-bottom)); }
+  .sidebar {
+    top: auto;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: 10px;
+    right: 10px;
+    height: auto;
+    padding: 6px 7px;
+    border-radius: 22px;
+  }
   .sidebar-bottom { display: none; }
   .sidebar nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .sidebar nav a { gap: 4px; min-width: 0; }
+  .sidebar nav a {
+    position: relative;
+    min-width: 0;
+    min-height: 54px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+    border-radius: 16px;
+  }
+  .sidebar nav a svg { width: 23px; height: 23px; }
+  .sidebar nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .sidebar .nav-label { display: none; }
+  .workspace-prefix { display: none; }
+  .tutorial-launch { display: none; }
+  .tutorial-launch.settings-context {
+    display: inline-grid;
+    top: 23px;
+    right: 120px;
+    bottom: auto;
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+    border-radius: 15px;
+    box-shadow: none;
+  }
   .shopping-list-composer form { grid-template-columns: 1fr; }
   .shopping-list-composer .dialog-actions { grid-column: 1; }
   .shopping-list-composer .dialog-actions > * { flex: 1; }
@@ -1616,6 +1656,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .app-shell { padding-inline: 14px; }
   .mobile-actions { gap: 6px; }
   .mobile-actions a { width: 42px; height: 42px; min-height: 42px; }
+  .tutorial-launch.settings-context { top: 24px; right: 110px; width: 42px; height: 42px; min-height: 42px; }
   .workspace-bar > span:first-child { gap: 8px; font-size: .75rem; }
   .page-heading h1 { font-size: 2.45rem; }
   .shopping-composer-heading .shopping-list-icon { display: none; }

@@ -9,6 +9,7 @@ import { clearQueryCache } from '../content/useLiveQueries';
 
 type AuthState = { user: User | null; session: SessionResult | null; loading: boolean; error: string; refresh: () => Promise<void>; logout: () => Promise<void> };
 const AuthContext = createContext<AuthState | null>(null);
+const browserThemeColors = { green: '#ECF1EE', purple: '#ECEAF6', blue: '#E7EEF5', red: '#F4EBEB' } as const;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -17,7 +18,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState('');
   const generation = useRef(0);
   useEffect(() => {
-    document.documentElement.dataset.theme = session?.profile?.colorTheme ?? 'green';
+    const colorTheme = session?.profile?.colorTheme ?? 'green';
+    document.documentElement.dataset.theme = colorTheme;
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', browserThemeColors[colorTheme]);
   }, [session?.profile?.colorTheme]);
   const refresh = useCallback(async () => {
     const currentGeneration = ++generation.current;

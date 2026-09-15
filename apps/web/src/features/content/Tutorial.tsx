@@ -45,7 +45,8 @@ export function Tutorial() {
     try { await sendCommand({ command: 'profile.completeTutorial', operationId: crypto.randomUUID(), entityId: user.uid, payload: {} }); await refresh(); }
     catch { setMessage('Não foi possível salvar a conclusão do tutorial. Ele poderá aparecer no próximo acesso.'); }
   }
-  return <><button className="tutorial-launch icon-button" aria-label="Abrir ajuda" title="Ajuda" onClick={() => { setMessage(''); setStep(0); }}><Icon name="question" /><span className="visually-hidden">Abrir ajuda</span></button>{message && <p role="status">{message}</p>}
+  const launcherClassName = `tutorial-launch icon-button${location.pathname === '/configuracoes' ? ' settings-context' : ''}`;
+  return <><button className={launcherClassName} aria-label="Abrir ajuda" title="Ajuda" onClick={() => { setMessage(''); setStep(0); }}><Icon name="question" /><span className="visually-hidden">Abrir ajuda</span></button>{message && <p role="status">{message}</p>}
     {active && <aside className="tutorial-card" role="dialog" aria-label="Tutorial do Leve" onKeyDown={event => { if (event.key === 'Escape') void close(); }}><p className="eyebrow">{step! + 1} de {steps.length}</p><h2 ref={heading} tabIndex={-1}>{active.title}</h2><p>{active.text}</p>{step === 3 && <NotificationSettings compact />}<div className="dialog-actions"><button onClick={() => void close()}>Pular tutorial</button>{step! > 0 && <button onClick={() => setStep(step! - 1)}>Voltar</button>}<button className="primary" onClick={() => step === steps.length - 1 ? void close() : setStep(step! + 1)}>{step === steps.length - 1 ? 'Concluir tutorial' : 'Próximo'}</button></div></aside>}
   </>;
 }
