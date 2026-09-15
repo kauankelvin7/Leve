@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Ajuda e avisos responsivos — 15/09/2026
+
+Ajuda movida para uma seção das Preferências. Removido o botão flutuante e suas coordenadas fixas no mobile. Guia e banner usam portal no body, dimensões limitadas pela viewport e safe areas. Guia tem cabeçalho/ações separados da leitura com rolagem; a etapa de notificações aponta para as configurações existentes, sem duplicar o formulário dentro do guia. Banner móvel separa texto, fechar e abrir. Revisão do diff sem erros de whitespace; testes e build não executados conforme orientação do usuário. Validação visual no aparelho permanece pendente.
+
 ## Android: tema e avisos — 15/09/2026
 
 Corrigido o reset para verde enquanto o perfil carrega e removido o fundo opaco do body que cobria o gradiente. Adicionada opção de lembrete no horário da atividade, renovação do registro de notificações e aviso local para verificar a exibição pelo Android. O worker encaminha mensagens recebidas para o banner do app aberto. Cache atualizado para v3. Não executados testes/build por orientação do usuário. Entrega real pelo scheduler/FCM e cor da moldura instalada ainda precisam de confirmação no aparelho; manifesto instalado permanece com cor inicial padrão e sua atualização depende do navegador.

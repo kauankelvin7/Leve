@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui/Icon';
 import { firebaseApp } from '../../platform/firebase';
@@ -32,5 +33,5 @@ export function NotificationBanner() {
     return () => { alive = false; stop?.(); };
   }, [user?.uid]);
   useEffect(() => { if (!notice) return; const timeout = window.setTimeout(() => setNotice(null), 15_000); return () => window.clearTimeout(timeout); }, [notice]);
-  return notice ? <aside className="notification-banner" role="status"><div><strong>{notice.title}</strong><p>{notice.body}</p></div><Link to={notice.url} onClick={() => setNotice(null)}>Abrir</Link><button className="icon-button" aria-label="Fechar notificação" title="Fechar" onClick={() => setNotice(null)}><Icon name="close" /></button></aside> : null;
+  return notice ? createPortal(<aside className="notification-banner" role="status"><div><strong>{notice.title}</strong><p>{notice.body}</p></div><Link to={notice.url} onClick={() => setNotice(null)}>Abrir</Link><button className="icon-button" aria-label="Fechar notificação" title="Fechar" onClick={() => setNotice(null)}><Icon name="close" /></button></aside>, document.body) : null;
 }
