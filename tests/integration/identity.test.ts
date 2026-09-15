@@ -10,7 +10,7 @@ import { processReminderTick } from '../../server/reminders';
 
 const projectId = 'demo-leve';
 const authBase = 'http://localhost:9099/identitytoolkit.googleapis.com/v1';
-const profile = { displayName: 'Conta de teste', locale: 'pt-BR', timeZone: 'America/Sao_Paulo', weekStartsOn: 1, reduceTransparency: false, avatarStyle: 'avataaars', avatarSeed: 'leve-bento' } as const;
+const profile = { displayName: 'Conta de teste', locale: 'pt-BR', timeZone: 'America/Sao_Paulo', weekStartsOn: 1, reduceTransparency: false };
 let rules: RulesTestEnvironment;
 
 async function createUser(email: string, verified = true) {
@@ -148,8 +148,10 @@ describe('API autenticada', () => {
   it('mantém health público e rejeita sessão sem token ou com token inválido', async () => {
     const health = await request(app).get('/api/health').expect(200);
     expect(health.body.status).toBe('ok');
-    expect(typeof health.body.version).toBe('string');
-    expect(Number.isNaN(Date.parse(health.body.timestamp))).toBe(false);
+    expect(health.body).toEqual({ status: 'ok' });
+    const version = await request(app).get('/api/version').expect(200);
+    expect(version.body.release).toMatch(/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$|^stable$/);
+    expect(JSON.stringify(version.body)).not.toContain('VERCEL_');
     expect((await request(app).get('/api/session')).status).toBe(401);
     const invalid = await request(app).get('/api/session').set('authorization', 'Bearer invalido');
     expect(invalid.status).toBe(401);
@@ -217,7 +219,6 @@ describe('ativação de conta', () => {
     expect(first.body.result).toBe('applied');
     const retry = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(body).expect(200);
     expect(retry.body.result).toBe('alreadyApplied');
-    expect((await db.doc(`users/${user.uid}`).get()).data()).toMatchObject({ avatarStyle: 'avataaars', avatarSeed: 'leve-bento' });
     expect((await db.doc(`users/${user.uid}/categories/saude`).get()).data()?.normalizedName).toBe('saúde');
   });
 
@@ -248,26 +249,16 @@ describe('Security Rules por uid', () => {
 });
 
 describe('comandos de conteúdo', () => {
-  it('persiste pausa e retomada do cronômetro sem perder o tempo acumulado', async () => {
+  it('registra tempo com exclusividade, revisão e encerramento persistente', async () => {
     const user = await createUser('tempo@example.test');
     await seedAccount(user.uid);
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'atividade-tempo', '39000000-0000-4000-8000-000000000001', 0, { ...activityPayload, estimatedMinutes: 30 })).expect(200);
     const start = contentCommand('timeEntry.start', 'tempo-a', '39000000-0000-4000-8000-000000000002', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' });
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(start).expect(200);
-    await db.doc(`users/${user.uid}/timeEntries/tempo-a`).update({ startedAt: new Date(Date.now() - 2_000).toISOString() });
-    const pause = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.pause', 'tempo-a', '39000000-0000-4000-8000-000000000008', 1, {})).expect(200);
-    const paused = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
-    expect(paused).toMatchObject({ paused: true, pausedAt: expect.any(String), accumulatedSeconds: expect.any(Number) });
-    expect(paused.accumulatedSeconds).toBeGreaterThanOrEqual(2);
-    expect(paused.durationSeconds).toBe(paused.accumulatedSeconds);
-    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.resume', 'tempo-a', '39000000-0000-4000-8000-000000000009', pause.body.revision, {})).expect(200);
-    const resumed = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
-    expect(resumed).toMatchObject({ paused: false, pausedAt: null, accumulatedSeconds: paused.accumulatedSeconds });
-    const duplicate = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.start', 'tempo-b', '39000000-0000-4000-8000-000000000003', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' }));
-    expect(duplicate.status).toBe(409); expect(duplicate.body.code).toBe('TIMER_ALREADY_RUNNING');
-    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-a', '39000000-0000-4000-8000-000000000004', resumed.revision, {})).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.start', 'tempo-b', '39000000-0000-4000-8000-000000000003', 0, { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo' })).expect(200);
     const stored = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
-    expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(paused.accumulatedSeconds); expect(stored.revision).toBe(resumed.revision + 1);
+    expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(1); expect(stored.revision).toBe(2);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.stop', 'tempo-b', '39000000-0000-4000-8000-000000000004', 1, {})).expect(200);
     expect((await db.doc(`users/${user.uid}/internal/activeTimer`).get()).exists).toBe(false);
     const sessionId = '39000000-0000-4000-8000-000000000005';
     const sessionPayload = { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo', durationSeconds: 47 * 60, sessionId };

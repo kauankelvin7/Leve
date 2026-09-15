@@ -9,6 +9,11 @@ import { commandHash } from './identity.ts';
 const startSchema = z.object({ activityId: z.string().min(1).max(128), civilDate: civilDateSchema, timeZone: timeZoneSchema }).strict();
 const emptySchema = z.object({}).strict();
 
+function accruedDuration(entry: Record<string, any>, now: string): number {
+  const elapsed = entry.paused ? 0 : Math.max(0, Math.round((Date.parse(now) - Date.parse(entry.startedAt)) / 1000));
+  return Math.max(1, Number(entry.accumulatedSeconds ?? 0) + elapsed);
+}
+
 export async function timeEntryCommand(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
   if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail para continuar.');
   const action = command.command.split('.')[1];
@@ -20,26 +25,36 @@ export async function timeEntryCommand(identity: DecodedIdToken, command: Comman
   const activeRef = root.collection('internal').doc('activeTimer');
   const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
   const now = new Date().toISOString();
+  const minuteRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 16)}`);
+  const dayRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 10)}`);
   const digest = commandHash(command);
 
   return db.runTransaction(async transaction => {
     const activityRef = action === 'start' || action === 'addManual' || action === 'addSession' ? root.collection('activities').doc(String(input.activityId)) : null;
-    const refs = [root, db.doc(`memberships/${identity.uid}`), receiptRef, target, activeRef, ...(activityRef ? [activityRef] : [])];
-    const [profile, membership, receipt, current, active, activity] = await transaction.getAll(...refs);
+    const refs = [root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, minuteRef, dayRef, target, activeRef, ...(activityRef ? [activityRef] : [])];
+    const [profile, membership, controls, receipt, minute, day, current, active, activity] = await transaction.getAll(...refs);
     if (membership?.data()?.state !== 'active' || profile?.data()?.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
+    if (controls?.data()?.mode === 'restricted') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Tente novamente em instantes.');
+    if ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
+    if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
     if (activityRef && (!activity?.exists || activity.data()?.deletedAt)) throw new AppError(422, 'REFERENCE_UNAVAILABLE', 'A atividade não está disponível.');
     const existing = current?.data();
     const activeId = active?.data()?.entryId;
+    const openTimers = action === 'start' ? await transaction.get(root.collection('timeEntries').where('endedAt', '==', null).limit(20)) : null;
     let revision = 1;
     if (action === 'start') {
       if (command.expectedRevision !== 0 || current?.exists) throw new AppError(409, 'REVISION_CONFLICT', 'Este registro de tempo já existe.');
-      if (activeId) throw new AppError(409, 'TIMER_ALREADY_RUNNING', 'Já existe um cronômetro em andamento. Pare-o antes de iniciar outro.');
-      transaction.create(target, { ...input, startedAt: now, endedAt: null, durationSeconds: 0, accumulatedSeconds: 0, paused: false, pausedAt: null, source: 'timer', revision, schemaVersion: 1, deletedAt: null, createdAt: now, updatedAt: now });
-      transaction.set(activeRef, { entryId: command.entityId, activityId: input.activityId, startedAt: now, paused: false, updatedAt: now });
+      for (const openTimer of openTimers?.docs ?? []) {
+        const timer = openTimer.data();
+        if (openTimer.id === command.entityId || timer.deletedAt || timer.endedAt) continue;
+        transaction.update(openTimer.ref, { endedAt: now, durationSeconds: accruedDuration(timer, now), paused: false, pausedAt: null, revision: Number(timer.revision) + 1, updatedAt: now });
+      }
+      transaction.create(target, { ...input, startedAt: now, endedAt: null, durationSeconds: 0, paused: false, accumulatedSeconds: 0, pausedAt: null, source: 'timer', revision, schemaVersion: 1, deletedAt: null, createdAt: now, updatedAt: now });
+      transaction.set(activeRef, { entryId: command.entityId, activityId: input.activityId, startedAt: now, updatedAt: now });
     } else if (action === 'addManual' || action === 'addSession') {
       if (command.expectedRevision !== 0 || current?.exists) throw new AppError(409, 'REVISION_CONFLICT', 'Este registro de tempo já existe.');
       const startedAt = new Date(Date.parse(now) - input.durationSeconds * 1000).toISOString();
@@ -50,30 +65,28 @@ export async function timeEntryCommand(identity: DecodedIdToken, command: Comman
       revision = existing.revision + 1;
       if (action === 'stop') {
         if (existing.endedAt) throw new AppError(409, 'TIMER_NOT_RUNNING', 'Este cronômetro já foi encerrado.');
-        const accumulatedSeconds = Number(existing.accumulatedSeconds ?? 0);
-        const elapsedSeconds = existing.paused ? 0 : Math.max(0, Math.round((Date.parse(now) - Date.parse(existing.startedAt)) / 1000));
-        const durationSeconds = Math.max(1, accumulatedSeconds + elapsedSeconds);
-        transaction.update(target, { endedAt: now, durationSeconds, accumulatedSeconds: durationSeconds, paused: false, pausedAt: null, revision, updatedAt: now });
+        transaction.update(target, { endedAt: now, durationSeconds: accruedDuration(existing, now), paused: false, pausedAt: null, revision, updatedAt: now });
         if (activeId === command.entityId) transaction.delete(activeRef);
       } else if (action === 'pause') {
         if (existing.endedAt) throw new AppError(409, 'TIMER_NOT_RUNNING', 'Este cronômetro já foi encerrado.');
         if (existing.paused) throw new AppError(409, 'TIMER_ALREADY_PAUSED', 'Este cronômetro já está pausado.');
-        const accumulatedSeconds = Number(existing.accumulatedSeconds ?? 0) + Math.max(0, Math.round((Date.parse(now) - Date.parse(existing.startedAt)) / 1000));
-        transaction.update(target, { accumulatedSeconds, durationSeconds: accumulatedSeconds, paused: true, pausedAt: now, revision, updatedAt: now });
-        if (activeId === command.entityId) transaction.update(activeRef, { paused: true, updatedAt: now });
+        const elapsed = Math.max(0, Math.round((Date.parse(now) - Date.parse(existing.startedAt)) / 1000));
+        transaction.update(target, { paused: true, pausedAt: now, accumulatedSeconds: Number(existing.accumulatedSeconds ?? 0) + elapsed, revision, updatedAt: now });
+        if (activeId === command.entityId) transaction.delete(activeRef);
       } else if (action === 'resume') {
         if (existing.endedAt) throw new AppError(409, 'TIMER_NOT_RUNNING', 'Este cronômetro já foi encerrado.');
         if (!existing.paused) throw new AppError(409, 'TIMER_NOT_PAUSED', 'Este cronômetro não está pausado.');
-        transaction.update(target, { startedAt: now, paused: false, pausedAt: null, revision, updatedAt: now });
-        if (activeId === command.entityId) transaction.update(activeRef, { paused: false, startedAt: now, updatedAt: now });
+        transaction.update(target, { paused: false, pausedAt: null, startedAt: now, revision, updatedAt: now });
+        transaction.set(activeRef, { entryId: command.entityId, activityId: existing.activityId, startedAt: now, updatedAt: now });
       } else {
         transaction.update(target, { deletedAt: now, purgeAfter: new Date(Date.now() + 30 * 86400_000).toISOString(), revision, updatedAt: now });
-        if (activeId === command.entityId) transaction.delete(activeRef);
       }
     }
     const response: CommandResult = { operationId: command.operationId, entityId: command.entityId, revision, serverTime: now, result: 'applied' };
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
+    transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
+    transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
     return response;
   });
 }

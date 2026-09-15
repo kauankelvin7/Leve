@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { LoadingState } from '../components/ui/LoadingState';
+import { StatusPage } from '../components/ui/StatusPage';
+import { asStatusPageCode } from './statusPage';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
 import { OutboxStatus } from '../features/content/OutboxStatus';
@@ -32,9 +34,12 @@ function RouteFocus() {
 }
 
 function Protected() {
-  const { user, session, loading } = useAuth();
+  const { user, session, loading, errorStatus, refresh, logout } = useAuth();
   if (loading) return <LoadingState variant="screen" label="Preparando sua agenda…" />;
-  if (!user || session?.membership !== 'active' || session.profile?.accountState !== 'active') return <Navigate to="/entrar" replace />;
+  if (!user || !user.emailVerified) return <Navigate to="/entrar" replace />;
+  if (errorStatus !== null) return <StatusPage status={asStatusPageCode(errorStatus)} onAction={errorStatus === 401 ? () => void logout() : () => void refresh()} />;
+  if (!session) return <Navigate to="/entrar" replace />;
+  if (session.membership !== 'active' || session.profile?.accountState !== 'active') return <StatusPage status={403} onAction={() => void refresh()} />;
   return <Outlet />;
 }
 
@@ -50,7 +55,7 @@ function Shell() {
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}</nav>
-      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName}</strong><small>Preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small>Conta e preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink className="mobile-profile" to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink></div></div>
@@ -63,7 +68,7 @@ function Shell() {
 }
 
 function NotFound() {
-  return <main className="entry"><h1 id="page-title" tabIndex={-1}>Página não encontrada</h1><Link className="button" to="/hoje">Voltar ao início</Link></main>;
+  return <StatusPage status={404} />;
 }
 
 export function App() {

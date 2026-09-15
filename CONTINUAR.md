@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Registro remoto integrado — 15/09/2026
+
+O histórico remoto de aceite final, CI, tratamento de erros, novo ícone, organização das Preferências e correções do cronômetro foi integrado antes desta entrega. A revisão visual sem serifa e o avatar foram reaplicados sobre essa base.
+
 ## Revisão visual sem serifa — 15/09/2026
 
 A interface recebeu uma mudança visual ampla preservando as quatro paletas. A navegação desktop agora usa uma superfície escura derivada da cor escolhida, os painéis têm aparência de papel com bordas mais definidas, os botões têm hierarquia mais clara e cada área ganhou tratamento próprio. Meu dia inclui resumo da data e atalhos para notas, compras e tempo registrado. Notas lembram folhas de caderno; compras usam contadores e progresso com mais contraste. A composição móvel mantém os mesmos acessos e não transborda a 390 px.

@@ -3,35 +3,39 @@ import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../identity/AuthProvider';
 import { sendCommand } from '../../platform/api';
+import { NotificationSettings } from '../settings/NotificationSettings';
 import { Icon } from '../../components/ui/Icon';
+
+export const TUTORIAL_OPEN_EVENT = 'leve:open-tutorial';
+const tutorialStorageKey = (uid: string) => `leve.tutorial.completed:${uid}`;
+
+export function requestTutorial() {
+  window.dispatchEvent(new Event(TUTORIAL_OPEN_EVENT));
+}
 
 const steps = [
   { route: '/hoje', target: '.page-heading', title: 'Seu dia no Leve', text: 'Atividades, calendário, notas e compras ficam no mesmo espaço. Este passeio é curto e você pode pular quando quiser.' },
   { route: '/hoje?nova=1', target: '.activity-composer', title: 'Crie uma atividade', text: 'Informe o título, escolha a data e uma cor. Tarefas podem ficar sem horário; compromissos têm início e fim. Nada é salvo durante o tutorial.' },
   { route: '/calendario', target: '.calendar-panel', title: 'Seu calendário em cores', text: 'O dia recebe a cor da primeira atividade. Os marcadores preservam as cores das demais. Selecione uma data para ler a lista completa.' },
   { route: '/configuracoes#settings-device', target: '.notification-settings', title: 'Lembretes neste aparelho', text: 'Ative avisos para receber lembretes fora do Leve. Em iPhone, pode ser necessário instalar o app na tela inicial antes de permitir notificações.' },
-  { route: '/compras', target: '.sidebar nav', title: 'Compras, notas e recuperação', text: 'Crie listas e reutilize modelos em Compras. Recupere exclusões na Lixeira. Você pode abrir este guia de novo na seção Ajuda das Preferências.' },
+  { route: '/compras', target: '.sidebar nav', title: 'Compras, notas e recuperação', text: 'Crie listas e reutilize modelos em Compras. Recupere exclusões na Lixeira. Aparência, exportação e aparelhos ficam em Preferências. O botão de ajuda continua disponível acima do conteúdo.' },
 ] as const;
-
-export function TutorialHelp() {
-  return <section className="panel content-form settings-help" aria-labelledby="settings-help-title">
-    <h2 id="settings-help-title"><Icon name="question" />Ajuda</h2>
-    <p>Reveja onde ficam as atividades, o calendário e os lembretes.</p>
-    <button type="button" onClick={() => window.dispatchEvent(new Event('leve:open-help'))}><Icon name="question" />Abrir guia do Leve</button>
-  </section>;
-}
 
 export function Tutorial() {
   const { user, session, refresh } = useAuth();
   const navigate = useNavigate(); const location = useLocation();
-  const [step, setStep] = useState<number | null>(() => session?.profile?.tutorialCompletedAt ? null : 0);
+  const [step, setStep] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
   const active = step === null ? null : steps[step]!;
   useEffect(() => {
-    const open = () => { setMessage(''); setStep(0); };
-    window.addEventListener('leve:open-help', open);
-    return () => window.removeEventListener('leve:open-help', open);
+    if (!user || !session) return;
+    if (!localStorage.getItem(tutorialStorageKey(user.uid))) setStep(0);
+  }, [user?.uid, session]);
+  useEffect(() => {
+    const reopen = () => { setMessage(''); setStep(0); };
+    window.addEventListener(TUTORIAL_OPEN_EVENT, reopen);
+    return () => window.removeEventListener(TUTORIAL_OPEN_EVENT, reopen);
   }, []);
   useEffect(() => {
     if (!active) return;
@@ -55,14 +59,16 @@ export function Tutorial() {
   async function close() {
     setStep(null);
     document.getElementById('page-title')?.focus({ preventScroll: true });
-    if (!user || session?.profile?.tutorialCompletedAt) return;
+    if (!user) return;
+    localStorage.setItem(tutorialStorageKey(user.uid), 'true');
+    if (session?.profile?.tutorialCompletedAt) return;
     try { await sendCommand({ command: 'profile.completeTutorial', operationId: crypto.randomUUID(), entityId: user.uid, payload: {} }); await refresh(); }
     catch { setMessage('Não foi possível salvar a conclusão do tutorial. Ele poderá aparecer no próximo acesso.'); }
   }
   return <>{message && <p role="status">{message}</p>}
     {active && createPortal(<aside className="tutorial-card" role="dialog" aria-labelledby="tutorial-title" onKeyDown={event => { if (event.key === 'Escape') void close(); }}>
       <header className="tutorial-card-header"><span>Guia do Leve · {step! + 1} de {steps.length}</span><button type="button" className="icon-button" aria-label="Fechar guia" onClick={() => void close()}><Icon name="close" /></button></header>
-      <div className="tutorial-card-content"><h2 id="tutorial-title" ref={heading} tabIndex={-1}>{active.title}</h2><p>{active.text}</p></div>
+      <div className="tutorial-card-content"><h2 id="tutorial-title" ref={heading} tabIndex={-1}>{active.title}</h2><p>{active.text}</p>{step === 3 && <NotificationSettings compact />}</div>
       <div className="tutorial-card-actions"><button type="button" onClick={() => step! > 0 ? setStep(step! - 1) : void close()}>{step! > 0 ? 'Voltar' : 'Pular guia'}</button><button type="button" className="primary" onClick={() => step === steps.length - 1 ? void close() : setStep(step! + 1)}>{step === steps.length - 1 ? 'Concluir guia' : 'Próximo'}</button></div>
     </aside>, document.body)}
   </>;

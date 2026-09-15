@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#4D685C"/><path d="M24 16v32h21" fill="none" stroke="#fff" stroke-width="4"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">Leve</title>
+  <desc id="desc">Monograma leve</desc>
+  <rect x="8" y="8" width="176" height="176" rx="52" fill="#BFD4C6"/>
+  <path d="M57 48v90c0 10 7 16 17 16h8" fill="none" stroke="#192A1E" stroke-linecap="round" stroke-width="17"/>
+  <path d="M82 116c0-24 15-40 37-40s36 16 36 39c0 3 0 6-1 9H98c2 10 9 15 21 15 8 0 15-2 22-7l9 13c-9 8-20 12-33 12-22 0-35-15-35-41Zm17-5h38c-2-10-8-16-19-16s-17 6-19 16Z" fill="#192A1E"/>
+  <circle cx="164" cy="145" r="10" fill="#3B7856"/>
+</svg>

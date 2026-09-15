@@ -9,7 +9,8 @@
     { "source": "/:page(hoje|calendario|notas|compras|configuracoes|lixeira|buscar|entrar|registrar|recuperar)", "destination": "/index.html" },
     { "source": "/:page(notas|compras|atividade)/:id", "destination": "/index.html" },
     { "source": "/demo", "destination": "/index.html" },
-    { "source": "/demo/:page(hoje|calendario|notas|compras|configuracoes)", "destination": "/index.html" }
+    { "source": "/demo/:page(hoje|calendario|notas|compras|configuracoes)", "destination": "/index.html" },
+    { "source": "/:path((?!api(?:/|$)|assets(?:/|$)|favicon\\.svg$|manifest\\.webmanifest$|sw\\.js$).*)", "destination": "/index.html" }
   ],
   "headers": [{
     "source": "/(.*)",

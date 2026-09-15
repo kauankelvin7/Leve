@@ -16,6 +16,7 @@
 
   /* Paleta base (tema sage/verde — padrão) */
   --color-canvas:       #ECF1EE;
+  --color-canvas-glow:  #F8EEEC;
   --color-solid:        #FAFCFA;
   --color-glass:        rgba(250, 252, 250, 0.78);
   --color-field:        rgba(243, 248, 245, 0.92);
@@ -69,7 +70,8 @@
 
 /* ── 2. RESET ────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; }
+body { margin: 0; background: linear-gradient(145deg, var(--color-canvas) 0%, var(--color-canvas-glow) 52%, var(--color-canvas) 100%); background-attachment: fixed; }
+.main-wrapper { position: relative; }
 * { overflow-wrap: anywhere; }
 
 /* ── 3. TEMAS ────────────────────────────────────────────── */
@@ -84,6 +86,7 @@ body { margin: 0; }
   --color-action-primary: #6B4FA0 !important;
   --color-action-hover:   #543D84 !important;
   --color-focus:          #6B4FA0 !important;
+  --color-canvas-glow:    #F4F0FC !important;
 }
 
 :root[data-theme=blue] {
@@ -97,6 +100,7 @@ body { margin: 0; }
   --color-action-primary: #3A698C !important;
   --color-action-hover:   #2B5272 !important;
   --color-focus:          #3A698C !important;
+  --color-canvas-glow:    #EEF5FB !important;
 }
 
 :root[data-theme=red] {
@@ -110,6 +114,7 @@ body { margin: 0; }
   --color-action-primary: #8D4651 !important;
   --color-action-hover:   #72363F !important;
   --color-focus:          #8D4651 !important;
+  --color-canvas-glow:    #FCF2F1 !important;
 }
 
 /* ── Swatches de tema ─ */
@@ -352,6 +357,10 @@ main { scroll-margin-top: 20px; }
 .page-heading > p:not(.eyebrow) { color: var(--color-text-muted); max-width: 55ch; margin-bottom: 20px; }
 .page-heading > .primary { margin-top: 4px; }
 .page-heading .eyebrow { color: var(--color-text-muted); }
+.activity-detail-heading > .back-link { display: inline-flex; align-items: center; gap: 7px; width: fit-content; min-height: 40px; margin-bottom: 20px; padding: 8px 13px 8px 9px; border: 1px solid var(--color-border); border-radius: 999px; background: color-mix(in srgb, var(--color-surface) 72%, transparent); color: var(--color-text-muted); text-decoration: none; font-size: .875rem; font-weight: 700; }
+.activity-detail-heading > .back-link:hover { background: var(--color-accent-soft); color: var(--color-text); }
+.activity-detail-heading > .back-link svg { width: 18px; height: 18px; }
+.activity-detail-heading > div > p:not(.eyebrow) { max-width: 55ch; margin: 0; color: var(--color-text-muted); }
 
 /* ── 15. LAYOUT DE AGENDA ────────────────────────────────── */
 .agenda-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; }
@@ -640,7 +649,7 @@ main { scroll-margin-top: 20px; }
 .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--color-border); }
 
 .google-button { width: 100%; margin-top: 4px; background: #fff; }
-.google-button > span { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid #ccd4ce; border-radius: 50%; color: #315943; font-weight: 600; }
+.google-button > .google-mark { display: block; width: 22px; height: 22px; flex: 0 0 22px; }
 .recovery-link { display: flex; justify-content: center; margin: 14px 0 0 !important; }
 
 .verification-step {
@@ -1076,11 +1085,29 @@ html {
 
 /* ── 56. TIMER / REGISTRO DE TEMPO ───────────────────────── */
 .timer-panel { margin-top: 24px; }
+.timer-heading { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.timer-display { margin: 5px 0 6px; font: 800 clamp(2.8rem, 7vw, 4.8rem)/1 var(--font-ui); font-variant-numeric: tabular-nums; letter-spacing: -.06em; }
+.timer-total { margin: 0; color: var(--color-text-muted); }
+.timer-state { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text-muted); font-size: .8125rem; white-space: nowrap; }
+.timer-state::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.timer-state.is-running { color: var(--color-action-primary); background: var(--color-accent-soft); }
+.timer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.timer-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.timer-actions .timer-stop { background: var(--color-danger); border-color: var(--color-danger); color: #fff; }
+.timer-conflict { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 18px; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-accent-soft); }
+.timer-conflict span { font-size: .875rem; font-weight: 700; }
+.timer-conflict button { flex-shrink: 0; }
+.manual-time-details { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-border); }
+.manual-time-details summary { width: fit-content; color: var(--color-text-muted); cursor: pointer; font-weight: 700; }
 .manual-time { display: flex; align-items: end; gap: 12px; margin-top: 20px; }
 .manual-time label { flex: 1; margin: 0; }
-.time-history { list-style: none; padding: 0; margin: 22px 0 0; }
+.time-history-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--color-border); }
+.time-history-heading h3 { margin: 0; }
+.time-history-heading span { color: var(--color-text-muted); font-size: .8125rem; }
+.time-history { list-style: none; padding: 0; margin: 12px 0 0; }
 .time-history li { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid var(--color-border); }
 .time-history small { color: var(--color-text-muted); }
+.time-history-empty { margin-bottom: 0; }
 
 /* ── 57. RESUMO / MÉTRICAS DE REVISÃO ────────────────────── */
 .review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }

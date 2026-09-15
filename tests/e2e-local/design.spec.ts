@@ -9,10 +9,10 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
-  await expect(page).toHaveURL(/\/hoje$/);
-  await expect(page.getByRole('button', { name: 'Pular guia' })).toBeVisible();
+  await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  await expect(page.getByRole('button', { name: /Pular (guia|tutorial)/ })).toBeVisible();
   const guideSaved = page.waitForResponse(response => response.url().endsWith('/api/session') && response.ok());
-  await page.getByRole('button', { name: 'Pular guia' }).click();
+  await page.getByRole('button', { name: /Pular (guia|tutorial)/ }).click();
   await guideSaved;
   await page.goto('/configuracoes');
   if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
