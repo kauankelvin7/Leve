@@ -9,6 +9,8 @@ import { Icon } from '../../components/ui/Icon';
 const duration = (seconds: number) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)}h ` : ''}${Math.floor(seconds % 3600 / 60)}min`;
 const stopwatch = (seconds: number) => [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
 
+type OpenEntry = Pick<TimeEntry, 'id' | 'revision' | 'startedAt' | 'paused' | 'accumulatedSeconds'>;
+
 export function ActivityDetail() {
   const { id = '' } = useParams();
   const { item: activity, loading, error } = useUserDocument<Activity>(`activities/${id}`);
@@ -16,18 +18,30 @@ export function ActivityDetail() {
   const { items: allEntries } = useUserCollection<TimeEntry>('timeEntries');
   const [message, setMessage] = useState('');
   const [timerBusy, setTimerBusy] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [optimisticTimer, setOptimisticTimer] = useState<{ id: string; revision: number; startedAt: string } | null>(null);
-  const [stoppedTimerId, setStoppedTimerId] = useState<string | null>(null);
+  // Placeholder exibido só entre o clique em "Iniciar" e o Firestore confirmar a criação do registro.
+  const [optimisticTimer, setOptimisticTimer] = useState<OpenEntry | null>(null);
+  // Sobrepõe pause/resume/stop no registro exibido enquanto o Firestore ainda não confirmou a
+  // revisão nova. Some sozinho assim que `storedActive.revision` alcança a revisão esperada — por
+  // isso sobrevive a qualquer coisa; ele não é o que define o estado, só evita um flash visual.
+  const [pendingPatch, setPendingPatch] = useState<{ id: string; revision: number; patch: Partial<OpenEntry> } | null>(null);
   const [now, setNow] = useState(Date.now());
   const entries = allEntries.filter(entry => entry.activityId === id && !entry.deletedAt).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
   const otherActive = allEntries.find(entry => entry.activityId !== id && !entry.endedAt && !entry.deletedAt);
   const storedActive = entries.find(entry => !entry.endedAt);
-  const active = storedActive?.id === stoppedTimerId ? optimisticTimer : storedActive ?? optimisticTimer;
+  const rawActive: OpenEntry | undefined = storedActive ?? optimisticTimer ?? undefined;
+  const active = rawActive && pendingPatch?.id === rawActive.id && rawActive.revision < pendingPatch.revision
+    ? { ...rawActive, ...pendingPatch.patch }
+    : rawActive;
   useEffect(() => { document.title = `${activity?.title ?? 'Atividade'} · Leve`; }, [activity?.title]);
-  useEffect(() => { if (!active) return; const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, [active?.id]);
+  useEffect(() => { if (!active || active.paused) return; const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, [active?.id, active?.paused]);
   useEffect(() => { if (storedActive?.id === optimisticTimer?.id) setOptimisticTimer(null); }, [storedActive?.id, optimisticTimer?.id]);
-  useEffect(() => { if (!storedActive && stoppedTimerId) setStoppedTimerId(null); }, [storedActive?.id, stoppedTimerId]);
+  useEffect(() => {
+    if (pendingPatch && storedActive?.id === pendingPatch.id && storedActive.revision >= pendingPatch.revision) setPendingPatch(null);
+  }, [storedActive?.id, storedActive?.revision, pendingPatch]);
+
+  function accrued(entry: OpenEntry): number {
+    return (entry.accumulatedSeconds ?? 0) + (entry.paused ? 0 : Math.max(0, Math.floor((now - Date.parse(entry.startedAt)) / 1000)));
+  }
 
   async function status(value: 'pending' | 'completed' | 'canceled') {
     if (!activity) return;
@@ -38,17 +52,36 @@ export function ActivityDetail() {
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível atualizar.'); }
   }
   async function startTimer() {
-    if (!activity || timerBusy) return;
+    if (!activity || timerBusy || active) return;
     setTimerBusy(true);
     try {
       const entityId = crypto.randomUUID();
       const result = await sendCommand({ command: 'timeEntry.start', operationId: crypto.randomUUID(), entityId, expectedRevision: 0, payload: { activityId: activity.id, civilDate: new Intl.DateTimeFormat('en-CA', { timeZone: activity.schedule.timeZone }).format(new Date()), timeZone: activity.schedule.timeZone }, clientCreatedAt: new Date().toISOString() });
-      setOptimisticTimer({ id: entityId, revision: result.revision, startedAt: result.serverTime });
-      setStoppedTimerId(null);
-      setPaused(false);
+      setOptimisticTimer({ id: entityId, revision: result.revision, startedAt: result.serverTime, paused: false, accumulatedSeconds: 0 });
       setNow(Date.now());
       setMessage('Cronômetro iniciado. Ele continuará contando mesmo se você sair desta página.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível iniciar o cronômetro.'); }
+    finally { setTimerBusy(false); }
+  }
+  async function pauseTimer() {
+    if (!active || active.paused || timerBusy) return;
+    setTimerBusy(true);
+    try {
+      const result = await sendCommand({ command: 'timeEntry.pause', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setPendingPatch({ id: active.id, revision: result.revision, patch: { revision: result.revision, paused: true, accumulatedSeconds: accrued(active) } });
+      setMessage('Cronômetro pausado. O tempo desta etapa foi salvo — isso fica registrado mesmo se você sair da página.');
+    } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível pausar o cronômetro.'); }
+    finally { setTimerBusy(false); }
+  }
+  async function resumeTimer() {
+    if (!active || !active.paused || timerBusy) return;
+    setTimerBusy(true);
+    try {
+      const result = await sendCommand({ command: 'timeEntry.resume', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setPendingPatch({ id: active.id, revision: result.revision, patch: { revision: result.revision, paused: false, startedAt: result.serverTime } });
+      setNow(Date.now());
+      setMessage('Cronômetro retomado.');
+    } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível retomar o cronômetro.'); }
     finally { setTimerBusy(false); }
   }
   async function stopTimer(successMessage: string) {
@@ -56,8 +89,8 @@ export function ActivityDetail() {
     setTimerBusy(true);
     try {
       await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
-      setStoppedTimerId(active.id);
       setOptimisticTimer(null);
+      setPendingPatch(null);
       setMessage(successMessage);
     }
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o cronômetro.'); throw failure; }
@@ -72,19 +105,6 @@ export function ActivityDetail() {
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o outro cronômetro.'); }
     finally { setTimerBusy(false); }
   }
-  async function pauseTimer() {
-    try { await stopTimer('Cronômetro pausado. O tempo desta etapa foi salvo.'); setPaused(true); }
-    catch { return; }
-  }
-  async function finishTimer() {
-    if (active) {
-      try { await stopTimer('Cronômetro finalizado e tempo salvo.'); setPaused(false); }
-      catch { return; }
-      return;
-    }
-    setPaused(false);
-    setMessage('Cronômetro finalizado.');
-  }
   async function addManual(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!activity) return;
     const form = event.currentTarget;
@@ -95,20 +115,22 @@ export function ActivityDetail() {
   if (loading) return <LoadingState variant="detail" label="Abrindo a atividade…" />;
   if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><Link to="/hoje">Voltar ao Meu dia</Link></main>;
   const category = categories.find(item => item.id === activity.categoryId);
-  const total = entries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : Math.max(0, Math.floor((now - Date.parse(entry.startedAt)) / 1000))), 0);
-  const runningSeconds = active ? Math.max(0, Math.floor((now - Date.parse(active.startedAt)) / 1000)) : 0;
+  const total = entries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
+  const runningSeconds = active ? accrued(active) : 0;
   return <main><header className="page-heading activity-detail-heading"><Link className="back-link" to="/hoje" aria-label="Voltar ao Meu dia"><Icon name="chevronLeft" /> Meu dia</Link><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
     <section className="panel content-form"><h2>Detalhes</h2><p>{activity.descriptionPlain || 'Sem descrição.'}</p><p>{activity.schedule.type === 'task' ? activity.schedule.dueDate ?? 'Sem prazo' : activity.schedule.startDate}</p>{activity.estimatedMinutes ? <p>Estimativa: {activity.estimatedMinutes} minutos.</p> : null}<div className="dialog-actions">{activity.kind === 'task' ? <button className="primary" onClick={() => void status(activity.status === 'completed' ? 'pending' : 'completed')}>{activity.status === 'completed' ? 'Reabrir' : 'Concluir'}</button> : <button onClick={() => void status(activity.status === 'canceled' ? 'pending' : 'canceled')}>{activity.status === 'canceled' ? 'Reativar' : 'Cancelar compromisso'}</button>}<Link className="button" to="/hoje">Abrir no Meu dia</Link></div></section>
     <section className="panel content-form timer-panel">
-      <div className="timer-heading"><div><p className="eyebrow">Cronômetro</p><h2 className="timer-display" aria-label={`${stopwatch(runningSeconds)} no cronômetro`}>{stopwatch(runningSeconds)}</h2><p className="timer-total">Total registrado: <strong>{duration(total)}</strong></p></div><span className={`timer-state ${active ? 'is-running' : ''}`}>{active ? 'Em andamento' : paused ? 'Pausado' : 'Pronto para iniciar'}</span></div>
-      <p className="muted">Inicie quando começar. O cronômetro continua contando mesmo se você navegar para outra página.</p>
+      <div className="timer-heading"><div><p className="eyebrow">Cronômetro</p><h2 className="timer-display" aria-label={`${stopwatch(runningSeconds)} no cronômetro`}>{stopwatch(runningSeconds)}</h2><p className="timer-total">Total registrado: <strong>{duration(total)}</strong></p></div><span className={`timer-state ${active && !active.paused ? 'is-running' : ''}`}>{active ? (active.paused ? 'Pausado' : 'Em andamento') : 'Pronto para iniciar'}</span></div>
+      <p className="muted">Inicie quando começar. O cronômetro continua contando — mesmo pausado — se você navegar para outra página.</p>
       {otherActive ? <div className="timer-conflict" role="status"><span>Há outro cronômetro ativo. Você pode pará-lo agora ou iniciar este para trocar automaticamente.</span><button type="button" disabled={timerBusy} onClick={() => void stopOtherTimer()}>Parar o outro</button></div> : null}
       <div className="timer-actions">
-        {active ? <button type="button" className="primary timer-stop" disabled={timerBusy} onClick={() => void pauseTimer()}><Icon name="clock" />Parar cronômetro</button> : <button type="button" className="primary" disabled={timerBusy || activity.status !== 'pending'} onClick={() => void startTimer()}><Icon name="clock" />{paused ? 'Retomar' : 'Iniciar cronômetro'}</button>}
-        {(active || paused) ? <button type="button" disabled={timerBusy} onClick={() => void finishTimer()}>Finalizar</button> : null}
+        {!active ? <button type="button" className="primary" disabled={timerBusy || activity.status !== 'pending'} onClick={() => void startTimer()}><Icon name="clock" />Iniciar cronômetro</button> : null}
+        {active && !active.paused ? <button type="button" className="primary timer-stop" disabled={timerBusy} onClick={() => void pauseTimer()}><Icon name="clock" />Pausar cronômetro</button> : null}
+        {active && active.paused ? <button type="button" className="primary" disabled={timerBusy} onClick={() => void resumeTimer()}><Icon name="clock" />Retomar</button> : null}
+        {active ? <button type="button" disabled={timerBusy} onClick={() => void stopTimer('Cronômetro finalizado e tempo salvo.')}>Finalizar</button> : null}
       </div>
       <details className="manual-time-details"><summary>Adicionar tempo manualmente</summary><form className="manual-time" onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>
       <div className="time-history-heading"><h3>Histórico</h3><span>{entries.length ? `${entries.length} ${entries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
-      {entries.length ? <ul className="time-history">{entries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : Math.floor((now - Date.parse(entry.startedAt)) / 1000))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Inicie o cronômetro ou adicione um período manual para acompanhar seu tempo.</p>}
+      {entries.length ? <ul className="time-history">{entries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : entry.paused ? 'Pausado' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Inicie o cronômetro ou adicione um período manual para acompanhar seu tempo.</p>}
     </section><p role="status">{error || message}</p></main>;
 }
