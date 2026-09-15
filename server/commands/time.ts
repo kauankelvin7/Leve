@@ -34,18 +34,16 @@ export async function timeEntryCommand(identity: DecodedIdToken, command: Comman
     if (activityRef && (!activity?.exists || activity.data()?.deletedAt)) throw new AppError(422, 'REFERENCE_UNAVAILABLE', 'A atividade não está disponível.');
     const existing = current?.data();
     const activeId = active?.data()?.entryId;
-    let activeTimerExists = Boolean(activeId);
-    if (action === 'start' && activeId) {
-      const activeTimer = activeId === command.entityId ? current : await transaction.get(root.collection('timeEntries').doc(activeId));
-      if (!activeTimer?.exists || activeTimer.data()?.endedAt || activeTimer.data()?.deletedAt) {
-        transaction.delete(activeRef);
-        activeTimerExists = false;
-      }
-    }
+    const openTimers = action === 'start' ? await transaction.get(root.collection('timeEntries').where('endedAt', '==', null).limit(20)) : null;
     let revision = 1;
     if (action === 'start') {
       if (command.expectedRevision !== 0 || current?.exists) throw new AppError(409, 'REVISION_CONFLICT', 'Este registro de tempo já existe.');
-      if (activeTimerExists) throw new AppError(409, 'TIMER_ALREADY_RUNNING', 'Já existe um cronômetro em andamento. Pare-o antes de iniciar outro.');
+      for (const openTimer of openTimers?.docs ?? []) {
+        const timer = openTimer.data();
+        if (openTimer.id === command.entityId || timer.deletedAt || timer.endedAt) continue;
+        const durationSeconds = Math.max(1, Math.round((Date.parse(now) - Date.parse(timer.startedAt)) / 1000));
+        transaction.update(openTimer.ref, { endedAt: now, durationSeconds, revision: Number(timer.revision) + 1, updatedAt: now });
+      }
       transaction.create(target, { ...input, startedAt: now, endedAt: null, durationSeconds: 0, source: 'timer', revision, schemaVersion: 1, deletedAt: null, createdAt: now, updatedAt: now });
       transaction.set(activeRef, { entryId: command.entityId, activityId: input.activityId, startedAt: now, updatedAt: now });
     } else if (action === 'addManual' || action === 'addSession') {
