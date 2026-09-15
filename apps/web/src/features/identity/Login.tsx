@@ -26,13 +26,13 @@ function authMessage(error: unknown) {
     'auth/internal-error': 'O serviço de acesso encontrou uma instabilidade. Tente novamente.',
     'auth/missing-continue-uri': 'Não foi possível preparar o retorno da confirmação.',
     'auth/network-request-failed': 'Sem conexão. Verifique sua internet e tente novamente.',
-    'auth/operation-not-allowed': 'Esta forma de entrada ainda não foi habilitada no Firebase.',
+    'auth/operation-not-allowed': 'Esta forma de entrada ainda não está disponível.',
     'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Libere pop-ups e tente novamente.',
     'auth/cancelled-popup-request': 'A tentativa anterior foi substituída. Tente entrar com Google novamente.',
     'auth/popup-closed-by-user': 'Entrada com Google cancelada.',
     'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.',
-    'auth/unauthorized-domain': 'Este endereço ainda não foi autorizado no Firebase Authentication.',
-    'auth/unauthorized-continue-uri': 'O endereço de retorno ainda não foi autorizado no Firebase Authentication.',
+    'auth/unauthorized-domain': 'Não foi possível entrar por este endereço. Use o endereço oficial do Leve.',
+    'auth/unauthorized-continue-uri': 'Não foi possível concluir a entrada por este endereço.',
     'auth/user-disabled': 'Esta conta está desativada. Entre em contato com o mantenedor.',
     'auth/web-storage-unsupported': 'Este navegador está bloqueando o armazenamento necessário para entrar.',
     'auth/weak-password': 'Use uma senha com pelo menos 8 caracteres.',
@@ -180,7 +180,7 @@ export function Login({ mode = 'login' }: { mode?: AuthMode }) {
   return <div className="auth-page"><AuthBackdrop /><aside className="auth-brand"><Link className="brand" to="/entrar">leve<span>.</span></Link><p>Organize o que importa.<br />Respire o resto.</p></aside><main className="entry auth-entry">
     {!user && mode !== 'recovery' ? <nav className="auth-switch" aria-label="Acesso"><Link to="/entrar" aria-current={mode === 'login' ? 'page' : undefined}>Entrar</Link><Link to="/registrar" aria-current={mode === 'register' ? 'page' : undefined}>Criar conta</Link></nav> : null}
     <p className="eyebrow">Sua agenda privada</p><h1 id="page-title" tabIndex={-1}>{title}</h1>
-    {emulatorMode ? <p className="notice">Ambiente local conectado aos emuladores Firebase.</p> : null}
+    {emulatorMode ? <p className="notice">Ambiente de teste local ativo.</p> : null}
     {!configured ? <p role="alert" className="notice">A conexão do não foi estabelecida. Reinicie a aplicação.</p> : null}
     {sessionError && user?.emailVerified && !feedback ? <div role="alert" className="auth-alert"><p>{sessionError}</p><button type="button" onClick={() => void refresh()}>Tentar novamente</button></div> : null}
     {user ? <>

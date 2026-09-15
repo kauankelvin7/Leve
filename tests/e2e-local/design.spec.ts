@@ -11,6 +11,7 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
   if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
+  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
   await page.goto('/configuracoes');
   if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
     await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
@@ -40,7 +41,7 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await page.getByRole('button', { name: 'Mês anterior', exact: true }).click();
   await expect(page.getByLabel('Mês', { exact: true })).toHaveValue(initial);
   await page.getByRole('button', { name: 'Hoje', exact: true }).click();
-  await page.getByRole('link', { name: '+ Nova atividade', exact: true }).click();
+  await page.getByRole('link', { name: 'Nova atividade', exact: true }).click();
   await expect(page.getByLabel('Título', { exact: true })).toBeVisible();
   await expect(page.getByLabel('Data', { exact: true })).toHaveValue(/\d{4}-\d{2}-\d{2}/);
   for (const width of [1440, 390]) {

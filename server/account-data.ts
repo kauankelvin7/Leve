@@ -92,7 +92,8 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
     const activityId = activityIds.get(String(source.activityId));
     if (!activityId) continue;
     const entryId = importedId(identity.uid, input.importId, 'timeEntry', source.id);
-    writes.push({ path: `timeEntries/${entryId}`, value: { activityId, civilDate: source.civilDate, timeZone: source.timeZone, startedAt: source.startedAt, endedAt: source.endedAt ?? now, durationSeconds: Number(source.durationSeconds) || 0, source: source.source === 'manual' ? 'manual' : 'timer', deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
+    const entrySource = source.source === 'manual' ? 'manual' : source.source === 'session' ? 'session' : 'timer';
+    writes.push({ path: `timeEntries/${entryId}`, value: { activityId, civilDate: source.civilDate, timeZone: source.timeZone, startedAt: source.startedAt, endedAt: source.endedAt ?? now, durationSeconds: Number(source.durationSeconds) || 0, source: entrySource, ...(typeof source.sessionId === 'string' ? { sessionId: source.sessionId } : {}), deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.series) {
     const sourceActivity = source.activity as Record<string, unknown>;

@@ -104,13 +104,15 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByLabel('Nome da lista').fill(listTitle);
   await page.getByRole('button', { name: 'Criar lista' }).click();
   await page.getByRole('link', { name: new RegExp(listTitle) }).click();
-  await page.getByLabel('Novo item').fill('Arroz');
+  await page.getByLabel('Adicionar item', { exact: true }).fill('Arroz');
   await page.getByRole('button', { name: 'Adicionar item' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toBeVisible();
   await page.getByRole('checkbox', { name: 'Arroz' }).click();
-  await expect(page.getByRole('checkbox', { name: 'Arroz' })).toBeChecked();
+  await page.getByText('Concluídos (1)', { exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeChecked();
   await page.reload();
-  await expect(page.getByRole('checkbox', { name: 'Arroz' })).toBeChecked();
+  await page.getByText('Concluídos (1)', { exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeChecked();
   const shoppingListUrl = page.url();
   await page.getByRole('button', { name: 'Excluir' }).click();
   await page.getByRole('navigation').getByRole('link', { name: 'Lixeira' }).click();
@@ -118,7 +120,8 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('listitem').filter({ hasText: 'Arroz' }).getByRole('button', { name: 'Restaurar' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toHaveCount(0);
   await page.goto(shoppingListUrl);
-  await expect(page.getByRole('checkbox', { name: 'Arroz' })).toBeVisible();
+  await page.getByText('Concluídos (1)', { exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeVisible();
 
   await page.getByRole('link', { name: /Preferências/ }).click();
   await page.getByLabel('Nome', { exact: true }).first().fill('Conta local atualizada');
@@ -172,7 +175,7 @@ test('lixeira global restaura item de compras', async ({ page }) => {
   await page.getByLabel('Nome da lista').fill(listTitle);
   await page.getByRole('button', { name: 'Criar lista' }).click();
   await page.getByRole('link', { name: new RegExp(listTitle) }).click();
-  await page.getByLabel('Novo item').fill('Item para restaurar');
+  await page.getByLabel('Adicionar item', { exact: true }).fill('Item para restaurar');
   await page.getByRole('button', { name: 'Adicionar item' }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
   const shoppingListUrl = page.url();
@@ -311,7 +314,7 @@ test('exportação pessoal volta pela importação sem substituir os dados atuai
   await page.goto('/configuracoes');
 
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Baixar exportação JSON' }).click();
+  await page.getByRole('button', { name: 'Baixar uma cópia' }).click();
   const download = await downloadPromise;
   const archivePath = await download.path();
   expect(archivePath).not.toBeNull();

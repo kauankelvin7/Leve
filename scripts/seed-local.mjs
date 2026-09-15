@@ -20,7 +20,15 @@ const email = 'leve.local@example.test';
 const password = 'leve-local-123';
 const registrationEmail = 'cadastro.local@example.test';
 const existing = await auth.getUserByEmail(email).catch(() => null);
-if (existing) await auth.updateUser(existing.uid, { password, emailVerified: true });
+if (existing) {
+  await auth.updateUser(existing.uid, { password, emailVerified: true });
+  if (process.env.LEVE_RESET_SEED === 'true') {
+    await Promise.all([
+      db.recursiveDelete(db.doc(`users/${existing.uid}`)),
+      db.doc(`memberships/${existing.uid}`).delete(),
+    ]);
+  }
+}
 else await auth.createUser({ email, password, emailVerified: true, displayName: 'Conta local' });
 const previousRegistration = await auth.getUserByEmail(registrationEmail).catch(() => null);
 if (previousRegistration) {

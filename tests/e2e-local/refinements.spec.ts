@@ -13,7 +13,7 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
   if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
-  await page.getByRole('button', { name: 'Ajuda / Tutorial' }).click();
+  await page.getByRole('button', { name: 'Abrir ajuda' }).click();
   const tutorial = page.getByRole('dialog', { name: 'Tutorial do Leve' });
   await expect(tutorial).toBeVisible();
   await tutorial.getByRole('button', { name: 'Próximo' }).click();
@@ -52,9 +52,9 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await page.getByLabel('Qual unidade?').fill('caixa');
   await page.getByLabel('Unidade', { exact: true }).selectOption('kg');
   await expect(page.getByLabel('Qual unidade?')).toHaveCount(0);
-  await page.getByLabel('Novo item', { exact: true }).fill('Nome muito comprido de um item de compras para testar a lixeira');
+  await page.getByLabel('Adicionar item', { exact: true }).fill('Nome muito comprido de um item de compras para testar a lixeira');
   await page.getByRole('button', { name: 'Adicionar item', exact: true }).click();
-  await page.locator('.shopping-item').getByRole('button', { name: 'Excluir', exact: true }).click();
+  await page.locator('.shopping-item').getByRole('button', { name: /^Excluir / }).click();
   await page.getByRole('link', { name: 'Lixeira', exact: true }).click();
   await expect(page.locator('.trash-list')).toContainText('Nome muito comprido');
   await page.setViewportSize({ width: 320, height: 720 });
@@ -62,10 +62,10 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await expect(page.locator('.trash-list strong').filter({ hasText: 'Nome muito comprido' })).toHaveCSS('white-space', 'nowrap');
   await page.screenshot({ path: 'docs/evidence/v2-trash-320.png', fullPage: true });
   await page.getByRole('button', { name: 'Excluir tudo', exact: true }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Manter na lixeira', exact: true }).click();
   await expect(page.locator('.trash-list')).toContainText('Nome muito comprido');
   await page.getByRole('button', { name: 'Excluir tudo', exact: true }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Confirmar exclusão', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Excluir definitivamente', exact: true }).click();
   await expect(page.getByText('Lixeira esvaziada.')).toBeVisible();
   await page.reload(); await expect(page.getByText('A lixeira está vazia.')).toBeVisible();
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);

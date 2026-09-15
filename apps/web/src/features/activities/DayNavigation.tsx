@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { Icon } from '../../components/ui/Icon';
 import { useEffect, useState } from 'react';
 
 export function useCurrentDay(timeZone: string) {
@@ -20,9 +21,9 @@ export function DayNavigation({ selected, today, weekStartsOn, onSelect, month =
   const days = Array.from({ length: month ? 42 : 7 }, (_, index) => start.add({ days: index }));
   return <section aria-label={month ? 'Calendário do mês' : 'Sua semana'}>
     <div className="toolbar"><h2>{month ? date.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }) : 'Sua semana'}</h2><div className="toolbar-actions">
-      <button type="button" aria-label={month ? 'Mês anterior' : 'Semana anterior'} onClick={() => onSelect(date.subtract(month ? { months: 1 } : { weeks: 1 }).toString())}>‹</button>
+        <button type="button" aria-label={month ? 'Mês anterior' : 'Semana anterior'} onClick={() => onSelect(date.subtract(month ? { months: 1 } : { weeks: 1 }).toString())}><Icon name="chevronLeft" /></button>
       <button type="button" onClick={() => onSelect(today)}>Hoje</button>
-      <button type="button" aria-label={month ? 'Próximo mês' : 'Próxima semana'} onClick={() => onSelect(date.add(month ? { months: 1 } : { weeks: 1 }).toString())}>›</button>
+        <button type="button" aria-label={month ? 'Próximo mês' : 'Próxima semana'} onClick={() => onSelect(date.add(month ? { months: 1 } : { weeks: 1 }).toString())}><Icon name="chevronRight" /></button>
     </div></div>
     <div className={`day-picker ${month ? 'month-picker' : ''}`}>
       {month && days.slice(0, 7).map(day => <span className="mini-weekday" aria-hidden="true" key={`weekday-${day.dayOfWeek}`}>{day.toLocaleString('pt-BR', { weekday: 'narrow' })}</span>)}

@@ -65,6 +65,14 @@ export const timeEntryManualInputSchema = z.object({
   durationSeconds: z.number().int().min(60).max(86_400),
 }).strict();
 
+export const timeEntrySessionInputSchema = z.object({
+  activityId: entityIdSchema,
+  civilDate: civilDateSchema,
+  timeZone: timeZoneSchema,
+  durationSeconds: z.number().int().min(30).max(14_400),
+  sessionId: z.uuid(),
+}).strict();
+
 export type TimeEntry = EntityMeta & {
   activityId: string;
   civilDate: string;
@@ -72,7 +80,8 @@ export type TimeEntry = EntityMeta & {
   startedAt: string;
   endedAt: string | null;
   durationSeconds: number;
-  source: 'timer' | 'manual';
+  source: 'session' | 'manual' | 'timer';
+  sessionId?: string;
 };
 
 export const recurrenceRuleSchema = z.object({

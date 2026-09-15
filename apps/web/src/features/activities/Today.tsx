@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { collection, limit, query, where } from 'firebase/firestore';
-import type { Activity, Category, Note, ShoppingList } from '../../../../../packages/domain/src/content';
+import type { Activity, Category, Note, ShoppingItem, ShoppingList } from '../../../../../packages/domain/src/content';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
 import { firestore } from '../../platform/firebase';
 import { sendCommand } from '../../platform/api';
 import { useAuth } from '../identity/AuthProvider';
-import { useUserCollection } from '../content/useUserCollection';
+import { useUserCollection, useUserSubcollections } from '../content/useUserCollection';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import { DayNavigation, useCurrentDay } from './DayNavigation';
@@ -13,17 +13,20 @@ import { useLiveQueries } from '../content/useLiveQueries';
 import { LoadError } from '../../components/ui/LoadError';
 import { ActivityColorPicker } from '../../components/ui/ActivityColorPicker';
 import { LoadingState } from '../../components/ui/LoadingState';
+import { Icon } from '../../components/ui/Icon';
+import { formatCivilDate } from '../../platform/formatters';
+import { DailyBrief } from './DailyBrief';
 
 type StoredActivity = Activity & { id: string };
 
 function describe(activity: StoredActivity) {
   if (activity.schedule.type === 'task')
     return activity.schedule.dueDate
-      ? `${activity.schedule.dueDate}${activity.schedule.dueTime ? ` às ${activity.schedule.dueTime}` : ''}`
+      ? `${formatCivilDate(activity.schedule.dueDate)}${activity.schedule.dueTime ? ` às ${activity.schedule.dueTime}` : ''}`
       : 'Sem prazo';
   return activity.schedule.allDay
-    ? `${activity.schedule.startDate} · dia inteiro`
-    : `${activity.schedule.startDate} · ${activity.schedule.startTime}–${activity.schedule.endTime}`;
+    ? `${formatCivilDate(activity.schedule.startDate)} · dia inteiro`
+    : `${formatCivilDate(activity.schedule.startDate)} · ${activity.schedule.startTime}–${activity.schedule.endTime}`;
 }
 
 function timedEvent(activity: StoredActivity | null) {
@@ -39,10 +42,12 @@ export function Today() {
   const [chosenDay, setChosenDay] = useState<string | null>(() => {
     try {
       const day = searchParams.get('dia');
-      return day ? Temporal.PlainDate.from(day).toString() : null;
+      const remembered = sessionStorage.getItem('leve.selectedDay');
+      return day ? Temporal.PlainDate.from(day).toString() : remembered ? Temporal.PlainDate.from(remembered).toString() : null;
     } catch { return null; }
   });
   const selectedDay = chosenDay ?? today;
+  const selectDay = (day: string) => { sessionStorage.setItem('leve.selectedDay', day); setChosenDay(day); };
   const [composerOpen, setComposerOpen] = useState(searchParams.get('nova') === '1');
   useEffect(() => { if (searchParams.get('nova') === '1') setComposerOpen(true); }, [searchParams]);
 
@@ -52,6 +57,7 @@ export function Today() {
     .filter(note => note.pinned && !note.deletedAt)
     .sort((l, r) => r.updatedAt.localeCompare(l.updatedAt))[0];
   const activeShoppingLists = shoppingLists.filter(l => !l.deletedAt && !l.archivedAt && l.listKind !== 'template');
+  const shoppingItems = useUserSubcollections<ShoppingItem>('shoppingLists', activeShoppingLists.map(list => list.id), 'items');
   const pendingShoppingItems = activeShoppingLists.reduce((t, l) => t + (l.pendingItemCount ?? l.itemCount), 0);
 
   const composer = useRef<HTMLElement>(null);
@@ -212,19 +218,19 @@ export function Today() {
   useEffect(() => { localStorage.setItem('leve.today.categoryFilter', categoryFilter); }, [categoryFilter]);
 
   return (
-    <main>
+    <main className="today-page">
       {/* Page header */}
       <header className="page-heading">
         <p className="eyebrow">Sua agenda</p>
         <h1 id="page-title" tabIndex={-1}>Meu dia</h1>
         <p>Olá, {session!.profile!.displayName}.</p>
-        <button
+        {!composerOpen && <button
           className="primary"
           onClick={() => { setEditing(null); setComposerOpen(true); }}
-          aria-expanded={composerOpen}
+          aria-expanded={false}
         >
-          + Nova atividade
-        </button>
+          <Icon name="plus" />Nova atividade
+        </button>}
       </header>
 
       <div className="agenda-layout">
@@ -236,7 +242,7 @@ export function Today() {
               selected={selectedDay}
               today={today}
               weekStartsOn={session!.profile!.weekStartsOn}
-              onSelect={setChosenDay}
+              onSelect={selectDay}
               dotsOf={dotsOf}
             />
             <div className="section-heading">
@@ -249,6 +255,8 @@ export function Today() {
             </div>
             {plannedMinutes > 0 ? <p className="muted">{Math.floor(plannedMinutes / 60) ? `${Math.floor(plannedMinutes / 60)}h ` : ''}{plannedMinutes % 60 ? `${plannedMinutes % 60}min` : ''} planejados</p> : null}
           </section>
+
+          <DailyBrief selectedDay={selectedDay} today={today} activities={activities} notes={notes} shoppingItems={shoppingItems.items} />
 
           {/* Composer */}
           {composerOpen && (
@@ -494,12 +502,12 @@ export function Today() {
 
             {activityQuery.partial && (
               <p role="status">
-                A consulta atingiu o limite de 50 itens por grupo. Esta visão pode estar parcial.
+                Há mais atividades neste dia. Use os filtros para encontrar o que procura.
               </p>
             )}
 
             {activityQuery.cached && activities.length > 0 && (
-              <p className="muted" role="status">Dados em cache; aguardando conexão.</p>
+              <p className="muted" role="status">Mostrando o que já estava disponível. Reconectando…</p>
             )}
 
             {loading ? (
@@ -556,7 +564,7 @@ export function Today() {
               </ul>
             ) : !activityQuery.error ? (
               <div className="empty">
-                <p>{activities.length ? 'Nenhuma atividade corresponde aos filtros.' : 'Nenhuma atividade neste dia.'}</p>
+                <p>{activities.length ? 'Nenhuma atividade combina com estes filtros. Ajuste a seleção para ver outras.' : 'Seu dia está livre. Adicione uma atividade quando quiser.'}</p>
                 <button
                   className="text-link"
                   onClick={() => { setEditing(null); setComposerOpen(true); }}
@@ -576,7 +584,7 @@ export function Today() {
               selected={selectedDay}
               today={today}
               weekStartsOn={session!.profile!.weekStartsOn}
-              onSelect={setChosenDay}
+              onSelect={selectDay}
               dotsOf={dotsOf}
             />
           </section>
@@ -601,7 +609,7 @@ export function Today() {
       {/* Status message */}
       {(message || noteError || shoppingError) && (
         <p role="status" className="form-status">
-          {message || noteError || shoppingError}
+          {message || noteError || shoppingError || shoppingItems.error}
         </p>
       )}
     </main>

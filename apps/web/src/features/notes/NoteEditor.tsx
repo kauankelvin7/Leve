@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { NoteNode } from '../../../../../packages/domain/src/content';
+import { Icon } from '../../components/ui/Icon';
 
 function escapeText(value: string) {
   return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
@@ -79,5 +80,5 @@ export function NoteEditor({ initial, editorRef, onInput }: { initial: NoteNode;
   function pastePlain(event: React.ClipboardEvent<HTMLDivElement>) {
     event.preventDefault(); document.execCommand('insertText', false, event.clipboardData.getData('text/plain'));
   }
-  return <div className="rich-editor"><div className="editor-toolbar" aria-label="Formatação da nota"><button type="button" aria-label="Negrito" title="Negrito" onClick={() => format('bold')}><strong>B</strong></button><button type="button" aria-label="Lista com marcadores" title="Lista com marcadores" onClick={() => format('insertUnorderedList')}>• Lista</button><button type="button" aria-label="Lista numerada" title="Lista numerada" onClick={() => format('insertOrderedList')}>1. Lista</button><button type="button" aria-label="Destacar trecho" title="Destacar trecho" onClick={() => format('hiliteColor')}>Destacar</button></div><div ref={editorRef} className="editor-surface" contentEditable role="textbox" aria-label="Texto" aria-multiline="true" onInput={onInput} onPaste={pastePlain} /></div>;
+  return <div className="rich-editor"><div className="editor-toolbar" aria-label="Formatação da nota"><button type="button" aria-label="Negrito" title="Negrito" onClick={() => format('bold')}><Icon name="bold" /><span className="visually-hidden">Negrito</span></button><button type="button" aria-label="Lista com marcadores" title="Lista com marcadores" onClick={() => format('insertUnorderedList')}><Icon name="list" /><span className="visually-hidden">Lista com marcadores</span></button><button type="button" aria-label="Lista numerada" title="Lista numerada" onClick={() => format('insertOrderedList')}><Icon name="orderedList" /><span className="visually-hidden">Lista numerada</span></button><button type="button" aria-label="Destacar trecho" title="Destacar trecho" onClick={() => format('hiliteColor')}><Icon name="highlight" /><span className="visually-hidden">Destacar trecho</span></button></div><div ref={editorRef} className="editor-surface" contentEditable role="textbox" aria-label="Texto" aria-multiline="true" onInput={onInput} onPaste={pastePlain} /></div>;
 }

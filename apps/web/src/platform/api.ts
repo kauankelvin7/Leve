@@ -26,17 +26,17 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
     if (response.status === 401) response = await request(true);
   } catch (failure) {
     if (failure instanceof ApiError) throw failure;
-    throw new ApiError(0, 'NETWORK_ERROR', 'Não foi possível confirmar no servidor. Seu rascunho foi preservado.');
+    throw new ApiError(0, 'NETWORK_ERROR', 'A conexão falhou. Seu rascunho continua salvo neste aparelho.');
   }
   const data = await response.json().catch(() => null);
   if (!response.ok) throw new ApiError(response.status, data?.code ?? 'SERVICE_UNAVAILABLE', data?.message ?? 'Serviço indisponível. Tente novamente.', data?.details);
-  if (!data) throw new ApiError(503, 'INVALID_RESPONSE', 'Não foi possível confirmar a operação.');
+  if (!data) throw new ApiError(503, 'INVALID_RESPONSE', 'Não recebemos uma confirmação. Tente novamente.');
   return data as Result;
 }
 
-export async function sendCommand(command: CommandEnvelope, options: { queueOnNetworkError?: boolean } = {}): Promise<CommandResult> {
+export async function sendCommand(command: CommandEnvelope, options: { queueOnNetworkError?: boolean; keepalive?: boolean } = {}): Promise<CommandResult> {
   const originatingUid = firebaseAuth?.currentUser?.uid;
-  try { return await apiRequest('/commands', { method: 'POST', body: JSON.stringify(command) }); }
+  try { return await apiRequest('/commands', { method: 'POST', body: JSON.stringify(command), keepalive: options.keepalive }); }
   catch (failure) {
     const user = firebaseAuth?.currentUser;
     const queueable = options.queueOnNetworkError !== false && !command.command.startsWith('account.') && offlineEnabled();

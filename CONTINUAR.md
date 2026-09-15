@@ -1,5 +1,13 @@
 # Leve — ponto exato de retomada
 
+## Interface e sessões passivas — 14/09/2026
+
+Implementação local concluída, ainda sem commit: ícones e textos da interface foram revisados; Meu dia, calendário, notas, compras, configurações e lixeira receberam hierarquia, estados vazios e ajustes móveis. O calendário mantém 42 dias, compartilha a data escolhida com Meu dia, abre os itens em uma folha móvel, preserva as cores das atividades e diferencia atrasos. Notas têm edição inline, barra fixa, prévia de duas linhas, busca com realce e separação das fixadas. Compras têm inclusão visível, edição inline, progresso e itens concluídos recolhidos.
+
+O detalhe de atividade agora registra apenas o tempo em que a página fica visível. Sessões menores que 30 segundos são descartadas. Cada aba usa uma identificação própria; o envio usa `sessionId` estável para impedir duplicidade. Um checkpoint local permite recuperar sessões interrompidas por até quatro horas em qualquer página da agenda, limitado à conta correta. Registros manuais e sessões aparecem separados no histórico. Concluir ou cancelar a atividade encerra a sessão aberta.
+
+O preparo E2E ganhou limpeza opcional dos dados fictícios para impedir que repetições de teste atinjam os limites da conta. O uso local comum continua preservando os dados. Últimas provas antes do acabamento final: build aprovado, 31 testes unitários aprovados e cenário focal de refinamentos aprovado. A bateria final será executada depois de todas as alterações desta seção.
+
 ## Correção de produção — 14/09/2026
 
 Em andamento: corrigir o carregamento de `/hoje` observado em produção. O listener compartilhado agora espera 25 segundos pelo primeiro snapshot do Firestore, com teste cobrindo o limite. A CSP passa a permitir `https://leve-db.firebaseapp.com` em `connect-src`. O typecheck ganhou uma configuração separada para `server`, `api` e `workers`, sem tipos do Vite.
@@ -442,3 +450,15 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - Validação concluída: `npm run typecheck`, `npm run build`, `npm test` (25/25) e `npm run test:integration` (21/21).
 - Validação E2E concluída: 9/9 fluxos passaram; os dois cenários que detectaram o nome acessível duplicado foram repetidos após a correção e passaram.
 - Concluído no código: filtros de estado e categoria no Meu dia, preservados no navegador e aplicados sobre os dados já carregados.
+# Atualização visual — 14/09/2026
+
+- Segunda passada visual concluída em desktop e mobile. A fonte serifada foi removida da interface e títulos, números, cartões e diálogos agora usam a mesma família arredondada da marca `leve.`.
+- A navegação principal ganhou `Revisão` com ícone próprio. O item agora aparece no dock móvel e na sidebar desktop. Busca e perfil continuam no bloco inferior do desktop.
+- Compras teve o cabeçalho do formulário refeito, com ícone, contexto, título empilhado e ação alinhada aos campos. O formulário vira uma coluna no mobile sem perder a ordem de leitura.
+- Sidebar, cabeçalhos, botões, campos, painéis, estados vazios, calendário, notas, busca, preferências, lixeira e rodapé receberam nova escala, espaçamento, foco, contraste e estados de interação.
+- A inspeção visual cobriu `/hoje`, `/calendario`, `/notas`, `/compras`, `/revisao`, `/buscar`, `/configuracoes` e `/lixeira` em viewport móvel e desktop. O navegador local foi devolvido ao tamanho padrão.
+- Compras recebeu resumo operacional, criação de listas mais clara, cartões com progresso, distinção entre listas atuais e modelos, detalhe com inclusão rápida, pendentes, concluídos recolhidos e recuperação de itens removidos.
+- Revisão recebeu período semanal, destaque de tempo registrado, progresso circular de conclusão, comparação com a semana anterior, métricas explicadas e distribuição proporcional por categoria.
+- O acabamento “Vidro & Papel” foi uniformizado em Meu dia, calendário, notas, busca, preferências e lixeira, incluindo estados vazios, hierarquia, foco, superfícies e comportamento responsivo.
+- Ícones do sistema substituem glifos soltos nas ações de voltar e fechar notificação.
+- A validação automatizada e manual desta rodada ficou deliberadamente para depois, a pedido do usuário. Não houve commit nem push desta etapa.

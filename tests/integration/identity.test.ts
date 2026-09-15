@@ -259,6 +259,12 @@ describe('comandos de conteúdo', () => {
     const stored = (await db.doc(`users/${user.uid}/timeEntries/tempo-a`).get()).data()!;
     expect(stored.endedAt).toEqual(expect.any(String)); expect(stored.durationSeconds).toBeGreaterThanOrEqual(1); expect(stored.revision).toBe(2);
     expect((await db.doc(`users/${user.uid}/internal/activeTimer`).get()).exists).toBe(false);
+    const sessionId = '39000000-0000-4000-8000-000000000005';
+    const sessionPayload = { activityId: 'atividade-tempo', civilDate: '2026-09-14', timeZone: 'America/Sao_Paulo', durationSeconds: 47 * 60, sessionId };
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.addSession', sessionId, '39000000-0000-4000-8000-000000000006', 0, sessionPayload)).expect(200);
+    const repeated = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(contentCommand('timeEntry.addSession', sessionId, '39000000-0000-4000-8000-000000000007', 0, sessionPayload));
+    expect(repeated.status).toBe(409); expect(repeated.body.code).toBe('REVISION_CONFLICT');
+    expect((await db.doc(`users/${user.uid}/timeEntries/${sessionId}`).get()).data()?.source).toBe('session');
   });
 
   it('mantém isolamento com vinte contas gravando simultaneamente', async () => {
