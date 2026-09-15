@@ -83,6 +83,7 @@
   .app-shell .sidebar :is(.brand, .brand span, .brand-caption, .sidebar-bottom > a, nav a) { color: #fffdf8; }
   .app-shell .sidebar nav a { border-radius: 8px; }
   .app-shell .sidebar nav a:hover { background: #ffffff12; }
+  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link):hover { background: #ffffff12; color: #fffdf8; }
   .app-shell .sidebar nav a.active { background: #fffdf8; color: var(--ink-surface); border-color: transparent; box-shadow: none; }
   .app-shell .sidebar .sidebar-bottom > a.active { background: #fffdf8; color: var(--ink-surface); border-color: transparent; box-shadow: none; }
   .app-shell .sidebar .sidebar-bottom { margin-top: 12px; gap: 4px; padding-top: 10px; border-top: 1px solid #ffffff24; }
