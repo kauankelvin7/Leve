@@ -12,6 +12,8 @@ export const profilePreferencesSchema = z.object({
   timeZone: timeZoneSchema.optional(),
   weekStartsOn: z.union([z.literal(0), z.literal(1)]),
   reduceTransparency: z.boolean(),
+  reduceMotion: z.boolean().optional(),
+  highContrast: z.boolean().optional(),
   colorTheme: z.enum(['green', 'purple', 'blue', 'red']).optional(),
   avatarStyle: z.literal('avataaars').optional(),
   avatarSeed: z.string().trim().min(1).max(80).optional(),

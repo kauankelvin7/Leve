@@ -51,7 +51,8 @@ function Shell() {
     ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'], ['/lixeira', 'trash', 'Lixeira'],
     ['/revisao', 'review', 'Revisão'],
   ] as const;
-  return <div className={session?.profile?.reduceTransparency ? 'app-shell solid' : 'app-shell'}>
+  const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
+  return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}</nav>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import type { Activity } from '../../../../../packages/domain/src/content';
 import { Icon } from '../../components/ui/Icon';
 import { sendCommand } from '../../platform/api';
@@ -10,7 +10,6 @@ import { timeEntrySeconds, timerClock } from './timeTracking';
 
 export function ActiveTimerBar() {
   const { session } = useAuth();
-  const { pathname } = useLocation();
   const { item: entry, error } = useActiveTimeEntry();
   const { item: activity } = useUserDocument<Activity>(entry ? `activities/${entry.activityId}` : '');
   const [now, setNow] = useState(Date.now());
@@ -29,7 +28,7 @@ export function ActiveTimerBar() {
     return () => document.documentElement.classList.remove('has-active-timer');
   }, [Boolean(entry)]);
 
-  if (!entry || pathname === `/atividade/${entry.activityId}`) return null;
+  if (!entry) return null;
 
   async function change(action: 'pause' | 'resume' | 'stop') {
     if (!entry || busy) return;
@@ -51,7 +50,7 @@ export function ActiveTimerBar() {
   const title = activity?.title ?? 'Atividade em andamento';
   const seconds = timeEntrySeconds(entry, now);
   return createPortal(
-    <aside className={`active-timer-bar${entry.paused ? ' is-paused' : ''}${session?.profile?.reduceTransparency ? ' is-solid' : ''}`} aria-label={`Cronômetro de ${title}`}>
+    <aside className={`active-timer-bar${entry.paused ? ' is-paused' : ''}${session?.profile?.reduceTransparency ? ' is-solid' : ''}`} aria-label={`Cronômetro de ${title}`} aria-live="polite">
       <div className="active-timer-state" aria-hidden="true"><span /><Icon name="clock" /></div>
       <Link className="active-timer-summary" to={`/atividade/${entry.activityId}#cronometro`}>
         <span className="active-timer-label">{entry.paused ? 'Cronômetro pausado' : 'Contando agora'}</span>
