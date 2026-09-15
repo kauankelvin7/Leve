@@ -500,3 +500,8 @@ Desenvolvimento: `firebase-tools@15.30.0`, `@firebase/rules-unit-testing@5.0.2`,
 - O botão e o cartão foram afastados do rodapé para não cobrir “Sair”.
 - O logo textual “G” do acesso Google foi substituído pelo símbolo oficial em SVG multicolorido.
 - Typecheck, unitários (38), lint e build aprovados. E2E local não iniciou porque o `webServer` excedeu 60 segundos; não houve falha funcional observada.
+## Espaçamento de mensagens de página — 15/09/2026
+
+- Mensagens finais de sucesso, erro e carregamento que são filhas diretas das páginas agora recebem margem vertical, largura e alinhamento consistentes.
+- A regra não altera banners, diálogos nem mensagens internas dos cards.
+- Typecheck, 38 testes unitários, lint e build aprovados.
