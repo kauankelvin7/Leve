@@ -1,1 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#4D685C"/><path d="M24 16v32h21" fill="none" stroke="#fff" stroke-width="4"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">Leve</title>
+  <desc id="desc">Símbolo L em uma folha com um pequeno ponto de calendário</desc>
+  <defs>
+    <linearGradient id="paper" x1="20" y1="12" x2="174" y2="184" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6F9380"/>
+      <stop offset="1" stop-color="#3D5F50"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="34" y1="24" x2="140" y2="148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="176" height="176" rx="52" fill="url(#paper)"/>
+  <path d="M28 48C28 32 40 20 56 20h58c25 0 46 20 46 45v19c0 48-39 87-87 87H62c-19 0-34-15-34-34V48Z" fill="url(#shine)"/>
+  <path d="M67 48v94h61" fill="none" stroke="#FFFDF8" stroke-linecap="round" stroke-linejoin="round" stroke-width="15"/>
+  <circle cx="135" cy="57" r="12" fill="#F4D8A6"/>
+  <path d="M135 50v14M128 57h14" stroke="#3D5F50" stroke-linecap="round" stroke-width="4"/>
+</svg>
