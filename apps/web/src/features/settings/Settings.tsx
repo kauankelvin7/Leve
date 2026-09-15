@@ -80,10 +80,63 @@ export function Settings() {
     window.location.reload();
   }
   const importCounts = archive ? { categories: archive.data.categories.length, activities: archive.data.activities.length, series: archive.data.series.length, notes: archive.data.notes.length, lists: archive.data.shoppingLists.length, items: archive.data.shoppingLists.reduce((total, list) => total + list.items.length, 0) } : null;
-  return <main><header className="page-heading"><p className="eyebrow">Conta e aparência</p><h1 id="page-title" tabIndex={-1}>Preferências</h1><p>Seu perfil, suas cores e o jeito de usar a agenda.</p></header><div className="settings-nav" aria-label="Seções de preferências"><a href="#settings-profile">Perfil</a><a href="#settings-look">Aparência</a><a href="#settings-device">Aparelho</a><a href="#settings-data">Seus dados</a></div><div className="settings-layout"><section id="settings-profile" className="panel content-form"><h2><Icon name="profile" />Perfil</h2><form onSubmit={saveProfile}><label>Nome<input name="displayName" defaultValue={session!.profile!.displayName} required maxLength={80} /></label><label>Primeiro dia da semana<select name="weekStartsOn" defaultValue={session!.profile!.weekStartsOn}><option value="1">Segunda-feira</option><option value="0">Domingo</option></select></label><label className="check-label"><input type="checkbox" name="reduceTransparency" defaultChecked={session!.profile!.reduceTransparency} /> Reduzir transparência</label><button className="primary" disabled={busy}>Salvar preferências</button></form></section><section className="panel content-form"><h2><Icon name="calendar" />{editingCategory ? 'Editar categoria' : 'Categorias'}</h2><form key={editingCategory?.id ?? 'new-category'} onSubmit={saveCategory}><label>Nome<input name="name" required maxLength={40} defaultValue={editingCategory?.name ?? ''} /></label><label>Cor<input name="color" type="color" defaultValue={editingCategory?.colorHex ?? '#86A5C6'} /></label><div className="dialog-actions"><button className="primary" disabled={busy}>{editingCategory ? 'Salvar categoria' : 'Criar categoria'}</button>{editingCategory ? <button type="button" onClick={() => setEditingCategory(null)}>Cancelar</button> : null}</div></form><ul className="settings-list">{categories.filter(item => !item.deletedAt).map(category => <li key={category.id}><span className="color-dot" style={{ background: category.colorHex }} /><strong>{category.name}</strong><div className="row-actions"><button disabled={busy || Boolean(category.archivedAt)} onClick={() => { setEditingCategory(category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy || Boolean(category.archivedAt)} onClick={() => void archiveCategory(category)}>{category.archivedAt ? 'Arquivada' : 'Arquivar'}</button><button disabled={busy} onClick={() => void trashCategory(category)}>Lixeira</button></div></li>)}</ul></section>
-    <div id="settings-look" className="settings-group"><ThemeSettings /></div>
-    <div id="settings-device" className="settings-group"><PwaSettings /><NotificationSettings /></div>
-    <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ative somente em um aparelho pessoal. O conteúdo já aberto e novas alterações poderão ficar armazenados neste dispositivo.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
-    <section id="settings-data" className="panel content-form"><h2><Icon name="basket" />Seus dados</h2><p>Baixe uma cópia da sua agenda ou traga outra cópia sem substituir o conteúdo atual.</p><button type="button" disabled={busy} onClick={() => void downloadExport()}>Baixar uma cópia</button><label>Arquivo para importar<input type="file" accept="application/json,.json" onChange={event => void selectImport(event)} /></label>{importCounts ? <div className="import-summary"><p><strong>Resumo:</strong> {importCounts.activities} atividades em {importCounts.series} séries, {importCounts.notes} notas, {importCounts.categories} categorias, {importCounts.lists} listas e {importCounts.items} itens.</p><button type="button" className="primary" disabled={busy} onClick={() => void importArchive()}>Importar como cópia</button></div> : null}</section>
-    <section className="panel content-form"><h2><Icon name="question" />Tutorial</h2><p>Revise os principais recursos do Leve quando quiser.</p><button type="button" onClick={requestTutorial}>Ver tutorial novamente</button></section><details className="panel content-form danger-zone"><summary>Excluir conta</summary><p>Remove permanentemente a agenda, as notas, as compras e os avisos. Esta ação não pode ser desfeita.</p><form onSubmit={deleteOwnAccount}>{user?.providerData.some(provider => provider.providerId === 'password') ? <label>Senha atual<input name="password" type="password" autoComplete="current-password" /></label> : null}<label>Digite EXCLUIR<input name="confirmation" autoComplete="off" /></label><button className="danger" disabled={busy}>Excluir minha conta</button></form></details></div><p role="status" className="form-status">{error || message}</p></main>;
+  return <main>
+    <header className="page-heading">
+      <p className="eyebrow">Conta e aparência</p>
+      <h1 id="page-title" tabIndex={-1}>Preferências</h1>
+      <p>Seu perfil, suas cores e o jeito de usar a agenda.</p>
+    </header>
+    <nav className="settings-nav" aria-label="Seções de preferências">
+      <a href="#settings-profile">Perfil</a>
+      <a href="#settings-look">Aparência</a>
+      <a href="#settings-device">Aparelho</a>
+      <a href="#settings-data">Seus dados</a>
+    </nav>
+    <div className="settings-layout">
+      <section id="settings-profile" className="settings-section" aria-label="Perfil e categorias">
+        <div className="settings-section-grid">
+          <section className="panel content-form">
+            <h2><Icon name="profile" />Perfil</h2>
+            <form onSubmit={saveProfile}>
+              <label>Nome<input name="displayName" defaultValue={session!.profile!.displayName} required maxLength={80} /></label>
+              <label>Primeiro dia da semana<select name="weekStartsOn" defaultValue={session!.profile!.weekStartsOn}><option value="1">Segunda-feira</option><option value="0">Domingo</option></select></label>
+              <label className="check-label"><input type="checkbox" name="reduceTransparency" defaultChecked={session!.profile!.reduceTransparency} /> Reduzir transparência</label>
+              <button className="primary" disabled={busy}>Salvar preferências</button>
+            </form>
+          </section>
+          <section className="panel content-form">
+            <h2><Icon name="calendar" />{editingCategory ? 'Editar categoria' : 'Categorias'}</h2>
+            <form key={editingCategory?.id ?? 'new-category'} onSubmit={saveCategory}>
+              <label>Nome<input name="name" required maxLength={40} defaultValue={editingCategory?.name ?? ''} /></label>
+              <label>Cor<input name="color" type="color" defaultValue={editingCategory?.colorHex ?? '#86A5C6'} /></label>
+              <div className="dialog-actions"><button className="primary" disabled={busy}>{editingCategory ? 'Salvar categoria' : 'Criar categoria'}</button>{editingCategory ? <button type="button" onClick={() => setEditingCategory(null)}>Cancelar</button> : null}</div>
+            </form>
+            <ul className="settings-list">{categories.filter(item => !item.deletedAt).map(category => <li key={category.id}><span className="color-dot" style={{ background: category.colorHex }} /><strong>{category.name}</strong><div className="row-actions"><button disabled={busy || Boolean(category.archivedAt)} onClick={() => { setEditingCategory(category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy || Boolean(category.archivedAt)} onClick={() => void archiveCategory(category)}>{category.archivedAt ? 'Arquivada' : 'Arquivar'}</button><button disabled={busy} onClick={() => void trashCategory(category)}>Lixeira</button></div></li>)}</ul>
+          </section>
+        </div>
+      </section>
+      <section id="settings-look" className="settings-section" aria-label="Aparência">
+        <div className="settings-section-grid settings-section-grid-single"><ThemeSettings /></div>
+      </section>
+      <section id="settings-device" className="settings-section" aria-label="Aparelho">
+        <div className="settings-section-grid">
+          <div className="settings-group">
+            <PwaSettings />
+            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ative somente em um aparelho pessoal. O conteúdo já aberto e novas alterações poderão ficar armazenados neste dispositivo.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
+          </div>
+          <div className="settings-group">
+            <NotificationSettings />
+            <section className="panel content-form"><h2><Icon name="question" />Tutorial</h2><p>Revise os principais recursos do Leve quando quiser.</p><button type="button" onClick={requestTutorial}>Ver tutorial novamente</button></section>
+          </div>
+        </div>
+      </section>
+      <section id="settings-data" className="settings-section" aria-label="Seus dados">
+        <div className="settings-section-grid">
+          <section className="panel content-form"><h2><Icon name="basket" />Seus dados</h2><p>Baixe uma cópia da sua agenda ou traga outra cópia sem substituir o conteúdo atual.</p><button type="button" disabled={busy} onClick={() => void downloadExport()}>Baixar uma cópia</button><label>Arquivo para importar<input type="file" accept="application/json,.json" onChange={event => void selectImport(event)} /></label>{importCounts ? <div className="import-summary"><p><strong>Resumo:</strong> {importCounts.activities} atividades em {importCounts.series} séries, {importCounts.notes} notas, {importCounts.categories} categorias, {importCounts.lists} listas e {importCounts.items} itens.</p><button type="button" className="primary" disabled={busy} onClick={() => void importArchive()}>Importar como cópia</button></div> : null}</section>
+          <details className="panel content-form danger-zone"><summary>Excluir conta</summary><p>Remove permanentemente a agenda, as notas, as compras e os avisos. Esta ação não pode ser desfeita.</p><form onSubmit={deleteOwnAccount}>{user?.providerData.some(provider => provider.providerId === 'password') ? <label>Senha atual<input name="password" type="password" autoComplete="current-password" /></label> : null}<label>Digite EXCLUIR<input name="confirmation" autoComplete="off" /></label><button className="danger" disabled={busy}>Excluir minha conta</button></form></details>
+        </div>
+      </section>
+    </div>
+    <p role="status" className="form-status">{error || message}</p>
+  </main>;
 }

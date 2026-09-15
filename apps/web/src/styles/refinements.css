@@ -1630,6 +1630,14 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
 .settings-nav a:hover { background: var(--color-accent-soft); }
 
 .settings-layout {
+  gap: clamp(28px, 4vw, 44px);
+}
+
+.settings-section-grid {
+  gap: 26px;
+}
+
+.settings-section-grid > .settings-group {
   gap: 26px;
 }
 
