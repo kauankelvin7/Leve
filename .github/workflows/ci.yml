@@ -13,10 +13,10 @@ jobs:
         with:
           node-version-file: package.json
           cache: npm
-      - name: Use repository npm version
-        run: corepack prepare npm@11.19.1 --activate
-      - name: Verify npm version
-        run: test "$(npm --version)" = "11.19.1"
+      - name: Environment versions
+        run: |
+          node --version
+          npm --version
       - run: npm ci --include=dev
       - run: npm run lint
       - run: npm run typecheck
