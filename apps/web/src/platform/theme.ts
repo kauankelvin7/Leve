@@ -1,13 +1,9 @@
-export const colorThemes = {
-  green: { canvas: '#E8F0EB', surface: '#FCFDF9' },
-  purple: { canvas: '#EEEAF8', surface: '#FDFBFF' },
-  blue: { canvas: '#E6F0F7', surface: '#F6FAFE' },
-  red: { canvas: '#F6EBEC', surface: '#FFFAFA' },
-} as const;
-
-export type ColorTheme = keyof typeof colorThemes;
+import { colorThemes, colorThemeIds, appearances, type ColorTheme, type Appearance } from '../../../../packages/domain/src/themes';
+export { colorThemes, colorThemeIds, appearances };
+export type { ColorTheme, Appearance };
 
 const STORAGE_KEY = 'leve.colorTheme';
+const APPEARANCE_KEY = 'leve.appearance';
 
 export function storedColorTheme(): ColorTheme {
   try {
@@ -34,4 +30,29 @@ export function applyColorTheme(colorTheme: ColorTheme, persist = true) {
     try { localStorage.setItem(STORAGE_KEY, colorTheme); }
     catch { /* A preferência continua salva no perfil. */ }
   }
+}
+export function storedAppearance(): Appearance {
+  try { const value = localStorage.getItem(APPEARANCE_KEY); return value === 'light' || value === 'dark' || value === 'system' ? value : 'system'; } catch { return 'system'; }
+}
+export function applyAppearance(appearance: Appearance, persist = true) {
+  const effective = appearance === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : appearance;
+  document.documentElement.dataset.appearance = effective;
+  document.documentElement.dataset.appearancePreference = appearance;
+  document.documentElement.style.colorScheme = effective;
+  document.documentElement.style.setProperty('--color-canvas', effective === 'dark' ? '#171C1A' : colorThemes[storedColorTheme()].canvas);
+  document.documentElement.style.setProperty('--color-solid', effective === 'dark' ? '#242C28' : '#FFFDFA');
+  document.documentElement.style.setProperty('--color-text', effective === 'dark' ? '#EDF1EE' : '#202C27');
+  document.documentElement.style.setProperty('--color-text-muted', effective === 'dark' ? '#BAC6BE' : '#4D6056');
+  document.documentElement.style.setProperty('--color-field', effective === 'dark' ? '#1C2420' : '#F7F8F5');
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]'); if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas').trim();
+  if (persist) try { localStorage.setItem(APPEARANCE_KEY, appearance); } catch { /* preferência opcional */ }
+  watchSystemAppearance();
+}
+let systemListenerAttached = false;
+function watchSystemAppearance() {
+  if (systemListenerAttached) return; systemListenerAttached = true;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const update = () => { if (storedAppearance() === 'system') applyAppearance('system', false); };
+  media.addEventListener('change', update);
+  window.addEventListener('storage', event => { if (event.key === APPEARANCE_KEY || event.key === STORAGE_KEY) { applyColorTheme(storedColorTheme(), false); applyAppearance(storedAppearance(), false); } });
 }

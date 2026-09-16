@@ -10,7 +10,7 @@ import { commandHash } from './commands/identity.ts';
 import { hashCanonicalValue, hashValue } from './hash.ts';
 
 function publicProfile(profile: UserProfile): AccountArchive['profile'] {
-  return { displayName: profile.displayName, locale: 'pt-BR', timeZone: profile.timeZone, weekStartsOn: profile.weekStartsOn, reduceTransparency: profile.reduceTransparency, colorTheme: profile.colorTheme ?? 'green', avatarStyle: profile.avatarStyle, avatarSeed: profile.avatarSeed };
+  return { displayName: profile.displayName, locale: 'pt-BR', timeZone: profile.timeZone, weekStartsOn: profile.weekStartsOn, reduceTransparency: profile.reduceTransparency, colorTheme: profile.colorTheme ?? 'green', appearance: profile.appearance ?? 'system', avatarStyle: profile.avatarStyle, avatarSeed: profile.avatarSeed };
 }
 
 async function documents(path: string) {

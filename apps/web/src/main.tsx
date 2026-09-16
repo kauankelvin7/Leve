@@ -18,7 +18,7 @@ import './styles/refinements.css';
 import './styles/editorial.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
-import { applyColorTheme, storedColorTheme } from './platform/theme';
+import { applyColorTheme, applyAppearance, storedColorTheme, storedAppearance } from './platform/theme';
 
 for (const [group, values] of Object.entries(tokens)) {
   for (const [name, value] of Object.entries(values)) {
@@ -27,6 +27,7 @@ for (const [group, values] of Object.entries(tokens)) {
 }
 
 applyColorTheme(storedColorTheme(), false);
+applyAppearance(storedAppearance(), false);
 
 window.addEventListener('beforeinstallprompt', captureInstallPrompt);
 

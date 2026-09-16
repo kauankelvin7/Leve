@@ -7,7 +7,7 @@ import { cacheSession, readCachedSession } from '../../platform/outbox';
 import { ApiError, apiRequest } from '../../platform/api';
 import { revokeNotificationDevice } from '../../platform/notifications';
 import { clearQueryCache } from '../content/useLiveQueries';
-import { applyColorTheme } from '../../platform/theme';
+import { applyColorTheme, applyAppearance, storedAppearance } from '../../platform/theme';
 
 type AuthState = { user: User | null; session: SessionResult | null; loading: boolean; error: string; errorStatus: number | null; refresh: () => Promise<void>; logout: () => Promise<void> };
 const AuthContext = createContext<AuthState | null>(null);
@@ -23,7 +23,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!session?.profile) return;
     const colorTheme = session?.profile?.colorTheme ?? 'green';
     applyColorTheme(colorTheme);
-  }, [session?.profile?.colorTheme]);
+    applyAppearance(session?.profile?.appearance ?? storedAppearance());
+  }, [session?.profile?.colorTheme, session?.profile?.appearance]);
   const refresh = useCallback(async () => {
     const currentGeneration = ++generation.current;
     const currentUser = firebaseAuth?.currentUser;

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { colorThemeIds, appearances } from './themes';
 
 export const entityIdSchema = z.string().regex(/^[A-Za-z0-9_-]{1,128}$/);
 export const timeZoneSchema = z.string().max(100).refine(value => {
@@ -14,7 +15,8 @@ export const profilePreferencesSchema = z.object({
   reduceTransparency: z.boolean(),
   reduceMotion: z.boolean().optional(),
   highContrast: z.boolean().optional(),
-  colorTheme: z.enum(['green', 'purple', 'blue', 'red']).optional(),
+  colorTheme: z.enum(colorThemeIds).optional(),
+  appearance: z.enum(appearances).optional(),
   avatarStyle: z.literal('avataaars').optional(),
   avatarSeed: z.string().trim().min(1).max(80).optional(),
 }).strict();

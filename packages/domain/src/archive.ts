@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { colorThemeIds, appearances } from './themes';
 
 const archiveEntitySchema = z.object({ id: z.string().min(1).max(128) }).passthrough();
 
@@ -12,7 +13,8 @@ export const accountArchiveSchema = z.object({
     timeZone: z.string().min(1).max(100),
     weekStartsOn: z.union([z.literal(0), z.literal(1)]),
     reduceTransparency: z.boolean(),
-    colorTheme: z.enum(['green', 'purple', 'blue', 'red']).optional(),
+    colorTheme: z.enum(colorThemeIds).optional(),
+    appearance: z.enum(appearances).optional(),
     avatarStyle: z.literal('avataaars').optional(),
     avatarSeed: z.string().min(1).max(80).optional(),
   }).strict(),
