@@ -1,6 +1,16 @@
 import { spawn } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import net from 'node:net';
+
+function portOpen(port) {
+  return new Promise(resolve => {
+    const socket = net.createConnection({ host: '127.0.0.1', port });
+    socket.once('connect', () => { socket.destroy(); resolve(true); });
+    socket.once('error', () => { socket.destroy(); resolve(false); });
+    socket.setTimeout(400, () => { socket.destroy(); resolve(false); });
+  });
+}
 
 function findJavaHome() {
   if (process.env.JAVA_HOME && existsSync(join(process.env.JAVA_HOME, 'bin', 'java.exe'))) return process.env.JAVA_HOME;
@@ -33,8 +43,11 @@ const persistence = process.env.LEVE_EPHEMERAL === 'true' ? [] : [
   ...(existsSync(join(emulatorData, 'firebase-export-metadata.json')) ? ['--import', emulatorData] : []),
   '--export-on-exit', emulatorData,
 ];
+const [authRunning, firestoreRunning] = await Promise.all([9099, 8080].map(portOpen));
+const emulatorServices = ['auth', 'firestore'].filter((service, index) => ![authRunning, firestoreRunning][index]);
+if (authRunning || firestoreRunning) console.log(`[Firebase] Reutilizando ${[authRunning && 'Auth', firestoreRunning && 'Firestore'].filter(Boolean).join(' e ')} já ativo(s).`);
 const commands = [
-  ['Firebase', [node, 'node_modules/firebase-tools/lib/bin/firebase.js', 'emulators:start', '--project', 'demo-leve', '--only', 'auth,firestore', ...persistence]],
+  ...(emulatorServices.length ? [['Firebase', [node, 'node_modules/firebase-tools/lib/bin/firebase.js', 'emulators:start', '--project', 'demo-leve', '--only', emulatorServices.join(','), ...persistence]]] : []),
   ['API', [node, 'server/dev.ts']],
   ['Web', [node, 'node_modules/vite/bin/vite.js', '--config', 'apps/web/vite.config.ts', '--port', '5174', '--strictPort']],
 ];
