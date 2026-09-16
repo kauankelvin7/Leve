@@ -1,21 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { useEffect, useMemo, useState } from 'react';
-import { collection, limit, query, where } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import type { Activity, Category } from '../../../../../packages/domain/src/content';
-import { firestore } from '../../platform/firebase';
+import type { Category } from '../../../../../packages/domain/src/content';
 import { useAuth } from '../identity/AuthProvider';
 import { useUserCollection } from '../content/useUserCollection';
 import { useCurrentDay } from './DayNavigation';
-import { useLiveQueries } from '../content/useLiveQueries';
 import { LoadError } from '../../components/ui/LoadError';
 import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
-
-type StoredActivity = Activity & { id: string };
+import { activityOccursOn, resolveActivityColor, type StoredActivity } from './calendar/calendarModel';
+import { useCalendarRange } from './calendar/useCalendarRange';
 
 export function Calendar() {
-  const { user, session } = useAuth();
+  const { session } = useAuth();
   const today = useCurrentDay(session!.profile!.timeZone);
   const [selected, setSelected] = useState(() => sessionStorage.getItem('leve.selectedDay') ?? today);
   const [month, setMonth] = useState(selected.slice(0, 7));
@@ -25,26 +22,13 @@ export function Calendar() {
   const first = Temporal.PlainDate.from(`${month}-01`);
   const bounds = useMemo(() => ({ start: `${month}-01`, end: Temporal.PlainDate.from(`${month}-01`).add({ months: 1 }).subtract({ days: 1 }).toString() }), [month]);
   useEffect(() => { document.title = 'Calendário · Leve'; }, []);
-  const activityQuery = useLiveQueries(`calendar:${month}`, () => {
-    if (!user || !firestore) return [];
-    const root = collection(firestore, `users/${user.uid}/activities`);
-    return [
-      query(root, where('schedule.dueDate', '>=', bounds.start), where('schedule.dueDate', '<=', bounds.end), limit(50)),
-      query(root, where('schedule.startDate', '<=', bounds.end), where('schedule.endDate', '>=', bounds.start), limit(50)),
-      query(root, where('schedule.startDate', '<=', bounds.end), where('schedule.endDateExclusive', '>', bounds.start), limit(50)),
-    ];
-  });
-  const { loading, error, partial } = activityQuery;
-  const activities = (activityQuery.items as StoredActivity[]).filter(item => !item.deletedAt);
-  const colorOf = (item: StoredActivity) => item.colorHex ?? categories.items.find(category => category.id === item.categoryId)?.colorHex ?? '#9EA7B0';
+  const activityQuery = useCalendarRange({ startDate: bounds.start, endDate: bounds.end, categoryId: category });
+  const { loading, error, partial, items: activities } = activityQuery;
+  const colorOf = (item: StoredActivity) => resolveActivityColor(item, categories.items);
 
   const start = first.subtract({ days: (first.dayOfWeek % 7 - session!.profile!.weekStartsOn + 7) % 7 });
   const dates = Array.from({ length: 42 }, (_, index) => start.add({ days: index }));
-  const visible = activities.filter(item => !category || item.categoryId === category);
-  const onDay = (date: string) => visible.filter(item => {
-    const schedule = item.schedule;
-    return schedule.type === 'task' ? schedule.dueDate === date : schedule.startDate <= date && (schedule.allDay ? date < schedule.endDateExclusive : date <= schedule.endDate);
-  });
+  const onDay = (date: string) => activities.filter(item => activityOccursOn(item, date));
   function changeMonth(amount: number) {
     const next = first.add({ months: amount }).toString();
     setMonth(next.slice(0, 7)); setSelected(next); sessionStorage.setItem('leve.selectedDay', next);
