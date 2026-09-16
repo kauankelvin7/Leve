@@ -1843,6 +1843,10 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
 .active-timer-actions .active-timer-toggle { color: white; border-color: var(--color-action-primary); background: var(--color-action-primary); }
 .active-timer-open { color: var(--color-text); text-decoration: none; }
 .active-timer-error { grid-column: 2 / -1; margin: -4px 0 0; color: var(--color-danger); font-size: .78rem; }
+.active-timer-error-bar { position: fixed; z-index: 12; right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; width: min(500px, calc(100vw - 48px)); padding: 14px 16px; border: 2px solid var(--color-danger); border-radius: 16px; color: var(--color-text); background: var(--color-solid); box-shadow: 0 18px 48px #26382e24; }
+.active-timer-error-bar strong { color: var(--color-danger); }
+.active-timer-error-bar span { flex: 1 1 100%; font-size: .82rem; }
+.active-timer-error-bar button { min-height: 36px; padding: 6px 10px; }
 .activity-timer-link { gap: 7px; min-height: 42px; padding: 8px 12px; }
 .activity-timer-link svg { width: 18px; height: 18px; }
 .timer-panel { scroll-margin: 28px; }
@@ -1883,6 +1887,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .active-timer-open { display: none; }
   .active-timer-actions > button { width: 42px; height: 42px; min-height: 42px; }
   .active-timer-error { grid-column: 1 / -1; }
+  .active-timer-error-bar { right: 12px; bottom: calc(82px + env(safe-area-inset-bottom)); left: 12px; width: auto; }
   .activity-timer-link span { display: none; }
   .activity-timer-link { width: 42px; padding: 0; justify-content: center; }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { Activity, Category, TimeEntry } from '../../../../../packages/domain/src/content';
 import { sendCommand } from '../../platform/api';
-import { useUserCollection, useUserDocument } from '../content/useUserCollection';
+import { useActiveTimeEntry, useActivityTimeEntries, useUserCollection, useUserDocument } from '../content/useUserCollection';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
 
@@ -15,15 +15,16 @@ export function ActivityDetail() {
   const { id = '' } = useParams();
   const { item: activity, loading, error } = useUserDocument<Activity>(`activities/${id}`);
   const { items: categories } = useUserCollection<Category>('categories');
-  const { items: allEntries } = useUserCollection<TimeEntry>('timeEntries');
+  const { items: entries } = useActivityTimeEntries(id);
+  const { item: globallyActive } = useActiveTimeEntry();
   const [message, setMessage] = useState('');
   const [timerBusy, setTimerBusy] = useState(false);
   const [optimisticTimer, setOptimisticTimer] = useState<OpenEntry | null>(null);
   const [pendingPatch, setPendingPatch] = useState<{ id: string; revision: number; patch: Partial<OpenEntry> } | null>(null);
   const [now, setNow] = useState(Date.now());
-  const entries = allEntries.filter(entry => entry.activityId === id && !entry.deletedAt).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
-  const otherActive = allEntries.find(entry => entry.activityId !== id && !entry.endedAt && !entry.deletedAt);
-  const storedActive = entries.find(entry => !entry.endedAt);
+  const visibleEntries = entries.filter(entry => !entry.deletedAt);
+  const otherActive = globallyActive?.activityId !== id ? globallyActive : undefined;
+  const storedActive = visibleEntries.find(entry => !entry.endedAt);
   const rawActive: OpenEntry | undefined = storedActive ?? optimisticTimer ?? undefined;
   const active = rawActive && pendingPatch?.id === rawActive.id && rawActive.revision < pendingPatch.revision
     ? { ...rawActive, ...pendingPatch.patch }
@@ -111,7 +112,7 @@ export function ActivityDetail() {
   if (loading) return <LoadingState variant="detail" label="Abrindo a atividade…" />;
   if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><Link to="/hoje">Voltar ao Meu dia</Link></main>;
   const category = categories.find(item => item.id === activity.categoryId);
-  const total = entries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
+  const total = visibleEntries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
   const runningSeconds = active ? accrued(active) : 0;
   return <main><header className="page-heading activity-detail-heading"><Link className="back-link" to="/hoje" aria-label="Voltar ao Meu dia"><Icon name="chevronLeft" /> Meu dia</Link><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
     <section className="panel content-form"><h2>Detalhes</h2><p>{activity.descriptionPlain || 'Sem descrição.'}</p><p>{activity.schedule.type === 'task' ? activity.schedule.dueDate ?? 'Sem prazo' : activity.schedule.startDate}</p>{activity.estimatedMinutes ? <p>Estimativa: {activity.estimatedMinutes} minutos.</p> : null}<div className="dialog-actions">{activity.kind === 'task' ? <button className="primary" onClick={() => void status(activity.status === 'completed' ? 'pending' : 'completed')}>{activity.status === 'completed' ? 'Reabrir' : 'Concluir'}</button> : <button onClick={() => void status(activity.status === 'canceled' ? 'pending' : 'canceled')}>{activity.status === 'canceled' ? 'Reativar' : 'Cancelar compromisso'}</button>}<Link className="button" to="/hoje">Abrir no Meu dia</Link></div></section>
@@ -126,7 +127,7 @@ export function ActivityDetail() {
         {active ? <button type="button" disabled={timerBusy} onClick={() => void stopTimer('Cronômetro finalizado e tempo salvo.')}>Finalizar</button> : null}
       </div>
       <details className="manual-time-details"><summary>Adicionar tempo manualmente</summary><form className="manual-time" onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>
-      <div className="time-history-heading"><div><p className="eyebrow">Registros</p><h3>Histórico</h3></div><span>{entries.length ? `${entries.length} ${entries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
-      {entries.length ? <ul className="time-history">{entries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : entry.paused ? 'Pausado' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Inicie o cronômetro ou adicione um período manual para acompanhar seu tempo.</p>}
+      <div className="time-history-heading"><div><p className="eyebrow">Registros</p><h3>Histórico</h3></div><span>{visibleEntries.length ? `${visibleEntries.length} ${visibleEntries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
+      {visibleEntries.length ? <ul className="time-history">{visibleEntries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : entry.paused ? 'Pausado' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Inicie o cronômetro ou adicione um período manual para acompanhar seu tempo.</p>}
     </section><p role="status">{error || message}</p></main>;
 }

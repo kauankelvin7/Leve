@@ -45,7 +45,7 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListene
     registration.addEventListener('updatefound', () => registration.installing?.addEventListener('statechange', () => {
       if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) announce();
     }));
-  });
+  }).catch(() => undefined);
 });
 
 const RELEASE_KEY = 'leve.release';

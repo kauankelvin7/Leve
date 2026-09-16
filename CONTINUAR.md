@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Correção de cronômetro em produção — 15/09/2026
+
+Investigação confirmou dois pontos no cliente. O histórico da atividade buscava uma página genérica de até 50 registros sem ordenação, fazendo lançamentos recentes de uma atividade antiga parecerem ausentes. A barra flutuante dependia da consulta ampla de registros abertos e, quando o listener falhava, ocultava o erro junto com o componente. A leitura passou a usar `users/{uid}/internal/activeTimer`, referência única criada pelo servidor no início e removida ao encerrar, com regra Firestore de `get` limitada ao titular. O histórico da atividade agora filtra por `activityId` e ordena por `startedAt` decrescente, com índice composto registrado. A falha `Uncaught (in promise) TypeError: Failed to fetch` vinha do registro do service worker sem tratamento de rejeição e foi absorvida. Para a correção chegar à produção, publicar o commit e aplicar regras e índices do Firestore. Build e typecheck aprovados.
+
 ## Loading, conexão e documentação — 15/09/2026
 
 O progresso recente foi registrado no README e nesta retomada. A entrada pública `/privacidade` documenta dados armazenados, exportação, exclusão, retenção da lixeira e serviços usados. O carregamento global recebeu uma animação orbital com mensagem auxiliar, respeitando `prefers-reduced-motion`. As telas 502/503 agora mostram um indicador visual de reconexão, mantendo a ação de tentar novamente e o acesso à agenda. Build e typecheck aprovados nesta etapa. Próximos itens de manutenção: medir o bundle grande antes de separar dependências, documentar retenção operacional e revisar o armazenamento de tokens de notificações com estratégia compatível com o envio.

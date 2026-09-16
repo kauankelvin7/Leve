@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "timeEntries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activityId", "order": "ASCENDING" },
+        { "fieldPath": "startedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "reminderJobs",
       "queryScope": "COLLECTION",
       "fields": [

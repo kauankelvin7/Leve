@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { collection, doc, limit, onSnapshot, query } from 'firebase/firestore';
+import { collection, doc, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { firestore } from '../../platform/firebase';
 import { useAuth } from '../identity/AuthProvider';
 import { useLiveQueries } from './useLiveQueries';
@@ -9,17 +9,27 @@ import type { TimeEntry } from '../../../../../packages/domain/src/content';
 export function useUserCollection<T>(path: string, _nested = false, deletedOnly = false) {
   const { user } = useAuth();
   const maximum = 50;
-  const result = useLiveQueries(`collection:${path}:${deletedOnly}`, () => !user || !firestore ? [] : [query(collection(firestore, `users/${user.uid}/${path}`), ...(deletedOnly ? [where('deletedAt', '>', '')] : []), limit(maximum))], maximum);
+  const order = path === 'timeEntries' && !deletedOnly ? [orderBy('startedAt', 'desc')] : [];
+  const result = useLiveQueries(`collection:${path}:${deletedOnly}`, () => !user || !firestore ? [] : [query(collection(firestore, `users/${user.uid}/${path}`), ...(deletedOnly ? [where('deletedAt', '>', '')] : []), ...order, limit(maximum))], maximum);
   return { ...result, partial: false, items: result.items as (T & { id: string })[] };
 }
 
 export function useActiveTimeEntry() {
+  const active = useUserDocument<{ entryId: string }>('internal/activeTimer');
+  const entry = useUserDocument<TimeEntry>(active.item?.entryId ? `timeEntries/${active.item.entryId}` : '');
+  return {
+    item: entry.item && !entry.item.deletedAt && !entry.item.endedAt ? entry.item : null,
+    loading: active.loading || entry.loading,
+    error: active.error || entry.error,
+  };
+}
+
+export function useActivityTimeEntries(activityId: string) {
   const { user } = useAuth();
-  const result = useLiveQueries('active-time-entry', () => !user || !firestore ? [] : [
-    query(collection(firestore, `users/${user.uid}/timeEntries`), where('endedAt', '==', null), limit(5)),
-  ], 5);
-  const item = result.items.find(entry => !entry.deletedAt) as (TimeEntry & { id: string }) | undefined;
-  return { ...result, item: item ?? null };
+  const result = useLiveQueries(`activity-time-entries:${activityId}`, () => !user || !firestore || !activityId ? [] : [
+    query(collection(firestore, `users/${user.uid}/timeEntries`), where('activityId', '==', activityId), orderBy('startedAt', 'desc'), limit(50)),
+  ], 50);
+  return { ...result, items: result.items as (TimeEntry & { id: string })[] };
 }
 
 export function useUserSubcollections<T>(parentPath: string, parentIds: string[], childCollection: string, deletedOnly = false) {

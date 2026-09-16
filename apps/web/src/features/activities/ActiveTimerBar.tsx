@@ -28,7 +28,7 @@ export function ActiveTimerBar() {
     return () => document.documentElement.classList.remove('has-active-timer');
   }, [Boolean(entry)]);
 
-  if (!entry) return null;
+  if (!entry && !error) return null;
 
   async function change(action: 'pause' | 'resume' | 'stop') {
     if (!entry || busy) return;
@@ -46,6 +46,11 @@ export function ActiveTimerBar() {
       setMessage(failure instanceof Error ? failure.message : 'Não foi possível atualizar o cronômetro.');
     } finally { setBusy(false); }
   }
+
+  if (!entry) return createPortal(
+    <aside className="active-timer-error-bar" role="status"><strong>Não foi possível localizar o cronômetro.</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>Tentar novamente</button></aside>,
+    document.body,
+  );
 
   const title = activity?.title ?? 'Atividade em andamento';
   const seconds = timeEntrySeconds(entry, now);
