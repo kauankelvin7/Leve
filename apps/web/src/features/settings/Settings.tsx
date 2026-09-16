@@ -15,6 +15,7 @@ import { ThemeSettings } from './ThemeSettings';
 import { Icon } from '../../components/ui/Icon';
 import { requestTutorial } from '../content/Tutorial';
 import { AvatarPicker } from './AvatarPicker';
+import { Link } from 'react-router-dom';
 
 async function importIdFor(content: string) {
   const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content))).slice(0, 16);
@@ -92,7 +93,7 @@ export function Settings() {
       <a href="#settings-profile">Perfil</a>
       <a href="#settings-look">Aparência</a>
       <a href="#settings-device">Aparelho</a>
-      <a href="#settings-data">Seus dados</a>
+      <a href="#settings-data">Seus dados</a><Link to="/privacidade">Privacidade</Link>
     </nav>
     <div className="settings-layout">
       <section id="settings-profile" className="settings-section" aria-label="Perfil e categorias">
