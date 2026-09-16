@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { colorThemeIds, appearances } from './themes';
+import { colorThemeIds, appearances } from './themes.ts';
 
 export const entityIdSchema = z.string().regex(/^[A-Za-z0-9_-]{1,128}$/);
 export const timeZoneSchema = z.string().max(100).refine(value => {
