@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { Activity, Category, TimeEntry } from '../../../../../packages/domain/src/content';
-import { sendCommand } from '../../platform/api';
+import { ApiError, sendCommand } from '../../platform/api';
 import { useActiveTimeEntry, useActivityTimeEntries, useUserCollection, useUserDocument } from '../content/useUserCollection';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
@@ -43,7 +43,7 @@ export function ActivityDetail() {
   async function status(value: 'pending' | 'completed' | 'canceled') {
     if (!activity) return;
     try {
-      if (active && value !== 'pending') await stopTimer('Cronômetro finalizado e tempo salvo.');
+      if (active && value !== 'pending' && !(await stopTimer('Cronômetro finalizado e tempo salvo.'))) return;
       await sendCommand({ command: 'activity.setStatus', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: { status: value } });
     }
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível atualizar.'); }
@@ -81,16 +81,21 @@ export function ActivityDetail() {
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível retomar o cronômetro.'); }
     finally { setTimerBusy(false); }
   }
-  async function stopTimer(successMessage: string) {
-    if (!active) return;
+  async function stopTimer(successMessage: string): Promise<boolean> {
+    if (!active) return true;
     setTimerBusy(true);
     try {
       await sendCommand({ command: 'timeEntry.stop', operationId: crypto.randomUUID(), entityId: active.id, expectedRevision: active.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
       setOptimisticTimer(null);
       setPendingPatch(null);
       setMessage(successMessage);
+      return true;
     }
-    catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível parar o cronômetro.'); throw failure; }
+    catch (failure) {
+      setOptimisticTimer(null); setPendingPatch(null);
+      setMessage(failure instanceof ApiError && failure.status === 409 ? 'O cronômetro mudou em outra janela. Aguarde a atualização e tente novamente.' : failure instanceof Error ? failure.message : 'Não foi possível parar o cronômetro.');
+      return false;
+    }
     finally { setTimerBusy(false); }
   }
   async function stopOtherTimer() {

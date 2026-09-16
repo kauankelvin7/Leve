@@ -61,7 +61,15 @@ export async function timeEntryCommand(identity: DecodedIdToken, command: Comman
       transaction.create(target, { ...input, sessionId: input.sessionId ?? command.entityId, startedAt, endedAt: now, source: action === 'addSession' ? 'session' : 'manual', revision, schemaVersion: 1, deletedAt: null, createdAt: now, updatedAt: now });
     } else {
       if (!current?.exists || !existing || existing.deletedAt) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Este registro de tempo não está disponível.');
-      if (existing.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Este registro mudou em outra sessão.');
+      if (existing.revision !== command.expectedRevision) {
+        const alreadySatisfied = (action === 'pause' && (existing.paused || existing.endedAt))
+          || (action === 'resume' && !existing.paused && !existing.endedAt)
+          || (action === 'stop' && Boolean(existing.endedAt));
+        if (!alreadySatisfied) throw new AppError(409, 'REVISION_CONFLICT', 'Este registro mudou em outra sessão.');
+        const response: CommandResult = { operationId: command.operationId, entityId: command.entityId, revision: existing.revision, serverTime: now, result: 'applied' };
+        transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+        return response;
+      }
       revision = existing.revision + 1;
       if (action === 'stop') {
         if (existing.endedAt) throw new AppError(409, 'TIMER_NOT_RUNNING', 'Este cronômetro já foi encerrado.');

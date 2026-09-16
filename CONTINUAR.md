@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Conflitos de revisão do cronômetro — 15/09/2026
+
+O servidor retornava `409 REVISION_CONFLICT` para uma repetição rápida de pausar, retomar ou finalizar, mesmo quando o registro já tinha alcançado o estado solicitado. O comando agora reconhece essas repetições como concluídas, cria o recibo idempotente e preserva o bloqueio para conflitos reais com estado incompatível. No detalhe da atividade, `stopTimer` não relança mais falhas para o evento de clique: interrompe a ação dependente e mostra uma mensagem de atualização concorrente. Build e typecheck aprovados. A suíte de integração iniciou Auth e Firestore Emulator, mas o ambiente interrompeu a sessão antes do resultado final.
+
 ## Som e vibração nos lembretes — 15/09/2026
 
 O push em segundo plano passou a solicitar o som padrão e uma vibração curta `[140, 70, 180]` do aparelho. Com o Leve aberto, o banner também vibra e toca um sinal curto de duas notas, desde que o áudio tenha sido liberado por uma ação do usuário ao ativar ou experimentar notificações. O navegador e o sistema continuam com a decisão final de tocar ou vibrar, conforme permissões, modo silencioso e configurações do aparelho. O teste de notificações nas Preferências passou a solicitar os mesmos sinais. O cache do service worker foi atualizado para `v6`.
