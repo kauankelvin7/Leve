@@ -127,7 +127,7 @@ export function Settings() {
         <div className="settings-section-grid">
           <div className="settings-group">
             <PwaSettings />
-            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ative somente em um aparelho pessoal. O conteúdo já aberto e novas alterações poderão ficar armazenados neste dispositivo.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
+            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ative enquanto estiver conectado, em um aparelho pessoal. Depois disso, o Leve guarda a sessão e o conteúdo já aberto neste dispositivo para você continuar sem internet; as alterações ficam na fila até a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
           </div>
           <div className="settings-group">
             <NotificationSettings />

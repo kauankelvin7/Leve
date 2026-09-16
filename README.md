@@ -34,6 +34,10 @@ npm run dev
 
 O comando local inicia Auth/Firestore Emulator, API e Vite. Para dados fictícios, execute `npm run seed:local` e abra `http://localhost:5174/entrar`. Arquivos `.env*` não são versionados.
 
+### Uso offline
+
+O modo offline é privado e opt-in. Ative-o em **Preferências → Aparelho → Uso offline** enquanto estiver conectado e abra as áreas que deseja consultar. A partir daí, uma sessão autenticada e os dados já carregados ficam disponíveis no aparelho sem internet; novas alterações são guardadas na outbox local e sincronizadas quando a conexão voltar. O primeiro acesso e a ativação do modo offline ainda precisam acontecer online.
+
 ## Verificação
 
 ```sh

@@ -3,6 +3,7 @@ import { onIdTokenChanged, signOut, type User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { SessionResult } from '../../../../../packages/domain/src/identity';
 import { firebaseAuth, firestore } from '../../platform/firebase';
+import { cacheSession, readCachedSession } from '../../platform/outbox';
 import { ApiError, apiRequest } from '../../platform/api';
 import { revokeNotificationDevice } from '../../platform/notifications';
 import { clearQueryCache } from '../content/useLiveQueries';
@@ -30,12 +31,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!currentUser.emailVerified) { setSession(null); setError(''); setErrorStatus(null); setLoading(false); return; }
     try {
       const result = await apiRequest<SessionResult>('/session');
+      await cacheSession(currentUser.uid, result).catch(() => undefined);
       if (currentGeneration === generation.current && firebaseAuth?.currentUser?.uid === currentUser.uid) { setSession(result); setError(''); setErrorStatus(null); }
     } catch (failure) {
       if (currentGeneration === generation.current) {
-        setSession(null);
-        setError(failure instanceof Error ? failure.message : 'Não foi possível carregar sua conta.');
-        setErrorStatus(failure instanceof ApiError ? failure.status : 500);
+        const cached = failure instanceof ApiError && failure.code === 'NETWORK_ERROR' ? await readCachedSession(currentUser.uid).catch(() => null) : null;
+        if (cached?.session?.uid === currentUser.uid && cached.session.membership === 'active' && cached.session.profile?.accountState === 'active') {
+          setSession(cached.session); setError('Você está sem internet. Mostrando os dados salvos neste aparelho.'); setErrorStatus(null);
+        } else {
+          setSession(null);
+          setError(failure instanceof Error ? failure.message : 'Não foi possível carregar sua conta.');
+          setErrorStatus(failure instanceof ApiError ? failure.status : 500);
+        }
       }
     } finally { if (currentGeneration === generation.current) setLoading(false); }
   }, []);
@@ -54,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user || !firestore || session?.membership !== 'active') return;
     return onSnapshot(doc(firestore, 'memberships', user.uid), snapshot => {
       if (snapshot.data()?.state !== 'active') { setSession(null); void refresh(); }
-    }, () => { setSession(null); setError('Não foi possível verificar o acesso à conta.'); setErrorStatus(503); });
+    }, () => { if (navigator.onLine) { setError('Não foi possível verificar o acesso à conta.'); setErrorStatus(503); } });
   }, [user, session?.membership, refresh]);
 
   const logout = useCallback(async () => {

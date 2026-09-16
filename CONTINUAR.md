@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Entrada offline completa — 16/09/2026
+
+O modo offline agora preserva também a sessão autenticada em IndexedDB quando o usuário ativa o recurso. Se a API `/session` não estiver disponível, o cliente valida a sessão persistida do Firebase e abre o shell com o perfil e os dados já armazenados no cache privado do Firestore; alterações novas continuam na outbox e sincronizam quando a conexão voltar. O fluxo permanece opt-in: a primeira ativação e o primeiro carregamento das áreas precisam acontecer online. README e Preferências passaram a explicar esse requisito.
+
 ## Conflitos de revisão do cronômetro — 15/09/2026
 
 O servidor retornava `409 REVISION_CONFLICT` para uma repetição rápida de pausar, retomar ou finalizar, mesmo quando o registro já tinha alcançado o estado solicitado. O comando agora reconhece essas repetições como concluídas, cria o recibo idempotente e preserva o bloqueio para conflitos reais com estado incompatível. No detalhe da atividade, `stopTimer` não relança mais falhas para o evento de clique: interrompe a ação dependente e mostra uma mensagem de atualização concorrente. Build e typecheck aprovados. A suíte de integração iniciou Auth e Firestore Emulator, mas o ambiente interrompeu a sessão antes do resultado final.

@@ -1,8 +1,9 @@
 const DATABASE = 'leve-local-v1';
-const VERSION = 3;
+const VERSION = 4;
 
 export const OUTBOX_STORE = 'outbox-v2';
 export const DRAFT_STORE = 'drafts';
+export const SESSION_STORE = 'session-cache';
 
 export function openLocalDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -14,6 +15,7 @@ export function openLocalDatabase(): Promise<IDBDatabase> {
         outbox.createIndex('uid-createdAt', ['uid', 'createdAt']);
       }
       if (!database.objectStoreNames.contains(DRAFT_STORE)) database.createObjectStore(DRAFT_STORE, { keyPath: 'key' });
+      if (!database.objectStoreNames.contains(SESSION_STORE)) database.createObjectStore(SESSION_STORE, { keyPath: 'uid' });
 
       if (database.objectStoreNames.contains('outbox')) {
         const legacy = request.transaction!.objectStore('outbox');

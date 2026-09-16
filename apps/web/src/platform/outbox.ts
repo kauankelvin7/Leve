@@ -1,5 +1,6 @@
 import type { CommandEnvelope } from '../../../../packages/domain/src/identity';
-import { localTransaction, OUTBOX_STORE } from './localData';
+import { localTransaction, OUTBOX_STORE, SESSION_STORE } from './localData';
+import type { SessionResult } from '../../../../packages/domain/src/identity';
 
 export type PendingCommand = { key: string; operationId: string; uid: string; command: CommandEnvelope; createdAt: string };
 
@@ -14,6 +15,23 @@ function announceChange() {
 channel?.addEventListener('message', () => window.dispatchEvent(new CustomEvent('leve:outbox-changed')));
 
 export function offlineEnabled() { return localStorage.getItem('leve.offlineEnabled') === 'true'; }
+
+export async function cacheSession(uid: string, session: SessionResult) {
+  if (!offlineEnabled()) return;
+  await localTransaction<void>(SESSION_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.put({ uid, session, cachedAt: new Date().toISOString() });
+    request.onsuccess = () => resolve(); request.onerror = () => reject(request.error);
+  });
+}
+
+export async function readCachedSession(uid: string) {
+  if (!offlineEnabled()) return null;
+  return localTransaction<{ uid: string; session: SessionResult; cachedAt: string } | undefined>(SESSION_STORE, 'readonly', (store, resolve, reject) => {
+    const request = store.get(uid);
+    request.onsuccess = () => resolve(request.result as { uid: string; session: SessionResult; cachedAt: string } | undefined);
+    request.onerror = () => reject(request.error);
+  });
+}
 
 export async function queueCommand(uid: string, command: CommandEnvelope) {
   const entry: PendingCommand = { key: `${uid}:${command.operationId}`, operationId: command.operationId, uid, command, createdAt: new Date().toISOString() };
