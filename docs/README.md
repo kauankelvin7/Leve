@@ -5,6 +5,7 @@ Este diretório reúne decisões, procedimentos de operação, evidências resum
 ## Navegação
 
 - [Execução e histórico](EXECUCAO.md)
+- [Plano técnico de evolução UI/UX — notas, calendário e experiências sazonais](PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md)
 - [Retomada atual](../CONTINUAR.md)
 - [Decisões de arquitetura](adr/001-fundacao.md)
 - [Validação local](runbooks/validacao-local.md)
