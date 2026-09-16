@@ -14,7 +14,7 @@ const limits: Record<string, number> = { activities: 5000, categories: 50, notes
 const emptySchema = z.object({}).strict();
 const itemLocatorSchema = z.object({ listId: entityIdSchema }).strict();
 const allowed: Record<string, string[]> = {
-  activity: ['create', 'createSeries', 'update', 'updateFuture', 'setStatus', 'trash', 'restore', 'purge'],
+  activity: ['create', 'createSeries', 'update', 'updateFuture', 'setStatus', 'trash', 'trashSeries', 'restore', 'purge'],
   category: ['create', 'update', 'archive', 'trash', 'restore', 'purge'],
   note: ['save', 'trash', 'restore', 'purge'],
   shoppingList: ['create', 'update', 'archive', 'trash', 'restore', 'purge', 'createCycle'],
@@ -27,6 +27,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   const collection = names[type];
   if (!collection || !allowed[type]?.includes(action)) throw new AppError(422, 'VALIDATION_ERROR', 'Comando desconhecido.');
   if (type === 'activity' && action === 'createSeries') return createActivitySeries(identity, command);
+  if (type === 'activity' && action === 'trashSeries') return trashActivitySeries(identity, command);
   if (type === 'activity' && action === 'updateFuture') return updateFutureActivities(identity, command);
   if (type === 'shoppingList' && action === 'createCycle') return createShoppingCycle(identity, command);
   if (action === 'purge') return purgeContent(identity, command, type, collection);
@@ -173,6 +174,36 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
     transaction.set(countsRef, { activities: Math.max(0, (counts?.data()?.activities ?? 0) + delta) }, { merge: true });
     transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+    return response;
+  });
+}
+
+async function trashActivitySeries(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
+  const root = db.doc(`users/${identity.uid}`);
+  const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
+  const occurrenceRef = root.collection('activities').doc(command.entityId);
+  const now = new Date().toISOString();
+  const digest = commandHash(command);
+  return db.runTransaction(async transaction => {
+    const [profile, member, receipt, occurrence] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef);
+    if (receipt?.exists) {
+      if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
+      return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
+    }
+    const current = occurrence?.data();
+    if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+    if (!current || current.deletedAt || current.revision !== command.expectedRevision || !current.seriesId) throw new AppError(409, 'REVISION_CONFLICT', 'Esta ocorrência mudou em outra sessão.');
+    const seriesRef = root.collection('series').doc(String(current.seriesId));
+    const series = await transaction.get(seriesRef);
+    if (!series.exists) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'A série não está disponível.');
+    const occurrences = await transaction.get(root.collection('activities').where('seriesId', '==', current.seriesId).limit(500));
+    for (const document of occurrences.docs) {
+      if (!document.data().deletedAt) transaction.update(document.ref, { deletedAt: now, purgeAfter: new Date(Date.now() + 30 * 86400_000).toISOString(), revision: (document.data().revision ?? 0) + 1, updatedAt: now });
+    }
+    transaction.update(seriesRef, { state: 'trashed', updatedAt: now });
+    const response: CommandResult = { operationId: command.operationId, entityId: command.entityId, revision: current.revision + 1, serverTime: now, result: 'applied' };
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+    transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
     return response;
   });
 }

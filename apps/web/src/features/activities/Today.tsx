@@ -84,9 +84,8 @@ export function Today() {
     const root = collection(firestore, `users/${user.uid}/activities`);
     return [
       query(root, where('schedule.dueDate', '==', selectedDay), limit(50)),
-      query(root, where('schedule.dueDate', '==', null), limit(50)),
       query(root, where('schedule.startDate', '<=', selectedDay), where('schedule.endDate', '>=', selectedDay), limit(50)),
-      query(root, where('schedule.startDate', '<=', selectedDay), where('schedule.endDateExclusive', '>=', selectedDay), limit(50)),
+      query(root, where('schedule.startDate', '<=', selectedDay), where('schedule.endDateExclusive', '>', selectedDay), limit(50)),
     ];
   });
 
@@ -196,6 +195,16 @@ export function Today() {
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Não foi possível remover.'); setMessageTone('error');
     } finally { setBusy(false); }
+  }
+
+  async function trashSeries(activity: StoredActivity) {
+    if (busy || !activity.seriesId || !window.confirm('Excluir esta atividade e todas as ocorrências da série?')) return;
+    setBusy(true); setMessage(''); setMessageTone('info');
+    try {
+      await sendCommand({ command: 'activity.trashSeries', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setMessage('A série inteira foi movida para a lixeira.'); setMessageTone('success');
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Não foi possível remover a série.'); setMessageTone('error'); }
+    finally { setBusy(false); }
   }
 
   async function toggle(activity: StoredActivity) {
@@ -570,6 +579,7 @@ export function Today() {
                           >
                             Excluir
                           </button>
+                          {activity.seriesId ? <button disabled={busy} onClick={() => void trashSeries(activity)} aria-label={`Excluir toda a série de ${activity.title}`}>Excluir série</button> : null}
                         </div>
                       </div>
                     </li>
