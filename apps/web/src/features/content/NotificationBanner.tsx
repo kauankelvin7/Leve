@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui/Icon';
 import { firebaseApp } from '../../platform/firebase';
 import { useAuth } from '../identity/AuthProvider';
+import { playReminderFeedback } from '../../platform/reminderFeedback';
 
 export function NotificationBanner() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export function NotificationBanner() {
       if (event.data?.type !== 'LEVE_REMINDER') return;
       const data = event.data.data;
       if (typeof data?.body !== 'string') return;
+      playReminderFeedback();
       setNotice({ title: typeof data.title === 'string' ? data.title : 'Leve', body: data.body, url: typeof data.url === 'string' && /^\/atividade\/[A-Za-z0-9_-]+$/.test(data.url) ? data.url : '/hoje' });
     };
     navigator.serviceWorker.addEventListener('message', receive);
@@ -27,6 +29,7 @@ export function NotificationBanner() {
       stop = onMessage(getMessaging(firebaseApp), payload => {
         if (!alive) return;
         const url = payload.data?.url ?? '';
+        playReminderFeedback();
         setNotice({ title: payload.data?.title ?? payload.notification?.title ?? 'Leve', body: payload.data?.body ?? payload.notification?.body ?? 'Você tem um lembrete.', url: /^\/atividade\/[A-Za-z0-9_-]+$/.test(url) ? url : '/hoje' });
       });
     }).catch(() => undefined);

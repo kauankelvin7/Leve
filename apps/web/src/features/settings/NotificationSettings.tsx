@@ -3,6 +3,7 @@ import { sendCommand } from '../../platform/api';
 import { firebaseApp } from '../../platform/firebase';
 import { notificationDeviceId, rememberNotificationDevice, revokeNotificationDevice } from '../../platform/notifications';
 import { useAuth } from '../identity/AuthProvider';
+import { armReminderSound, playReminderFeedback } from '../../platform/reminderFeedback';
 
 const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -19,6 +20,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
   const activeDeviceId = user ? notificationDeviceId(user.uid) : null;
 
   async function enable() {
+    armReminderSound();
     setBusy(true); setMessage('');
     try {
       const { getMessaging, getToken, isSupported } = await import('firebase/messaging');
@@ -51,13 +53,15 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
   }
 
   async function previewNotification() {
+    armReminderSound(); playReminderFeedback();
     setBusy(true); setMessage('');
     try {
       if (Notification.permission !== 'granted') throw new Error('Permita notificações antes de experimentar.');
       const registration = await navigator.serviceWorker.getRegistration();
       if (!registration?.active) throw new Error('Feche e abra o Leve para concluir a atualização.');
-      await registration.showNotification('Leve', { body: 'Este aparelho pode mostrar os avisos da sua agenda.', icon: '/favicon.svg', tag: 'leve-device-preview' });
-      setMessage('Aviso solicitado ao Android. Isso verifica a exibição no aparelho, mas não o envio de lembretes pelo servidor.');
+      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: 'Este aparelho pode tocar e vibrar nos lembretes da sua agenda.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
+      await registration.showNotification('Leve', options);
+      setMessage('Aviso solicitado com o som e a vibração padrão do aparelho.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível mostrar o aviso.'); }
     finally { setBusy(false); }
   }
@@ -65,7 +69,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
   return <section className={compact ? 'notification-compact' : 'panel content-form notification-settings'}>
     {!compact && <h2>Notificações neste aparelho</h2>}
     <p>{permission === 'denied' ? 'Permissão bloqueada. Permita notificações nas configurações do Android e deste site no navegador.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Permissão concedida. Este aparelho tem um registro salvo; renove se os avisos pararam.' : 'Permissão concedida. Ative abaixo para registrar este aparelho.' : 'O navegador pedirá permissão ao ativar.'}</p>
-    <p>Na atividade, escolha “No horário da atividade” ou uma antecedência. Atividades sem lembrete selecionado não enviam avisos.</p>
+    <p>Na atividade, escolha “No horário da atividade” ou uma antecedência. O aviso usa o som e a vibração padrão do aparelho quando eles estiverem permitidos.</p>
     <div className="dialog-actions">
       <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar registro do aparelho' : 'Ativar notificações'}</button>
       {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Experimentar aviso neste aparelho</button>}

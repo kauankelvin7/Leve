@@ -1,5 +1,9 @@
 # Leve — ponto exato de retomada
 
+## Som e vibração nos lembretes — 15/09/2026
+
+O push em segundo plano passou a solicitar o som padrão e uma vibração curta `[140, 70, 180]` do aparelho. Com o Leve aberto, o banner também vibra e toca um sinal curto de duas notas, desde que o áudio tenha sido liberado por uma ação do usuário ao ativar ou experimentar notificações. O navegador e o sistema continuam com a decisão final de tocar ou vibrar, conforme permissões, modo silencioso e configurações do aparelho. O teste de notificações nas Preferências passou a solicitar os mesmos sinais. O cache do service worker foi atualizado para `v6`.
+
 ## Correção de cronômetro em produção — 15/09/2026
 
 Investigação confirmou dois pontos no cliente. O histórico da atividade buscava uma página genérica de até 50 registros sem ordenação, fazendo lançamentos recentes de uma atividade antiga parecerem ausentes. A barra flutuante dependia da consulta ampla de registros abertos e, quando o listener falhava, ocultava o erro junto com o componente. A leitura passou a usar `users/{uid}/internal/activeTimer`, referência única criada pelo servidor no início e removida ao encerrar, com regra Firestore de `get` limitada ao titular. O histórico da atividade agora filtra por `activityId` e ordena por `startedAt` decrescente, com índice composto registrado. A falha `Uncaught (in promise) TypeError: Failed to fetch` vinha do registro do service worker sem tratamento de rejeição e foi absorvida. Para a correção chegar à produção, publicar o commit e aplicar regras e índices do Firestore. Build e typecheck aprovados.
