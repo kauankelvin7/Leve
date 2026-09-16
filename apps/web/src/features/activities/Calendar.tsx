@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Category } from '../../../../../packages/domain/src/content';
 import { useAuth } from '../identity/AuthProvider';
@@ -8,7 +8,7 @@ import { useCurrentDay } from './DayNavigation';
 import { LoadError } from '../../components/ui/LoadError';
 import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
-import { activityOccursOn, resolveActivityColor, type StoredActivity } from './calendar/calendarModel';
+import { activityOccursOn, calendarViewBounds, resolveActivityColor, type StoredActivity } from './calendar/calendarModel';
 import { useCalendarRange } from './calendar/useCalendarRange';
 
 export function Calendar() {
@@ -20,9 +20,9 @@ export function Calendar() {
   const [category, setCategory] = useState('');
   const categories = useUserCollection<Category>('categories');
   const first = Temporal.PlainDate.from(`${month}-01`);
-  const bounds = useMemo(() => ({ start: `${month}-01`, end: Temporal.PlainDate.from(`${month}-01`).add({ months: 1 }).subtract({ days: 1 }).toString() }), [month]);
+  const bounds = calendarViewBounds('month', `${month}-01`, session!.profile!.weekStartsOn);
   useEffect(() => { document.title = 'Calendário · Leve'; }, []);
-  const activityQuery = useCalendarRange({ startDate: bounds.start, endDate: bounds.end, categoryId: category });
+  const activityQuery = useCalendarRange({ startDate: bounds.startDate, endDate: bounds.endDate, categoryId: category });
   const { loading, error, partial, items: activities } = activityQuery;
   const colorOf = (item: StoredActivity) => resolveActivityColor(item, categories.items);
 
