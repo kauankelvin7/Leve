@@ -14,6 +14,14 @@ Leve é uma agenda pessoal progressiva para organizar atividades, calendário, n
 - CORS configurável por `CORS_ORIGINS`; por padrão, a API aceita apenas o mesmo domínio.
 - Logs estruturados com níveis (`debug`, `info`, `warn`, `error`), redação de segredos e `LOG_LEVEL` por ambiente.
 
+## Preview
+
+As imagens abaixo são geradas com `npm run screenshots`:
+
+![Leve — entrada desktop](docs/screenshots/desktop.png)
+
+![Leve — agenda mobile](docs/screenshots/mobile-1.png) ![Leve — notas mobile](docs/screenshots/mobile-2.png) ![Leve — compras mobile](docs/screenshots/mobile-3.png)
+
 ## Requisitos e execução
 
 Node.js 24.x e npm 11.19.1. O campo `packageManager` fixa a versão; o CI habilita Corepack e verifica divergências.
