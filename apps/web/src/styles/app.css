@@ -15,17 +15,18 @@
   text-rendering: optimizeLegibility;
 
   /* Paleta base (tema sage/verde — padrão) */
-  --color-canvas:       #ECF1EE;
-  --color-canvas-glow:  #F8EEEC;
-  --color-solid:        #FAFCFA;
-  --color-glass:        rgba(250, 252, 250, 0.78);
-  --color-field:        rgba(243, 248, 245, 0.92);
-  --color-border:       #CDD8D1;
-  --color-text:         #192A1E;
-  --color-text-muted:   #52625D;
-  --color-action-primary: #3B7856;
-  --color-action-hover:   #2C5E42;
-  --color-focus:          #3B7856;
+  --color-canvas:       #E8F0EB;
+  --color-canvas-glow:  #F7EEEA;
+  --color-solid:        #FCFDF9;
+  --color-glass:        rgba(252, 253, 249, 0.82);
+  --color-field:        rgba(244, 249, 246, 0.94);
+  --color-border:       #C5D5CA;
+  --color-text:         #182A20;
+  --color-text-muted:   #4D6256;
+  --color-action-primary: #347454;
+  --color-action-hover:   #255C40;
+  --color-focus:          #347454;
+  --color-canvas-accent:  #CFE2D5;
 
   /* Derivados do acento */
   --color-accent-soft:   color-mix(in srgb, var(--color-action-primary) 11%, var(--color-solid));
@@ -70,51 +71,61 @@
 
 /* ── 2. RESET ────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; background: linear-gradient(145deg, var(--color-canvas) 0%, var(--color-canvas-glow) 52%, var(--color-canvas) 100%); background-attachment: fixed; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 4%, color-mix(in srgb, var(--color-canvas-accent) 58%, transparent) 0, transparent 29rem),
+    radial-gradient(circle at 94% 92%, color-mix(in srgb, var(--color-action-primary) 8%, transparent) 0, transparent 34rem),
+    linear-gradient(145deg, var(--color-canvas) 0%, var(--color-canvas-glow) 52%, var(--color-canvas) 100%);
+  background-attachment: fixed;
+}
 .main-wrapper { position: relative; }
 * { overflow-wrap: anywhere; }
 
 /* ── 3. TEMAS ────────────────────────────────────────────── */
 :root[data-theme=purple] {
-  --color-canvas:         #ECEAF6 !important;
+  --color-canvas:         #EEEAF8 !important;
   --color-solid:          #FDFBFF !important;
   --color-glass:          rgba(253, 251, 255, 0.78) !important;
   --color-field:          rgba(246, 243, 253, 0.92) !important;
-  --color-border:         #D3CEEC !important;
+  --color-border:         #CEC5E6 !important;
   --color-text:           #21183A !important;
   --color-text-muted:     #67597F !important;
-  --color-action-primary: #6B4FA0 !important;
-  --color-action-hover:   #543D84 !important;
-  --color-focus:          #6B4FA0 !important;
+  --color-action-primary: #7255A6 !important;
+  --color-action-hover:   #594184 !important;
+  --color-focus:          #7255A6 !important;
   --color-canvas-glow:    #F4F0FC !important;
+  --color-canvas-accent:  #DCCFF0 !important;
 }
 
 :root[data-theme=blue] {
-  --color-canvas:         #E7EEF5 !important;
+  --color-canvas:         #E6F0F7 !important;
   --color-solid:          #F6FAFE !important;
   --color-glass:          rgba(246, 250, 254, 0.78) !important;
   --color-field:          rgba(241, 247, 253, 0.92) !important;
-  --color-border:         #C6D5E5 !important;
+  --color-border:         #BDD3E3 !important;
   --color-text:           #172534 !important;
   --color-text-muted:     #50677F !important;
-  --color-action-primary: #3A698C !important;
-  --color-action-hover:   #2B5272 !important;
-  --color-focus:          #3A698C !important;
+  --color-action-primary: #356C91 !important;
+  --color-action-hover:   #285371 !important;
+  --color-focus:          #356C91 !important;
   --color-canvas-glow:    #EEF5FB !important;
+  --color-canvas-accent:  #C8DFEE !important;
 }
 
 :root[data-theme=red] {
-  --color-canvas:         #F4EBEB !important;
+  --color-canvas:         #F6EBEC !important;
   --color-solid:          #FFFAFA !important;
   --color-glass:          rgba(255, 250, 250, 0.78) !important;
   --color-field:          rgba(253, 246, 246, 0.92) !important;
-  --color-border:         #E3CCCC !important;
+  --color-border:         #E6C7CA !important;
   --color-text:           #2C1A1A !important;
   --color-text-muted:     #765454 !important;
-  --color-action-primary: #8D4651 !important;
-  --color-action-hover:   #72363F !important;
-  --color-focus:          #8D4651 !important;
+  --color-action-primary: #9A4E5A !important;
+  --color-action-hover:   #7C3A45 !important;
+  --color-focus:          #9A4E5A !important;
   --color-canvas-glow:    #FCF2F1 !important;
+  --color-canvas-accent:  #F0D0D2 !important;
 }
 
 /* ── Swatches de tema ─ */

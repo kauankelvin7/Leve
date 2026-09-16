@@ -1,8 +1,8 @@
 export const colorThemes = {
-  green: { canvas: '#ECF1EE', surface: '#FAFCFA' },
-  purple: { canvas: '#ECEAF6', surface: '#FDFBFF' },
-  blue: { canvas: '#E7EEF5', surface: '#F6FAFE' },
-  red: { canvas: '#F4EBEB', surface: '#FFFAFA' },
+  green: { canvas: '#E8F0EB', surface: '#FCFDF9' },
+  purple: { canvas: '#EEEAF8', surface: '#FDFBFF' },
+  blue: { canvas: '#E6F0F7', surface: '#F6FAFE' },
+  red: { canvas: '#F6EBEC', surface: '#FFFAFA' },
 } as const;
 
 export type ColorTheme = keyof typeof colorThemes;

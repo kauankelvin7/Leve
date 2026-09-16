@@ -67,7 +67,7 @@
    ============================================================ */
 .color-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   gap: 8px;
   margin-top: 12px;
 }
@@ -80,11 +80,19 @@
   border-radius: var(--radius-md);
   padding: 8px;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow-wrap: normal;
   cursor: pointer;
 }
 
 .activity-colors label:hover {
   background-color: color-mix(in srgb, var(--color-border) 30%, transparent);
+}
+
+.activity-colors .color-options label:has(input:checked) {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 2px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-action-primary) 18%, transparent);
 }
 
 .activity-colors input[type="radio"],
@@ -1017,6 +1025,102 @@ textarea {
   overflow: hidden;
   box-shadow: 0 14px 34px color-mix(in srgb, var(--color-text) 9%, transparent);
   transition: transform var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+}
+
+.notes-heading,
+.trash-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.notes-heading-actions,
+.trash-heading-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.notes-count,
+.trash-count {
+  color: var(--color-text-muted);
+  font-size: .78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.notes-page .content-form {
+  margin-bottom: 24px;
+  border-top: 4px solid var(--color-action-primary);
+}
+
+.notes-page .note-sections > section + section { margin-top: 30px; }
+.notes-page .note-sections h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  font-size: 1.15rem;
+}
+.notes-page .note-sections h2 span {
+  display: inline-grid;
+  min-width: 26px;
+  min-height: 26px;
+  padding-inline: 6px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--color-action-primary);
+  background: var(--color-accent-soft);
+  font-size: .72rem;
+}
+
+.notes-page .notes-empty,
+.trash-page .trash-empty {
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  text-align: center;
+}
+.notes-page .notes-empty p,
+.trash-page .trash-empty p { margin: 0; font-weight: 700; }
+.notes-page .notes-empty small,
+.trash-page .trash-empty small { color: var(--color-text-muted); }
+
+.trash-page .trash-list { margin-top: 4px; }
+.trash-page .trash-item-copy { display: grid; gap: 5px; }
+.trash-page .trash-item-copy small { color: var(--color-text-muted); font-size: .75rem; }
+.trash-page .trash-item-state {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  font-size: .66rem;
+  font-weight: 800;
+}
+.trash-page .trash-list .row-actions button {
+  width: auto;
+  min-width: 42px;
+  padding-inline: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.trash-page .trash-list .row-actions button > span { font-size: .72rem; font-weight: 700; }
+
+@media (max-width: 739px) {
+  .notes-heading,
+  .trash-heading { align-items: stretch; flex-direction: column; gap: 12px; }
+  .notes-heading-actions,
+  .trash-heading-actions { justify-content: space-between; }
+  .notes-heading-actions button,
+  .trash-heading-actions button { flex: 1; justify-content: center; }
+  .trash-page .trash-list .row-actions button { width: 42px; min-width: 42px; padding-inline: 8px; }
+  .trash-page .trash-list .row-actions button > span { display: none; }
 }
 
 .note-grid .note::after {

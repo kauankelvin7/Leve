@@ -3,7 +3,7 @@ import { sendCommand } from '../../platform/api';
 import { useAuth } from '../identity/AuthProvider';
 import { applyColorTheme, type ColorTheme } from '../../platform/theme';
 
-const themes = [['green', 'Verde suave', '#BFD4C6'], ['purple', 'Roxo suave', '#D4C6E5'], ['blue', 'Azul suave', '#C2D6EA'], ['red', 'Vermelho suave', '#E7C3C6']] as const;
+const themes = [['green', 'Verde suave', '#B8D0C0'], ['purple', 'Roxo suave', '#CFC1E6'], ['blue', 'Azul suave', '#BDD7EA'], ['red', 'Vermelho suave', '#E5BFC4']] as const;
 
 export function ThemeSettings() {
   const { session, refresh } = useAuth();

@@ -27,9 +27,9 @@ export function DayNavigation({ selected, today, weekStartsOn, onSelect, month =
     </div></div>
     <div className={`day-picker ${month ? 'month-picker' : ''}`}>
       {month && days.slice(0, 7).map(day => <span className="mini-weekday" aria-hidden="true" key={`weekday-${day.dayOfWeek}`}>{day.toLocaleString('pt-BR', { weekday: 'narrow' })}</span>)}
-      {days.map(day => { const dots = dotsOf ? dotsOf(day.toString()) : []; const adjacent = month && day.month !== date.month; return <button type="button" key={day.toString()} className={day.equals(date) ? 'selected' : adjacent ? 'adjacent' : ''} aria-pressed={day.equals(date)} aria-current={day.toString() === today ? 'date' : undefined} aria-label={day.toLocaleString('pt-BR', { dateStyle: 'full' })} onClick={() => onSelect(day.toString())}>
+      {days.map(day => { const dots = dotsOf ? dotsOf(day.toString()) : []; const adjacent = month && day.month !== date.month; const activityLabel = dots.length ? `, ${dots.length} ${dots.length === 1 ? 'atividade' : 'atividades'}` : ', sem atividades'; return <button type="button" key={day.toString()} className={day.equals(date) ? 'selected' : adjacent ? 'adjacent' : ''} aria-pressed={day.equals(date)} aria-current={day.toString() === today ? 'date' : undefined} aria-label={`${day.toLocaleString('pt-BR', { dateStyle: 'full' })}${activityLabel}`} onClick={() => onSelect(day.toString())}>
         {!month && <span>{day.toLocaleString('pt-BR', { weekday: 'short' })}</span>}<strong>{day.day}</strong>
-        {dots.length > 0 && !adjacent && <span className="calendar-colors" aria-hidden="true">{dots.slice(0, 5).map((hex, i) => <span key={i} style={{ backgroundColor: hex }} />)}</span>}
+        {dots.length > 0 && !adjacent && <><span className="calendar-colors" aria-hidden="true">{dots.slice(0, 5).map((hex, i) => <span key={i} style={{ backgroundColor: hex }} />)}</span>{month && <small className="calendar-day-count">{dots.length}</small>}</>}
       </button>; })}
     </div>
   </section>;

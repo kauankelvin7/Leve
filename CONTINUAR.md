@@ -1,5 +1,25 @@
 # Leve — ponto exato de retomada
 
+## Notas e lixeira — 16/09/2026
+
+As telas de Notas e Lixeira passaram a aplicar seus estilos de acabamento específicos. Notas ganhou cabeçalho com contagem ativa, busca mais evidente, contagem por seção, destaque do editor e estado vazio mais orientado. A Lixeira ganhou cabeçalho com resumo, ação de exclusão total protegida quando não há itens, estado “Removido”, datas de retenção mais legíveis e ações com texto no desktop e ícones compactos no mobile.
+
+## Resumo do dia no mobile — 16/09/2026
+
+O cartão de resumo da tela Meu dia foi recalibrado para telas pequenas: a data ganhou uma coluna proporcional, o título usa uma escala menor e previsível, a descrição mantém leitura confortável e os acessos rápidos viraram uma grade de toque com o tempo registrado ocupando a largura inteira. O conteúdo pode encolher sem estourar a tela e o layout desktop permanece inalterado.
+
+## Fundo temático e destaque do calendário — 16/09/2026
+
+O fundo global passou a combinar um gradiente linear suave com dois pontos de luz radiais derivados da paleta ativa. Cada tema define seu próprio tom de destaque, mantendo a leitura dos textos e o foco visível. O calendário mensal e o painel de calendário recebem uma superfície sutilmente mais marcada e uma borda coordenada, criando hierarquia sem transformar a tela em um painel carregado.
+
+## Cores de atividades e temas — 16/09/2026
+
+As opções de cor das atividades agora usam uma paleta mais definida, com contraste melhor nos pontos do calendário. Os nomes ocupam células mais largas e não quebram no meio da palavra; a grade continua adaptável em tablets e celulares. Os nomes antigos foram mantidos como compatibilidade para atividades já salvas. As quatro paletas do sistema também receberam tons de fundo, bordas e ações mais equilibrados.
+
+## Meu dia responsivo e calendário funcional — 16/09/2026
+
+Em tablets, a composição de Meu dia agora reorganiza a agenda em uma coluna principal e distribui os painéis auxiliares sem comprimir o calendário lateral. Em larguras intermediárias, a navegação vira uma barra compacta de ícones; em telas pequenas, os atalhos do calendário empilham sem transbordar. O calendário mensal deixou de ser apenas decorativo: consulta as atividades do intervalo visível, mostra a quantidade de compromissos em cada dia, anuncia esse estado para leitores de tela e oferece atalhos para abrir o calendário completo ou adicionar uma atividade na data selecionada. A consulta respeita a data escolhida, não trata todos os dias como hoje.
+
 ## Entrada offline completa — 16/09/2026
 
 O modo offline agora preserva também a sessão autenticada em IndexedDB quando o usuário ativa o recurso. Se a API `/session` não estiver disponível, o cliente valida a sessão persistida do Firebase e abre o shell com o perfil e os dados já armazenados no cache privado do Firestore; alterações novas continuam na outbox e sincronizam quando a conexão voltar. O fluxo permanece opt-in: a primeira ativação e o primeiro carregamento das áreas precisam acontecer online. README e Preferências passaram a explicar esse requisito.

@@ -89,6 +89,20 @@ export function Today() {
     ];
   });
 
+  const selectedDate = Temporal.PlainDate.from(selectedDay);
+  const monthStart = selectedDate.with({ day: 1 });
+  const calendarStart = monthStart.subtract({ days: (monthStart.dayOfWeek % 7 - session!.profile!.weekStartsOn + 7) % 7 });
+  const calendarEnd = calendarStart.add({ days: 41 });
+  const calendarQuery = useLiveQueries(`today-calendar:${calendarStart}:${calendarEnd}`, () => {
+    if (!user || !firestore) return [];
+    const root = collection(firestore, `users/${user.uid}/activities`);
+    return [
+      query(root, where('schedule.dueDate', '>=', calendarStart.toString()), where('schedule.dueDate', '<=', calendarEnd.toString()), limit(50)),
+      query(root, where('schedule.startDate', '<=', calendarEnd.toString()), where('schedule.endDate', '>=', calendarStart.toString()), limit(50)),
+      query(root, where('schedule.startDate', '<=', calendarEnd.toString()), where('schedule.endDateExclusive', '>', calendarStart.toString()), limit(50)),
+    ];
+  });
+
   const { loading } = activityQuery;
   const activities = (activityQuery.items as StoredActivity[])
     .filter(item => !item.deletedAt)
@@ -99,8 +113,17 @@ export function Today() {
       return 0;
     });
 
+  const calendarActivities = (calendarQuery.items as StoredActivity[]).filter(item => !item.deletedAt);
+  function activitiesOn(date: string) {
+    return calendarActivities.filter(item => (
+      (item.schedule.type === 'task' && item.schedule.dueDate === date) ||
+      (item.schedule.type === 'event' && item.schedule.startDate <= date &&
+        (item.schedule.allDay ? date < item.schedule.endDateExclusive : date <= item.schedule.endDate))
+    ));
+  }
+
   function dotsOf(date: string) {
-    return (activityQuery.items as StoredActivity[])
+    return activitiesOn(date)
       .filter(item => !item.deletedAt && (
         (item.schedule.type === 'task' && item.schedule.dueDate === date) ||
         (item.schedule.type === 'event' && item.schedule.startDate <= date &&
@@ -246,7 +269,7 @@ export function Today() {
 
       <section className="day-overview" aria-label="Resumo do dia selecionado">
         <div className="day-overview-date"><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { month: 'long' })}</span><strong>{Temporal.PlainDate.from(selectedDay).day}</strong><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
-        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'atividade para hoje' : 'atividades para hoje'}` : 'Espaço para seus planos'}</h2><p>{plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
+        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'atividade' : 'atividades'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : 'Espaço para seus planos'}</h2><p>{plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
       </section>
 
       <div className="agenda-layout">
@@ -602,7 +625,7 @@ export function Today() {
 
         {/* Aside */}
         <aside className="agenda-aside">
-          <section className="panel">
+          <section className="panel today-month-panel">
             <DayNavigation
               month
               selected={selectedDay}
@@ -611,6 +634,11 @@ export function Today() {
               onSelect={selectDay}
               dotsOf={dotsOf}
             />
+            <div className="month-panel-summary" aria-live="polite">
+              <div><strong>{selectedDate.toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</strong><span>{calendarQuery.loading ? 'Carregando compromissos…' : `${activitiesOn(selectedDay).length} ${activitiesOn(selectedDay).length === 1 ? 'atividade neste dia' : 'atividades neste dia'}`}</span></div>
+              <div className="month-panel-actions"><Link className="button" to="/calendario">Ver calendário completo</Link><button type="button" className="primary" onClick={() => { setEditing(null); setComposerOpen(true); }}><Icon name="plus" />Adicionar</button></div>
+            </div>
+            {calendarQuery.partial ? <p className="muted">Há mais atividades neste período. Abra o calendário completo para consultar tudo.</p> : null}
           </section>
 
           <article className={`note ${pinnedNote?.paperColorPreset ?? 'butter'}`}>
