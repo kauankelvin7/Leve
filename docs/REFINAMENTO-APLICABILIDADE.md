@@ -1,6 +1,6 @@
 # Refinamento de producao — aplicabilidade
 
-Data: 12/09/2026. Este registro incorpora `REFINAMENTO.md` ao fluxo de E06–E11 sem alterar a arquitetura aprovada em `PROMPT-CODEX.md` e `CONTINUAR.md`.
+Data: 12/09/2026. Este registro incorpora o refinamento histórico ao fluxo de E06–E11 sem alterar a arquitetura aprovada em `CONTINUAR.md`.
 
 ## Decisao de arquitetura
 

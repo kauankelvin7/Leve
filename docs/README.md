@@ -12,4 +12,4 @@ Este diretório reúne decisões, procedimentos de operação, evidências resum
 - [Aplicabilidade do refinamento](REFINAMENTO-APLICABILIDADE.md)
 - [Evidências](evidence/README.md)
 
-Os documentos de requisitos e capacidade permanecem na raiz para facilitar a leitura das fontes de verdade do projeto.
+O documento de capacidade permanece na raiz porque define limites operacionais ainda usados pelos runbooks. Prompts e relatórios históricos ficam fora do fluxo ativo e são preservados no histórico do Git.

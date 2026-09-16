@@ -4,12 +4,11 @@
 
 ## Escopo e auditoria
 
-O comando final de `PROMPT-CODEX.md` determina começar por E00/E01, entregar base verificável e planejar E02, sem implementar tudo de uma vez. Este é o limite da entrega.
+O plano histórico de execução determinava começar por E00/E01, entregar base verificável e planejar E02, sem implementar tudo de uma vez. Este é o limite registrado nesta documentação histórica.
 
 | Encontrado inicialmente | Resultado da auditoria |
 |---|---|
-| `PROMPT-CODEX.md` | Instruções de execução lidas e preservadas |
-| `Leve-Relatorio-de-Engenharia.md` | Especificação consolidada, seções 1–41; não era código entregue |
+| Relatórios e prompts históricos | Consultados na fundação; não fazem parte do fluxo operacional atual |
 | `05-capacidade-e-revisao.md` | Restrições de custo, capacidade e gates preservados |
 | `.qodo/` | Configuração preexistente, não alterada |
 | Documentos separados 01–04 | Ausentes; conteúdo correspondente no consolidado |

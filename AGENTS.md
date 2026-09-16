@@ -5,10 +5,8 @@
 Antes de qualquer implementacao, alteracao de arquivo, execucao de fluxo externo ou decisao de escopo, leia os Markdown da raiz que existirem, nesta ordem:
 
 1. `CONTINUAR.md`
-2. `PROMPT-CODEX.md`
-3. `README.md`
-4. `05-capacidade-e-revisao.md`
-5. `Leve-Relatorio-de-Engenharia.md`
+2. `README.md`
+3. `05-capacidade-e-revisao.md`
 
 Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, `CONTINUAR.md`, requisitos de produto/arquitetura, documentacao historica. Nao use `docs/EXECUCAO.md` como status atual principal; ele registra a fundacao E00/E01.
 

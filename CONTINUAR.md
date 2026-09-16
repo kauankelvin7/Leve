@@ -217,7 +217,7 @@ Continuam pendentes E08 (duas abas, sessao, offline e atualizacao), E10 (acessib
 
 ## Atualizacao de refinamento — 12/09/2026
 
-`REFINAMENTO.md` foi incorporado ao fluxo em `docs/REFINAMENTO-APLICABILIDADE.md`. Auth, sanitizacao por schema, regras sem escrita direta, rate limit de comandos, singleton Admin, persistencia multitab, indices existentes e atualizacao segura de PWA ja estavam coerentes com a base. O healthcheck agora inclui versao e timestamp, e `.env.example` voltou a conter apenas placeholders. A proposta de migrar Express para Next/Vercel API Routes nao sera aplicada: conflita com a stack aprovada e nao resolve um defeito observado. DOMPurify, indices especulativos e limite de login no Express tambem nao se aplicam ao modelo atual.
+O refinamento histórico foi incorporado ao fluxo em `docs/REFINAMENTO-APLICABILIDADE.md`. Auth, sanitizacao por schema, regras sem escrita direta, rate limit de comandos, singleton Admin, persistencia multitab, indices existentes e atualizacao segura de PWA ja estavam coerentes com a base. O healthcheck agora inclui versao e timestamp, e `.env.example` voltou a conter apenas placeholders. A proposta de migrar Express para Next/Vercel API Routes nao sera aplicada: conflita com a stack aprovada e nao resolve um defeito observado. DOMPurify, indices especulativos e limite de login no Express tambem nao se aplicam ao modelo atual.
 
 **Fluxo ajustado:** E10 incorpora o ensaio de custo dos listeners agregados de itens e da exportacao paginada; E11 concentra preview, variaveis, rollback e deploy autorizado. E08/E09 continuam dependendo de navegador/aparelho reais. Esta rodada preserva a orientacao de nao executar Playwright nem Auth Emulator.
 
@@ -359,7 +359,7 @@ Verificações ao final desta retomada: typecheck/build passaram, Vitest 3/3, in
 
 ## 1. Objetivo vigente e mudança de escopo
 
-O usuário inicialmente pediu para ler os Markdown da raiz e executar o projeto com cuidado. O `PROMPT-CODEX.md` orientava entregar primeiro E00/E01, com demo isolada. Foi construída e testada essa fundação.
+O usuário inicialmente pediu para ler os Markdown da raiz e executar o projeto com cuidado. O prompt histórico orientava entregar primeiro E00/E01, com demo isolada. Foi construída e testada essa fundação.
 
 Depois o usuário corrigiu explicitamente: **“nao quero uma demonstração, o sistema tem que ser completo”**. Essa instrução prevalece sobre a limitação inicial a E00/E01. O objetivo da continuação é o sistema completo descrito no relatório, com autenticação, persistência, autorização, agenda, notas, compras, recuperação, recorrência, offline/PWA e push verificáveis. A demo existente é apenas uma etapa histórica e não a entrega desejada.
 
