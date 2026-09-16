@@ -1,41 +1,194 @@
 /* Runtime appearance bridge.
    Loaded after the legacy style layers so appearance always wins over
-   theme-specific light tokens and auth surfaces stay semantically themed. */
+   theme-specific light tokens. These dark blocks mirror the shared theme
+   registry to keep the very first pre-React paint correctly tinted. */
 
-:root[data-appearance='dark'] {
-  --color-canvas: #171C1A !important;
-  --color-solid: #242C28 !important;
-  --color-glass: rgba(36, 44, 40, 0.88) !important;
-  --color-field: #1C2420 !important;
-  --color-border: #788B7F !important;
-  --color-text: #EDF1EE !important;
-  --color-text-muted: #BAC6BE !important;
-  --color-canvas-glow: #242C28 !important;
-  --color-canvas-accent: color-mix(in srgb, var(--color-action-primary) 18%, #171C1A) !important;
-  --color-action-hover: color-mix(in srgb, var(--color-action-primary) 82%, var(--color-text)) !important;
-  --color-focus: var(--color-action-primary) !important;
-  --color-action-foreground: #17231C !important;
-  --paper-surface: #242C28 !important;
-  --color-surface: #242C28 !important;
-  --color-surface-muted: #1C2420 !important;
-  --surface-highlight: color-mix(in srgb, var(--color-text) 12%, transparent) !important;
-  --editorial-line: color-mix(in srgb, var(--color-text) 24%, var(--color-solid)) !important;
+:root[data-appearance='dark'][data-theme='green'] {
+  --color-canvas: #121A16 !important;
+  --color-canvas-glow: #18221C !important;
+  --color-solid: #202B25 !important;
+  --color-glass: rgba(32, 43, 37, 0.88) !important;
+  --color-field: #18221D !important;
+  --color-border: #536A5C !important;
+  --color-text: #F0F5F1 !important;
+  --color-text-muted: #B3C2B8 !important;
+  --color-action-primary: #98C9AA !important;
+  --color-action-hover: #B4D8C0 !important;
+  --color-canvas-accent: #294235 !important;
+  --color-surface-muted: #18221D !important;
+  --color-action-foreground: #132019 !important;
 }
 
-:root[data-appearance='dark'][data-theme='green'] { --color-action-primary: #98C9AA !important; }
-:root[data-appearance='dark'][data-theme='purple'] { --color-action-primary: #C5ADE9 !important; }
-:root[data-appearance='dark'][data-theme='blue'] { --color-action-primary: #9CCAE9 !important; }
-:root[data-appearance='dark'][data-theme='red'] { --color-action-primary: #E8A9B3 !important; }
-:root[data-appearance='dark'][data-theme='orange'] { --color-action-primary: #E8B08D !important; }
-:root[data-appearance='dark'][data-theme='pink'] { --color-action-primary: #E6ACCB !important; }
-:root[data-appearance='dark'][data-theme='teal'] { --color-action-primary: #91CECA !important; }
-:root[data-appearance='dark'][data-theme='indigo'] { --color-action-primary: #B5BBEF !important; }
-:root[data-appearance='dark'][data-theme='amber'] { --color-action-primary: #DCC58A !important; }
-:root[data-appearance='dark'][data-theme='brown'] { --color-action-primary: #CFB6A2 !important; }
-:root[data-appearance='dark'][data-theme='monochrome'] { --color-action-primary: #BAC6C2 !important; }
+:root[data-appearance='dark'][data-theme='purple'] {
+  --color-canvas: #17141D !important;
+  --color-canvas-glow: #211B29 !important;
+  --color-solid: #26202F !important;
+  --color-glass: rgba(38, 32, 47, 0.88) !important;
+  --color-field: #1E1926 !important;
+  --color-border: #61556F !important;
+  --color-text: #F5F1F8 !important;
+  --color-text-muted: #C4B9CF !important;
+  --color-action-primary: #C5ADE9 !important;
+  --color-action-hover: #D6C2F0 !important;
+  --color-canvas-accent: #3A2C4C !important;
+  --color-surface-muted: #1E1926 !important;
+  --color-action-foreground: #1A1224 !important;
+}
 
-/* The authentication panel used fixed light colors. That produced a light
-   card with dark-mode text/fields when the effective appearance was dark. */
+:root[data-appearance='dark'][data-theme='blue'] {
+  --color-canvas: #111923 !important;
+  --color-canvas-glow: #172330 !important;
+  --color-solid: #1D2A36 !important;
+  --color-glass: rgba(29, 42, 54, 0.88) !important;
+  --color-field: #17222D !important;
+  --color-border: #52697B !important;
+  --color-text: #F0F5F9 !important;
+  --color-text-muted: #B5C5D1 !important;
+  --color-action-primary: #9CCAE9 !important;
+  --color-action-hover: #B7D9EF !important;
+  --color-canvas-accent: #274158 !important;
+  --color-surface-muted: #17222D !important;
+  --color-action-foreground: #101C26 !important;
+}
+
+:root[data-appearance='dark'][data-theme='red'] {
+  --color-canvas: #1D1416 !important;
+  --color-canvas-glow: #281A1E !important;
+  --color-solid: #302126 !important;
+  --color-glass: rgba(48, 33, 38, 0.88) !important;
+  --color-field: #261A1E !important;
+  --color-border: #74535A !important;
+  --color-text: #F8F1F2 !important;
+  --color-text-muted: #D0B8BD !important;
+  --color-action-primary: #E8A9B3 !important;
+  --color-action-hover: #F0C0C7 !important;
+  --color-canvas-accent: #4A2931 !important;
+  --color-surface-muted: #261A1E !important;
+  --color-action-foreground: #261216 !important;
+}
+
+:root[data-appearance='dark'][data-theme='orange'] {
+  --color-canvas: #1D1713 !important;
+  --color-canvas-glow: #281F1A !important;
+  --color-solid: #30251F !important;
+  --color-glass: rgba(48, 37, 31, 0.88) !important;
+  --color-field: #251D18 !important;
+  --color-border: #745D50 !important;
+  --color-text: #F8F3EF !important;
+  --color-text-muted: #D0BEB2 !important;
+  --color-action-primary: #E8B08D !important;
+  --color-action-hover: #F0C4A8 !important;
+  --color-canvas-accent: #4A3225 !important;
+  --color-surface-muted: #251D18 !important;
+  --color-action-foreground: #24170F !important;
+}
+
+:root[data-appearance='dark'][data-theme='pink'] {
+  --color-canvas: #1D141A !important;
+  --color-canvas-glow: #281A24 !important;
+  --color-solid: #30212B !important;
+  --color-glass: rgba(48, 33, 43, 0.88) !important;
+  --color-field: #261A22 !important;
+  --color-border: #735469 !important;
+  --color-text: #F8F1F6 !important;
+  --color-text-muted: #D0B8C8 !important;
+  --color-action-primary: #E6ACCB !important;
+  --color-action-hover: #EFC1D8 !important;
+  --color-canvas-accent: #482A3C !important;
+  --color-surface-muted: #261A22 !important;
+  --color-action-foreground: #24131D !important;
+}
+
+:root[data-appearance='dark'][data-theme='teal'] {
+  --color-canvas: #101A1A !important;
+  --color-canvas-glow: #162424 !important;
+  --color-solid: #1C2C2B !important;
+  --color-glass: rgba(28, 44, 43, 0.88) !important;
+  --color-field: #162322 !important;
+  --color-border: #4D6D6A !important;
+  --color-text: #EEF6F5 !important;
+  --color-text-muted: #B1C8C5 !important;
+  --color-action-primary: #91CECA !important;
+  --color-action-hover: #AFDDD9 !important;
+  --color-canvas-accent: #244542 !important;
+  --color-surface-muted: #162322 !important;
+  --color-action-foreground: #0E201F !important;
+}
+
+:root[data-appearance='dark'][data-theme='indigo'] {
+  --color-canvas: #141521 !important;
+  --color-canvas-glow: #1B1D2D !important;
+  --color-solid: #232638 !important;
+  --color-glass: rgba(35, 38, 56, 0.88) !important;
+  --color-field: #1B1E2E !important;
+  --color-border: #565D7C !important;
+  --color-text: #F2F3FA !important;
+  --color-text-muted: #BCC0D6 !important;
+  --color-action-primary: #B5BBEF !important;
+  --color-action-hover: #CBD0F5 !important;
+  --color-canvas-accent: #30365A !important;
+  --color-surface-muted: #1B1E2E !important;
+  --color-action-foreground: #15172B !important;
+}
+
+:root[data-appearance='dark'][data-theme='amber'] {
+  --color-canvas: #1B1810 !important;
+  --color-canvas-glow: #252116 !important;
+  --color-solid: #2D281B !important;
+  --color-glass: rgba(45, 40, 27, 0.88) !important;
+  --color-field: #231F15 !important;
+  --color-border: #6F6548 !important;
+  --color-text: #F7F5EC !important;
+  --color-text-muted: #CCC5AC !important;
+  --color-action-primary: #DCC58A !important;
+  --color-action-hover: #E7D6A9 !important;
+  --color-canvas-accent: #453A1F !important;
+  --color-surface-muted: #231F15 !important;
+  --color-action-foreground: #211A0C !important;
+}
+
+:root[data-appearance='dark'][data-theme='brown'] {
+  --color-canvas: #1A1613 !important;
+  --color-canvas-glow: #231D19 !important;
+  --color-solid: #2B2420 !important;
+  --color-glass: rgba(43, 36, 32, 0.88) !important;
+  --color-field: #221C19 !important;
+  --color-border: #6C5B50 !important;
+  --color-text: #F6F2EF !important;
+  --color-text-muted: #C9BBB1 !important;
+  --color-action-primary: #CFB6A2 !important;
+  --color-action-hover: #DEC9B9 !important;
+  --color-canvas-accent: #403127 !important;
+  --color-surface-muted: #221C19 !important;
+  --color-action-foreground: #20150F !important;
+}
+
+:root[data-appearance='dark'][data-theme='monochrome'] {
+  --color-canvas: #141716 !important;
+  --color-canvas-glow: #1B1F1E !important;
+  --color-solid: #242927 !important;
+  --color-glass: rgba(36, 41, 39, 0.88) !important;
+  --color-field: #1B201E !important;
+  --color-border: #5B6662 !important;
+  --color-text: #F1F4F3 !important;
+  --color-text-muted: #BAC3C0 !important;
+  --color-action-primary: #BAC6C2 !important;
+  --color-action-hover: #D0D8D5 !important;
+  --color-canvas-accent: #333B38 !important;
+  --color-surface-muted: #1B201E !important;
+  --color-action-foreground: #151B19 !important;
+}
+
+:root[data-appearance='dark'] {
+  --color-focus: var(--color-action-primary) !important;
+  --paper-surface: var(--color-solid) !important;
+  --color-surface: var(--color-solid) !important;
+  --surface-highlight: color-mix(in srgb, var(--color-text) 12%, transparent) !important;
+  --editorial-line: color-mix(in srgb, var(--color-text) 24%, var(--color-solid)) !important;
+  --ink-surface: color-mix(in srgb, var(--color-action-primary) 28%, var(--color-canvas)) !important;
+}
+
+/* Authentication surfaces must consume semantic tokens in both appearances. */
 .auth-page .auth-entry {
   color: var(--color-text);
   background: color-mix(in srgb, var(--color-solid) 94%, transparent);
@@ -48,18 +201,9 @@
   background: color-mix(in srgb, var(--color-canvas) 65%, transparent);
 }
 
-.auth-switch a:hover {
-  background: var(--color-accent-hover);
-}
-
-.auth-switch a[aria-current='page'] {
-  color: var(--color-text);
-  background: var(--color-solid);
-}
-
-.password-toggle {
-  color: var(--color-text-muted);
-}
+.auth-switch a:hover { background: var(--color-accent-hover); }
+.auth-switch a[aria-current='page'] { color: var(--color-text); background: var(--color-solid); }
+.password-toggle { color: var(--color-text-muted); }
 
 :root[data-appearance='dark'] .app-shell .panel,
 :root[data-appearance='dark'] .app-shell .settings-nav,
@@ -70,8 +214,13 @@
   color: var(--color-text);
 }
 
-:root[data-appearance='dark'] .app-shell .timer-state { background: #303D35; color: var(--color-text); }
-:root[data-appearance='dark'] .app-shell .timer-state.is-running { background: #294636; }
+:root[data-appearance='dark'] .app-shell .timer-state {
+  background: color-mix(in srgb, var(--color-action-primary) 12%, var(--color-solid));
+  color: var(--color-text);
+}
+:root[data-appearance='dark'] .app-shell .timer-state.is-running {
+  background: color-mix(in srgb, var(--color-action-primary) 22%, var(--color-solid));
+}
 :root[data-appearance='dark'] .app-shell .day-overview,
 :root[data-appearance='dark'] .app-shell .shopping-overview { color: var(--color-text); }
 :root[data-appearance='dark'] .app-shell .day-overview :is(.eyebrow, p),
