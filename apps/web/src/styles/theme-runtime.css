@@ -14,6 +14,12 @@
   --color-canvas-accent: color-mix(in srgb, var(--color-action-primary) 18%, #171C1A) !important;
   --color-action-hover: color-mix(in srgb, var(--color-action-primary) 82%, var(--color-text)) !important;
   --color-focus: var(--color-action-primary) !important;
+  --color-action-foreground: #17231C !important;
+  --paper-surface: #242C28 !important;
+  --color-surface: #242C28 !important;
+  --color-surface-muted: #1C2420 !important;
+  --surface-highlight: color-mix(in srgb, var(--color-text) 12%, transparent) !important;
+  --editorial-line: color-mix(in srgb, var(--color-text) 24%, var(--color-solid)) !important;
 }
 
 :root[data-appearance='dark'][data-theme='green'] { --color-action-primary: #98C9AA !important; }
@@ -54,3 +60,49 @@
 .password-toggle {
   color: var(--color-text-muted);
 }
+
+:root[data-appearance='dark'] .app-shell .panel,
+:root[data-appearance='dark'] .app-shell .settings-nav,
+:root[data-appearance='dark'] .app-shell .loading-preview,
+:root[data-appearance='dark'] .app-shell .timer-panel,
+:root[data-appearance='dark'] .app-shell :is(input:not([type=checkbox]):not([type=radio]):not([type=color]), select, textarea) {
+  background: var(--paper-surface);
+  color: var(--color-text);
+}
+
+:root[data-appearance='dark'] .app-shell .timer-state { background: #303D35; color: var(--color-text); }
+:root[data-appearance='dark'] .app-shell .timer-state.is-running { background: #294636; }
+:root[data-appearance='dark'] .app-shell .day-overview,
+:root[data-appearance='dark'] .app-shell .shopping-overview { color: var(--color-text); }
+:root[data-appearance='dark'] .app-shell .day-overview :is(.eyebrow, p),
+:root[data-appearance='dark'] .app-shell .shopping-overview :is(strong, small) { color: var(--color-text); }
+
+:root[data-appearance='dark'] .auth-page .auth-entry { background: color-mix(in srgb, var(--color-solid) 94%, transparent); }
+:root[data-appearance='dark'] .auth-page .auth-switch a:hover { background: color-mix(in srgb, var(--color-action-primary) 18%, transparent); }
+:root[data-appearance='dark'] .auth-page .auth-switch a[aria-current='page'] { background: var(--color-solid); color: var(--color-text); }
+:root[data-appearance='dark'] .auth-page .google-button { background: var(--color-solid); color: var(--color-text); border-color: var(--color-border); }
+:root[data-appearance='dark'] .auth-page .auth-alert,
+:root[data-appearance='dark'] .auth-page .auth-feedback.error { background: #4B2B2B; color: #F0ADA7; border-color: #B97870; }
+:root[data-appearance='dark'] .auth-page .auth-feedback.success { background: #243D2E; color: #A3D6B5; border-color: #6FAE83; }
+:root[data-appearance='dark'] .auth-page .entry .notice { background: #423D25; color: #F4EBC8; }
+
+:root[data-appearance='dark'] .app-shell .note,
+:root[data-appearance='dark'] .app-shell .note.butter,
+:root[data-appearance='dark'] .app-shell .note.studies,
+:root[data-appearance='dark'] .app-shell .note.personal,
+:root[data-appearance='dark'] .app-shell .note.health,
+:root[data-appearance='dark'] .app-shell .note.home {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-solid) 76%, var(--color-butter));
+}
+:root[data-appearance='dark'] .app-shell .note :is(h2, p, a, small, strong) { color: inherit; }
+:root[data-appearance='dark'] .app-shell .note .note-kicker { color: var(--color-text-muted); }
+:root[data-appearance='dark'] .skip-link { background: var(--color-solid); color: var(--color-text); }
+:root[data-appearance='dark'] .review-period { background: var(--color-solid); color: var(--color-text-muted); }
+:root[data-appearance='dark'] .completion-ring::before { background: var(--color-solid); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-text) 14%, transparent); }
+:root[data-appearance='dark'] :is(.metric-icon, .shopping-list-icon, .empty-icon) {
+  border-color: color-mix(in srgb, var(--color-action-primary) 42%, var(--color-border));
+  background: color-mix(in srgb, var(--color-action-primary) 18%, var(--color-solid));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+:root[data-appearance='dark'] .quick-add { background: var(--color-solid); color: var(--color-action-primary); }

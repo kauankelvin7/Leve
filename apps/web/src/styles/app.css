@@ -258,7 +258,7 @@ button:active:not(:disabled), .button:active {
 
 button.primary, .button.primary {
   background: var(--color-action-primary);
-  color: white;
+  color: var(--color-action-foreground, white);
   border-color: var(--color-action-primary);
   box-shadow: var(--shadow-primary);
 }

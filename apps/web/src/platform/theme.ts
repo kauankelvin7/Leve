@@ -16,7 +16,10 @@ export function storedColorTheme(): ColorTheme {
 export function applyColorTheme(colorTheme: ColorTheme, persist = true) {
   const colors = colorThemes[colorTheme];
   document.documentElement.dataset.theme = colorTheme;
-  document.documentElement.style.backgroundColor = colors.canvas;
+  const appearance = storedAppearance();
+  document.documentElement.style.backgroundColor = appearance === 'dark'
+    ? '#171C1A'
+    : colors.canvas;
 
   let themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   if (!themeColor) {
@@ -46,11 +49,13 @@ export function applyAppearance(appearance: Appearance, persist = true) {
   document.documentElement.dataset.appearance = effective;
   document.documentElement.dataset.appearancePreference = appearance;
   document.documentElement.style.colorScheme = effective;
-  document.documentElement.style.setProperty('--color-canvas', effective === 'dark' ? '#171C1A' : colorThemes[storedColorTheme()].canvas);
+  const canvas = effective === 'dark' ? '#171C1A' : colorThemes[storedColorTheme()].canvas;
+  document.documentElement.style.setProperty('--color-canvas', canvas);
   document.documentElement.style.setProperty('--color-solid', effective === 'dark' ? '#242C28' : '#FFFDFA');
   document.documentElement.style.setProperty('--color-text', effective === 'dark' ? '#EDF1EE' : '#202C27');
   document.documentElement.style.setProperty('--color-text-muted', effective === 'dark' ? '#BAC6BE' : '#4D6056');
   document.documentElement.style.setProperty('--color-field', effective === 'dark' ? '#1C2420' : '#F7F8F5');
+  document.documentElement.style.backgroundColor = canvas;
   const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas').trim();
   if (persist) try { localStorage.setItem(APPEARANCE_KEY, appearance); } catch { /* preferência opcional */ }
