@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Activity, Category } from '../../packages/domain/src/content';
 import {
   activityOccursOn,
+  calendarViewBounds,
   defaultCalendarView,
   isCalendarView,
   normalizeCalendarPageSize,
@@ -61,6 +62,14 @@ describe('calendar model', () => {
     expect(isCalendarView('day')).toBe(true);
     expect(isCalendarView('agenda')).toBe(false);
     expect(isCalendarView(null)).toBe(false);
+  });
+
+  it('calculates bounded ranges for month week and day without depending on device timezone', () => {
+    expect(calendarViewBounds('month', '2026-09-16', 1)).toEqual({ startDate: '2026-09-01', endDate: '2026-09-30' });
+    expect(calendarViewBounds('day', '2026-09-16', 1)).toEqual({ startDate: '2026-09-16', endDate: '2026-09-16' });
+    expect(calendarViewBounds('week', '2026-09-16', 1)).toEqual({ startDate: '2026-09-14', endDate: '2026-09-20' });
+    expect(calendarViewBounds('week', '2026-09-16', 0)).toEqual({ startDate: '2026-09-13', endDate: '2026-09-19' });
+    expect(calendarViewBounds('month', '2028-02-29', 1)).toEqual({ startDate: '2028-02-01', endDate: '2028-02-29' });
   });
 
   it('clamps calendar query sizes to the Firestore security-rule limit', () => {
