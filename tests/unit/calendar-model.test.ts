@@ -4,6 +4,7 @@ import {
   activityOccursOn,
   defaultCalendarView,
   isCalendarView,
+  normalizeCalendarPageSize,
   resolveActivityColor,
   toCalendarEventViewModel,
   type StoredActivity,
@@ -60,6 +61,14 @@ describe('calendar model', () => {
     expect(isCalendarView('day')).toBe(true);
     expect(isCalendarView('agenda')).toBe(false);
     expect(isCalendarView(null)).toBe(false);
+  });
+
+  it('clamps calendar query sizes to the Firestore security-rule limit', () => {
+    expect(normalizeCalendarPageSize(0)).toBe(1);
+    expect(normalizeCalendarPageSize(25.9)).toBe(25);
+    expect(normalizeCalendarPageSize(50)).toBe(50);
+    expect(normalizeCalendarPageSize(500)).toBe(50);
+    expect(normalizeCalendarPageSize(Number.NaN)).toBe(50);
   });
 
   it('places tasks only on their due date', () => {
