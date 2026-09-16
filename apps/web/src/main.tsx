@@ -20,6 +20,7 @@ import './styles/theme-runtime.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
 import { applyColorTheme, applyAppearance, storedColorTheme, storedAppearance } from './platform/theme';
+import { installNotePresetStyles } from './platform/notePresets';
 
 for (const [group, values] of Object.entries(tokens)) {
   for (const [name, value] of Object.entries(values)) {
@@ -29,6 +30,7 @@ for (const [group, values] of Object.entries(tokens)) {
 
 applyColorTheme(storedColorTheme(), false);
 applyAppearance(storedAppearance(), false);
+installNotePresetStyles();
 
 window.addEventListener('beforeinstallprompt', captureInstallPrompt);
 
