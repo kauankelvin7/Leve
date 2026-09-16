@@ -31,9 +31,16 @@ export function applyColorTheme(colorTheme: ColorTheme, persist = true) {
     catch { /* A preferência continua salva no perfil. */ }
   }
 }
+
 export function storedAppearance(): Appearance {
-  try { const value = localStorage.getItem(APPEARANCE_KEY); return value === 'light' || value === 'dark' || value === 'system' ? value : 'system'; } catch { return 'system'; }
+  try {
+    const value = localStorage.getItem(APPEARANCE_KEY);
+    return value === 'light' || value === 'dark' || value === 'system' ? value : 'light';
+  } catch {
+    return 'light';
+  }
 }
+
 export function applyAppearance(appearance: Appearance, persist = true) {
   const effective = appearance === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : appearance;
   document.documentElement.dataset.appearance = effective;
@@ -44,15 +51,23 @@ export function applyAppearance(appearance: Appearance, persist = true) {
   document.documentElement.style.setProperty('--color-text', effective === 'dark' ? '#EDF1EE' : '#202C27');
   document.documentElement.style.setProperty('--color-text-muted', effective === 'dark' ? '#BAC6BE' : '#4D6056');
   document.documentElement.style.setProperty('--color-field', effective === 'dark' ? '#1C2420' : '#F7F8F5');
-  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]'); if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas').trim();
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas').trim();
   if (persist) try { localStorage.setItem(APPEARANCE_KEY, appearance); } catch { /* preferência opcional */ }
   watchSystemAppearance();
 }
+
 let systemListenerAttached = false;
 function watchSystemAppearance() {
-  if (systemListenerAttached) return; systemListenerAttached = true;
+  if (systemListenerAttached) return;
+  systemListenerAttached = true;
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const update = () => { if (storedAppearance() === 'system') applyAppearance('system', false); };
   media.addEventListener('change', update);
-  window.addEventListener('storage', event => { if (event.key === APPEARANCE_KEY || event.key === STORAGE_KEY) { applyColorTheme(storedColorTheme(), false); applyAppearance(storedAppearance(), false); } });
+  window.addEventListener('storage', event => {
+    if (event.key === APPEARANCE_KEY || event.key === STORAGE_KEY) {
+      applyColorTheme(storedColorTheme(), false);
+      applyAppearance(storedAppearance(), false);
+    }
+  });
 }
