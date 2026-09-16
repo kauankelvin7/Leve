@@ -1,8 +1,11 @@
+import { Temporal } from '@js-temporal/polyfill';
 import type { Activity, Category } from '../../../../../../packages/domain/src/content';
 
 export type StoredActivity = Activity & { id: string };
 
 export type CalendarView = 'month' | 'week' | 'day';
+
+export type CalendarRange = { startDate: string; endDate: string };
 
 export const CALENDAR_VIEW_STORAGE_KEY = 'leve.calendar.view';
 
@@ -12,6 +15,18 @@ export function isCalendarView(value: string | null): value is CalendarView {
 
 export function defaultCalendarView(viewportWidth: number): CalendarView {
   return viewportWidth < 768 ? 'day' : 'week';
+}
+
+export function calendarViewBounds(view: CalendarView, selectedDate: string, weekStartsOn: 0 | 1): CalendarRange {
+  const selected = Temporal.PlainDate.from(selectedDate);
+  if (view === 'day') return { startDate: selected.toString(), endDate: selected.toString() };
+  if (view === 'week') {
+    const offset = (selected.dayOfWeek % 7 - weekStartsOn + 7) % 7;
+    const start = selected.subtract({ days: offset });
+    return { startDate: start.toString(), endDate: start.add({ days: 6 }).toString() };
+  }
+  const start = selected.with({ day: 1 });
+  return { startDate: start.toString(), endDate: start.add({ months: 1 }).subtract({ days: 1 }).toString() };
 }
 
 export function normalizeCalendarPageSize(value: number): number {
