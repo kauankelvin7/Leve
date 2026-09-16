@@ -14,6 +14,11 @@ export function defaultCalendarView(viewportWidth: number): CalendarView {
   return viewportWidth < 768 ? 'day' : 'week';
 }
 
+export function normalizeCalendarPageSize(value: number): number {
+  if (!Number.isFinite(value)) return 50;
+  return Math.min(50, Math.max(1, Math.trunc(value)));
+}
+
 export function activityOccursOn(item: StoredActivity, date: string): boolean {
   const schedule = item.schedule;
   if (schedule.type === 'task') return schedule.dueDate === date;
