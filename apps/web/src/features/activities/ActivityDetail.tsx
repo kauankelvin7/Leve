@@ -5,6 +5,7 @@ import { ApiError, sendCommand } from '../../platform/api';
 import { useActiveTimeEntry, useActivityTimeEntries, useUserCollection, useUserDocument } from '../content/useUserCollection';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
+import { BackButton } from '../../components/ui/BackButton';
 
 const duration = (seconds: number) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)}h ` : ''}${Math.floor(seconds % 3600 / 60)}min`;
 const stopwatch = (seconds: number) => [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
@@ -115,11 +116,11 @@ export function ActivityDetail() {
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível registrar o tempo.'); }
   }
   if (loading) return <LoadingState variant="detail" label="Abrindo a atividade…" />;
-  if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><Link to="/hoje">Voltar ao Meu dia</Link></main>;
+  if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><BackButton to="/hoje" /></main>;
   const category = categories.find(item => item.id === activity.categoryId);
   const total = visibleEntries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
   const runningSeconds = active ? accrued(active) : 0;
-  return <main><header className="page-heading activity-detail-heading"><Link className="back-link" to="/hoje" aria-label="Voltar ao Meu dia"><Icon name="chevronLeft" /> Meu dia</Link><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
+  return <main><header className="page-heading activity-detail-heading"><BackButton to="/hoje">Meu dia</BackButton><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
     <section className="panel content-form"><h2>Detalhes</h2><p>{activity.descriptionPlain || 'Sem descrição.'}</p><p>{activity.schedule.type === 'task' ? activity.schedule.dueDate ?? 'Sem prazo' : activity.schedule.startDate}</p>{activity.estimatedMinutes ? <p>Estimativa: {activity.estimatedMinutes} minutos.</p> : null}<div className="dialog-actions">{activity.kind === 'task' ? <button className="primary" onClick={() => void status(activity.status === 'completed' ? 'pending' : 'completed')}>{activity.status === 'completed' ? 'Reabrir' : 'Concluir'}</button> : <button onClick={() => void status(activity.status === 'canceled' ? 'pending' : 'canceled')}>{activity.status === 'canceled' ? 'Reativar' : 'Cancelar compromisso'}</button>}<Link className="button" to="/hoje">Abrir no Meu dia</Link></div></section>
     <section className={`panel content-form timer-panel ${active ? 'has-running-timer' : ''}`}>
       <div className="timer-heading"><div className="timer-heading-copy"><p className="eyebrow">Tempo da atividade</p><h2 className="timer-display" aria-label={`${stopwatch(runningSeconds)} no cronômetro`}>{stopwatch(runningSeconds)}</h2><p className="timer-total">Total registrado <strong>{duration(total)}</strong></p></div><span className={`timer-state ${active && !active.paused ? 'is-running' : ''}`}>{active ? (active.paused ? 'Pausado' : 'Em andamento') : 'Pronto para iniciar'}</span></div>
