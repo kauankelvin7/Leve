@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { colorThemeIds, appearances } from './themes';
+import { colorThemeIds, appearances } from './themes.ts';
 
 const archiveEntitySchema = z.object({ id: z.string().min(1).max(128) }).passthrough();
 
