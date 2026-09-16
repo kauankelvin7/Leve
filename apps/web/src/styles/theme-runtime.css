@@ -1,0 +1,56 @@
+/* Runtime appearance bridge.
+   Loaded after the legacy style layers so appearance always wins over
+   theme-specific light tokens and auth surfaces stay semantically themed. */
+
+:root[data-appearance='dark'] {
+  --color-canvas: #171C1A !important;
+  --color-solid: #242C28 !important;
+  --color-glass: rgba(36, 44, 40, 0.88) !important;
+  --color-field: #1C2420 !important;
+  --color-border: #788B7F !important;
+  --color-text: #EDF1EE !important;
+  --color-text-muted: #BAC6BE !important;
+  --color-canvas-glow: #242C28 !important;
+  --color-canvas-accent: color-mix(in srgb, var(--color-action-primary) 18%, #171C1A) !important;
+  --color-action-hover: color-mix(in srgb, var(--color-action-primary) 82%, var(--color-text)) !important;
+  --color-focus: var(--color-action-primary) !important;
+}
+
+:root[data-appearance='dark'][data-theme='green'] { --color-action-primary: #98C9AA !important; }
+:root[data-appearance='dark'][data-theme='purple'] { --color-action-primary: #C5ADE9 !important; }
+:root[data-appearance='dark'][data-theme='blue'] { --color-action-primary: #9CCAE9 !important; }
+:root[data-appearance='dark'][data-theme='red'] { --color-action-primary: #E8A9B3 !important; }
+:root[data-appearance='dark'][data-theme='orange'] { --color-action-primary: #E8B08D !important; }
+:root[data-appearance='dark'][data-theme='pink'] { --color-action-primary: #E6ACCB !important; }
+:root[data-appearance='dark'][data-theme='teal'] { --color-action-primary: #91CECA !important; }
+:root[data-appearance='dark'][data-theme='indigo'] { --color-action-primary: #B5BBEF !important; }
+:root[data-appearance='dark'][data-theme='amber'] { --color-action-primary: #DCC58A !important; }
+:root[data-appearance='dark'][data-theme='brown'] { --color-action-primary: #CFB6A2 !important; }
+:root[data-appearance='dark'][data-theme='monochrome'] { --color-action-primary: #BAC6C2 !important; }
+
+/* The authentication panel used fixed light colors. That produced a light
+   card with dark-mode text/fields when the effective appearance was dark. */
+.auth-page .auth-entry {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-solid) 94%, transparent);
+  box-shadow:
+    var(--shadow-xl),
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
+.auth-switch {
+  background: color-mix(in srgb, var(--color-canvas) 65%, transparent);
+}
+
+.auth-switch a:hover {
+  background: var(--color-accent-hover);
+}
+
+.auth-switch a[aria-current='page'] {
+  color: var(--color-text);
+  background: var(--color-solid);
+}
+
+.password-toggle {
+  color: var(--color-text-muted);
+}
