@@ -2,8 +2,8 @@
 
 **Atualizado em:** 17/09/2026  
 **Branch atual:** `main`  
-**HEAD funcional sazonal/calendário:** `c34c38a3c7c5a4e554bb6bea61870607ee3ee05c`  
-**Estado:** experiência sazonal e marcadores de datas especiais integrados e validados; Fase 7 ainda não iniciada
+**HEAD funcional sazonal/calendário:** `f7894a5da7845bb03e658b7fb4ffd45289e17963`  
+**Estado:** experiência sazonal, marcadores de datas especiais e refinamento visual em aparelho real integrados e validados; Fase 7 ainda não iniciada
 
 > Este arquivo registra somente o ponto atual necessário para retomar. O histórico anterior continua preservado no Git, nos ADRs e em `docs/EXECUCAO.md`.
 
@@ -23,7 +23,14 @@ c34c38a3c7c5a4e554bb6bea61870607ee3ee05c
 feat(calendar): mark seasonal anchor dates
 ```
 
-O pós-merge do PR #3 foi confirmado na própria `main`:
+Após revisão visual em aparelho real, os marcadores foram refinados pelo PR #4:
+
+```text
+f7894a5da7845bb03e658b7fb4ffd45289e17963
+refine(calendar): simplify seasonal date markers
+```
+
+O pós-merge do PR #4 foi confirmado na própria `main`:
 
 ```text
 CI / verify          PASS
@@ -60,16 +67,20 @@ Datas âncora V1:
 - 25/12 — Natal — estrela editorial;
 - 31/12 — Ano-Novo — spark geométrico.
 
-Comportamento integrado:
+Tratamento visual final, definido após a captura em aparelho real:
 
-- os marcadores são pequenos, estáticos e usam os SVGs sazonais existentes;
-- aparecem ao navegar até a data âncora mesmo quando a data atual está em outro período;
-- visão Mês mostra o símbolo somente na célula pertencente ao mês exibido;
-- Semana e Dia mostram o símbolo no cabeçalho da data;
+- o marcador é **somente o SVG**, sem fundo, borda, sombra, cápsula ou aparência de botão;
+- fica no canto superior direito com respiro em relação ao número;
+- usa aproximadamente 12–16 px, com ajuste óptico por glifo e viewport;
+- a cor deriva dos tokens do tema, combinando acento e texto;
+- o número da data especial recebe apenas um realce sutil de cor/peso;
+- `hoje`, seleção, foco e atividades continuam visualmente dominantes;
+- os marcadores são estáticos e mantêm `pointer-events: none`;
 - compromissos, tarefas e suas cores não são alterados;
-- o marcador usa tokens do tema atual e `pointer-events: none`;
-- o SVG é decorativo (`aria-hidden`), mas o nome do evento faz parte do nome acessível do botão da data;
+- o SVG continua decorativo (`aria-hidden`), enquanto o nome do evento permanece no nome acessível do botão da data;
 - o opt-out sazonal remove também os marcadores.
+
+O refinamento não alterou resolver de datas, domínio, persistência, componentes de atividade nem os SVGs sazonais existentes.
 
 Arquivos centrais:
 
@@ -84,43 +95,31 @@ apps/web/src/features/activities/calendar/CalendarTimeGrid.tsx
 docs/SEASONAL-ART-DIRECTION.md
 ```
 
-## Validação da extensão
+## Validação do refinamento
 
-A branch passou antes do merge por:
+O PR #4 alterou somente:
 
 ```text
-Production dependency audit       PASS
-lint                              PASS
-typecheck                         PASS
-unitários                         PASS
-build                             PASS
-Auth/Firestore Emulator           PASS
+.github/workflows/planner-e2e.yml
+apps/web/src/components/seasonal/seasonal-experience.css
+tests/e2e-local/seasonal-experience.spec.ts
 ```
 
-No PR #3, o primeiro Seasonal E2E revelou uma falha séria de acessibilidade já existente no link lateral do perfil. O teste não foi enfraquecido: `apps/web/src/app/App.tsx` recebeu `aria-label="Perfil e preferências"` no link correspondente e o gate foi repetido.
+Na auditoria final, a branch estava 3 commits à frente e 0 atrás da `main`.
 
-O HEAD final do PR passou:
+Antes do merge, o HEAD exato `a45b5c5386fd1c205da63fb2249c7b3ffbcdc722` passou:
 
 ```text
-CI                                PASS
+CI completo                       PASS
 Seasonal E2E                      PASS
 Planner E2E                       PASS
 ```
 
-Depois do squash merge, os três gates foram repetidos em `c34c38a3c7c5a4e554bb6bea61870607ee3ee05c` e passaram novamente.
+Depois do squash merge, os três gates foram repetidos em `f7894a5da7845bb03e658b7fb4ffd45289e17963` e passaram novamente.
 
-O Seasonal E2E agora comprova, entre outros pontos:
+O Seasonal E2E passou a proteger explicitamente o tratamento editorial do marcador: fundo transparente, borda zero, sombra ausente, `pointer-events: none` e orçamento de tamanho pequeno, além das verificações anteriores de datas, opt-out, acessibilidade e reflow.
 
-- Natal especificamente em 25/12 na visão Mês;
-- nome acessível da data incluindo `Natal`;
-- marcador preservado na visão Dia;
-- opt-out removendo os marcadores;
-- light/dark/system;
-- reduced motion;
-- Axe sem regressão crítica;
-- ausência de overflow nas larguras oficiais.
-
-O Planner E2E pós-merge também passou, confirmando ausência de regressão detectada no calendário interativo.
+O workflow do Planner agora observa também os poucos arquivos sazonais que podem alterar diretamente a composição do Calendário, evitando que futuros refinamentos visuais escapem do gate de regressão do Planner.
 
 ## Segurança e limites preservados
 
