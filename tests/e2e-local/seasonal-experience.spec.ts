@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const CHRISTMAS_NOW = Date.parse('2026-12-24T15:00:00.000Z');
+const CHRISTMAS_SEEN_KEY = 'leve.seasonal.seen.christmas.christmas-2026';
 const VIEWPORTS = [
   { width: 1440, height: 900 },
   { width: 1366, height: 768 },
@@ -49,6 +50,18 @@ async function chooseAppearance(page: Page, label: 'Claro' | 'Escuro' | 'Sistema
   await expect(page.getByText('Aparência salva.', { exact: true })).toBeVisible();
 }
 
+async function setSeasonalPreference(page: Page, enabled: boolean) {
+  await page.goto('/configuracoes');
+  const toggle = page.getByLabel('Detalhes sazonais', { exact: true });
+  await expect(toggle).toBeVisible();
+  if ((await toggle.isChecked()) === enabled) return;
+  await toggle.focus();
+  await page.keyboard.press('Space');
+  if (enabled) await expect(toggle).toBeChecked();
+  else await expect(toggle).not.toBeChecked();
+  await expect(page.getByText('Aparência salva.', { exact: true })).toBeVisible();
+}
+
 test('Natal aparece de forma decorativa, sem bloquear a entrada', async ({ page }) => {
   await freezeAtChristmas(page);
   await page.goto('/entrar');
@@ -66,10 +79,12 @@ test('Natal aparece de forma decorativa, sem bloquear a entrada', async ({ page 
 
 test('intro aparece uma vez por período neste aparelho', async ({ page }) => {
   await freezeAtChristmas(page);
-  await page.goto('/entrar');
+  await page.addInitScript(key => localStorage.removeItem(key), CHRISTMAS_SEEN_KEY);
+  await page.goto('/entrar', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('.seasonal-intro')).toBeVisible();
   await expect(page.locator('.seasonal-layer')).toHaveAttribute('data-seasonal-period', 'christmas-2026');
+  await expect.poll(() => page.evaluate(key => localStorage.getItem(key), CHRISTMAS_SEEN_KEY)).toBe('1');
   await page.reload();
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
   await expect(page.locator('.seasonal-intro')).toHaveCount(0);
@@ -87,26 +102,28 @@ test('movimento reduzido mantém apenas ambientação estática', async ({ page 
 test('preferência desligada remove toda a experiência e persiste no perfil', async ({ page }) => {
   await freezeAtChristmas(page);
   await login(page);
+  await setSeasonalPreference(page, true);
+  await page.goto('/hoje');
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
 
-  await page.goto('/configuracoes');
-  const toggle = page.getByLabel('Detalhes sazonais', { exact: true });
-  await expect(toggle).toBeChecked();
-  await toggle.uncheck();
-  await expect(page.locator('.seasonal-layer')).toHaveCount(0);
+  try {
+    await setSeasonalPreference(page, false);
+    await expect(page.locator('.seasonal-layer')).toHaveCount(0);
 
-  await page.reload();
-  await expect(page.getByLabel('Detalhes sazonais', { exact: true })).not.toBeChecked();
-  await expect(page.locator('.seasonal-layer')).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByLabel('Detalhes sazonais', { exact: true })).not.toBeChecked();
+    await expect(page.locator('.seasonal-layer')).toHaveCount(0);
+  } finally {
+    await setSeasonalPreference(page, true);
+  }
 
-  await page.getByLabel('Detalhes sazonais', { exact: true }).check();
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
 });
 
 test('experiência sazonal acompanha Claro, Escuro e Sistema', async ({ page }) => {
   await freezeAtChristmas(page);
   await login(page);
-  await page.goto('/configuracoes');
+  await setSeasonalPreference(page, true);
 
   await chooseAppearance(page, 'Escuro');
   await expect(page.locator('html')).toHaveAttribute('data-appearance', 'dark');
@@ -129,6 +146,7 @@ test('experiência sazonal acompanha Claro, Escuro e Sistema', async ({ page }) 
 test('Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais', async ({ page }) => {
   await freezeAtChristmas(page);
   await login(page);
+  await setSeasonalPreference(page, true);
 
   for (const viewport of VIEWPORTS) {
     await page.setViewportSize(viewport);
