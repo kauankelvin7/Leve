@@ -84,6 +84,8 @@ export function CalendarTimeGrid({
   const [nowMinute, setNowMinute] = useState(() => currentMinute(timeZone));
   const [selection, setSelection] = useState<IntervalSelection | null>(null);
   const [eventGesture, setEventGesture] = useState<EventGesture | null>(null);
+  const selectionRef = useRef<IntervalSelection | null>(null);
+  const eventGestureRef = useRef<EventGesture | null>(null);
   const columnsRef = useRef<HTMLDivElement>(null);
   const buckets = useMemo(() => new Map(dates.map(date => [date, calendarDayBuckets(events, date)])), [dates, events]);
   const hasAllDay = dates.some(date => (buckets.get(date)?.allDay.length ?? 0) > 0);
@@ -97,34 +99,45 @@ export function CalendarTimeGrid({
 
   const boardStyle = { '--calendar-day-count': dates.length } as React.CSSProperties;
 
+  function updateSelection(next: IntervalSelection | null) {
+    selectionRef.current = next;
+    setSelection(next);
+  }
+
+  function updateEventGesture(next: EventGesture | null) {
+    eventGestureRef.current = next;
+    setEventGesture(next);
+  }
+
   function beginSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
-    if (!onCreateInterval || mutationDisabled || eventGesture || event.button !== 0 || event.pointerType === 'touch') return;
+    if (!onCreateInterval || mutationDisabled || eventGestureRef.current || event.button !== 0 || event.pointerType === 'touch') return;
     if (event.target instanceof Element && event.target.closest('.calendar-time-event')) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     const minute = minuteFromPointer(event);
-    setSelection({ date, pointerId: event.pointerId, anchorMinute: minute, currentMinute: minute });
+    updateSelection({ date, pointerId: event.pointerId, anchorMinute: minute, currentMinute: minute });
   }
 
   function moveSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
-    setSelection(current => {
-      if (!current || current.pointerId !== event.pointerId || current.date !== date) return current;
-      return { ...current, currentMinute: minuteFromPointer(event) };
-    });
+    const current = selectionRef.current;
+    if (!current || current.pointerId !== event.pointerId || current.date !== date) return;
+    updateSelection({ ...current, currentMinute: minuteFromPointer(event) });
   }
 
   function finishSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
-    if (!selection || selection.pointerId !== event.pointerId || selection.date !== date) return;
-    const finalSelection = { ...selection, currentMinute: minuteFromPointer(event) };
+    const current = selectionRef.current;
+    if (!current || current.pointerId !== event.pointerId || current.date !== date) return;
+    const finalSelection = { ...current, currentMinute: minuteFromPointer(event) };
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    setSelection(null);
+    updateSelection(null);
     onCreateInterval?.(date, finalSelection.anchorMinute, finalSelection.currentMinute);
   }
 
   function cancelSelection(event: React.PointerEvent<HTMLDivElement>) {
-    if (!selection || selection.pointerId !== event.pointerId) return;
+    const current = selectionRef.current;
+    if (!current || current.pointerId !== event.pointerId) return;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    setSelection(null);
+    updateSelection(null);
   }
 
   function eventPoint(clientX: number, clientY: number): { date: string; minute: number } | null {
@@ -155,26 +168,26 @@ export function CalendarTimeGrid({
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.setPointerCapture(event.pointerId);
-    setSelection(null);
-    setEventGesture({ kind, eventId, pointerId: event.pointerId, targetDate: point.date, targetMinute: point.minute });
+    updateSelection(null);
+    updateEventGesture({ kind, eventId, pointerId: event.pointerId, targetDate: point.date, targetMinute: point.minute });
   }
 
   function moveEventGesture(event: React.PointerEvent<HTMLSpanElement>) {
-    setEventGesture(current => {
-      if (!current || current.pointerId !== event.pointerId) return current;
-      const point = eventPoint(event.clientX, event.clientY);
-      return point ? { ...current, targetDate: point.date, targetMinute: point.minute } : current;
-    });
+    const current = eventGestureRef.current;
+    if (!current || current.pointerId !== event.pointerId) return;
+    const point = eventPoint(event.clientX, event.clientY);
+    if (point) updateEventGesture({ ...current, targetDate: point.date, targetMinute: point.minute });
   }
 
   function finishEventGesture(event: React.PointerEvent<HTMLSpanElement>) {
-    if (!eventGesture || eventGesture.pointerId !== event.pointerId) return;
+    const current = eventGestureRef.current;
+    if (!current || current.pointerId !== event.pointerId) return;
     const point = eventPoint(event.clientX, event.clientY);
     const finalGesture = point
-      ? { ...eventGesture, targetDate: point.date, targetMinute: point.minute }
-      : eventGesture;
+      ? { ...current, targetDate: point.date, targetMinute: point.minute }
+      : current;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    setEventGesture(null);
+    updateEventGesture(null);
     event.preventDefault();
     event.stopPropagation();
 
@@ -186,9 +199,10 @@ export function CalendarTimeGrid({
   }
 
   function cancelEventGesture(event: React.PointerEvent<HTMLSpanElement>) {
-    if (!eventGesture || eventGesture.pointerId !== event.pointerId) return;
+    const current = eventGestureRef.current;
+    if (!current || current.pointerId !== event.pointerId) return;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    setEventGesture(null);
+    updateEventGesture(null);
     event.stopPropagation();
   }
 
