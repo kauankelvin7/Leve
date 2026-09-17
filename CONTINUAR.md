@@ -1,16 +1,17 @@
 # Leve — ponto exato de retomada
 
 **Atualizado em:** 17/09/2026  
-**Branch de integração:** `feat/calendar-planner-safe`  
-**PR:** `#1` — `feat(calendar): complete safe month week day planner`
+**Estado:** Calendário Mês/Semana/Dia integrado e validado na `main`  
+**PR concluído:** `#1` — `feat(calendar): complete safe month week day planner`  
+**Merge:** `e1ffd083f09717c7dcd26fafccecda6660e13249`
 
 > Este arquivo registra somente o estado atual necessário para retomar o trabalho. O histórico detalhado anterior continua preservado no Git, em `docs/EXECUCAO.md`, nos ADRs e nos demais documentos versionados.
 
 ## Etapa atual
 
-Fechamento e integração do Calendário Mês/Semana/Dia.
+A integração do Calendário avançado foi concluída. O PR foi revisado, validado, squash-merged na `main` e os gates da própria `main` passaram novamente após o merge.
 
-A implementação funcional do Planner foi concluída e validada na branch isolada. Antes do merge foram executadas revisão do diff, atualização da ADR do renderer, consolidação deste handoff e transformação do E2E temporário em gate focal permanente.
+Não há pendência conhecida de implementação ou teste automatizado bloqueando esta entrega.
 
 ## Último item concluído
 
@@ -51,11 +52,11 @@ tests/e2e-local/calendar-planner-visual.spec.ts
 docs/adr/002-calendar-renderer.md
 ```
 
-A branch também contém pequenos ajustes de acessibilidade no shell e correção do tutorial para respeitar `tutorialCompletedAt` e não reaparecer indevidamente.
+A entrega também inclui pequenos ajustes de acessibilidade no shell e correção do tutorial para respeitar `tutorialCompletedAt` e não reaparecer indevidamente.
 
-## Testes executados
+## Validação concluída
 
-Último ciclo funcional validado antes do fechamento documental:
+Antes do merge, o HEAD exato do PR passou:
 
 ```text
 Production dependency security audit  PASS
@@ -65,6 +66,13 @@ npm test                             PASS
 npm run build                        PASS
 Auth + Firestore integration         PASS
 Planner E2E                          PASS (11/11)
+```
+
+Após o squash merge `e1ffd083f09717c7dcd26fafccecda6660e13249`, a própria `main` repetiu e aprovou:
+
+```text
+CI                                  PASS
+Planner E2E                         PASS
 ```
 
 O E2E focal usa somente Auth/Firestore Emulator e dados fictícios. Ele cobre:
@@ -85,7 +93,7 @@ O E2E focal usa somente Auth/Firestore Emulator e dados fictícios. Ele cobre:
 - offline/outbox;
 - persistência da visualização escolhida.
 
-O workflow `Planner E2E` deixa de ser temporário: após esta integração ele roda de forma focal em PR/push da `main` quando código relacionado ao calendário, comandos, tema ou testes relevantes muda.
+O workflow `Planner E2E` é agora um gate focal permanente em PRs e pushes da `main` quando arquivos relevantes do calendário, comandos, tema ou testes mudam.
 
 ## Resultado da revisão de segurança
 
@@ -93,11 +101,12 @@ O workflow `Planner E2E` deixa de ser temporário: após esta integração ele r
 - nenhuma escrita direta nova no Firestore;
 - nenhuma dependência de calendário adicionada;
 - nenhuma credencial, token ou dado real incluído;
-- queries continuam usando a camada já limitada pelas Rules;
+- queries continuam usando a camada limitada pelas Rules;
 - mutações continuam em `POST /api/commands`;
 - recorrência futura continua usando `activity.updateFuture`;
 - conflitos continuam exigindo revisão esperada;
-- testes de escrita usam projeto fictício/emuladores.
+- testes de escrita usam projeto fictício/emuladores;
+- nenhuma alteração de billing, domínio, Vercel, Firebase real ou infraestrutura paga entrou neste merge.
 
 ## Limitações intencionais
 
@@ -106,19 +115,7 @@ O workflow `Planner E2E` deixa de ser temporário: após esta integração ele r
 - segmentos intermediários de eventos multi-dia não expõem handles de resize/move;
 - push com app fechado, instalação/atualização PWA em aparelho físico e leitor de tela externo continuam sendo validações de hardware/ambiente, não provas deste Planner.
 
-## Resultado da auditoria do diff
-
-Antes do merge, `main...feat/calendar-planner-safe` estava sem divergência de base (`behind_by: 0`). O escopo do diff ficou concentrado em calendário/Planner, testes, workflow focal, documentação da decisão e pequenos ajustes de acessibilidade/tutorial. Não entrou mudança de billing, Vercel, Firebase real, Rules, segredo, domínio ou infraestrutura paga.
-
-## Pendência imediata
-
-1. concluir os checks disparados pelo fechamento documental/PR;
-2. marcar o PR como pronto;
-3. fazer merge controlado na `main` somente com o HEAD esperado;
-4. aguardar CI + `Planner E2E` da própria `main`;
-5. se qualquer gate pós-merge falhar, tratar como regressão antes de considerar a integração encerrada.
-
-## Próximo bloco de produto depois da integração
+## Próximo bloco de produto
 
 Experiências sazonais opcionais, conforme `docs/PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md`.
 
@@ -133,7 +130,7 @@ A base pura de datas já existe, mas **a experiência visual e a preferência de
 - nenhuma API externa de feriados;
 - nenhum asset remoto necessário para funcionar.
 
-## Riscos conhecidos fora deste merge
+## Riscos conhecidos fora desta entrega
 
 - dependências ainda possuem vulnerabilidades moderadas conhecidas; não usar `npm audit fix --force`;
 - bundle continua merecendo manutenção separada antes de adicionar dependência visual pesada;
@@ -142,4 +139,4 @@ A base pura de datas já existe, mas **a experiência visual e a preferência de
 
 ## Próxima ação ao retomar
 
-Se este arquivo estiver na `main` e os checks pós-merge estiverem verdes, considerar o Calendário avançado integrado e começar somente então a próxima fase planejada. Não refazer o Planner nem instalar Schedule-X sem uma nova necessidade concreta e revisão da ADR.
+Considerar o Calendário avançado concluído e integrado. Não refazer o Planner nem instalar Schedule-X sem uma nova necessidade concreta e revisão da ADR. O próximo desenvolvimento planejado é a fase sazonal opcional, iniciando pelo contrato de preferência e pelos testes de segurança/compatibilidade antes de qualquer decoração visual.
