@@ -269,7 +269,7 @@ export function CalendarTimeGrid({
             </div>
           ) : null}
 
-          <div className="calendar-time-scroll">
+          <div className="calendar-time-scroll" tabIndex={0} aria-label="Grade de horários do dia. Role para ver outros horários.">
             <div className="calendar-time-body" style={{ height: DAY_HEIGHT }}>
               <div className="calendar-time-axis" aria-hidden="true">
                 {HOURS.map(hour => (
