@@ -1,7 +1,7 @@
 # Direção de arte — experiências sazonais
 
 **Aprovado em:** 17/09/2026  
-**Estado:** experiência base integrada; marcadores de datas âncora em validação na branch `feat/seasonal-calendar-markers`
+**Estado:** experiência sazonal e marcadores de datas âncora integrados; refinamento visual validado após revisão em aparelho real
 
 ## Decisões aprovadas
 
@@ -63,12 +63,25 @@ Datas âncora V1:
 | 25/12 | Natal | estrela editorial |
 | 31/12 | Ano-Novo | spark geométrico |
 
+### Tratamento visual final
+
+A primeira versão integrada usava o símbolo dentro de um pequeno contêiner com fundo, borda e raio. A revisão em aparelho real mostrou que essa composição era lida como badge ou botão e adicionava ruído a uma grade que já possui bordas, foco, seleção e atividades.
+
+O tratamento definitivo é **ícone editorial solto**:
+
+- nenhum fundo, borda, sombra ou cápsula ao redor do SVG;
+- posição no canto superior direito, com respiro suficiente em relação ao número;
+- aproximadamente **12–16 px**, com ajuste óptico por desenho e viewport;
+- cor derivada dos tokens ativos, combinando acento e texto em vez de usar cor fixa por evento;
+- opacidade moderada, suficiente para reconhecer o símbolo sem disputar protagonismo;
+- um eco muito sutil da cor de acento no número da data especial;
+- `hoje`, seleção, foco e atividades continuam hierarquicamente acima do efeito sazonal;
+- nenhum marcador é interativo e todos mantêm `pointer-events: none`.
+
 Regras visuais e funcionais:
 
 - visão Mês: marcador apenas na célula pertencente ao mês exibido; datas adjacentes não recebem o símbolo;
 - visão Semana/Dia: marcador no cabeçalho da data correspondente;
-- o símbolo fica no canto superior direito, separado do número e das atividades;
-- cores continuam derivadas do tema ativo;
 - nenhum compromisso muda de cor por causa da data sazonal;
 - o ícone é `aria-hidden`; o nome do evento entra no nome acessível do botão da data;
 - nenhum marcador é mostrado quando `seasonalDetailsEnabled` estiver desligado.
@@ -85,8 +98,25 @@ Regras visuais e funcionais:
 - marcadores são resolvidos localmente por data civil;
 - sem `requestAnimationFrame` permanente.
 
+## Validação do refinamento
+
+O refinamento visual foi integrado pelo PR #4 no squash:
+
+```text
+f7894a5da7845bb03e658b7fb4ffd45289e17963
+refine(calendar): simplify seasonal date markers
+```
+
+Antes do merge, o mesmo HEAD passou CI completo, Seasonal E2E e Planner E2E. Depois do merge, os três gates passaram novamente na `main`.
+
+O E2E sazonal protege explicitamente contra regressão para aparência de badge: o marcador precisa permanecer transparente, sem borda, sem sombra, não interativo e dentro do orçamento de tamanho definido.
+
+O workflow focal do Planner também observa os arquivos do marcador sazonal que podem alterar a composição do Calendário.
+
 ## Gate de conclusão
 
 A fase e suas extensões só podem ser integradas depois de unitários, lint, typecheck, build, integração relevante e Playwright sazonal passarem, incluindo modo desligado, reduced motion, claro/escuro, desktop/mobile e ausência de overflow/Axe crítico.
 
 Alterações no calendário também precisam preservar o gate focal do Planner.
+
+A **Fase 7 de auditoria final não foi iniciada** por decisão explícita do usuário.
