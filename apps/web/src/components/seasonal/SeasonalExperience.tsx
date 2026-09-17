@@ -75,9 +75,11 @@ export function SeasonalExperience() {
       setIntroActive(false);
       return;
     }
-    markSeasonalIntroSeen(period);
     setIntroActive(true);
-    const timer = window.setTimeout(() => setIntroActive(false), 3000);
+    const timer = window.setTimeout(() => {
+      markSeasonalIntroSeen(period);
+      setIntroActive(false);
+    }, 3000);
     return () => window.clearTimeout(timer);
   }, [period?.periodId, mode]);
 
