@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { activityInputSchema, moveScheduleToDate, noteInputSchema, pendingShoppingItemDelta, recurrenceDates, recurrenceDatesThrough } from '../../packages/domain/src/content';
-import { commandEnvelopeSchema } from '../../packages/domain/src/identity';
+import { commandEnvelopeSchema, isSeasonalDetailsEnabled, profilePreferencesSchema } from '../../packages/domain/src/identity';
 import { accountArchiveSchema, archiveReferenceErrors } from '../../packages/domain/src/archive';
 
 describe('Domínio de conteúdo persistente', () => {
@@ -47,10 +47,18 @@ describe('Domínio de conteúdo persistente', () => {
     expect(result.success).toBe(false);
   });
 
+  it('mantém detalhes sazonais ligados por compatibilidade e aceita desligamento explícito', () => {
+    const legacy = profilePreferencesSchema.parse({ displayName: 'Conta', locale: 'pt-BR', weekStartsOn: 1, reduceTransparency: false });
+    const disabled = profilePreferencesSchema.parse({ ...legacy, seasonalDetailsEnabled: false });
+    expect(isSeasonalDetailsEnabled(legacy)).toBe(true);
+    expect(isSeasonalDetailsEnabled(disabled)).toBe(false);
+  });
+
   it('valida a versão e os limites básicos de uma exportação', () => {
     const archive = { format: 'leve-account-export', version: 1, exportedAt: '2026-09-12T12:00:00.000Z', profile: { displayName: 'Conta', locale: 'pt-BR', timeZone: 'America/Sao_Paulo', weekStartsOn: 1, reduceTransparency: false }, data: { categories: [], activities: [], series: [], notes: [], shoppingLists: [] } };
     expect(accountArchiveSchema.parse(archive).version).toBe(1);
     expect(accountArchiveSchema.safeParse({ ...archive, version: 2 }).success).toBe(false);
+    expect(accountArchiveSchema.parse({ ...archive, profile: { ...archive.profile, seasonalDetailsEnabled: false } }).profile.seasonalDetailsEnabled).toBe(false);
   });
 
   it('impede importar vínculos que seriam descartados silenciosamente', () => {

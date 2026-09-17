@@ -17,11 +17,17 @@ export const profilePreferencesSchema = z.object({
   highContrast: z.boolean().optional(),
   colorTheme: z.enum(colorThemeIds).optional(),
   appearance: z.enum(appearances).optional(),
+  seasonalDetailsEnabled: z.boolean().optional(),
   avatarStyle: z.literal('avataaars').optional(),
   avatarSeed: z.string().trim().min(1).max(80).optional(),
 }).strict();
 
 export type ProfilePreferences = z.infer<typeof profilePreferencesSchema>;
+
+export function isSeasonalDetailsEnabled(preferences: Pick<ProfilePreferences, 'seasonalDetailsEnabled'> | null | undefined): boolean {
+  return preferences?.seasonalDetailsEnabled !== false;
+}
+
 export type UserProfile = ProfilePreferences & {
   tutorialCompletedAt?: string;
   timeZone: string;

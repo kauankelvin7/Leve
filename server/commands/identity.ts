@@ -38,7 +38,7 @@ export async function activateAccount(identity: DecodedIdToken, command: Command
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
     if (member?.data()?.state === 'active' && profile?.exists) return { operationId: command.operationId, entityId: identity.uid, revision: profile.data()!.revision, serverTime: now, result: 'alreadyApplied' };
-    const user: UserProfile = { ...input.profile, timeZone: 'America/Sao_Paulo', uid: identity.uid, schemaVersion: 1, revision: 1, dataVersion: 1, accountState: 'active', createdAt: now, updatedAt: now };
+    const user: UserProfile = { ...input.profile, seasonalDetailsEnabled: input.profile.seasonalDetailsEnabled ?? true, timeZone: 'America/Sao_Paulo', uid: identity.uid, schemaVersion: 1, revision: 1, dataVersion: 1, accountState: 'active', createdAt: now, updatedAt: now };
     const response: CommandResult = { operationId: command.operationId, entityId: identity.uid, revision: 1, serverTime: now, result: 'applied' };
     transaction.create(profileRef, user);
     transaction.create(memberRef, { state: 'active', createdAt: now });
@@ -70,7 +70,7 @@ export async function updateProfile(identity: DecodedIdToken, command: CommandEn
     if (command.expectedRevision !== profile!.data()!.revision) throw new AppError(409, 'REVISION_CONFLICT', 'Seu perfil mudou em outra sessão. Recarregue antes de salvar.', { current: profile!.data() });
     const revision = profile!.data()!.revision + 1;
     const response: CommandResult = { operationId: command.operationId, entityId: identity.uid, revision, serverTime: now, result: 'applied' };
-    transaction.update(profileRef, { ...preferences, timeZone: profile!.data()!.timeZone ?? 'America/Sao_Paulo', revision, dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
+    transaction.update(profileRef, { ...preferences, seasonalDetailsEnabled: preferences.seasonalDetailsEnabled ?? profile!.data()!.seasonalDetailsEnabled ?? true, timeZone: profile!.data()!.timeZone ?? 'America/Sao_Paulo', revision, dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
     transaction.set(minute!.ref, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(day!.ref, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
