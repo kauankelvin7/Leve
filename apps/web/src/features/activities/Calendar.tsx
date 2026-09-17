@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import type { Category } from '../../../../../packages/domain/src/content';
 import { useAuth } from '../identity/AuthProvider';
@@ -21,6 +21,7 @@ import {
 } from './calendar/calendarModel';
 import { useCalendarRange } from './calendar/useCalendarRange';
 import { CalendarTimeGrid } from './calendar/CalendarTimeGrid';
+import { createPlannerDraft, plannerDraftToSearchParams } from './calendar/calendarDraftModel';
 
 function initialCalendarView(): CalendarView {
   const stored = localStorage.getItem(CALENDAR_VIEW_STORAGE_KEY);
@@ -45,6 +46,7 @@ function rangeTitle(view: CalendarView, startDate: string, endDate: string): str
 
 export function Calendar() {
   const { session } = useAuth();
+  const navigate = useNavigate();
   const today = useCurrentDay(session!.profile!.timeZone);
   const [selected, setSelected] = useState(() => sessionStorage.getItem('leve.selectedDay') ?? today);
   const [month, setMonth] = useState(selected.slice(0, 7));
@@ -107,6 +109,13 @@ export function Calendar() {
     setSheetOpen(true);
   }
 
+  function createFromInterval(date: string, startMinute: number, endMinute: number) {
+    const draft = createPlannerDraft(date, startMinute, endMinute);
+    rememberSelected(draft.startDate);
+    setMonth(draft.startDate.slice(0, 7));
+    navigate(`/hoje?${plannerDraftToSearchParams(draft).toString()}`);
+  }
+
   const viewName = view === 'month' ? 'mensal' : view === 'week' ? 'semanal' : 'diária';
   const title = rangeTitle(view, bounds.startDate, bounds.endDate);
 
@@ -162,6 +171,7 @@ export function Calendar() {
         selectedDate={selected}
         timeZone={session!.profile!.timeZone}
         onSelectDate={rememberSelected}
+        onCreateInterval={createFromInterval}
       />}
       {partial ? <p role="status" className="muted">Há mais atividades neste intervalo. Abra um dia específico para conferir todos os itens.</p> : null}
     </section>}
