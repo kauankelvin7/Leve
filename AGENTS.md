@@ -22,8 +22,10 @@ Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, 
 - Mutacoes do Planner continuam em `POST /api/commands`, usam `expectedRevision`, respeitam a outbox e perguntam o escopo antes de alterar recorrencia futura.
 - O renderer de calendario foi decidido em `docs/adr/002-calendar-renderer.md`; nao adicionar biblioteca de calendario sem nova necessidade e revisao da ADR.
 - Existe um gate E2E focal do Planner com Auth/Firestore Emulator, Axe, viewports, recorrencia, conflito e offline.
-- O motor sazonal puro ja resolve Natal, Ano-Novo, Pascoa, Festa Junina e Halloween, mas a experiencia visual e a preferencia de perfil ainda nao devem ser consideradas prontas.
-- O proximo bloco planejado de produto e a experiencia sazonal opcional; antes de implementa-la, revisar schema/defaults/export/import e manter `prefers-reduced-motion` como regra superior.
+- A experiencia sazonal opcional foi implementada e validada na branch `feat/seasonal-experiences-safe`: Natal, Ano-Novo, Pascoa, Festa Junina e Halloween usam SVG/CSS proprio, preferencia de perfil, intro local por periodo, favicon e reduced motion sem dependencias externas.
+- A preferencia sazonal e retrocompativel (`undefined => true`), participa da exportacao e continua sendo atualizada por `profile.update` com revisao esperada; nao criar caminho paralelo de persistencia.
+- Existe gate E2E focal sazonal com emuladores, Axe, opt-out, intro unica, light/dark/system, reduced motion e viewports oficiais.
+- Depois da integracao sazonal, o proximo bloco do plano e a auditoria final; nao reimplementar Planner ou sazonal sem uma necessidade concreta.
 
 ## Regras de produto e arquitetura
 
