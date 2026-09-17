@@ -164,6 +164,14 @@ test('Calendário marca as datas sazonais exatas sem competir com atividades', a
 
   const christmasMarker = page.locator('[data-seasonal-calendar-event="christmas"]');
   await expect(christmasMarker).toHaveCount(1);
+  await expect(christmasMarker).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(christmasMarker).toHaveCSS('border-top-width', '0px');
+  await expect(christmasMarker).toHaveCSS('box-shadow', 'none');
+  await expect(christmasMarker).toHaveCSS('pointer-events', 'none');
+  const markerBox = await christmasMarker.boundingBox();
+  expect(markerBox?.width ?? 0).toBeLessThanOrEqual(16);
+  expect(markerBox?.height ?? 0).toBeLessThanOrEqual(16);
+
   const christmasDay = christmasMarker.locator('xpath=ancestor::button[1]');
   await expect(christmasDay).toHaveAttribute('aria-label', /Natal/);
   await expect(christmasDay.locator('.calendar-date')).toHaveText('25');
