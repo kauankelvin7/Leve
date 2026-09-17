@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
+import { SeasonalCalendarMarker } from '../../../components/seasonal/SeasonalCalendarMarker';
+import { seasonalCalendarMarkerForDate } from '../../../platform/seasonal/seasonalCalendarMarkers';
 import type { CalendarEventViewModel } from './calendarModel';
 import { calendarDayBuckets } from './timeGridModel';
 import { snapCalendarMinute } from './calendarMutationModel';
@@ -17,6 +19,7 @@ type CalendarTimeGridProps = {
   today: string;
   selectedDate: string;
   timeZone: string;
+  seasonalDetailsEnabled: boolean;
   onSelectDate: (date: string) => void;
   onCreateInterval?: (date: string, startMinute: number, endMinute: number) => void;
   onMoveEvent?: (eventId: string, targetDate: string, targetMinute: number) => void;
@@ -75,6 +78,7 @@ export function CalendarTimeGrid({
   today,
   selectedDate,
   timeZone,
+  seasonalDetailsEnabled,
   onSelectDate,
   onCreateInterval,
   onMoveEvent,
@@ -217,6 +221,7 @@ export function CalendarTimeGrid({
                 const plain = Temporal.PlainDate.from(date);
                 const isToday = date === today;
                 const isSelected = date === selectedDate;
+                const seasonalMarker = seasonalDetailsEnabled ? seasonalCalendarMarkerForDate(date) : null;
                 return (
                   <button
                     type="button"
@@ -224,10 +229,12 @@ export function CalendarTimeGrid({
                     className={`calendar-time-date${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}`}
                     aria-current={isToday ? 'date' : undefined}
                     aria-pressed={isSelected}
+                    aria-label={`${plain.toLocaleString('pt-BR', { dateStyle: 'full' })}${seasonalMarker ? `, ${seasonalMarker.label}` : ''}`}
                     onClick={() => onSelectDate(date)}
                   >
                     <span>{plain.toLocaleString('pt-BR', { weekday: 'short' })}</span>
                     <strong>{plain.day}</strong>
+                    {seasonalMarker ? <SeasonalCalendarMarker marker={seasonalMarker} compact /> : null}
                   </button>
                 );
               })}

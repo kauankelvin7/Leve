@@ -72,31 +72,44 @@
 .seasonal-animated .seasonal-glyph-c { animation: seasonal-float-a 19s ease-in-out infinite alternate-reverse; }
 .seasonal-animated .seasonal-brand-mark { animation: seasonal-mark-breathe 11s ease-in-out infinite; }
 
-html[data-seasonal-event='christmas'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='new-year'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='easter'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='festa-junina'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='halloween'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='christmas'] .calendar-time-date[aria-current='date']::after,
-html[data-seasonal-event='new-year'] .calendar-time-date[aria-current='date']::after,
-html[data-seasonal-event='easter'] .calendar-time-date[aria-current='date']::after,
-html[data-seasonal-event='festa-junina'] .calendar-time-date[aria-current='date']::after,
-html[data-seasonal-event='halloween'] .calendar-time-date[aria-current='date']::after {
-  content: '';
+.calendar-day,
+.calendar-time-date { position: relative; }
+
+.seasonal-calendar-marker {
   position: absolute;
   top: 7px;
   right: 7px;
-  width: 10px;
-  height: 10px;
-  border: 1.5px solid var(--color-action-primary);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-action-primary) 22%, transparent);
-  opacity: .8;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid color-mix(in srgb, var(--color-action-primary) 28%, var(--color-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-solid) 88%, transparent);
+  color: color-mix(in srgb, var(--color-action-primary) 82%, var(--color-text));
+  box-shadow: 0 1px 5px color-mix(in srgb, var(--color-text) 8%, transparent);
+  opacity: .9;
   pointer-events: none;
 }
 
-html[data-seasonal-event] .calendar-day,
-html[data-seasonal-event] .calendar-time-date { position: relative; }
+.seasonal-calendar-marker svg {
+  width: 14px;
+  height: 14px;
+}
+
+.seasonal-calendar-marker.compact {
+  top: 8px;
+  right: 8px;
+  width: 19px;
+  height: 19px;
+  border-radius: 7px;
+}
+
+.seasonal-calendar-marker.compact svg {
+  width: 12px;
+  height: 12px;
+}
+
 html[data-seasonal-event] .page-heading { isolation: isolate; }
 html[data-seasonal-event] .page-heading::after {
   content: '';
@@ -160,5 +173,9 @@ html[data-seasonal-mode='static'] .seasonal-layer * {
   .seasonal-glyph-b { top: 16%; right: 5%; }
   .seasonal-glyph-c { bottom: 11%; right: 8%; }
   .seasonal-glyph-d { display: none; }
+  .seasonal-calendar-marker { top: 6px; right: 6px; width: 19px; height: 19px; border-radius: 7px; }
+  .seasonal-calendar-marker svg { width: 12px; height: 12px; }
+  .seasonal-calendar-marker.compact { top: 7px; right: 7px; width: 17px; height: 17px; }
+  .seasonal-calendar-marker.compact svg { width: 11px; height: 11px; }
   html[data-seasonal-event] .page-heading::after { width: 88px; height: 88px; top: -8px; }
 }

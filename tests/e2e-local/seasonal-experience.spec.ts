@@ -116,7 +116,12 @@ test('preferência desligada remove toda a experiência e persiste no perfil', a
     await setSeasonalPreference(page, false);
     await expect(page.locator('.seasonal-layer')).toHaveCount(0);
 
+    await page.goto('/calendario');
+    await page.getByRole('button', { name: 'Mês', exact: true }).click();
+    await expect(page.locator('[data-seasonal-calendar-event]')).toHaveCount(0);
+
     await page.reload();
+    await page.goto('/configuracoes');
     await expect(page.getByLabel('Detalhes sazonais', { exact: true })).not.toBeChecked();
     await expect(page.locator('.seasonal-layer')).toHaveCount(0);
   } finally {
@@ -145,6 +150,31 @@ test('experiência sazonal acompanha Claro, Escuro e Sistema', async ({ page }) 
   await expect(page.locator('html')).toHaveAttribute('data-appearance', 'dark');
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
 
+  const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  expect(axe.violations).toEqual([]);
+});
+
+test('Calendário marca as datas sazonais exatas sem competir com atividades', async ({ page }) => {
+  await freezeAtChristmas(page);
+  await login(page);
+  await setSeasonalPreference(page, true);
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto('/calendario');
+  await page.getByRole('button', { name: 'Mês', exact: true }).click();
+
+  const christmasMarker = page.locator('[data-seasonal-calendar-event="christmas"]');
+  await expect(christmasMarker).toHaveCount(1);
+  const christmasDay = christmasMarker.locator('xpath=ancestor::button[1]');
+  await expect(christmasDay).toHaveAttribute('aria-label', /Natal/);
+  await expect(christmasDay.locator('.calendar-date')).toHaveText('25');
+
+  await christmasDay.click();
+  await page.getByRole('button', { name: 'Dia', exact: true }).click();
+  const dayMarker = page.locator('.calendar-time-date [data-seasonal-calendar-event="christmas"]');
+  await expect(dayMarker).toHaveCount(1);
+  await expect(dayMarker.locator('xpath=ancestor::button[1]')).toHaveAttribute('aria-label', /Natal/);
+
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   expect(axe.violations).toEqual([]);
 });

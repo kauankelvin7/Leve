@@ -2,10 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import type { ActivityInput, Category } from '../../../../../packages/domain/src/content';
+import { isSeasonalDetailsEnabled } from '../../../../../packages/domain/src/identity';
 import { useAuth } from '../identity/AuthProvider';
 import { useUserCollection } from '../content/useUserCollection';
 import { useCurrentDay } from './DayNavigation';
 import { LoadError } from '../../components/ui/LoadError';
+import { SeasonalCalendarMarker } from '../../components/seasonal/SeasonalCalendarMarker';
+import { seasonalCalendarMarkerForDate } from '../../platform/seasonal/seasonalCalendarMarkers';
 import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
 import { ApiError, sendCommand } from '../../platform/api';
@@ -66,6 +69,7 @@ export function Calendar() {
   const { user, session } = useAuth();
   const navigate = useNavigate();
   const today = useCurrentDay(session!.profile!.timeZone);
+  const seasonalDetailsEnabled = isSeasonalDetailsEnabled(session!.profile!);
   const [selected, setSelected] = useState(() => sessionStorage.getItem('leve.selectedDay') ?? today);
   const [month, setMonth] = useState(selected.slice(0, 7));
   const [view, setView] = useState<CalendarView>(initialCalendarView);
@@ -301,8 +305,9 @@ export function Calendar() {
       <div className="calendar-weekdays" aria-hidden="true">{dates.slice(0, 7).map(date => <span key={date.toString()}>{date.toLocaleString('pt-BR', { weekday: 'short' })}</span>)}</div>
       <div className="calendar-grid">{dates.map(date => {
         const value = date.toString(); const adjacent = date.month !== first.month; const items = adjacent ? [] : onDay(value);
-        return <button key={value} className={`calendar-day${adjacent ? ' adjacent' : ''}${value === selected ? ' selected' : ''}`} style={items[0] ? { backgroundColor: `${colorOf(items[0])}35` } : undefined} aria-pressed={value === selected} aria-current={value === today ? 'date' : undefined} aria-label={`${date.toLocaleString('pt-BR', { dateStyle: 'full' })}${adjacent || loading || error ? '' : `, ${items.length} atividades carregadas`}. Toque para ver o dia e adicionar uma atividade.`} onClick={() => selectDay(value, adjacent)}>
-          <span className="calendar-date">{date.day}</span><span className="calendar-colors" aria-hidden="true">{items.slice(0, 4).map(item => <span className={item.status === 'pending' && value < today ? 'overdue' : ''} key={item.id} style={{ backgroundColor: colorOf(item) }} />)}</span><span className="calendar-previews" aria-hidden="true">{items.slice(0, 2).map(item => <span className={`calendar-event${item.status === 'completed' ? ' completed' : ''}${item.status === 'pending' && value < today ? ' overdue' : ''}`} key={item.id}>{item.title}</span>)}{items.length > 2 && <small>+{items.length - 2} atividades</small>}</span>{items.length > 0 && <span className="calendar-count" aria-hidden="true">{items.length}</span>}
+        const seasonalMarker = !adjacent && seasonalDetailsEnabled ? seasonalCalendarMarkerForDate(value) : null;
+        return <button key={value} className={`calendar-day${adjacent ? ' adjacent' : ''}${value === selected ? ' selected' : ''}`} style={items[0] ? { backgroundColor: `${colorOf(items[0])}35` } : undefined} aria-pressed={value === selected} aria-current={value === today ? 'date' : undefined} aria-label={`${date.toLocaleString('pt-BR', { dateStyle: 'full' })}${seasonalMarker ? `, ${seasonalMarker.label}` : ''}${adjacent || loading || error ? '' : `, ${items.length} atividades carregadas`}. Toque para ver o dia e adicionar uma atividade.`} onClick={() => selectDay(value, adjacent)}>
+          <span className="calendar-date">{date.day}</span>{seasonalMarker ? <SeasonalCalendarMarker marker={seasonalMarker} /> : null}<span className="calendar-colors" aria-hidden="true">{items.slice(0, 4).map(item => <span className={item.status === 'pending' && value < today ? 'overdue' : ''} key={item.id} style={{ backgroundColor: colorOf(item) }} />)}</span><span className="calendar-previews" aria-hidden="true">{items.slice(0, 2).map(item => <span className={`calendar-event${item.status === 'completed' ? ' completed' : ''}${item.status === 'pending' && value < today ? ' overdue' : ''}`} key={item.id}>{item.title}</span>)}{items.length > 2 && <small>+{items.length - 2} atividades</small>}</span>{items.length > 0 && <span className="calendar-count" aria-hidden="true">{items.length}</span>}
         </button>;
       })}</div>
     </section> : <section className="panel calendar-time-panel" aria-label={`Calendário ${viewName}`} aria-busy={loading || mutationBusy}>
@@ -315,6 +320,7 @@ export function Calendar() {
         today={today}
         selectedDate={selected}
         timeZone={session!.profile!.timeZone}
+        seasonalDetailsEnabled={seasonalDetailsEnabled}
         onSelectDate={rememberSelected}
         onCreateInterval={createFromInterval}
         onMoveEvent={moveEvent}

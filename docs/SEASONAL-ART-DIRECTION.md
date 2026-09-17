@@ -1,7 +1,7 @@
 # Direção de arte — experiências sazonais
 
 **Aprovado em:** 17/09/2026  
-**Estado:** direção validada para implementação na branch `feat/seasonal-experiences-safe`
+**Estado:** experiência base integrada; marcadores de datas âncora em validação na branch `feat/seasonal-calendar-markers`
 
 ## Decisões aprovadas
 
@@ -11,6 +11,7 @@
 - Natal: **estrelas e luzes**, com neve mínima ou ausente.
 - Páscoa: **ovos, folhas e formas de papel**, sem coelho literal como elemento dominante.
 - PWA: **favicon sazonal agora**; ícone já instalado no launcher continua best-effort e não é requisito funcional.
+- Calendário: datas especiais recebem **um pequeno símbolo próprio na data exata**, sem competir com compromissos.
 
 ## Princípios
 
@@ -34,16 +35,43 @@ Os SVGs são próprios, pequenos e determinísticos. Não há imagens remotas, L
 
 A intro usa apenas `opacity` e `transform`, dura cerca de 3 segundos e nunca bloqueia cliques. A ambientação usa poucos elementos, deslocamentos de poucos pixels e ciclos lentos.
 
+Os marcadores do calendário são **sempre estáticos**. Eles não pulsam, não giram e não criam movimento adicional dentro das células de datas.
+
 `prefers-reduced-motion` e a preferência de perfil `reduceMotion` sempre prevalecem: nesse caso a intro animada não é exibida e a decoração permanece estática.
 
-Se `seasonalDetailsEnabled` estiver desativado, nenhuma decoração, intro ou favicon sazonal é aplicada.
+Se `seasonalDetailsEnabled` estiver desativado, nenhuma decoração, intro, favicon sazonal ou marcador de data especial é aplicada.
 
 ## Superfícies
 
 - Login: presença um pouco maior, sempre atrás da interação.
 - Meu dia: principal superfície autenticada.
-- Calendário: detalhe no cabeçalho e marcador discreto da data atual durante o período ativo.
+- Calendário: detalhe no cabeçalho e marcadores discretos nas datas âncora.
 - Demais páginas: apenas detalhe global mínimo.
+
+## Marcadores do calendário
+
+Os marcadores fazem parte do contexto temporal do calendário, não apenas da ambientação do período atual. Ao navegar para uma data sazonal, o símbolo pode aparecer mesmo que a data de hoje esteja em outro mês.
+
+Datas âncora V1:
+
+| Data | Evento | Forma |
+| --- | --- | --- |
+| 01/01 | Ano-Novo | spark geométrico |
+| domingo de Páscoa | Páscoa | ovo abstrato |
+| 24/06 | Festa Junina | bandeirolas |
+| 31/10 | Halloween | lua crescente |
+| 25/12 | Natal | estrela editorial |
+| 31/12 | Ano-Novo | spark geométrico |
+
+Regras visuais e funcionais:
+
+- visão Mês: marcador apenas na célula pertencente ao mês exibido; datas adjacentes não recebem o símbolo;
+- visão Semana/Dia: marcador no cabeçalho da data correspondente;
+- o símbolo fica no canto superior direito, separado do número e das atividades;
+- cores continuam derivadas do tema ativo;
+- nenhum compromisso muda de cor por causa da data sazonal;
+- o ícone é `aria-hidden`; o nome do evento entra no nome acessível do botão da data;
+- nenhum marcador é mostrado quando `seasonalDetailsEnabled` estiver desligado.
 
 ## Privacidade e performance
 
@@ -54,8 +82,11 @@ Se `seasonalDetailsEnabled` estiver desativado, nenhuma decoração, intro ou fa
 - intro vista fica somente no aparelho em `leve.seasonal.seen.<eventId>.<periodId>`;
 - preferência de exibição fica no perfil e participa da exportação;
 - número pequeno e fixo de elementos decorativos;
+- marcadores são resolvidos localmente por data civil;
 - sem `requestAnimationFrame` permanente.
 
 ## Gate de conclusão
 
-A fase só pode ser integrada depois de unitários, lint, typecheck, build, integração relevante e Playwright sazonal passarem, incluindo modo desligado, reduced motion, claro/escuro, desktop/mobile e ausência de overflow/Axe crítico.
+A fase e suas extensões só podem ser integradas depois de unitários, lint, typecheck, build, integração relevante e Playwright sazonal passarem, incluindo modo desligado, reduced motion, claro/escuro, desktop/mobile e ausência de overflow/Axe crítico.
+
+Alterações no calendário também precisam preservar o gate focal do Planner.
