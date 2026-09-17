@@ -12,7 +12,7 @@ function deviceTimeZone(): string {
   catch { return 'UTC'; }
 }
 
-function seasonalFavicon(eventId: string, color: string): string {
+function seasonalFavicon(eventId: string, color: string, background: string): string {
   const shapes: Record<string, string> = {
     christmas: '<path d="M32 7c2 12 4 14 16 16-12 2-14 4-16 16-2-12-4-14-16-16 12-2 14-4 16-16Z"/>',
     'new-year': '<path d="M32 8v48M8 32h48M15 15l34 34M49 15 15 49" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
@@ -20,7 +20,7 @@ function seasonalFavicon(eventId: string, color: string): string {
     'festa-junina': '<path d="M8 13c13 4 35 4 48 0M14 16v20l9-6 9 6V17M36 17v19l8-6 8 6V15"/>',
     halloween: '<path d="M43 8c-14 3-23 15-20 29 2 10 10 17 20 19-16 5-31-5-35-20C4 19 15 3 32 1c4 0 8 2 11 7Z"/>',
   };
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" color="${color}"><rect width="64" height="64" rx="16" fill="white"/><g fill="currentColor">${shapes[eventId] ?? shapes.christmas}</g></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" color="${color}"><rect width="64" height="64" rx="16" fill="${background}"/><g fill="currentColor">${shapes[eventId] ?? shapes.christmas}</g></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
@@ -81,10 +81,12 @@ export function SeasonalExperience() {
     const link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
     if (!link) return;
     const previous = link.href;
-    const color = getComputedStyle(document.documentElement).getPropertyValue('--color-action-primary').trim() || '#486456';
-    link.href = seasonalFavicon(period.eventId, color);
+    const styles = getComputedStyle(document.documentElement);
+    const color = styles.getPropertyValue('--color-action-primary').trim() || '#486456';
+    const background = styles.backgroundColor || '#f4f6f4';
+    link.href = seasonalFavicon(period.eventId, color, background);
     return () => { link.href = previous; };
-  }, [period?.eventId, mode]);
+  }, [period?.eventId, mode, profile?.appearance, profile?.colorTheme]);
 
   if (!period || mode === 'off') return null;
 
