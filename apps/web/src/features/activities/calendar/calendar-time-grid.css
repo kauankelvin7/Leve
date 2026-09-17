@@ -237,6 +237,19 @@
   background-color: color-mix(in srgb, var(--color-action-primary) 3%, transparent);
 }
 
+.calendar-time-draft {
+  position: absolute;
+  z-index: 3;
+  left: 3px;
+  right: 3px;
+  min-height: 15px;
+  border: 1px dashed var(--color-action-primary);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-action-primary) 16%, var(--color-field));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-action-primary) 10%, transparent);
+  pointer-events: none;
+}
+
 .calendar-time-event {
   position: absolute;
   z-index: 2;
@@ -296,6 +309,12 @@
   height: 8px;
   border-radius: 50%;
   background: var(--color-action-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .calendar-time-column.can-create {
+    cursor: crosshair;
+  }
 }
 
 @media (max-width: 767px) {
