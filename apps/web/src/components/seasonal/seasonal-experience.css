@@ -1,0 +1,155 @@
+.seasonal-layer {
+  --seasonal-primary: var(--color-action-primary);
+  --seasonal-soft: color-mix(in srgb, var(--color-action-primary) 18%, transparent);
+  --seasonal-faint: color-mix(in srgb, var(--color-action-primary) 9%, transparent);
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.seasonal-layer.seasonal-surface-global { opacity: .55; }
+.seasonal-layer.seasonal-surface-today,
+.seasonal-layer.seasonal-surface-calendar { opacity: .8; }
+.seasonal-layer.seasonal-surface-login { opacity: .9; }
+
+.seasonal-ambient,
+.seasonal-intro {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.seasonal-glyph {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  color: var(--seasonal-primary);
+  opacity: .16;
+  filter: none;
+}
+
+.seasonal-glyph-a { top: 8%; left: 7%; transform: rotate(-6deg) scale(.78); }
+.seasonal-glyph-b { top: 18%; right: 9%; transform: rotate(7deg) scale(1.05); }
+.seasonal-glyph-c { bottom: 13%; right: 17%; transform: rotate(-4deg) scale(.7); }
+.seasonal-glyph-d { bottom: 19%; left: 12%; transform: rotate(8deg) scale(.62); }
+
+.seasonal-brand-mark {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 92px;
+  width: 18px;
+  height: 18px;
+  color: var(--seasonal-primary);
+  opacity: .58;
+}
+.seasonal-brand-mark svg { width: 100%; height: 100%; }
+
+.seasonal-intro {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 42%, var(--seasonal-soft), transparent 34%);
+  animation: seasonal-intro-fade 3s ease-out both;
+}
+
+.seasonal-intro-glyph {
+  width: min(22vw, 150px);
+  height: min(22vw, 150px);
+  color: var(--seasonal-primary);
+  opacity: 0;
+  animation: seasonal-intro-glyph 2.8s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.seasonal-animated .seasonal-glyph-a { animation: seasonal-float-a 14s ease-in-out infinite alternate; }
+.seasonal-animated .seasonal-glyph-b { animation: seasonal-float-b 17s ease-in-out infinite alternate; }
+.seasonal-animated .seasonal-glyph-c { animation: seasonal-float-a 19s ease-in-out infinite alternate-reverse; }
+.seasonal-animated .seasonal-brand-mark { animation: seasonal-mark-breathe 11s ease-in-out infinite; }
+
+html[data-seasonal-event='christmas'] .calendar-day[aria-current='date']::after,
+html[data-seasonal-event='new-year'] .calendar-day[aria-current='date']::after,
+html[data-seasonal-event='easter'] .calendar-day[aria-current='date']::after,
+html[data-seasonal-event='festa-junina'] .calendar-day[aria-current='date']::after,
+html[data-seasonal-event='halloween'] .calendar-day[aria-current='date']::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--color-action-primary);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-action-primary) 22%, transparent);
+  opacity: .8;
+}
+
+html[data-seasonal-event] .calendar-day { position: relative; }
+html[data-seasonal-event] .page-heading { isolation: isolate; }
+html[data-seasonal-event] .page-heading::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  right: 2%;
+  top: -18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--seasonal-faint), transparent 68%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes seasonal-intro-fade {
+  0% { opacity: 0; }
+  16% { opacity: 1; }
+  76% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes seasonal-intro-glyph {
+  0% { opacity: 0; transform: scale(.72) rotate(-7deg); }
+  28% { opacity: .82; transform: scale(1.04) rotate(2deg); }
+  74% { opacity: .66; transform: scale(1) rotate(0); }
+  100% { opacity: 0; transform: scale(.96); }
+}
+
+@keyframes seasonal-float-a {
+  from { translate: 0 0; }
+  to { translate: 5px -7px; }
+}
+
+@keyframes seasonal-float-b {
+  from { translate: 0 0; }
+  to { translate: -6px 4px; }
+}
+
+@keyframes seasonal-mark-breathe {
+  0%, 100% { opacity: .46; transform: scale(.96); }
+  50% { opacity: .7; transform: scale(1.04); }
+}
+
+.seasonal-static .seasonal-glyph,
+.seasonal-static .seasonal-brand-mark,
+html[data-seasonal-mode='static'] .seasonal-layer * {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seasonal-layer *,
+  .seasonal-layer *::before,
+  .seasonal-layer *::after { animation: none !important; transition: none !important; }
+  .seasonal-intro { display: none; }
+}
+
+@media (max-width: 720px) {
+  .seasonal-brand-mark { top: max(9px, env(safe-area-inset-top)); left: 71px; width: 15px; height: 15px; }
+  .seasonal-glyph { width: 24px; height: 24px; opacity: .12; }
+  .seasonal-glyph-a { top: 11%; left: 4%; }
+  .seasonal-glyph-b { top: 16%; right: 5%; }
+  .seasonal-glyph-c { bottom: 11%; right: 8%; }
+  .seasonal-glyph-d { display: none; }
+  html[data-seasonal-event] .page-heading::after { width: 88px; height: 88px; top: -8px; }
+}
+
+.app-shell.high-contrast .seasonal-layer { opacity: .45; }
+.app-shell.solid ~ .seasonal-layer,
+.app-shell.solid .seasonal-layer { --seasonal-faint: transparent; }
