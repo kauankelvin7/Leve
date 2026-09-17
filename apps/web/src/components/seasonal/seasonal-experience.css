@@ -75,39 +75,63 @@
 .calendar-day,
 .calendar-time-date { position: relative; }
 
+/*
+ * Marcadores de datas especiais sao uma assinatura editorial, nao um controle.
+ * Mantemos o glifo solto para nao adicionar mais uma borda a uma grade que ja
+ * possui hierarquia visual suficiente por celulas, foco, selecao e atividades.
+ */
 .seasonal-calendar-marker {
   position: absolute;
-  top: 7px;
-  right: 7px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary) 28%, var(--color-border));
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--color-solid) 88%, transparent);
-  color: color-mix(in srgb, var(--color-action-primary) 82%, var(--color-text));
-  box-shadow: 0 1px 5px color-mix(in srgb, var(--color-text) 8%, transparent);
-  opacity: .9;
+  top: 9px;
+  right: 9px;
+  display: block;
+  width: 15px;
+  height: 15px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-action-primary) 72%, var(--color-text) 28%);
+  box-shadow: none;
+  opacity: .76;
   pointer-events: none;
 }
 
 .seasonal-calendar-marker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Ajustes opticos: os desenhos possuem massas visuais diferentes no mesmo viewBox. */
+.seasonal-calendar-marker-christmas { width: 16px; height: 16px; }
+.seasonal-calendar-marker-new-year { width: 14px; height: 14px; opacity: .72; }
+.seasonal-calendar-marker-easter { width: 14px; height: 14px; opacity: .7; }
+.seasonal-calendar-marker-festa-junina { width: 16px; height: 16px; opacity: .72; }
+.seasonal-calendar-marker-halloween { width: 14px; height: 14px; opacity: .72; }
+
+.seasonal-calendar-marker.compact {
+  top: 8px;
+  right: 10px;
+  width: 13px;
+  height: 13px;
+}
+
+.seasonal-calendar-marker.compact.seasonal-calendar-marker-christmas,
+.seasonal-calendar-marker.compact.seasonal-calendar-marker-festa-junina {
   width: 14px;
   height: 14px;
 }
 
-.seasonal-calendar-marker.compact {
-  top: 8px;
-  right: 8px;
-  width: 19px;
-  height: 19px;
-  border-radius: 7px;
+/* O numero recebe apenas um eco da cor sazonal; selecao e "hoje" continuam dominantes. */
+.calendar-day:has(> .seasonal-calendar-marker):not([aria-current='date']) .calendar-date {
+  color: color-mix(in srgb, var(--color-action-primary) 68%, var(--color-text) 32%);
+  font-weight: 800;
 }
 
-.seasonal-calendar-marker.compact svg {
-  width: 12px;
-  height: 12px;
+.calendar-time-date:has(> .seasonal-calendar-marker):not(.today) strong {
+  color: color-mix(in srgb, var(--color-action-primary) 68%, var(--color-text) 32%);
+  font-weight: 800;
 }
 
 html[data-seasonal-event] .page-heading { isolation: isolate; }
@@ -173,9 +197,33 @@ html[data-seasonal-mode='static'] .seasonal-layer * {
   .seasonal-glyph-b { top: 16%; right: 5%; }
   .seasonal-glyph-c { bottom: 11%; right: 8%; }
   .seasonal-glyph-d { display: none; }
-  .seasonal-calendar-marker { top: 6px; right: 6px; width: 19px; height: 19px; border-radius: 7px; }
-  .seasonal-calendar-marker svg { width: 12px; height: 12px; }
-  .seasonal-calendar-marker.compact { top: 7px; right: 7px; width: 17px; height: 17px; }
-  .seasonal-calendar-marker.compact svg { width: 11px; height: 11px; }
+
+  .seasonal-calendar-marker {
+    top: 7px;
+    right: 7px;
+    width: 13px;
+    height: 13px;
+    opacity: .72;
+  }
+
+  .seasonal-calendar-marker.seasonal-calendar-marker-christmas,
+  .seasonal-calendar-marker.seasonal-calendar-marker-festa-junina {
+    width: 14px;
+    height: 14px;
+  }
+
+  .seasonal-calendar-marker.compact {
+    top: 7px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .seasonal-calendar-marker.compact.seasonal-calendar-marker-christmas,
+  .seasonal-calendar-marker.compact.seasonal-calendar-marker-festa-junina {
+    width: 13px;
+    height: 13px;
+  }
+
   html[data-seasonal-event] .page-heading::after { width: 88px; height: 88px; top: -8px; }
 }
