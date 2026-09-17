@@ -16,7 +16,10 @@ describe('seasonal experience policy', () => {
     expect(seasonalPresentationMode(true, false, false)).toBe('animated');
   });
 
-  it('maps authenticated routes to the intended seasonal surfaces', () => {
+  it('maps routes to the intended seasonal surfaces', () => {
+    expect(seasonalSurfaceForPath('/entrar')).toBe('login');
+    expect(seasonalSurfaceForPath('/registrar')).toBe('login');
+    expect(seasonalSurfaceForPath('/recuperar')).toBe('login');
     expect(seasonalSurfaceForPath('/hoje')).toBe('today');
     expect(seasonalSurfaceForPath('/calendario')).toBe('calendar');
     expect(seasonalSurfaceForPath('/notas')).toBe('global');
@@ -26,6 +29,11 @@ describe('seasonal experience policy', () => {
     expect(activeSeasonalPeriod('2026-12-24', 'today')?.eventId).toBe('christmas');
     expect(activeSeasonalPeriod('2026-06-20', 'login')).toBeNull();
     expect(activeSeasonalPeriod('2026-06-20', 'calendar')?.eventId).toBe('festa-junina');
+  });
+
+  it('prioritizes New Year during the cross-year overlap', () => {
+    expect(activeSeasonalPeriod('2026-12-31', 'today')?.eventId).toBe('new-year');
+    expect(activeSeasonalPeriod('2027-01-01', 'calendar')?.eventId).toBe('new-year');
   });
 
   it('keeps the public device preference enabled by default and stores explicit opt-out', () => {
