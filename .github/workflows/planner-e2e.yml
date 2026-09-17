@@ -1,10 +1,50 @@
 name: Planner E2E
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/web/src/features/activities/Calendar.tsx'
+      - 'apps/web/src/features/activities/Today.tsx'
+      - 'apps/web/src/features/activities/calendar/**'
+      - 'apps/web/src/platform/api.ts'
+      - 'apps/web/src/platform/outbox.ts'
+      - 'apps/web/src/platform/theme.ts'
+      - 'apps/web/src/styles/**'
+      - 'packages/domain/src/content.ts'
+      - 'packages/domain/src/identity.ts'
+      - 'packages/domain/src/themes.ts'
+      - 'server/commands/content.ts'
+      - 'scripts/dev-local.mjs'
+      - 'tests/e2e-local/calendar-planner*.spec.ts'
+      - '.github/workflows/planner-e2e.yml'
   push:
     branches:
-      - feat/calendar-planner-safe
+      - main
+    paths:
+      - 'apps/web/src/features/activities/Calendar.tsx'
+      - 'apps/web/src/features/activities/Today.tsx'
+      - 'apps/web/src/features/activities/calendar/**'
+      - 'apps/web/src/platform/api.ts'
+      - 'apps/web/src/platform/outbox.ts'
+      - 'apps/web/src/platform/theme.ts'
+      - 'apps/web/src/styles/**'
+      - 'packages/domain/src/content.ts'
+      - 'packages/domain/src/identity.ts'
+      - 'packages/domain/src/themes.ts'
+      - 'server/commands/content.ts'
+      - 'scripts/dev-local.mjs'
+      - 'tests/e2e-local/calendar-planner*.spec.ts'
+      - '.github/workflows/planner-e2e.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: planner-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   planner:
