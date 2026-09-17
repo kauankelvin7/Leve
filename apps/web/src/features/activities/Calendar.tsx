@@ -282,18 +282,18 @@ export function Calendar() {
     </div>
 
     <div className="calendar-filters">
-      {view === 'month' ? <label className="month-field">Mês<input type="month" value={month} onChange={event => {
+      {view === 'month' ? <label className="month-field" htmlFor="calendar-month-filter">Mês<input id="calendar-month-filter" type="month" value={month} onChange={event => {
         if (/^\d{4}-\d{2}$/.test(event.target.value)) {
           setMonth(event.target.value);
           rememberSelected(`${event.target.value}-01`);
         }
-      }} /></label> : <label>Data<input type="date" value={selected} onChange={event => {
+      }} /></label> : <label htmlFor="calendar-date-filter">Data<input id="calendar-date-filter" type="date" value={selected} onChange={event => {
         if (/^\d{4}-\d{2}-\d{2}$/.test(event.target.value)) {
           setMonth(event.target.value.slice(0, 7));
           rememberSelected(event.target.value);
         }
       }} /></label>}
-      <label>Categoria<select value={category} onChange={event => setCategory(event.target.value)}><option value="">Todas as categorias</option>{categories.items.filter(item => !item.deletedAt && !item.archivedAt).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+      <label htmlFor="calendar-category-filter">Categoria<select id="calendar-category-filter" value={category} onChange={event => setCategory(event.target.value)}><option value="">Todas as categorias</option>{categories.items.filter(item => !item.deletedAt && !item.archivedAt).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     </div>
 
     {view === 'month' ? <section className="panel calendar-panel" aria-label="Calendário mensal" aria-busy={loading}>
