@@ -293,7 +293,7 @@ export function Calendar() {
           rememberSelected(event.target.value);
         }
       }} /></label>}
-      <label htmlFor="calendar-category-filter">Categoria<select id="calendar-category-filter" value={category} onChange={event => setCategory(event.target.value)}><option value="">Todas as categorias</option>{categories.items.filter(item => !item.deletedAt && !item.archivedAt).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+      <label htmlFor="calendar-category-filter">Categoria<select id="calendar-category-filter" aria-label="Categoria" value={category} onChange={event => setCategory(event.target.value)}><option value="">Todas as categorias</option>{categories.items.filter(item => !item.deletedAt && !item.archivedAt).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     </div>
 
     {view === 'month' ? <section className="panel calendar-panel" aria-label="Calendário mensal" aria-busy={loading}>
