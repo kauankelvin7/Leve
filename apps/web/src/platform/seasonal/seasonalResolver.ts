@@ -23,6 +23,7 @@ export function civilDateInTimeZone(timeZone: string): string {
 }
 
 export function seasonalSurfaceForPath(pathname: string): SeasonalSurface {
+  if (pathname === '/entrar' || pathname === '/registrar' || pathname === '/recuperar') return 'login';
   if (pathname === '/hoje' || pathname.startsWith('/hoje/')) return 'today';
   if (pathname === '/calendario' || pathname.startsWith('/calendario/')) return 'calendar';
   return 'global';
