@@ -6,24 +6,32 @@ on:
       - feat/seasonal-experiences-safe
       - main
     paths:
+      - 'apps/web/src/app/App.tsx'
       - 'apps/web/src/components/seasonal/**'
       - 'apps/web/src/platform/seasonal/**'
+      - 'apps/web/src/platform/theme.ts'
       - 'apps/web/src/features/settings/ThemeSettings.tsx'
       - 'packages/domain/src/identity.ts'
       - 'packages/domain/src/archive.ts'
+      - 'packages/domain/src/themes.ts'
       - 'server/account-data.ts'
       - 'server/commands/identity.ts'
+      - 'tests/integration/seasonal-preference.test.ts'
       - 'tests/e2e-local/seasonal-experience.spec.ts'
       - '.github/workflows/seasonal-e2e.yml'
   pull_request:
     paths:
+      - 'apps/web/src/app/App.tsx'
       - 'apps/web/src/components/seasonal/**'
       - 'apps/web/src/platform/seasonal/**'
+      - 'apps/web/src/platform/theme.ts'
       - 'apps/web/src/features/settings/ThemeSettings.tsx'
       - 'packages/domain/src/identity.ts'
       - 'packages/domain/src/archive.ts'
+      - 'packages/domain/src/themes.ts'
       - 'server/account-data.ts'
       - 'server/commands/identity.ts'
+      - 'tests/integration/seasonal-preference.test.ts'
       - 'tests/e2e-local/seasonal-experience.spec.ts'
       - '.github/workflows/seasonal-e2e.yml'
   workflow_dispatch:
