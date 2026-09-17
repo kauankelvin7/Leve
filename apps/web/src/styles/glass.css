@@ -96,6 +96,7 @@ input::file-selector-button { font: inherit; border: 0; padding: 8px 12px; margi
 .theme-swatch { box-shadow: inset 0 1px 2px #fff, 0 2px 5px #26382e10; }
 .danger-zone { border: 1px solid color-mix(in srgb, var(--color-danger) 45%, white); }
 .danger-zone summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; color: var(--color-danger); font-weight: 600; }
+:root[data-appearance='dark'] .danger-zone summary { color: color-mix(in srgb, var(--color-danger) 30%, var(--color-text)); }
 .danger-zone summary::after { content: '+'; font-size: 1.25rem; }
 .danger-zone[open] summary::after { content: '−'; }
 .danger-zone > p { margin-top: 16px; }
