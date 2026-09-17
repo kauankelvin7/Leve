@@ -10,6 +10,7 @@ on:
       - 'apps/web/src/components/seasonal/**'
       - 'apps/web/src/platform/seasonal/**'
       - 'apps/web/src/platform/theme.ts'
+      - 'apps/web/src/styles/**'
       - 'apps/web/src/features/settings/ThemeSettings.tsx'
       - 'packages/domain/src/identity.ts'
       - 'packages/domain/src/archive.ts'
@@ -20,11 +21,14 @@ on:
       - 'tests/e2e-local/seasonal-experience.spec.ts'
       - '.github/workflows/seasonal-e2e.yml'
   pull_request:
+    branches:
+      - main
     paths:
       - 'apps/web/src/app/App.tsx'
       - 'apps/web/src/components/seasonal/**'
       - 'apps/web/src/platform/seasonal/**'
       - 'apps/web/src/platform/theme.ts'
+      - 'apps/web/src/styles/**'
       - 'apps/web/src/features/settings/ThemeSettings.tsx'
       - 'packages/domain/src/identity.ts'
       - 'packages/domain/src/archive.ts'
@@ -35,6 +39,13 @@ on:
       - 'tests/e2e-local/seasonal-experience.spec.ts'
       - '.github/workflows/seasonal-e2e.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seasonal-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   seasonal:
