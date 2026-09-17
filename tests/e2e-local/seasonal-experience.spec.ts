@@ -1,26 +1,36 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const CHRISTMAS_NOW = Date.parse('2026-12-24T15:00:00.000Z');
 
-async function freezeAtChristmas(page: import('@playwright/test').Page) {
+async function freezeAtChristmas(page: Page) {
   await page.addInitScript(value => {
     Date.now = () => value;
   }, CHRISTMAS_NOW);
 }
 
-async function login(page: import('@playwright/test').Page) {
+async function login(page: Page) {
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');
   await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
-  await expect(page.locator('#page-title')).toBeVisible();
-  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) {
+  await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
+
+  const activationHeading = page.getByRole('heading', { name: 'Finalize sua agenda' });
+  if (await activationHeading.isVisible().catch(() => false)) {
     await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   }
+
+  await expect(page).toHaveURL(/\/hoje/);
   await expect(page.locator('#page-title')).toHaveText('Meu dia');
-  const skip = page.getByRole('button', { name: /Pular (guia|tutorial)/ });
-  if (await skip.count()) await skip.click();
+
+  const tutorial = page.getByRole('dialog').filter({ has: page.getByRole('heading', { name: 'Seu dia no Leve' }) });
+  await tutorial.waitFor({ state: 'visible', timeout: 3_000 }).catch(() => undefined);
+  if (await tutorial.isVisible().catch(() => false)) {
+    await tutorial.getByRole('button', { name: /Pular (guia|tutorial)/ }).click();
+    await expect(tutorial).not.toBeVisible();
+  }
+  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
 }
 
 test('Natal aparece de forma decorativa, sem bloquear a entrada', async ({ page }) => {
@@ -78,7 +88,8 @@ test('Meu dia e Calendário preservam reflow e marcador sazonal', async ({ page 
 
     await page.goto('/calendario');
     await expect(page.locator('.seasonal-surface-calendar')).toBeVisible();
-    await expect(page.locator('.calendar-day[aria-current="date"]')).toBeVisible();
+    const currentDay = page.locator('.calendar-time-date[aria-current="date"], .calendar-day[aria-current="date"]');
+    await expect(currentDay.first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
 });
