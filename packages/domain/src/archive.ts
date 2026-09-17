@@ -15,6 +15,7 @@ export const accountArchiveSchema = z.object({
     reduceTransparency: z.boolean(),
     colorTheme: z.enum(colorThemeIds).optional(),
     appearance: z.enum(appearances).optional(),
+    seasonalDetailsEnabled: z.boolean().optional(),
     avatarStyle: z.literal('avataaars').optional(),
     avatarSeed: z.string().min(1).max(80).optional(),
   }).strict(),
