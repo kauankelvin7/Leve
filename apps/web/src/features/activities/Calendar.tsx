@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
-import type { Category } from '../../../../../packages/domain/src/content';
+import type { ActivityInput, Category } from '../../../../../packages/domain/src/content';
 import { useAuth } from '../identity/AuthProvider';
 import { useUserCollection } from '../content/useUserCollection';
 import { useCurrentDay } from './DayNavigation';
 import { LoadError } from '../../components/ui/LoadError';
 import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
+import { ApiError, sendCommand } from '../../platform/api';
 import {
   activityOccursOn,
   CALENDAR_VIEW_STORAGE_KEY,
@@ -22,6 +23,17 @@ import {
 import { useCalendarRange } from './calendar/useCalendarRange';
 import { CalendarTimeGrid } from './calendar/CalendarTimeGrid';
 import { createPlannerDraft, plannerDraftToSearchParams } from './calendar/calendarDraftModel';
+import { moveTimedActivity, resizeTimedActivity } from './calendar/calendarMutationModel';
+import { buildCalendarUpdateCommand, type CalendarMutationScope } from './calendar/calendarCommandModel';
+import { RecurrenceScopeDialog } from './calendar/RecurrenceScopeDialog';
+
+type PendingCalendarMutation = {
+  item: StoredActivity;
+  activity: ActivityInput;
+  action: 'move' | 'resize';
+};
+
+type MutationTone = 'success' | 'error' | 'info';
 
 function initialCalendarView(): CalendarView {
   const stored = localStorage.getItem(CALENDAR_VIEW_STORAGE_KEY);
@@ -53,6 +65,12 @@ export function Calendar() {
   const [view, setView] = useState<CalendarView>(initialCalendarView);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [category, setCategory] = useState('');
+  const [pendingMutation, setPendingMutation] = useState<PendingCalendarMutation | null>(null);
+  const [mutationBusy, setMutationBusy] = useState(false);
+  const [mutationMessage, setMutationMessage] = useState('');
+  const [mutationTone, setMutationTone] = useState<MutationTone>('info');
+  const [locallyPending, setLocallyPending] = useState<Record<string, number>>({});
+  const mutationLock = useRef(false);
   const categories = useUserCollection<Category>('categories');
   const first = Temporal.PlainDate.from(`${month}-01`);
   const bounds = calendarViewBounds(view, view === 'month' ? `${month}-01` : selected, session!.profile!.weekStartsOn);
@@ -68,10 +86,26 @@ export function Calendar() {
     [activities, categories.items],
   );
 
+  useEffect(() => {
+    setLocallyPending(current => {
+      let changed = false;
+      const next = { ...current };
+      for (const [id, expectedRevision] of Object.entries(current)) {
+        const live = activities.find(item => item.id === id);
+        if (!live || live.revision > expectedRevision) {
+          delete next[id];
+          changed = true;
+        }
+      }
+      return changed ? next : current;
+    });
+  }, [activities]);
+
   const start = first.subtract({ days: (first.dayOfWeek % 7 - session!.profile!.weekStartsOn + 7) % 7 });
   const dates = Array.from({ length: 42 }, (_, index) => start.add({ days: index }));
   const onDay = (date: string) => activities.filter(item => activityOccursOn(item, date));
   const selectedItems = onDay(selected);
+  const plannerLocked = mutationBusy || Boolean(pendingMutation) || Object.keys(locallyPending).length > 0;
 
   function rememberSelected(value: string) {
     setSelected(value);
@@ -110,10 +144,94 @@ export function Calendar() {
   }
 
   function createFromInterval(date: string, startMinute: number, endMinute: number) {
-    const draft = createPlannerDraft(date, startMinute, endMinute);
-    rememberSelected(draft.startDate);
-    setMonth(draft.startDate.slice(0, 7));
-    navigate(`/hoje?${plannerDraftToSearchParams(draft).toString()}`);
+    if (plannerLocked) return;
+    try {
+      const draft = createPlannerDraft(date, startMinute, endMinute);
+      rememberSelected(draft.startDate);
+      setMonth(draft.startDate.slice(0, 7));
+      navigate(`/hoje?${plannerDraftToSearchParams(draft).toString()}`);
+    } catch (failure) {
+      setMutationMessage(failure instanceof Error ? failure.message : 'Não foi possível preparar este horário.');
+      setMutationTone('error');
+    }
+  }
+
+  function proposeMutation(item: StoredActivity, activity: ActivityInput, action: PendingCalendarMutation['action']) {
+    setMutationMessage('');
+    setMutationTone('info');
+    const proposal = { item, activity, action };
+    if (item.seriesId && item.occurrenceKey) {
+      setPendingMutation(proposal);
+      return;
+    }
+    void applyMutation(proposal, 'occurrence');
+  }
+
+  function moveEvent(eventId: string, targetDate: string, targetMinute: number) {
+    if (plannerLocked) return;
+    const item = activities.find(activity => activity.id === eventId);
+    if (!item) {
+      setMutationMessage('Este compromisso não está mais disponível neste intervalo.');
+      setMutationTone('error');
+      return;
+    }
+    try {
+      proposeMutation(item, moveTimedActivity(item, targetDate, targetMinute), 'move');
+    } catch (failure) {
+      setMutationMessage(failure instanceof Error ? failure.message : 'Não foi possível calcular o novo horário.');
+      setMutationTone('error');
+    }
+  }
+
+  function resizeEvent(eventId: string, targetEndDate: string, targetEndMinute: number) {
+    if (plannerLocked) return;
+    const item = activities.find(activity => activity.id === eventId);
+    if (!item) {
+      setMutationMessage('Este compromisso não está mais disponível neste intervalo.');
+      setMutationTone('error');
+      return;
+    }
+    try {
+      proposeMutation(item, resizeTimedActivity(item, targetEndDate, targetEndMinute), 'resize');
+    } catch (failure) {
+      setMutationMessage(failure instanceof Error ? failure.message : 'Não foi possível calcular a nova duração.');
+      setMutationTone('error');
+    }
+  }
+
+  async function applyMutation(proposal: PendingCalendarMutation, scope: CalendarMutationScope) {
+    if (mutationLock.current) return;
+    mutationLock.current = true;
+    setMutationBusy(true);
+    setPendingMutation(null);
+    setMutationMessage('');
+    setMutationTone('info');
+
+    try {
+      const command = buildCalendarUpdateCommand(proposal.item, proposal.activity, scope, {
+        operationId: crypto.randomUUID(),
+        clientCreatedAt: new Date().toISOString(),
+        newSeriesId: scope === 'future' ? crypto.randomUUID() : undefined,
+      });
+      await sendCommand(command);
+      setMutationMessage(scope === 'future' ? 'Este compromisso e os próximos foram atualizados.' : 'Horário atualizado.');
+      setMutationTone('success');
+    } catch (failure) {
+      if (failure instanceof ApiError && failure.code === 'SAVED_LOCALLY') {
+        setLocallyPending(current => ({ ...current, [proposal.item.id]: proposal.item.revision }));
+        setMutationMessage('Alteração salva neste aparelho. O Planner aguarda a conexão antes de aceitar outro ajuste de horário.');
+        setMutationTone('info');
+      } else if (failure instanceof ApiError && failure.code === 'REVISION_CONFLICT') {
+        setMutationMessage('Este compromisso mudou em outra sessão. O horário exibido foi mantido; aguarde a atualização e tente novamente.');
+        setMutationTone('error');
+      } else {
+        setMutationMessage(failure instanceof Error ? failure.message : 'Não foi possível atualizar o horário.');
+        setMutationTone('error');
+      }
+    } finally {
+      mutationLock.current = false;
+      setMutationBusy(false);
+    }
   }
 
   const viewName = view === 'month' ? 'mensal' : view === 'week' ? 'semanal' : 'diária';
@@ -161,8 +279,9 @@ export function Calendar() {
           <span className="calendar-date">{date.day}</span><span className="calendar-colors" aria-hidden="true">{items.slice(0, 4).map(item => <span className={item.status === 'pending' && value < today ? 'overdue' : ''} key={item.id} style={{ backgroundColor: colorOf(item) }} />)}</span><span className="calendar-previews" aria-hidden="true">{items.slice(0, 2).map(item => <span className={`calendar-event${item.status === 'completed' ? ' completed' : ''}${item.status === 'pending' && value < today ? ' overdue' : ''}`} key={item.id}>{item.title}</span>)}{items.length > 2 && <small>+{items.length - 2} atividades</small>}</span>{items.length > 0 && <span className="calendar-count" aria-hidden="true">{items.length}</span>}
         </button>;
       })}</div>
-    </section> : <section className="panel calendar-time-panel" aria-label={`Calendário ${viewName}`} aria-busy={loading}>
+    </section> : <section className="panel calendar-time-panel" aria-label={`Calendário ${viewName}`} aria-busy={loading || mutationBusy}>
       <div className="toolbar"><h2>{title}</h2><div className="toolbar-actions"><button onClick={goToday}>Hoje</button><button aria-label={view === 'week' ? 'Semana anterior' : 'Dia anterior'} onClick={() => changeRange(-1)}><Icon name="chevronLeft" /></button><button aria-label={view === 'week' ? 'Próxima semana' : 'Próximo dia'} onClick={() => changeRange(1)}><Icon name="chevronRight" /></button></div></div>
+      {mutationMessage ? <p role={mutationTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${mutationTone}`} aria-live="polite">{mutationMessage}</p> : null}
       {loading ? <p role="status">Carregando atividades…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : <CalendarTimeGrid
         view={view}
         dates={timeDates}
@@ -172,6 +291,9 @@ export function Calendar() {
         timeZone={session!.profile!.timeZone}
         onSelectDate={rememberSelected}
         onCreateInterval={createFromInterval}
+        onMoveEvent={moveEvent}
+        onResizeEvent={resizeEvent}
+        mutationDisabled={plannerLocked}
       />}
       {partial ? <p role="status" className="muted">Há mais atividades neste intervalo. Abra um dia específico para conferir todos os itens.</p> : null}
     </section>}
@@ -180,5 +302,15 @@ export function Calendar() {
       {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><strong>{item.title}</strong><small>{activityColorName(item.colorHex)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'} · {item.status === 'completed' ? 'Concluído' : 'Pendente'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade carregada para este dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
       <Link className="button primary calendar-add" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Há mais atividades neste mês. Abra o Meu dia para conferir uma data específica.</p>}{categories.error && <p role="status">{categories.error}</p>}
     </section></> : categories.error ? <p role="status">{categories.error}</p> : null}
+
+    <RecurrenceScopeDialog
+      open={Boolean(pendingMutation)}
+      activityTitle={pendingMutation?.item.title ?? ''}
+      busy={mutationBusy}
+      onSelect={scope => {
+        if (pendingMutation) void applyMutation(pendingMutation, scope);
+      }}
+      onCancel={() => setPendingMutation(null)}
+    />
   </main>;
 }
