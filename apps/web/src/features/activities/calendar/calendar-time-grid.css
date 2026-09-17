@@ -1,3 +1,38 @@
+.calendar-view-switcher {
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0 0 18px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-solid) 74%, transparent);
+}
+
+.calendar-view-switcher button {
+  min-width: 92px;
+  min-height: 40px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.calendar-view-switcher button.active {
+  background: var(--color-field);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+.calendar-time-panel {
+  padding: 24px;
+}
+
+.calendar-time-panel > .toolbar {
+  margin-bottom: 18px;
+}
+
 .calendar-time-view {
   --calendar-time-axis: 62px;
   margin-top: 20px;
@@ -264,6 +299,19 @@
 }
 
 @media (max-width: 767px) {
+  .calendar-view-switcher {
+    display: grid;
+    width: 100%;
+  }
+
+  .calendar-view-switcher button {
+    min-width: 0;
+  }
+
+  .calendar-time-panel {
+    padding: 16px;
+  }
+
   .calendar-time-view {
     --calendar-time-axis: 52px;
   }
