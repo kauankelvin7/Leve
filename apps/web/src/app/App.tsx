@@ -3,6 +3,7 @@ import { Link, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'rea
 import { Icon } from '../components/ui/Icon';
 import { LoadingState } from '../components/ui/LoadingState';
 import { StatusPage } from '../components/ui/StatusPage';
+import { SeasonalExperience } from '../components/seasonal/SeasonalExperience';
 import { asStatusPageCode } from './statusPage';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
@@ -74,7 +75,7 @@ function NotFound() {
 }
 
 export function App() {
-  return <><RouteFocus /><RouteMetadata /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
+  return <><RouteFocus /><RouteMetadata /><SeasonalExperience /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
     <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} />
     <Route element={<Protected />}><Route element={<Shell />}>
