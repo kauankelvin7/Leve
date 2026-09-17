@@ -14,11 +14,18 @@ jobs:
         with:
           node-version-file: package.json
           cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
       - name: Environment versions
         run: |
           node --version
           npm --version
+          java -version
       - run: npm ci --include=dev
+      - name: Production dependency security audit
+        run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
