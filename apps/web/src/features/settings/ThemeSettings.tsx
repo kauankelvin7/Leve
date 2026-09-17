@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isSeasonalDetailsEnabled } from '../../../../../packages/domain/src/identity';
 import { sendCommand } from '../../platform/api';
 import { storeSeasonalDetailsEnabled } from '../../platform/seasonal/seasonalStorage';
@@ -18,18 +18,27 @@ export function ThemeSettings() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const profile = session!.profile!;
+  const persistedSeasonalEnabled = isSeasonalDetailsEnabled(profile);
+  const [seasonalEnabled, setSeasonalEnabled] = useState(persistedSeasonalEnabled);
+
+  useEffect(() => {
+    if (!busy) setSeasonalEnabled(persistedSeasonalEnabled);
+  }, [persistedSeasonalEnabled, profile.revision, busy]);
 
   async function choose(change: AppearanceChange) {
     const previous = {
       colorTheme: profile.colorTheme ?? 'green',
       appearance: profile.appearance ?? storedAppearance(),
-      seasonalDetailsEnabled: isSeasonalDetailsEnabled(profile),
+      seasonalDetailsEnabled: seasonalEnabled,
     };
     const next = { ...previous, ...change };
 
     if (change.colorTheme) applyColorTheme(change.colorTheme);
     if (change.appearance) applyAppearance(change.appearance);
-    if (typeof change.seasonalDetailsEnabled === 'boolean') storeSeasonalDetailsEnabled(change.seasonalDetailsEnabled);
+    if (typeof change.seasonalDetailsEnabled === 'boolean') {
+      setSeasonalEnabled(change.seasonalDetailsEnabled);
+      storeSeasonalDetailsEnabled(change.seasonalDetailsEnabled);
+    }
 
     setBusy(true);
     setMessage('');
@@ -50,10 +59,12 @@ export function ThemeSettings() {
         },
       });
       await refresh();
+      setSeasonalEnabled(next.seasonalDetailsEnabled);
       setMessage('Aparência salva.');
     } catch (error) {
       applyColorTheme(previous.colorTheme);
       applyAppearance(previous.appearance);
+      setSeasonalEnabled(previous.seasonalDetailsEnabled);
       storeSeasonalDetailsEnabled(previous.seasonalDetailsEnabled);
       setMessage(error instanceof Error ? error.message : 'Não foi possível salvar a aparência.');
     } finally {
@@ -62,7 +73,6 @@ export function ThemeSettings() {
   }
 
   const appearance = profile.appearance ?? storedAppearance();
-  const seasonalEnabled = isSeasonalDetailsEnabled(profile);
 
   return <section className="panel content-form">
     <h2>Aparência e cores</h2>
