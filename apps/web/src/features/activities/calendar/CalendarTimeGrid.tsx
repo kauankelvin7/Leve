@@ -139,7 +139,7 @@ export function CalendarTimeGrid({
     const relativeY = Math.max(0, Math.min(DAY_HEIGHT, clientY - rect.top));
 
     return {
-      date: dates[columnIndex],
+      date: dates[columnIndex]!,
       minute: snapCalendarMinute(relativeY / MINUTE_HEIGHT),
     };
   }
