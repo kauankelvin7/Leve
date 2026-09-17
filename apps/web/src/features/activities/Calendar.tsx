@@ -9,6 +9,7 @@ import { LoadError } from '../../components/ui/LoadError';
 import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
 import { ApiError, sendCommand } from '../../platform/api';
+import { pendingCommands } from '../../platform/outbox';
 import {
   activityOccursOn,
   CALENDAR_VIEW_STORAGE_KEY,
@@ -31,6 +32,11 @@ type PendingCalendarMutation = {
   item: StoredActivity;
   activity: ActivityInput;
   action: 'move' | 'resize';
+};
+
+type LocallyPendingMutation = {
+  expectedRevision: number;
+  operationId: string;
 };
 
 type MutationTone = 'success' | 'error' | 'info';
@@ -57,7 +63,7 @@ function rangeTitle(view: CalendarView, startDate: string, endDate: string): str
 }
 
 export function Calendar() {
-  const { session } = useAuth();
+  const { user, session } = useAuth();
   const navigate = useNavigate();
   const today = useCurrentDay(session!.profile!.timeZone);
   const [selected, setSelected] = useState(() => sessionStorage.getItem('leve.selectedDay') ?? today);
@@ -69,7 +75,7 @@ export function Calendar() {
   const [mutationBusy, setMutationBusy] = useState(false);
   const [mutationMessage, setMutationMessage] = useState('');
   const [mutationTone, setMutationTone] = useState<MutationTone>('info');
-  const [locallyPending, setLocallyPending] = useState<Record<string, number>>({});
+  const [locallyPending, setLocallyPending] = useState<Record<string, LocallyPendingMutation>>({});
   const mutationLock = useRef(false);
   const categories = useUserCollection<Category>('categories');
   const first = Temporal.PlainDate.from(`${month}-01`);
@@ -90,9 +96,9 @@ export function Calendar() {
     setLocallyPending(current => {
       let changed = false;
       const next = { ...current };
-      for (const [id, expectedRevision] of Object.entries(current)) {
+      for (const [id, pending] of Object.entries(current)) {
         const live = activities.find(item => item.id === id);
-        if (!live || live.revision > expectedRevision) {
+        if (live && live.revision > pending.expectedRevision) {
           delete next[id];
           changed = true;
         }
@@ -100,6 +106,38 @@ export function Calendar() {
       return changed ? next : current;
     });
   }, [activities]);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    const refreshPendingOperations = async () => {
+      try {
+        const queued = await pendingCommands(user.uid);
+        if (!active) return;
+        const operationIds = new Set(queued.map(entry => entry.operationId));
+        setLocallyPending(current => {
+          let changed = false;
+          const next = { ...current };
+          for (const [id, pending] of Object.entries(current)) {
+            if (!operationIds.has(pending.operationId)) {
+              delete next[id];
+              changed = true;
+            }
+          }
+          return changed ? next : current;
+        });
+      } catch {
+        // Em caso de falha ao ler a outbox, mantenha o bloqueio conservador.
+      }
+    };
+    const changed = () => void refreshPendingOperations();
+    window.addEventListener('leve:outbox-changed', changed);
+    void refreshPendingOperations();
+    return () => {
+      active = false;
+      window.removeEventListener('leve:outbox-changed', changed);
+    };
+  }, [user?.uid]);
 
   const start = first.subtract({ days: (first.dayOfWeek % 7 - session!.profile!.weekStartsOn + 7) % 7 });
   const dates = Array.from({ length: 42 }, (_, index) => start.add({ days: index }));
@@ -206,10 +244,11 @@ export function Calendar() {
     setPendingMutation(null);
     setMutationMessage('');
     setMutationTone('info');
+    const operationId = crypto.randomUUID();
 
     try {
       const command = buildCalendarUpdateCommand(proposal.item, proposal.activity, scope, {
-        operationId: crypto.randomUUID(),
+        operationId,
         clientCreatedAt: new Date().toISOString(),
         newSeriesId: scope === 'future' ? crypto.randomUUID() : undefined,
       });
@@ -218,7 +257,10 @@ export function Calendar() {
       setMutationTone('success');
     } catch (failure) {
       if (failure instanceof ApiError && failure.code === 'SAVED_LOCALLY') {
-        setLocallyPending(current => ({ ...current, [proposal.item.id]: proposal.item.revision }));
+        setLocallyPending(current => ({
+          ...current,
+          [proposal.item.id]: { expectedRevision: proposal.item.revision, operationId },
+        }));
         setMutationMessage('Alteração salva neste aparelho. O Planner aguarda a conexão antes de aceitar outro ajuste de horário.');
         setMutationTone('info');
       } else if (failure instanceof ApiError && failure.code === 'REVISION_CONFLICT') {
