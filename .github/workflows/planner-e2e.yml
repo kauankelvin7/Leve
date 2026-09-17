@@ -1,0 +1,27 @@
+name: Planner E2E
+
+on:
+  push:
+    branches:
+      - feat/calendar-planner-safe
+  workflow_dispatch:
+
+jobs:
+  planner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci --include=dev
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Planner authenticated E2E on emulators
+        run: npm run test:e2e:local -- tests/e2e-local/calendar-planner.spec.ts
