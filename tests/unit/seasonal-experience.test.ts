@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { activeSeasonalPeriod, seasonalPresentationMode, seasonalSurfaceForPath } from '../../apps/web/src/platform/seasonal/seasonalResolver';
 import { seasonalEvents } from '../../apps/web/src/platform/seasonal/seasonalEvents';
+import { seasonalCalendarMarkerForDate, seasonalCalendarMarkersForYear } from '../../apps/web/src/platform/seasonal/seasonalCalendarMarkers';
 import { hasSeenSeasonalIntro, markSeasonalIntroSeen, storedSeasonalDetailsEnabled, storeSeasonalDetailsEnabled } from '../../apps/web/src/platform/seasonal/seasonalStorage';
 
 class MemoryStorage {
@@ -41,6 +42,21 @@ describe('seasonal experience policy', () => {
   it('prioritizes New Year during the cross-year overlap', () => {
     expect(activeSeasonalPeriod('2026-12-31', 'today')?.eventId).toBe('new-year');
     expect(activeSeasonalPeriod('2027-01-01', 'calendar')?.eventId).toBe('new-year');
+  });
+
+  it('marks only the approved calendar anchor dates', () => {
+    expect(seasonalCalendarMarkersForYear(2026)).toEqual([
+      { eventId: 'new-year', label: 'Ano-Novo', date: '2026-01-01' },
+      { eventId: 'easter', label: 'Páscoa', date: '2026-04-05' },
+      { eventId: 'festa-junina', label: 'Festa Junina', date: '2026-06-24' },
+      { eventId: 'halloween', label: 'Halloween', date: '2026-10-31' },
+      { eventId: 'christmas', label: 'Natal', date: '2026-12-25' },
+      { eventId: 'new-year', label: 'Ano-Novo', date: '2026-12-31' },
+    ]);
+    expect(seasonalCalendarMarkerForDate('2026-12-24')).toBeNull();
+    expect(seasonalCalendarMarkerForDate('2026-12-25')?.eventId).toBe('christmas');
+    expect(seasonalCalendarMarkerForDate('2026-06-24')?.eventId).toBe('festa-junina');
+    expect(seasonalCalendarMarkerForDate('2026-10-31')?.eventId).toBe('halloween');
   });
 
   it('keeps the public device preference enabled by default and stores explicit opt-out', () => {
