@@ -6,6 +6,7 @@ Este diretório reúne decisões, procedimentos de operação, evidências resum
 
 - [Execução e histórico](EXECUCAO.md)
 - [Plano técnico de evolução UI/UX — notas, calendário e experiências sazonais](PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md)
+- [Setup de agentes, Codex e Superpowers](AGENT-SETUP.md)
 - [Retomada atual](../CONTINUAR.md)
 - [ADR 001 — Fundação](adr/001-fundacao.md)
 - [ADR 002 — Renderer do calendário avançado](adr/002-calendar-renderer.md)
