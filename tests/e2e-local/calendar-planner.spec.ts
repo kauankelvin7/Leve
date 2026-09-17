@@ -145,7 +145,7 @@ test('planner pede escopo antes de alterar uma ocorrência recorrente', async ({
   await page.getByLabel('Horário', { exact: true }).fill('10:00');
   await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
   await page.getByLabel('Horário final', { exact: true }).fill('11:00');
-  await page.getByLabel('Frequência', { exact: true }).selectOption('weekly');
+  await page.getByLabel('Frequência').selectOption('weekly');
   await page.getByLabel(/Até/).fill('2026-10-08');
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
