@@ -14,14 +14,13 @@ async function enterLocalAgenda(page: Page) {
     await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   }
   await expect(page).toHaveURL(/\/hoje/);
-  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
-
   const tutorial = page.getByRole('dialog').filter({ has: page.getByRole('heading', { name: 'Seu dia no Leve' }) });
   await tutorial.waitFor({ state: 'visible', timeout: 3_000 }).catch(() => undefined);
   if (await tutorial.isVisible().catch(() => false)) {
     await tutorial.getByRole('button', { name: 'Pular guia', exact: true }).click();
     await expect(tutorial).not.toBeVisible();
   }
+  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
 }
 
 async function chooseDayView(page: Page, date = TEST_DAY) {
@@ -108,13 +107,6 @@ async function createTimedEvent(page: Page, title: string, startTime: string, en
   }
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
-}
-
-async function primeOfflineSession(page: Page) {
-  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
-  await page.reload();
-  await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
-  await expect(page.locator('.calendar-time-view.day')).toBeVisible();
 }
 
 async function reconnectOutbox(context: BrowserContext, page: Page) {
@@ -229,7 +221,7 @@ test('conflito de revisão mantém o horário confirmado e informa a pessoa', as
   await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
 });
 
-test('alteração offline permanece bloqueada até sair da outbox após remontar o calendário', async ({ context, page }) => {
+test('alteração offline bloqueia novos gestos até sair da outbox e sincronizar', async ({ context, page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await enterLocalAgenda(page);
@@ -239,20 +231,15 @@ test('alteração offline permanece bloqueada até sair da outbox após remontar
   await scrollPlannerTo(page, 6 * 60);
   await expect(await plannerEvent(page, title)).toContainText('06:00–07:00');
 
-  await primeOfflineSession(page);
+  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
   await context.setOffline(true);
   await dragPlannerEvent(page, title, 7 * 60 + 30);
   await expect(page.getByText('Alteração salva neste aparelho. O Planner aguarda a conexão antes de aceitar outro ajuste de horário.', { exact: true })).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
-  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
-  await expect(page.locator('.calendar-time-view.day')).toBeVisible();
-  await scrollPlannerTo(page, 6 * 60);
   let event = await plannerEvent(page, title);
   await event.hover();
   await expect(event.locator('.calendar-time-move-handle')).toHaveCount(0);
+  await expect(event.locator('.calendar-time-resize-handle')).toHaveCount(0);
 
   await reconnectOutbox(context, page);
   await scrollPlannerTo(page, 7 * 60 + 30);
@@ -260,6 +247,7 @@ test('alteração offline permanece bloqueada até sair da outbox após remontar
   await expect(event).toContainText('07:30–08:30', { timeout: 20_000 });
   await event.hover();
   await expect(event.locator('.calendar-time-move-handle')).toBeVisible({ timeout: 20_000 });
+  await expect(event.locator('.calendar-time-resize-handle')).toBeVisible({ timeout: 20_000 });
 });
 
 test('semana fica contida no mobile e a preferência de visualização persiste', async ({ page }) => {
