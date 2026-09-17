@@ -65,7 +65,7 @@ async function createFromPlanner(page: Page, title: string) {
 
   await expect(page).toHaveURL(/\/hoje\?/);
   await expect(page.locator('.activity-composer')).toBeVisible();
-  await expect(page.getByLabel('Tipo', { exact: true })).toHaveValue('event');
+  await expect(page.getByLabel('Tipo')).toHaveValue('event');
   await expect(page.getByLabel('Início', { exact: true })).toHaveValue(TEST_DAY);
   await expect(page.getByLabel('Horário', { exact: true })).toHaveValue('14:00');
   await expect(page.getByLabel('Fim', { exact: true })).toHaveValue(TEST_DAY);
@@ -139,7 +139,7 @@ test('planner pede escopo antes de alterar uma ocorrência recorrente', async ({
   await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
   await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
   await expect(page.locator('.activity-composer')).toBeVisible();
-  await page.getByLabel('Tipo', { exact: true }).selectOption('event');
+  await page.getByLabel('Tipo').selectOption('event');
   await page.getByLabel('Título', { exact: true }).fill(title);
   await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
   await page.getByLabel('Horário', { exact: true }).fill('10:00');
