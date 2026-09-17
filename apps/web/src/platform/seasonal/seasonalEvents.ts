@@ -65,13 +65,13 @@ const newYearBase = {
   id: 'new-year', label: 'Ano-Novo', surfaces: ['login', 'today', 'calendar', 'global'], decoration: 'new-year', intro: 'new-year-sparkles',
 } as const;
 const juneBase = {
-  id: 'festa-junina', label: 'Festa Junina', surfaces: ['today', 'calendar', 'global'], decoration: 'festa-junina', intro: 'festa-junina-flags',
+  id: 'festa-junina', label: 'Festa Junina', surfaces: ['login', 'today', 'calendar', 'global'], decoration: 'festa-junina', intro: 'festa-junina-flags',
 } as const;
 const halloweenBase = {
   id: 'halloween', label: 'Halloween', surfaces: ['login', 'today', 'calendar', 'global'], decoration: 'halloween', intro: 'halloween-moon',
 } as const;
 const easterBase = {
-  id: 'easter', label: 'Páscoa', surfaces: ['login', 'today', 'calendar', 'global'], decoration: 'easter', intro: 'easter-bunny',
+  id: 'easter', label: 'Páscoa', surfaces: ['login', 'today', 'calendar', 'global'], decoration: 'easter', intro: 'easter-paper',
 } as const;
 
 export const seasonalEvents: readonly SeasonalEventDefinition[] = [
