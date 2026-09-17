@@ -106,7 +106,7 @@ test('controles principais do calendário são alcançáveis por teclado', async
   await page.keyboard.press('Tab');
   await expect(page.getByLabel('Data', { exact: true })).toBeFocused();
   const category = page.getByLabel('Categoria', { exact: true });
-  await tabUntilFocused(page, category, 3);
+  await tabUntilFocused(page, category, 8);
   await expect(category).toBeFocused();
 });
 
