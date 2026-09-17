@@ -44,6 +44,9 @@ function stored(overrides: Partial<StoredActivity> = {}): StoredActivity {
     completedAt: null,
     seriesId: null,
     occurrenceKey: null,
+    startsAt: '2026-09-17T17:00:00.000Z',
+    endsAt: '2026-09-17T18:00:00.000Z',
+    dueAt: null,
     ...overrides,
   };
 }
