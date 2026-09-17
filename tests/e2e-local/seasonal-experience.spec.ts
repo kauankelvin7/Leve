@@ -79,7 +79,13 @@ test('Natal aparece de forma decorativa, sem bloquear a entrada', async ({ page 
 
 test('intro aparece uma vez por período neste aparelho', async ({ page }) => {
   await freezeAtChristmas(page);
-  await page.addInitScript(key => localStorage.removeItem(key), CHRISTMAS_SEEN_KEY);
+  await page.addInitScript(key => {
+    const guard = 'leve.test.seasonal-intro-cleared';
+    if (sessionStorage.getItem(guard) !== '1') {
+      localStorage.removeItem(key);
+      sessionStorage.setItem(guard, '1');
+    }
+  }, CHRISTMAS_SEEN_KEY);
   await page.goto('/entrar', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('.seasonal-intro')).toBeVisible();
