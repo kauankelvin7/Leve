@@ -102,6 +102,19 @@ async function createFromPlanner(page: Page, title: string) {
   await expect(page.getByText(title, { exact: true })).toBeVisible();
 }
 
+async function createTimedEventViaForm(page: Page, title: string, startTime: string, endTime: string) {
+  await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
+  await expect(page.locator('.activity-composer')).toBeVisible();
+  await page.getByLabel('Tipo').selectOption('event');
+  await page.getByLabel('Título', { exact: true }).fill(title);
+  await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
+  await page.getByLabel('Horário', { exact: true }).fill(startTime);
+  await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
+  await page.getByLabel('Horário final', { exact: true }).fill(endTime);
+  await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
+  await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
+}
+
 async function createRecurringEvent(page: Page, title: string, startTime: string, endTime: string) {
   await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
   await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
@@ -249,29 +262,28 @@ test('alteração offline permanece bloqueada até sair da outbox mesmo fora do 
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await enterLocalAgenda(page);
-  await chooseDayView(page);
   const title = `Offline Planner ${Date.now()}`;
-  await createFromPlanner(page, title);
+  await createTimedEventViaForm(page, title, '06:00', '07:00');
   await chooseDayView(page);
-  await scrollPlannerTo(page, 14 * 60);
-  await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
+  await scrollPlannerTo(page, 6 * 60);
+  await expect(await plannerEvent(page, title)).toContainText('06:00–07:00');
 
   await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
   await context.setOffline(true);
-  await dragPlannerEvent(page, title, 16 * 60);
+  await dragPlannerEvent(page, title, 7 * 60 + 30);
   await expect(page.getByRole('status')).toContainText('Alteração salva neste aparelho.');
 
   await setPlannerDate(page, '2026-09-18');
   await setPlannerDate(page, TEST_DAY);
-  await scrollPlannerTo(page, 14 * 60);
+  await scrollPlannerTo(page, 6 * 60);
   let event = await plannerEvent(page, title);
   await event.hover();
   await expect(event.locator('.calendar-time-move-handle')).toHaveCount(0);
 
   await reconnectOutbox(context, page);
-  await scrollPlannerTo(page, 16 * 60);
+  await scrollPlannerTo(page, 7 * 60 + 30);
   event = await plannerEvent(page, title);
-  await expect(event).toContainText('16:00–17:00', { timeout: 20_000 });
+  await expect(event).toContainText('07:30–08:30', { timeout: 20_000 });
   await event.hover();
   await expect(event.locator('.calendar-time-move-handle')).toBeVisible({ timeout: 20_000 });
 });
