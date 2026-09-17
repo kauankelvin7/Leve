@@ -9,13 +9,12 @@ import {
 } from '../../apps/web/src/features/activities/calendar/timeGridModel';
 
 function event(overrides: Partial<CalendarEventViewModel> & Pick<CalendarEventViewModel, 'id' | 'slot'>): CalendarEventViewModel {
+  const { id, slot, ...rest } = overrides;
   return {
-    id: overrides.id,
     revision: 1,
-    title: overrides.id,
+    title: id,
     categoryId: null,
     color: '#557755',
-    slot: overrides.slot,
     startDate: null,
     endDate: null,
     endDateExclusive: null,
@@ -25,7 +24,9 @@ function event(overrides: Partial<CalendarEventViewModel> & Pick<CalendarEventVi
     status: 'pending',
     seriesId: null,
     occurrenceKey: null,
-    ...overrides,
+    ...rest,
+    id,
+    slot,
   };
 }
 

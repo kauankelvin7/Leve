@@ -15,12 +15,15 @@ Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, 
 ## Estado atual
 
 - O Leve e um sistema persistente, autenticado, PWA e verificavel; `/demo` e apenas referencia historica.
-- Mutacoes de dominio ja passam pela API de comandos com revisoes, idempotencia e conflitos explicitos.
+- Mutacoes de dominio passam pela API de comandos com revisoes, idempotencia e conflitos explicitos.
 - O modo offline e opt-in e usa cache privado + outbox; nao criar caminhos paralelos de persistencia.
 - Notas possuem presets extensveis com identidades light/dark.
-- O calendario mensal ja usa a camada `calendarModel` + `useCalendarRange`; a base de Mês/Semana/Dia esta sendo preparada antes de qualquer renderer externo.
+- O calendario possui Mês/Semana/Dia sobre `calendarModel` + `useCalendarRange`, com time grid proprio, tarefas e all-day separados, overlap, linha de horario atual, criacao por intervalo, move e resize com snap de 15 minutos.
+- Mutacoes do Planner continuam em `POST /api/commands`, usam `expectedRevision`, respeitam a outbox e perguntam o escopo antes de alterar recorrencia futura.
+- O renderer de calendario foi decidido em `docs/adr/002-calendar-renderer.md`; nao adicionar biblioteca de calendario sem nova necessidade e revisao da ADR.
+- Existe um gate E2E focal do Planner com Auth/Firestore Emulator, Axe, viewports, recorrencia, conflito e offline.
 - O motor sazonal puro ja resolve Natal, Ano-Novo, Pascoa, Festa Junina e Halloween, mas a experiencia visual e a preferencia de perfil ainda nao devem ser consideradas prontas.
-- O proximo bloco de alto valor e o spike controlado do renderer de calendario, seguido de Semana/Dia somente leitura antes de drag/resize.
+- O proximo bloco planejado de produto e a experiencia sazonal opcional; antes de implementa-la, revisar schema/defaults/export/import e manter `prefers-reduced-motion` como regra superior.
 
 ## Regras de produto e arquitetura
 
