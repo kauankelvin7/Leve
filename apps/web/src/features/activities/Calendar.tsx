@@ -93,41 +93,25 @@ export function Calendar() {
   );
 
   useEffect(() => {
-    setLocallyPending(current => {
-      let changed = false;
-      const next = { ...current };
-      for (const [id, pending] of Object.entries(current)) {
-        const live = activities.find(item => item.id === id);
-        if (live && live.revision > pending.expectedRevision) {
-          delete next[id];
-          changed = true;
-        }
-      }
-      return changed ? next : current;
-    });
-  }, [activities]);
-
-  useEffect(() => {
     if (!user) return;
     let active = true;
     const refreshPendingOperations = async () => {
       try {
         const queued = await pendingCommands(user.uid);
         if (!active) return;
-        const operationIds = new Set(queued.map(entry => entry.operationId));
-        setLocallyPending(current => {
-          let changed = false;
-          const next = { ...current };
-          for (const [id, pending] of Object.entries(current)) {
-            if (!operationIds.has(pending.operationId)) {
-              delete next[id];
-              changed = true;
-            }
-          }
-          return changed ? next : current;
-        });
+        const restored: Record<string, LocallyPendingMutation> = {};
+        for (const entry of queued) {
+          const command = entry.command;
+          if (command.command !== 'activity.update' && command.command !== 'activity.updateFuture') continue;
+          if (!command.entityId || typeof command.expectedRevision !== 'number') continue;
+          restored[command.entityId] = {
+            expectedRevision: command.expectedRevision,
+            operationId: entry.operationId,
+          };
+        }
+        setLocallyPending(restored);
       } catch {
-        // Em caso de falha ao ler a outbox, mantenha o bloqueio conservador.
+        // Em caso de falha ao ler a outbox, mantenha o bloqueio conhecido desta instância.
       }
     };
     const changed = () => void refreshPendingOperations();
