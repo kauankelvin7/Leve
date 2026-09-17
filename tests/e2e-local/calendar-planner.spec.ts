@@ -15,12 +15,21 @@ async function enterLocalAgenda(page: Page) {
   }
 
   await expect(page).toHaveURL(/\/hoje/);
-  const dismissGuide = page.getByRole('button', { name: /Pular (guia|tutorial)/i });
-  if (await dismissGuide.count() && await dismissGuide.first().isVisible()) await dismissGuide.first().click();
+  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
+
+  const tutorial = page.getByRole('dialog').filter({ has: page.getByRole('heading', { name: 'Seu dia no Leve' }) });
+  await tutorial.waitFor({ state: 'visible', timeout: 3_000 }).catch(() => undefined);
+  if (await tutorial.isVisible().catch(() => false)) {
+    await tutorial.getByRole('button', { name: 'Pular guia', exact: true }).click();
+    await expect(tutorial).not.toBeVisible();
+  }
+
+  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
 }
 
 async function chooseDayView(page: Page) {
   await page.goto('/calendario');
+  await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Dia', exact: true }).click();
   await page.getByLabel('Data', { exact: true }).fill(TEST_DAY);
   await expect(page.locator('.calendar-time-view.day')).toBeVisible();
@@ -128,6 +137,8 @@ test('planner pede escopo antes de alterar uma ocorrência recorrente', async ({
 
   const title = `Série Planner ${Date.now()}`;
   await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
+  await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
+  await expect(page.locator('.activity-composer')).toBeVisible();
   await page.getByLabel('Tipo', { exact: true }).selectOption('event');
   await page.getByLabel('Título', { exact: true }).fill(title);
   await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
@@ -165,6 +176,7 @@ test('semana fica contida no mobile e a preferência de visualização persiste'
   await page.setViewportSize({ width: 390, height: 844 });
   await enterLocalAgenda(page);
   await page.goto('/calendario');
+  await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Semana', exact: true }).click();
   await expect(page.locator('.calendar-time-view.week')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
