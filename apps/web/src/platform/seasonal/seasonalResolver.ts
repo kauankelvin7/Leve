@@ -30,7 +30,7 @@ export function seasonalSurfaceForPath(pathname: string): SeasonalSurface {
 
 export function activeSeasonalPeriod(civilDate: string, surface: SeasonalSurface): SeasonalPeriod | null {
   const periods = activeSeasonalPeriods(civilDate)
-    .filter(period => period.surfaces.includes(surface) || period.surfaces.includes('global'))
+    .filter(period => period.surfaces.includes(surface))
     .sort((left, right) => {
       const leftPriority = EVENT_PRIORITY.indexOf(left.eventId as typeof EVENT_PRIORITY[number]);
       const rightPriority = EVENT_PRIORITY.indexOf(right.eventId as typeof EVENT_PRIORITY[number]);
