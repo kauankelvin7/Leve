@@ -1,158 +1,129 @@
 # Leve — ponto exato de retomada
 
 **Atualizado em:** 17/09/2026  
-**Branch atual:** `feat/seasonal-experiences-safe`  
-**Base:** `main` em `e8047bf23778e5bb395639a2d839a72f61c1bcf7`  
-**Estado:** implementação sazonal concluída e validada na branch; próxima ação é PR/merge controlado
+**Branch atual:** `feat/seasonal-calendar-markers`  
+**Base:** `main` em `cc0f6d4efe38e36239df2f2f28bb4f3bef7133f9`  
+**Estado:** extensão sazonal do calendário implementada; em validação antes de PR/merge
 
 > Este arquivo registra somente o ponto atual necessário para retomar. O histórico anterior continua preservado no Git, nos ADRs e em `docs/EXECUCAO.md`.
 
-## Etapa atual
+## Estado consolidado anterior
 
-Experiências sazonais opcionais concluídas na branch isolada, seguindo a direção aprovada em `docs/SEASONAL-ART-DIRECTION.md`.
-
-Direção de arte validada pelo usuário:
-
-- intensidade equilibrada e elegante;
-- formas editoriais e abstratas;
-- intro de aproximadamente 3 segundos, uma vez por período/aparelho;
-- Natal com estrelas/luzes e neve mínima ou ausente;
-- Páscoa com ovo/papel/folhas, sem coelho literal dominante;
-- favicon sazonal nesta fase; ícone de launcher instalado continua best-effort;
-- CSS + SVG próprios, sem Motion, Lottie, canvas permanente ou asset remoto.
-
-## Implementado e validado
-
-### Contrato e persistência
-
-- `seasonalDetailsEnabled?: boolean` no perfil, com compatibilidade `undefined => true`;
-- ativação de conta grava `true` por padrão;
-- `profile.update` preserva o opt-out quando clientes antigos não enviam o campo;
-- alteração continua usando `expectedRevision`, recibos e o comando existente;
-- exportação inclui a preferência;
-- schema de arquivo continua aceitando exports antigos;
-- importação preserva a semântica atual de importar conteúdo como cópia e não sobrescreve o perfil atual.
-
-### Resolução sazonal
-
-O registry puro resolve por data civil/fuso:
-
-- Natal: 20–25/12;
-- Ano-Novo: 31/12–01/01;
-- Páscoa: sexta-feira anterior até domingo;
-- Festa Junina: 12–30/06;
-- Halloween: 29–31/10.
-
-Ano-Novo tem prioridade em sobreposições. As superfícies são `login`, `today`, `calendar` e `global`.
-
-### UI e comportamento
-
-- `SeasonalExperience` centraliza resolução e renderização;
-- `SeasonalGlyph` contém SVGs próprios, pequenos e determinísticos para os cinco eventos;
-- layer sazonal usa `pointer-events: none` e permanece atrás da interface;
-- nenhuma posição usa `Math.random()`;
-- intro é marcada como vista somente depois de terminar, evitando race com React Strict Mode;
-- chave local: `leve.seasonal.seen.<eventId>.<periodId>`;
-- `prefers-reduced-motion` é lido já no primeiro render e, junto de `profile.reduceMotion`, elimina a intro animada;
-- preferência desligada remove decoração, intro e favicon sazonal;
-- toggle de Preferências é otimista durante o save e faz rollback se o comando falhar;
-- Login recebe presença maior; Meu dia/Calendário, presença moderada; outras telas, detalhe mínimo;
-- Calendário recebe marcador sazonal sem alterar cores de compromissos;
-- favicon sazonal deriva da paleta/aparência ativa;
-- modo escuro teve o contraste de `Excluir conta` corrigido após o Axe detectar 2,39:1.
-
-### Gate permanente
-
-`.github/workflows/seasonal-e2e.yml` ficou focal e permanente:
-
-- roda em PR para `main` e em pushes relevantes;
-- observa componentes sazonais, perfil/exportação e `apps/web/src/styles/**`;
-- usa somente Auth/Firestore Emulator e dados fictícios;
-- `permissions: contents: read`;
-- concorrência cancela execução obsoleta da mesma ref.
-
-## Validação final da branch
-
-HEAD validado antes deste checkpoint: `e82f5e2bb2b24c97ba32a4304cde2f33ed36607c`.
+A experiência sazonal base já foi integrada na `main` pelo PR #2 no commit:
 
 ```text
-Production dependency security audit  PASS
-npm run lint                          PASS
-npm run typecheck                     PASS
-npm test                              PASS
-npm run build                         PASS
-Auth + Firestore integration          PASS
-Seasonal E2E                          PASS (6/6)
+cc0f6d4efe38e36239df2f2f28bb4f3bef7133f9
+feat(seasonal): add optional seasonal experiences
 ```
 
-CI final da branch: run `35237771271`, sucesso.  
-Seasonal E2E final da branch: run `35237768995`, sucesso.
-
-O E2E comprova:
-
-- decoração de Natal sem bloquear a entrada;
-- intro uma vez por período/aparelho;
-- reduced motion sem intro animada;
-- opt-out persistido no perfil e remoção integral da camada;
-- Claro, Escuro e Sistema;
-- Axe WCAG automatizado;
-- Meu dia e Calendário sem overflow nas larguras 1440, 1366, 1024, 430, 390 e 360 px.
-
-A integração focal comprova `profile.update`, preservação por cliente legado, exportação da preferência e default `true` na ativação de conta.
-
-## Arquivos centrais
+O pós-merge desse commit foi confirmado com sucesso em:
 
 ```text
-apps/web/src/components/seasonal/SeasonalExperience.tsx
-apps/web/src/components/seasonal/SeasonalGlyph.tsx
+CI / verify          PASS
+Seasonal E2E         PASS
+Planner E2E          PASS
+```
+
+A Fase 7 de auditoria final **não foi iniciada**.
+
+## Extensão atual — marcadores de datas especiais
+
+O usuário aprovou uma melhoria visual no Calendário: em vez de existir apenas um detalhe sazonal genérico no dia atual, as datas especiais devem carregar um pequeno símbolo próprio na data exata.
+
+A decisão foi registrada em `docs/SEASONAL-ART-DIRECTION.md`.
+
+### Datas âncora V1
+
+- 01/01 — Ano-Novo — spark geométrico;
+- domingo de Páscoa — Páscoa — ovo abstrato;
+- 24/06 — Festa Junina — bandeirolas;
+- 31/10 — Halloween — lua crescente;
+- 25/12 — Natal — estrela editorial;
+- 31/12 — Ano-Novo — spark geométrico.
+
+### Comportamento aprovado
+
+- os marcadores são estáticos e pequenos;
+- usam os SVGs sazonais já existentes;
+- não mudam cores de compromissos;
+- não cobrem número, título ou atividade;
+- usam os tokens do tema atual, sem paleta fixa por feriado;
+- aparecem ao navegar até a data âncora mesmo que o dia atual esteja em outro mês;
+- na visão Mês, células adjacentes não recebem marcador;
+- Semana e Dia exibem o símbolo no cabeçalho da data;
+- `seasonalDetailsEnabled = false` remove também esses marcadores;
+- o SVG é decorativo (`aria-hidden`), mas o nome do evento entra no nome acessível da data.
+
+## Implementação na branch
+
+Arquivos novos:
+
+```text
+apps/web/src/platform/seasonal/seasonalCalendarMarkers.ts
+apps/web/src/components/seasonal/SeasonalCalendarMarker.tsx
+```
+
+Arquivos alterados:
+
+```text
+apps/web/src/features/activities/Calendar.tsx
+apps/web/src/features/activities/calendar/CalendarTimeGrid.tsx
 apps/web/src/components/seasonal/seasonal-experience.css
-apps/web/src/platform/seasonal/seasonalEvents.ts
-apps/web/src/platform/seasonal/seasonalResolver.ts
-apps/web/src/platform/seasonal/seasonalStorage.ts
-apps/web/src/features/settings/ThemeSettings.tsx
-packages/domain/src/identity.ts
-packages/domain/src/archive.ts
-server/commands/identity.ts
-server/account-data.ts
 tests/unit/seasonal-experience.test.ts
-tests/integration/seasonal-preference.test.ts
 tests/e2e-local/seasonal-experience.spec.ts
-.github/workflows/seasonal-e2e.yml
 docs/SEASONAL-ART-DIRECTION.md
+CONTINUAR.md
 ```
 
-## Segurança e limites preservados
+A resolução das datas é local e determinística. A Páscoa reutiliza o computus já existente. Não há API externa, dependência nova, coleção nova, alteração em Firestore Rules ou mudança de persistência.
 
-- nenhuma escrita direta nova no Firestore;
-- nenhuma alteração em `firestore.rules`;
-- nenhuma coleção nova;
-- nenhuma dependência nova;
-- nenhuma API externa de feriados;
-- nenhuma localização enviada para serviço externo;
-- nenhuma credencial, analytics ou telemetria;
-- nenhuma mudança de billing/domínio/infraestrutura paga;
-- custo planejado continua R$ 0;
-- a branch não altera o domínio de atividades, recorrência ou outbox.
+## Testes adicionados
 
-## Auditoria antes do PR
+Unitários cobrem as datas âncora de 2026 e confirmam que dias apenas pertencentes ao período, como 24/12, não recebem marcador de Natal.
 
-`main...feat/seasonal-experiences-safe` estava com `behind_by: 0` durante a revisão. O escopo ficou concentrado na experiência sazonal, preferência/exportação, testes, documentação, gate E2E e a correção de contraste descoberta pelo Axe.
+O E2E sazonal passou a provar:
 
-## Pendência imediata
+- Natal aparece especificamente em 25/12 na visão Mês;
+- o nome acessível da data inclui `Natal`;
+- a visão Dia mantém o marcador depois de selecionar 25/12;
+- opt-out sazonal remove os marcadores do calendário;
+- Axe e ausência de overflow continuam obrigatórios.
 
-1. abrir PR para `main`;
-2. aguardar CI + Seasonal E2E no contexto do PR;
-3. revisar novamente o diff e confirmar o HEAD esperado;
-4. fazer squash merge somente se os gates do PR estiverem verdes;
-5. repetir CI + Seasonal E2E na própria `main`;
-6. atualizar este checkpoint na `main` com o SHA final.
+## Gate atual
 
-## Limitações honestas
+HEAD funcional antes das atualizações documentais:
 
-- o ícone de um PWA já instalado no launcher depende do navegador/SO; o favicon sazonal é garantido pela aplicação, o launcher é best-effort;
-- leitor de tela externo e sensação das animações em aparelho físico continuam validações complementares;
-- dependências existentes ainda têm vulnerabilidades moderadas conhecidas; não usar `npm audit fix --force` nesta fase.
+```text
+a61cde7c896f99f6990ec397089c682bc6287d34
+```
 
-## Próximo bloco depois da integração
+No CI desse HEAD já passaram:
 
-Executar a auditoria final do plano (`Fase 7`), sem reimplementar Planner ou sazonal. Priorizar regressão global, PWA/service worker, temas, documentação e as validações externas que realmente exigirem aparelho/ambiente autorizado.
+```text
+npm ci                              PASS
+Production dependency audit        PASS
+npm run lint                        PASS
+npm run typecheck                   PASS
+npm test                            PASS
+npm run build                       PASS
+```
+
+A integração Auth/Firestore ainda estava em execução quando este checkpoint foi escrito. As atualizações documentais seguintes geram um novo HEAD e o resultado final deve ser confirmado novamente antes do PR.
+
+## Próximos passos permitidos nesta extensão
+
+1. confirmar o CI completo do HEAD final da branch;
+2. comparar `main...feat/seasonal-calendar-markers` e revisar escopo;
+3. abrir PR para `main`;
+4. exigir CI + Seasonal E2E + Planner E2E verdes no PR;
+5. fazer squash merge apenas do SHA testado;
+6. repetir os gates pós-merge na `main`;
+7. atualizar este checkpoint com o SHA final.
+
+## Fora de escopo agora
+
+- não iniciar a Fase 7;
+- não redesenhar a experiência sazonal base;
+- não adicionar Motion/Lottie/canvas;
+- não alterar Rules, domínio de atividades, recorrência, outbox ou billing;
+- não adicionar outros feriados sem nova decisão de produto.
