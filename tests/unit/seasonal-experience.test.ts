@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { activeSeasonalPeriod, seasonalPresentationMode, seasonalSurfaceForPath } from '../../apps/web/src/platform/seasonal/seasonalResolver';
+import { seasonalEvents } from '../../apps/web/src/platform/seasonal/seasonalEvents';
 import { hasSeenSeasonalIntro, markSeasonalIntroSeen, storedSeasonalDetailsEnabled, storeSeasonalDetailsEnabled } from '../../apps/web/src/platform/seasonal/seasonalStorage';
 
 class MemoryStorage {
@@ -25,10 +26,16 @@ describe('seasonal experience policy', () => {
     expect(seasonalSurfaceForPath('/notas')).toBe('global');
   });
 
-  it('resolves only periods relevant to the current surface', () => {
+  it('resolves the approved events on the primary surfaces', () => {
     expect(activeSeasonalPeriod('2026-12-24', 'today')?.eventId).toBe('christmas');
-    expect(activeSeasonalPeriod('2026-06-20', 'login')).toBeNull();
+    expect(activeSeasonalPeriod('2026-06-20', 'login')?.eventId).toBe('festa-junina');
     expect(activeSeasonalPeriod('2026-06-20', 'calendar')?.eventId).toBe('festa-junina');
+  });
+
+  it('keeps Easter abstract in the registry', () => {
+    const easter = seasonalEvents.find(event => event.id === 'easter');
+    expect(easter?.intro).toBe('easter-paper');
+    expect(easter?.intro).not.toMatch(/bunny|rabbit|coelho/i);
   });
 
   it('prioritizes New Year during the cross-year overlap', () => {
