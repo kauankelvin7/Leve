@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import type { CalendarEventViewModel } from './calendarModel';
 import { calendarDayBuckets } from './timeGridModel';
+import { snapCalendarMinute } from './calendarMutationModel';
 import './calendar-time-grid.css';
 
 const MINUTE_HEIGHT = 1;
@@ -17,6 +18,14 @@ type CalendarTimeGridProps = {
   selectedDate: string;
   timeZone: string;
   onSelectDate: (date: string) => void;
+  onCreateInterval?: (date: string, startMinute: number, endMinute: number) => void;
+};
+
+type IntervalSelection = {
+  date: string;
+  pointerId: number;
+  anchorMinute: number;
+  currentMinute: number;
 };
 
 function currentMinute(timeZone: string): number {
@@ -29,8 +38,22 @@ function timeLabel(startTime: string | null, endTime: string | null): string {
   return endTime ? `${startTime}–${endTime}` : startTime;
 }
 
-export function CalendarTimeGrid({ view, dates, events, today, selectedDate, timeZone, onSelectDate }: CalendarTimeGridProps) {
+function minuteFromPointer(event: React.PointerEvent<HTMLDivElement>): number {
+  const rect = event.currentTarget.getBoundingClientRect();
+  return Math.max(0, Math.min(24 * 60, (event.clientY - rect.top) / MINUTE_HEIGHT));
+}
+
+function previewRange(selection: IntervalSelection): { startMinute: number; endMinute: number } {
+  let startMinute = snapCalendarMinute(Math.min(selection.anchorMinute, selection.currentMinute));
+  let endMinute = snapCalendarMinute(Math.max(selection.anchorMinute, selection.currentMinute));
+  if (startMinute >= 24 * 60) startMinute = 23 * 60;
+  if (endMinute <= startMinute) endMinute = Math.min(24 * 60, startMinute + 60);
+  return { startMinute, endMinute };
+}
+
+export function CalendarTimeGrid({ view, dates, events, today, selectedDate, timeZone, onSelectDate, onCreateInterval }: CalendarTimeGridProps) {
   const [nowMinute, setNowMinute] = useState(() => currentMinute(timeZone));
+  const [selection, setSelection] = useState<IntervalSelection | null>(null);
   const buckets = useMemo(() => new Map(dates.map(date => [date, calendarDayBuckets(events, date)])), [dates, events]);
   const hasAllDay = dates.some(date => (buckets.get(date)?.allDay.length ?? 0) > 0);
   const hasTasks = dates.some(date => (buckets.get(date)?.tasks.length ?? 0) > 0);
@@ -42,6 +65,36 @@ export function CalendarTimeGrid({ view, dates, events, today, selectedDate, tim
   }, [timeZone]);
 
   const boardStyle = { '--calendar-day-count': dates.length } as React.CSSProperties;
+
+  function beginSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
+    if (!onCreateInterval || event.button !== 0 || event.pointerType === 'touch') return;
+    if (event.target instanceof Element && event.target.closest('.calendar-time-event')) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const minute = minuteFromPointer(event);
+    setSelection({ date, pointerId: event.pointerId, anchorMinute: minute, currentMinute: minute });
+  }
+
+  function moveSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
+    setSelection(current => {
+      if (!current || current.pointerId !== event.pointerId || current.date !== date) return current;
+      return { ...current, currentMinute: minuteFromPointer(event) };
+    });
+  }
+
+  function finishSelection(event: React.PointerEvent<HTMLDivElement>, date: string) {
+    if (!selection || selection.pointerId !== event.pointerId || selection.date !== date) return;
+    const finalSelection = { ...selection, currentMinute: minuteFromPointer(event) };
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    setSelection(null);
+    onCreateInterval?.(date, finalSelection.anchorMinute, finalSelection.currentMinute);
+  }
+
+  function cancelSelection(event: React.PointerEvent<HTMLDivElement>) {
+    if (!selection || selection.pointerId !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    setSelection(null);
+  }
 
   return (
     <section className={`calendar-time-view ${view}`} aria-label={view === 'week' ? 'Calendário da semana' : 'Calendário do dia'}>
@@ -118,9 +171,26 @@ export function CalendarTimeGrid({ view, dates, events, today, selectedDate, tim
               <div className="calendar-time-date-grid calendar-time-columns">
                 {dates.map(date => {
                   const day = buckets.get(date)!;
+                  const preview = selection?.date === date ? previewRange(selection) : null;
                   return (
-                    <div className={`calendar-time-column${date === today ? ' today' : ''}`} key={date} style={{ height: DAY_HEIGHT }}>
+                    <div
+                      className={`calendar-time-column${date === today ? ' today' : ''}${onCreateInterval ? ' can-create' : ''}`}
+                      key={date}
+                      style={{ height: DAY_HEIGHT }}
+                      onPointerDown={event => beginSelection(event, date)}
+                      onPointerMove={event => moveSelection(event, date)}
+                      onPointerUp={event => finishSelection(event, date)}
+                      onPointerCancel={cancelSelection}
+                    >
                       {date === today ? <span className="calendar-now-line" aria-hidden="true" style={{ top: nowMinute * MINUTE_HEIGHT }} /> : null}
+                      {preview ? <span
+                        className="calendar-time-draft"
+                        aria-hidden="true"
+                        style={{
+                          top: preview.startMinute * MINUTE_HEIGHT,
+                          height: Math.max((preview.endMinute - preview.startMinute) * MINUTE_HEIGHT, 15),
+                        }}
+                      /> : null}
                       {day.timed.map(segment => {
                         const duration = segment.endMinute - segment.startMinute;
                         const laneWidth = 100 / segment.laneCount;
