@@ -76,7 +76,12 @@ html[data-seasonal-event='christmas'] .calendar-day[aria-current='date']::after,
 html[data-seasonal-event='new-year'] .calendar-day[aria-current='date']::after,
 html[data-seasonal-event='easter'] .calendar-day[aria-current='date']::after,
 html[data-seasonal-event='festa-junina'] .calendar-day[aria-current='date']::after,
-html[data-seasonal-event='halloween'] .calendar-day[aria-current='date']::after {
+html[data-seasonal-event='halloween'] .calendar-day[aria-current='date']::after,
+html[data-seasonal-event='christmas'] .calendar-time-date[aria-current='date']::after,
+html[data-seasonal-event='new-year'] .calendar-time-date[aria-current='date']::after,
+html[data-seasonal-event='easter'] .calendar-time-date[aria-current='date']::after,
+html[data-seasonal-event='festa-junina'] .calendar-time-date[aria-current='date']::after,
+html[data-seasonal-event='halloween'] .calendar-time-date[aria-current='date']::after {
   content: '';
   position: absolute;
   top: 7px;
@@ -87,9 +92,11 @@ html[data-seasonal-event='halloween'] .calendar-day[aria-current='date']::after 
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-action-primary) 22%, transparent);
   opacity: .8;
+  pointer-events: none;
 }
 
-html[data-seasonal-event] .calendar-day { position: relative; }
+html[data-seasonal-event] .calendar-day,
+html[data-seasonal-event] .calendar-time-date { position: relative; }
 html[data-seasonal-event] .page-heading { isolation: isolate; }
 html[data-seasonal-event] .page-heading::after {
   content: '';
