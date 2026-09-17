@@ -311,6 +311,57 @@
   background: var(--color-action-primary);
 }
 
+.calendar-recurrence-dialog {
+  width: min(92vw, 460px);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-solid);
+  color: var(--color-text);
+  box-shadow: 0 24px 70px color-mix(in srgb, #000 28%, transparent);
+}
+
+.calendar-recurrence-dialog::backdrop {
+  background: color-mix(in srgb, #000 48%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.calendar-recurrence-dialog-content {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.calendar-recurrence-dialog-content h2,
+.calendar-recurrence-dialog-content p {
+  margin: 0;
+}
+
+.calendar-recurrence-dialog-content > p:not(.eyebrow) {
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.calendar-recurrence-dialog-content > p strong {
+  color: var(--color-text);
+}
+
+.calendar-recurrence-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.calendar-recurrence-options button,
+.calendar-recurrence-cancel {
+  min-height: 44px;
+}
+
+.calendar-recurrence-cancel {
+  justify-self: start;
+  background: transparent;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .calendar-time-column.can-create {
     cursor: crosshair;
@@ -356,6 +407,10 @@
   .calendar-time-chip,
   .calendar-time-event {
     font-size: .7rem;
+  }
+
+  .calendar-recurrence-dialog-content {
+    padding: 20px;
   }
 }
 
