@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import type { ActivityInput } from '../../../../../../packages/domain/src/activity';
+import type { ActivityInput } from '../../../../../../packages/domain/src/content';
 import type { StoredActivity } from './calendarModel';
 
 const MINUTES_PER_DAY = 24 * 60;
