@@ -9,7 +9,7 @@ on:
 jobs:
   planner:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,4 +58,6 @@ jobs:
             exit 1
           fi
 
-          LEVE_LOCAL_URL=http://localhost:5174 npm run test:e2e:local -- tests/e2e-local/calendar-planner.spec.ts
+          LEVE_LOCAL_URL=http://localhost:5174 npm run test:e2e:local -- \
+            tests/e2e-local/calendar-planner.spec.ts \
+            tests/e2e-local/calendar-planner-visual.spec.ts
