@@ -12,6 +12,11 @@ function deviceTimeZone(): string {
   catch { return 'UTC'; }
 }
 
+function prefersReducedMotion(): boolean {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  catch { return false; }
+}
+
 function seasonalFavicon(eventId: string, color: string, background: string): string {
   const shapes: Record<string, string> = {
     christmas: '<path d="M32 7c2 12 4 14 16 16-12 2-14 4-16 16-2-12-4-14-16-16 12-2 14-4 16-16Z"/>',
@@ -27,7 +32,7 @@ function seasonalFavicon(eventId: string, color: string, background: string): st
 export function SeasonalExperience() {
   const { session } = useAuth();
   const { pathname } = useLocation();
-  const [systemReduceMotion, setSystemReduceMotion] = useState(false);
+  const [systemReduceMotion, setSystemReduceMotion] = useState(prefersReducedMotion);
   const [introActive, setIntroActive] = useState(false);
 
   const profile = session?.profile ?? null;
