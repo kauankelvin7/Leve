@@ -1,7 +1,8 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const TEST_DAY = '2026-09-17';
+const NEXT_WEEK = '2026-09-24';
 
 async function enterLocalAgenda(page: Page) {
   await page.goto('/entrar');
@@ -27,13 +28,18 @@ async function enterLocalAgenda(page: Page) {
   await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
 }
 
-async function chooseDayView(page: Page) {
+async function chooseDayView(page: Page, date = TEST_DAY) {
   await page.goto('/calendario');
   await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Dia', exact: true }).click();
-  await page.getByLabel('Data', { exact: true }).fill(TEST_DAY);
+  await page.getByLabel('Data', { exact: true }).fill(date);
   await expect(page.locator('.calendar-time-view.day')).toBeVisible();
   await expect(page.locator('.calendar-time-column')).toHaveCount(1);
+}
+
+async function setPlannerDate(page: Page, date: string) {
+  await page.getByLabel('Data', { exact: true }).fill(date);
+  await expect(page.locator('.calendar-time-view.day')).toBeVisible();
 }
 
 async function scrollPlannerTo(page: Page, minute: number) {
@@ -50,6 +56,26 @@ async function pointAtMinute(column: Locator, minute: number) {
       y: rect.top + Number(targetMinute),
     };
   }, minute);
+}
+
+async function plannerEvent(page: Page, title: string) {
+  const event = page.locator('.calendar-time-event').filter({ hasText: title }).first();
+  await expect(event).toBeVisible();
+  return event;
+}
+
+async function dragPlannerEvent(page: Page, title: string, targetMinute: number) {
+  const event = await plannerEvent(page, title);
+  await event.hover();
+  const moveHandle = event.locator('.calendar-time-move-handle');
+  await expect(moveHandle).toBeVisible();
+  const moveBox = await moveHandle.boundingBox();
+  expect(moveBox).not.toBeNull();
+  const target = await pointAtMinute(page.locator('.calendar-time-column').first(), targetMinute);
+  await page.mouse.move(moveBox!.x + moveBox!.width / 2, moveBox!.y + moveBox!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(target.x, target.y, { steps: 8 });
+  await page.mouse.up();
 }
 
 async function createFromPlanner(page: Page, title: string) {
@@ -76,14 +102,29 @@ async function createFromPlanner(page: Page, title: string) {
   await expect(page.getByText(title, { exact: true })).toBeVisible();
 }
 
-async function plannerEvent(page: Page, title: string) {
-  const event = page.locator('.calendar-time-event').filter({ hasText: title }).first();
-  await expect(event).toBeVisible();
-  return event;
+async function createRecurringEvent(page: Page, title: string, startTime: string, endTime: string) {
+  await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
+  await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
+  await expect(page.locator('.activity-composer')).toBeVisible();
+  await page.getByLabel('Tipo').selectOption('event');
+  await page.getByLabel('Título', { exact: true }).fill(title);
+  await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
+  await page.getByLabel('Horário', { exact: true }).fill(startTime);
+  await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
+  await page.getByLabel('Horário final', { exact: true }).fill(endTime);
+  await page.getByLabel('Frequência').selectOption('weekly');
+  await page.getByLabel(/Até/).fill('2026-10-08');
+  await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
+  await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
+}
+
+async function reconnectOutbox(context: BrowserContext, page: Page) {
+  await context.setOffline(false);
+  await page.evaluate(() => window.dispatchEvent(new Event('online')));
 }
 
 test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ page }) => {
-  test.setTimeout(150_000);
+  test.setTimeout(90_000);
   const pageErrors: string[] = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -98,18 +139,7 @@ test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ 
   let event = await plannerEvent(page, title);
   await expect(event).toContainText('14:00–15:00');
 
-  await event.hover();
-  const moveHandle = event.locator('.calendar-time-move-handle');
-  await expect(moveHandle).toBeVisible();
-  const moveBox = await moveHandle.boundingBox();
-  expect(moveBox).not.toBeNull();
-  const column = page.locator('.calendar-time-column').first();
-  const moveTarget = await pointAtMinute(column, 16 * 60);
-  await page.mouse.move(moveBox!.x + moveBox!.width / 2, moveBox!.y + moveBox!.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(moveTarget.x, moveTarget.y, { steps: 8 });
-  await page.mouse.up();
-
+  await dragPlannerEvent(page, title, 16 * 60);
   await scrollPlannerTo(page, 16 * 60);
   event = await plannerEvent(page, title);
   await expect(event).toContainText('16:00–17:00');
@@ -119,7 +149,7 @@ test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ 
   await expect(resizeHandle).toBeVisible();
   const resizeBox = await resizeHandle.boundingBox();
   expect(resizeBox).not.toBeNull();
-  const resizeTarget = await pointAtMinute(column, 18 * 60);
+  const resizeTarget = await pointAtMinute(page.locator('.calendar-time-column').first(), 18 * 60);
   await page.mouse.move(resizeBox!.x + resizeBox!.width / 2, resizeBox!.y + resizeBox!.height / 2);
   await page.mouse.down();
   await page.mouse.move(resizeTarget.x, resizeTarget.y, { steps: 8 });
@@ -130,38 +160,16 @@ test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ 
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
 });
 
-test('planner pede escopo antes de alterar uma ocorrência recorrente', async ({ page }) => {
-  test.setTimeout(150_000);
+test('planner pede escopo e cancelar mantém a ocorrência intacta', async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await enterLocalAgenda(page);
-
-  const title = `Série Planner ${Date.now()}`;
-  await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
-  await expect(page.locator('.activity-composer')).toBeVisible();
-  await page.getByLabel('Tipo').selectOption('event');
-  await page.getByLabel('Título', { exact: true }).fill(title);
-  await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
-  await page.getByLabel('Horário', { exact: true }).fill('10:00');
-  await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
-  await page.getByLabel('Horário final', { exact: true }).fill('11:00');
-  await page.getByLabel('Frequência').selectOption('weekly');
-  await page.getByLabel(/Até/).fill('2026-10-08');
-  await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
-  await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
+  const title = `Série cancelada ${Date.now()}`;
+  await createRecurringEvent(page, title, '10:00', '11:00');
 
   await chooseDayView(page);
   await scrollPlannerTo(page, 10 * 60);
-  const event = await plannerEvent(page, title);
-  await event.hover();
-  const moveHandle = event.locator('.calendar-time-move-handle');
-  const moveBox = await moveHandle.boundingBox();
-  expect(moveBox).not.toBeNull();
-  const target = await pointAtMinute(page.locator('.calendar-time-column').first(), 12 * 60);
-  await page.mouse.move(moveBox!.x + moveBox!.width / 2, moveBox!.y + moveBox!.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(target.x, target.y, { steps: 6 });
-  await page.mouse.up();
+  await dragPlannerEvent(page, title, 12 * 60);
 
   const dialog = page.getByRole('dialog', { name: 'Qual parte da repetição deve mudar?' });
   await expect(dialog).toBeVisible();
@@ -170,6 +178,102 @@ test('planner pede escopo antes de alterar uma ocorrência recorrente', async ({
   await dialog.getByRole('button', { name: 'Cancelar' }).click();
   await expect(dialog).not.toBeVisible();
   await expect(await plannerEvent(page, title)).toContainText('10:00–11:00');
+});
+
+test('escopos recorrentes separam ocorrência e futuro corretamente', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await enterLocalAgenda(page);
+
+  const occurrenceTitle = `Somente ocorrência ${Date.now()}`;
+  await createRecurringEvent(page, occurrenceTitle, '08:00', '09:00');
+  await chooseDayView(page);
+  await scrollPlannerTo(page, 8 * 60);
+  await dragPlannerEvent(page, occurrenceTitle, 12 * 60);
+  let dialog = page.getByRole('dialog', { name: 'Qual parte da repetição deve mudar?' });
+  await dialog.getByRole('button', { name: 'Somente esta ocorrência' }).click();
+  await expect(page.getByRole('status')).toContainText('Horário atualizado.');
+  await scrollPlannerTo(page, 12 * 60);
+  await expect(await plannerEvent(page, occurrenceTitle)).toContainText('12:00–13:00');
+  await setPlannerDate(page, NEXT_WEEK);
+  await scrollPlannerTo(page, 8 * 60);
+  await expect(await plannerEvent(page, occurrenceTitle)).toContainText('08:00–09:00');
+
+  const futureTitle = `Esta e próximas ${Date.now()}`;
+  await createRecurringEvent(page, futureTitle, '09:00', '10:00');
+  await chooseDayView(page);
+  await scrollPlannerTo(page, 9 * 60);
+  await dragPlannerEvent(page, futureTitle, 13 * 60);
+  dialog = page.getByRole('dialog', { name: 'Qual parte da repetição deve mudar?' });
+  await dialog.getByRole('button', { name: 'Esta e as próximas' }).click();
+  await expect(page.getByRole('status')).toContainText('Este compromisso e os próximos foram atualizados.');
+  await scrollPlannerTo(page, 13 * 60);
+  await expect(await plannerEvent(page, futureTitle)).toContainText('13:00–14:00');
+  await setPlannerDate(page, NEXT_WEEK);
+  await scrollPlannerTo(page, 13 * 60);
+  await expect(await plannerEvent(page, futureTitle)).toContainText('13:00–14:00');
+});
+
+test('conflito de revisão mantém o horário confirmado e informa a pessoa', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await enterLocalAgenda(page);
+  await chooseDayView(page);
+  const title = `Conflito Planner ${Date.now()}`;
+  await createFromPlanner(page, title);
+  await chooseDayView(page);
+  await scrollPlannerTo(page, 14 * 60);
+  await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
+
+  await page.route('**/api/commands', async route => {
+    const request = route.request();
+    const payload = request.method() === 'POST' ? request.postDataJSON() as { command?: string } : null;
+    if (payload?.command === 'activity.update') {
+      await route.fulfill({
+        status: 409,
+        contentType: 'application/json',
+        body: JSON.stringify({ code: 'REVISION_CONFLICT', message: 'Este item mudou em outra sessão.' }),
+      });
+      return;
+    }
+    await route.continue();
+  });
+
+  await dragPlannerEvent(page, title, 16 * 60);
+  await expect(page.getByRole('alert')).toContainText('Este compromisso mudou em outra sessão.');
+  await scrollPlannerTo(page, 14 * 60);
+  await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
+});
+
+test('alteração offline permanece bloqueada até sair da outbox mesmo fora do intervalo', async ({ context, page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await enterLocalAgenda(page);
+  await chooseDayView(page);
+  const title = `Offline Planner ${Date.now()}`;
+  await createFromPlanner(page, title);
+  await chooseDayView(page);
+  await scrollPlannerTo(page, 14 * 60);
+  await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
+
+  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
+  await context.setOffline(true);
+  await dragPlannerEvent(page, title, 16 * 60);
+  await expect(page.getByRole('status')).toContainText('Alteração salva neste aparelho.');
+
+  await setPlannerDate(page, '2026-09-18');
+  await setPlannerDate(page, TEST_DAY);
+  await scrollPlannerTo(page, 14 * 60);
+  let event = await plannerEvent(page, title);
+  await event.hover();
+  await expect(event.locator('.calendar-time-move-handle')).toHaveCount(0);
+
+  await reconnectOutbox(context, page);
+  await scrollPlannerTo(page, 16 * 60);
+  event = await plannerEvent(page, title);
+  await expect(event).toContainText('16:00–17:00', { timeout: 20_000 });
+  await event.hover();
+  await expect(event.locator('.calendar-time-move-handle')).toBeVisible({ timeout: 20_000 });
 });
 
 test('semana fica contida no mobile e a preferência de visualização persiste', async ({ page }) => {
