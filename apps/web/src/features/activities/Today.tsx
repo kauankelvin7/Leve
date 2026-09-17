@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { collection, limit, query, where } from 'firebase/firestore';
 import type { Activity, Category, Note, ShoppingItem, ShoppingList } from '../../../../../packages/domain/src/content';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
@@ -16,6 +16,7 @@ import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
 import { formatCivilDate } from '../../platform/formatters';
 import { DailyBrief } from './DailyBrief';
+import { plannerDraftFromSearchParams } from './calendar/calendarDraftModel';
 
 type StoredActivity = Activity & { id: string };
 
@@ -38,7 +39,12 @@ function timedEvent(activity: StoredActivity | null) {
 export function Today() {
   const { user, session } = useAuth();
   const today = useCurrentDay(session!.profile!.timeZone);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const plannerDraftKey = searchParams.toString();
+  const plannerDraft = useMemo(
+    () => plannerDraftFromSearchParams(new URLSearchParams(plannerDraftKey)),
+    [plannerDraftKey],
+  );
   const [chosenDay, setChosenDay] = useState<string | null>(() => {
     try {
       const day = searchParams.get('dia');
@@ -67,7 +73,7 @@ export function Today() {
   const [categoryFilter, setCategoryFilter] = useState(() => localStorage.getItem('leve.today.categoryFilter') ?? 'all');
   const [busy, setBusy] = useState(false);
   const [messageTone, setMessageTone] = useState<'success' | 'error' | 'info'>('info');
-  const [kind, setKind] = useState<'task' | 'event'>('task');
+  const [kind, setKind] = useState<'task' | 'event'>(() => plannerDraft ? 'event' : 'task');
   const [eventAllDay, setEventAllDay] = useState(false);
   const [recurrenceFrequency, setRecurrenceFrequency] = useState('none');
   const [editScope, setEditScope] = useState<'occurrence' | 'future'>('occurrence');
@@ -78,6 +84,39 @@ export function Today() {
   const editingEvent = timedEvent(editing);
 
   useEffect(() => { document.title = 'Meu dia · Leve'; }, []);
+  useEffect(() => {
+    if (!plannerDraft || editing || !composerOpen) return;
+    setKind('event');
+    setEventAllDay(false);
+    setRecurrenceFrequency('none');
+    pending.current = null;
+  }, [plannerDraft, editing, composerOpen]);
+
+  function clearCreationQuery() {
+    const next = new URLSearchParams(searchParams);
+    for (const key of ['nova', 'tipo', 'inicio', 'fimDia', 'fim']) next.delete(key);
+    setSearchParams(next, { replace: true });
+  }
+
+  function openNewActivity() {
+    setEditing(null);
+    setKind('task');
+    setEventAllDay(false);
+    setRecurrenceFrequency('none');
+    pending.current = null;
+    clearCreationQuery();
+    setComposerOpen(true);
+  }
+
+  function closeComposer() {
+    setEditing(null);
+    setKind('task');
+    setEventAllDay(false);
+    setRecurrenceFrequency('none');
+    pending.current = null;
+    clearCreationQuery();
+    setComposerOpen(false);
+  }
 
   const activityQuery = useLiveQueries(`today:${selectedDay}:${today}`, () => {
     if (!user || !firestore) return [];
@@ -200,6 +239,7 @@ export function Today() {
       setEditing(null); setComposerOpen(false);
       setKind('task'); setEventAllDay(false);
       setRecurrenceFrequency('none'); setEditScope('occurrence');
+      clearCreationQuery();
       form.reset();
       setMessage(editing ? 'Atividade atualizada.' : 'Atividade adicionada.'); setMessageTone('success');
     } catch (error) {
@@ -260,7 +300,7 @@ export function Today() {
         <p className="user-greeting">Olá, <strong>{session!.profile!.displayName || 'que bom ter você aqui'}</strong>.</p>
         {!composerOpen && <button
           className="primary"
-          onClick={() => { setEditing(null); setComposerOpen(true); }}
+          onClick={openNewActivity}
           aria-expanded={false}
         >
           <Icon name="plus" />Nova atividade
@@ -302,7 +342,7 @@ export function Today() {
             <section ref={composer} className="panel activity-composer" aria-labelledby="new-activity">
               <h2 id="new-activity">{editing ? 'Editar atividade' : 'Nova atividade'}</h2>
 
-              <form key={editing?.id ?? 'new'} onSubmit={save}>
+              <form key={editing?.id ?? (plannerDraft ? `${plannerDraft.startDate}:${plannerDraft.startTime}:${plannerDraft.endDate}:${plannerDraft.endTime}` : 'new')} onSubmit={save}>
                 {/* Kind */}
                 <label>
                   Tipo
@@ -380,7 +420,7 @@ export function Today() {
                       defaultValue={
                         editing?.schedule.type === 'task' ? editing.schedule.dueDate ?? ''
                         : editing?.schedule.type === 'event' ? editing.schedule.startDate
-                        : selectedDay
+                        : plannerDraft?.startDate ?? selectedDay
                       }
                     />
                   </label>
@@ -393,7 +433,7 @@ export function Today() {
                         required={kind === 'event'}
                         defaultValue={
                           editing?.schedule.type === 'task' ? editing.schedule.dueTime ?? ''
-                          : editingEvent?.startTime ?? ''
+                          : editingEvent?.startTime ?? plannerDraft?.startTime ?? ''
                         }
                       />
                     </label>
@@ -419,11 +459,11 @@ export function Today() {
                   <div className="date-fields">
                     <label>
                       Fim
-                      <input name="endDate" type="date" required defaultValue={editingEvent?.endDate ?? ''} />
+                      <input name="endDate" type="date" required defaultValue={editingEvent?.endDate ?? plannerDraft?.endDate ?? ''} />
                     </label>
                     <label>
                       Horário final
-                      <input name="endTime" type="time" required defaultValue={editingEvent?.endTime ?? ''} />
+                      <input name="endTime" type="time" required defaultValue={editingEvent?.endTime ?? plannerDraft?.endTime ?? ''} />
                     </label>
                   </div>
                 ) : null}
@@ -518,7 +558,7 @@ export function Today() {
                   <button
                     type="button"
                     disabled={busy}
-                    onClick={() => { setEditing(null); setKind('task'); setComposerOpen(false); pending.current = null; }}
+                    onClick={closeComposer}
                   >
                     Cancelar
                   </button>
@@ -614,7 +654,7 @@ export function Today() {
                 <p>{activities.length ? 'Nenhuma atividade combina com estes filtros. Ajuste a seleção para ver outras.' : 'Seu dia está livre. Adicione uma atividade quando quiser.'}</p>
                 <button
                   className="text-link"
-                  onClick={() => { setEditing(null); setComposerOpen(true); }}
+                  onClick={openNewActivity}
                 >
                   Criar primeira atividade
                 </button>
@@ -636,7 +676,7 @@ export function Today() {
             />
             <div className="month-panel-summary" aria-live="polite">
               <div><strong>{selectedDate.toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</strong><span>{calendarQuery.loading ? 'Carregando compromissos…' : `${activitiesOn(selectedDay).length} ${activitiesOn(selectedDay).length === 1 ? 'atividade neste dia' : 'atividades neste dia'}`}</span></div>
-              <div className="month-panel-actions"><Link className="button" to="/calendario">Ver calendário completo</Link><button type="button" className="primary" onClick={() => { setEditing(null); setComposerOpen(true); }}><Icon name="plus" />Adicionar</button></div>
+              <div className="month-panel-actions"><Link className="button" to="/calendario">Ver calendário completo</Link><button type="button" className="primary" onClick={openNewActivity}><Icon name="plus" />Adicionar</button></div>
             </div>
             {calendarQuery.partial ? <p className="muted">Há mais atividades neste período. Abra o calendário completo para consultar tudo.</p> : null}
           </section>
