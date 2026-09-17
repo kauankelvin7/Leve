@@ -4,9 +4,15 @@
   --seasonal-faint: color-mix(in srgb, var(--color-action-primary) 9%, transparent);
   position: fixed;
   inset: 0;
-  z-index: 2;
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+.auth-page,
+.app-shell {
+  position: relative;
+  z-index: 1;
 }
 
 .seasonal-layer.seasonal-surface-global { opacity: .55; }
@@ -149,7 +155,3 @@ html[data-seasonal-mode='static'] .seasonal-layer * {
   .seasonal-glyph-d { display: none; }
   html[data-seasonal-event] .page-heading::after { width: 88px; height: 88px; top: -8px; }
 }
-
-.app-shell.high-contrast .seasonal-layer { opacity: .45; }
-.app-shell.solid ~ .seasonal-layer,
-.app-shell.solid .seasonal-layer { --seasonal-faint: transparent; }
