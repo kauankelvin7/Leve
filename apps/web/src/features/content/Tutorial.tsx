@@ -30,8 +30,14 @@ export function Tutorial() {
   const active = step === null ? null : steps[step]!;
   useEffect(() => {
     if (!user || !session) return;
-    if (!localStorage.getItem(tutorialStorageKey(user.uid))) setStep(0);
-  }, [user?.uid, session]);
+    const storageKey = tutorialStorageKey(user.uid);
+    if (session.profile?.tutorialCompletedAt) {
+      localStorage.setItem(storageKey, 'true');
+      setStep(null);
+      return;
+    }
+    if (!localStorage.getItem(storageKey)) setStep(0);
+  }, [user?.uid, session?.profile?.tutorialCompletedAt]);
   useEffect(() => {
     const reopen = () => { setMessage(''); setStep(0); };
     window.addEventListener(TUTORIAL_OPEN_EVENT, reopen);
