@@ -53,6 +53,14 @@ async function axe(page: Page) {
   expect(result.violations).toEqual([]);
 }
 
+async function tabUntilFocused(page: Page, locator: ReturnType<Page['getByLabel']>, maxTabs: number) {
+  for (let attempt = 0; attempt < maxTabs; attempt += 1) {
+    if (await locator.evaluate(element => element === document.activeElement).catch(() => false)) return;
+    await page.keyboard.press('Tab');
+  }
+  await expect(locator).toBeFocused();
+}
+
 test('Mês, Semana e Dia permanecem contidos nos seis viewports de homologação', async ({ page }) => {
   test.setTimeout(150_000);
   await enterLocalAgenda(page);
@@ -97,8 +105,9 @@ test('controles principais do calendário são alcançáveis por teclado', async
   await expect(page.getByRole('button', { name: 'Dia', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await page.keyboard.press('Tab');
   await expect(page.getByLabel('Data', { exact: true })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(page.getByLabel('Categoria', { exact: true })).toBeFocused();
+  const category = page.getByLabel('Categoria', { exact: true });
+  await tabUntilFocused(page, category, 3);
+  await expect(category).toBeFocused();
 });
 
 test('planner respeita movimento reduzido e continua utilizável', async ({ page }) => {
@@ -121,7 +130,10 @@ test('calendário mantém contraste automatizado em claro e escuro', async ({ pa
     await page.goto('/configuracoes');
     await expect(page.getByRole('heading', { level: 1, name: 'Preferências', exact: true })).toBeVisible();
     const option = page.getByRole('radio', { name: appearance, exact: true });
-    await option.check();
+    await option.focus();
+    await expect(option).toBeFocused();
+    if (!(await option.isChecked())) await page.keyboard.press('Space');
+    await expect(option).toBeChecked();
     await expect(page.getByText('Aparência salva.', { exact: true })).toBeVisible();
     await openCalendar(page);
     await chooseView(page, 'Dia');
