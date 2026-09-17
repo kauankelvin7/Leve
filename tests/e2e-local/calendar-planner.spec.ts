@@ -258,7 +258,7 @@ test('conflito de revisão mantém o horário confirmado e informa a pessoa', as
   await expect(await plannerEvent(page, title)).toContainText('14:00–15:00');
 });
 
-test('alteração offline permanece bloqueada até sair da outbox mesmo fora do intervalo', async ({ context, page }) => {
+test('alteração offline permanece bloqueada até sair da outbox após remontar o calendário', async ({ context, page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await enterLocalAgenda(page);
@@ -273,8 +273,11 @@ test('alteração offline permanece bloqueada até sair da outbox mesmo fora do 
   await dragPlannerEvent(page, title, 7 * 60 + 30);
   await expect(page.getByRole('status')).toContainText('Alteração salva neste aparelho.');
 
-  await setPlannerDate(page, '2026-09-18');
-  await setPlannerDate(page, TEST_DAY);
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Calendário', exact: true })).toBeVisible();
+  await expect(page.locator('.calendar-time-view.day')).toBeVisible();
   await scrollPlannerTo(page, 6 * 60);
   let event = await plannerEvent(page, title);
   await event.hover();
