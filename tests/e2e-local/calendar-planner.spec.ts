@@ -271,7 +271,7 @@ test('alteração offline permanece bloqueada até sair da outbox após remontar
   await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
   await context.setOffline(true);
   await dragPlannerEvent(page, title, 7 * 60 + 30);
-  await expect(page.getByRole('status')).toContainText('Alteração salva neste aparelho.');
+  await expect(page.getByText('Alteração salva neste aparelho. O Planner aguarda a conexão antes de aceitar outro ajuste de horário.', { exact: true })).toBeVisible();
 
   await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Meu dia', exact: true })).toBeVisible();
