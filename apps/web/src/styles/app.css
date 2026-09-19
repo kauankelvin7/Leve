@@ -880,6 +880,11 @@ main { scroll-margin-top: 20px; }
   opacity: .72;
 }
 
+.real-activities .checklist-item.is-completed .checklist-main strong {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
 .event-marker {
   width: 10px;
   height: 10px;
