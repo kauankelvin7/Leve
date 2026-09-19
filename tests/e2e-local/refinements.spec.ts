@@ -34,7 +34,7 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await expect(page.getByLabel('Título', { exact: true })).toBeFocused();
   await expect(page.locator('.activity-composer')).toBeInViewport();
   await page.getByLabel('Título', { exact: true }).fill(title);
-  await page.locator('.activity-composer').getByText('Mais opções', { exact: true }).click();
+  await page.locator('.activity-composer .optional-fields > summary').click();
   await page.getByRole('radio', { name: 'Rosa', exact: true }).check();
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true })).toBeVisible();
@@ -48,7 +48,7 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   const list = `Unidades ${Date.now()}`;
   await page.getByLabel('Nome da lista').fill(list); await page.getByRole('button', { name: 'Criar lista', exact: true }).click();
   await expect(page.getByRole('heading', { name: list, exact: true })).toBeVisible();
-  await page.getByText('Quantidade e detalhes', { exact: true }).click();
+  await page.locator('.shopping-composer .optional-fields > summary').click();
   await expect(page.getByLabel('Qual unidade?')).toHaveCount(0);
   await page.getByLabel('Unidade', { exact: true }).selectOption('outra');
   await expect(page.getByLabel('Qual unidade?')).toBeVisible();
