@@ -725,6 +725,184 @@ main { scroll-margin-top: 20px; }
 .real-activities li small { color: var(--color-text-muted); margin-top: 2px; }
 .form-status { min-height: 1.6em; margin-top: 16px; }
 
+/* Checklist-first: tarefas sem horário são o fluxo principal */
+.composer-hint {
+  margin: -6px 0 2px;
+  color: var(--color-text-muted);
+  font-size: .875rem;
+  line-height: 1.55;
+}
+
+.task-schedule-block {
+  display: grid;
+  gap: 12px;
+}
+
+.task-time-details {
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--color-field) 82%, transparent);
+}
+
+.task-time-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--color-action-primary);
+  font-weight: 700;
+  list-style-position: inside;
+}
+
+.task-time-details summary span {
+  color: var(--color-text-muted);
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+.task-time-details[open] {
+  border-style: solid;
+  background: var(--color-field);
+}
+
+.task-time-details[open] > label,
+.task-time-details[open] > .field-hint {
+  margin-inline: 14px;
+}
+
+.task-time-details[open] > label {
+  display: block;
+  margin-top: 4px;
+}
+
+.task-time-details[open] > .field-hint {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.daily-checklist-heading {
+  align-items: end;
+}
+
+.daily-checklist-heading h2,
+.day-events h3 {
+  margin: 0;
+}
+
+.daily-checklist-heading .eyebrow,
+.day-events .eyebrow {
+  margin-bottom: 4px;
+}
+
+.checklist-progress-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 8px;
+}
+
+.checklist-progress {
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-accent-soft);
+  accent-color: var(--color-action-primary);
+}
+
+.checklist-progress::-webkit-progress-bar { background: var(--color-accent-soft); }
+.checklist-progress::-webkit-progress-value { background: var(--color-action-primary); border-radius: 999px; }
+.checklist-progress::-moz-progress-bar { background: var(--color-action-primary); }
+
+.checklist-progress-row strong {
+  min-width: 3.25rem;
+  text-align: right;
+  color: var(--color-action-primary);
+  font-size: .8125rem;
+}
+
+.checklist-help {
+  margin: 0 0 18px;
+  color: var(--color-text-muted);
+  font-size: .8125rem;
+  line-height: 1.55;
+}
+
+.real-activities .activity-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 14px 18px;
+}
+
+.activity-manage > .activity-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.real-activities .checklist-main {
+  cursor: pointer;
+}
+
+.real-activities .checklist-main input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  accent-color: var(--color-action-primary);
+  cursor: pointer;
+}
+
+.real-activities .checklist-main > span,
+.real-activities .event-main > span:last-child {
+  min-width: 0;
+}
+
+.real-activities .checklist-main strong,
+.real-activities .checklist-main small,
+.real-activities .event-main strong,
+.real-activities .event-main small {
+  overflow-wrap: anywhere;
+}
+
+.real-activities .day-activity.is-completed {
+  background: color-mix(in srgb, var(--color-field) 80%, var(--color-canvas));
+}
+
+.real-activities .day-activity.is-completed .activity-main {
+  opacity: .72;
+}
+
+.event-marker {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 50%;
+  background: var(--color-action-primary);
+  box-shadow: 0 0 0 4px var(--color-accent-soft);
+}
+
+.day-events {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.day-events .section-heading {
+  margin-bottom: 12px;
+}
+
+.checklist-empty {
+  margin-top: 8px;
+}
+
 /* ── 31. FORMULÁRIO DE CONTEÚDO ──────────────────────────── */
 .content-form { max-width: 760px; margin-bottom: 28px; }
 .content-form form { display: grid; gap: 16px; }
