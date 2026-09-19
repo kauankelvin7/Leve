@@ -776,12 +776,19 @@ main { scroll-margin-top: 20px; }
   margin-top: 14px;
 }
 
-.settings-feedback {
+.settings-feedback,
+.note-feedback,
+.shopping-feedback {
   margin: 0 0 22px;
   padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-field);
+}
+
+.note-feedback,
+.shopping-feedback {
+  margin-top: -14px;
 }
 
 /* Checklist-first: tarefas sem horário são o fluxo principal */
