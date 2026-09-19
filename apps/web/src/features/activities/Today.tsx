@@ -242,7 +242,7 @@ export function Today() {
       setRecurrenceFrequency('none'); setEditScope('occurrence');
       clearCreationQuery();
       form.reset();
-      setMessage(editing ? 'Atividade atualizada.' : 'Atividade adicionada.'); setMessageTone('success');
+      setMessage(editing ? 'Alterações salvas.' : kind === 'task' ? 'Tarefa adicionada ao dia.' : 'Compromisso adicionado ao dia.'); setMessageTone('success');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Não foi possível salvar. Seu rascunho foi preservado.'); setMessageTone('error');
     } finally {
@@ -423,37 +423,9 @@ export function Today() {
                     required
                     maxLength={120}
                     defaultValue={editing?.title ?? ''}
+                    placeholder={kind === 'task' ? 'Ex.: estudar capítulo 3' : 'Ex.: consulta médica'}
                     onChange={() => { pending.current = null; }}
                     autoFocus
-                  />
-                </label>
-
-                {/* Category */}
-                <label>
-                  Categoria
-                  <select name="categoryId" defaultValue={editing?.categoryId ?? ''}>
-                    <option value="">Sem categoria</option>
-                    {activeCategories.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </label>
-
-                <ActivityColorPicker value={editing?.colorHex} />
-
-                <label>
-                  Tempo estimado <small>(minutos)</small>
-                  <input name="estimatedMinutes" type="number" min="5" max="1440" step="5" defaultValue={editing?.estimatedMinutes ?? ''} placeholder="Ex.: 45" />
-                </label>
-
-                {/* Description */}
-                <label>
-                  Descrição
-                  <textarea
-                    name="description"
-                    maxLength={5000}
-                    rows={3}
-                    defaultValue={editing?.descriptionPlain ?? ''}
                   />
                 </label>
 
@@ -469,11 +441,11 @@ export function Today() {
                   </label>
                 )}
 
-                {/* Date fields */}
+                {/* Core schedule */}
                 {kind === 'task' ? (
                   <div className="task-schedule-block">
                     <label>
-                      Dia
+                      Data
                       <input
                         name="dueDate"
                         type="date"
@@ -529,7 +501,6 @@ export function Today() {
                   </div>
                 )}
 
-                {/* Event end date/time */}
                 {kind === 'event' && eventAllDay ? (
                   <label>
                     Fim <small>(dia seguinte ao último dia)</small>
@@ -557,66 +528,100 @@ export function Today() {
                   </div>
                 ) : null}
 
-                {/* Reminders */}
-                <fieldset>
-                  <legend>Lembretes{kind === 'task' ? ' (se houver horário)' : ''}</legend>
-                  {[
-                    { value: '0', label: 'No horário da atividade' },
-                    { value: '30', label: '30 minutos antes' },
-                    { value: '60', label: '1 hora antes' },
-                    { value: '1440', label: '1 dia antes' },
-                  ].map(r => (
-                    <label key={r.value} className="check-label">
-                      <input
-                        type="checkbox"
-                        name="reminders"
-                        value={r.value}
-                        defaultChecked={editing?.reminderSpecs.some(s => s.minutesBefore === Number(r.value))}
-                      />
-                      {r.label}
-                    </label>
-                  ))}
-                </fieldset>
-
-                {/* Recurrence (new) or series scope (edit) */}
-                {!editing ? (
-                  <fieldset>
-                    <legend>Repetição</legend>
+                <details className="optional-fields" open={Boolean(editing)}>
+                  <summary>Mais opções <span>opcional</span></summary>
+                  <div className="optional-fields-content">
                     <label>
-                      Frequência
-                      <select value={recurrenceFrequency} onChange={e => setRecurrenceFrequency(e.target.value)}>
-                        <option value="none">Não repetir</option>
-                        <option value="daily">Diária</option>
-                        <option value="weekly">Semanal</option>
-                        <option value="monthly">Mensal</option>
+                      Categoria
+                      <select name="categoryId" defaultValue={editing?.categoryId ?? ''}>
+                        <option value="">Sem categoria</option>
+                        {activeCategories.map(c => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
                       </select>
                     </label>
-                    {recurrenceFrequency !== 'none' && (
-                      <>
-                        <div className="date-fields">
-                          <label>
-                            Repetir a cada
-                            <input name="recurrenceInterval" type="number" min="1" max="30" defaultValue="1" />
-                          </label>
-                          <label>
-                            Até <small>(opcional)</small>
-                            <input name="recurrenceUntil" type="date" min={selectedDay} />
-                          </label>
-                        </div>
-                        {recurrenceFrequency === 'monthly' && (
-                          <label>
-                            Quando o dia não existir
-                            <select name="monthlyPolicy" defaultValue="lastDay">
-                              <option value="lastDay">Usar o último dia do mês</option>
-                              <option value="skip">Pular aquele mês</option>
-                            </select>
-                          </label>
+
+                    <ActivityColorPicker value={editing?.colorHex} />
+
+                    <label>
+                      Tempo estimado <small>(minutos)</small>
+                      <input name="estimatedMinutes" type="number" min="5" max="1440" step="5" defaultValue={editing?.estimatedMinutes ?? ''} placeholder="Ex.: 45" />
+                    </label>
+
+                    <label>
+                      Descrição <small>(opcional)</small>
+                      <textarea
+                        name="description"
+                        maxLength={5000}
+                        rows={3}
+                        placeholder="Contexto, observações ou detalhes úteis"
+                        defaultValue={editing?.descriptionPlain ?? ''}
+                      />
+                    </label>
+
+                    <fieldset>
+                      <legend>Lembretes</legend>
+                      <p className="field-hint">{kind === 'task' ? 'Para tarefas, os lembretes só funcionam quando você adiciona um horário.' : 'Escolha apenas os avisos que forem úteis.'}</p>
+                      {[
+                        { value: '0', label: 'No horário da atividade' },
+                        { value: '30', label: '30 minutos antes' },
+                        { value: '60', label: '1 hora antes' },
+                        { value: '1440', label: '1 dia antes' },
+                      ].map(r => (
+                        <label key={r.value} className="check-label">
+                          <input
+                            type="checkbox"
+                            name="reminders"
+                            value={r.value}
+                            defaultChecked={editing?.reminderSpecs.some(s => s.minutesBefore === Number(r.value))}
+                          />
+                          {r.label}
+                        </label>
+                      ))}
+                    </fieldset>
+
+                    {!editing ? (
+                      <fieldset>
+                        <legend>Repetição</legend>
+                        <label>
+                          Frequência
+                          <select value={recurrenceFrequency} onChange={e => setRecurrenceFrequency(e.target.value)}>
+                            <option value="none">Não repetir</option>
+                            <option value="daily">Diária</option>
+                            <option value="weekly">Semanal</option>
+                            <option value="monthly">Mensal</option>
+                          </select>
+                        </label>
+                        {recurrenceFrequency !== 'none' && (
+                          <>
+                            <div className="date-fields">
+                              <label>
+                                Repetir a cada
+                                <input name="recurrenceInterval" type="number" min="1" max="30" defaultValue="1" />
+                              </label>
+                              <label>
+                                Até <small>(opcional)</small>
+                                <input name="recurrenceUntil" type="date" min={selectedDay} />
+                              </label>
+                            </div>
+                            {recurrenceFrequency === 'monthly' && (
+                              <label>
+                                Quando o dia não existir
+                                <select name="monthlyPolicy" defaultValue="lastDay">
+                                  <option value="lastDay">Usar o último dia do mês</option>
+                                  <option value="skip">Pular aquele mês</option>
+                                </select>
+                              </label>
+                            )}
+                            <small className="field-hint">Sem data final, o Leve prepara as próximas 180 ocorrências.</small>
+                          </>
                         )}
-                        <small className="field-hint">Sem data final, o Leve prepara as próximas 180 ocorrências.</small>
-                      </>
-                    )}
-                  </fieldset>
-                ) : editing.seriesId ? (
+                      </fieldset>
+                    ) : null}
+                  </div>
+                </details>
+
+                {editing?.seriesId ? (
                   <fieldset>
                     <legend>Aplicar alteração</legend>
                     <label className="check-label">

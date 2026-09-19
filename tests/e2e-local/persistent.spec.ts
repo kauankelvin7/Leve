@@ -15,10 +15,10 @@ test('cadastro, verificação, ativação, recuperação, saída e nova entrada 
   await page.getByLabel('E-mail').fill('cadastro.local@example.test');
   await page.getByLabel('Senha', { exact: true }).fill('cadastro-local-123');
   await page.getByLabel('Confirmar senha', { exact: true }).fill('senhas-diferentes');
-  await page.getByRole('button', { name: 'Criar e verificar e-mail' }).click();
+  await page.getByRole('button', { name: 'Criar conta' }).click();
   await expect(page.getByRole('alert')).toContainText('As senhas não coincidem.');
   await page.getByLabel('Confirmar senha', { exact: true }).fill('cadastro-local-123');
-  await page.getByRole('button', { name: 'Criar e verificar e-mail' }).click();
+  await page.getByRole('button', { name: 'Criar conta' }).click();
   await expect(page.getByText(/O ambiente local não envia e-mails reais/)).toContainText('cadastro.local@example.test');
   await expect(page.getByText(/Serviço indisponível/)).toHaveCount(0);
   await expect(page.getByText(/Não foi possível concluir o acesso/)).toHaveCount(0);
@@ -89,6 +89,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('navigation').getByRole('link', { name: 'Notas' }).click();
   await page.getByLabel('Título').fill(noteTitle);
   await page.getByLabel('Texto').fill(noteText);
+  await page.locator('.note-composer .optional-fields > summary').click();
   await page.getByLabel('Fixar no Meu dia').check();
   await page.getByRole('button', { name: 'Salvar nota' }).click();
   await expect(page.getByText(noteText)).toBeVisible();
@@ -103,7 +104,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('navigation').getByRole('link', { name: 'Compras' }).click();
   await page.getByLabel('Nome da lista').fill(listTitle);
   await page.getByRole('button', { name: 'Criar lista' }).click();
-  await page.getByRole('link', { name: new RegExp(listTitle) }).click();
+  await expect(page.getByRole('heading', { name: listTitle, exact: true })).toBeVisible();
   await page.getByLabel('Adicionar item', { exact: true }).fill('Arroz');
   await page.getByRole('button', { name: 'Adicionar item' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toBeVisible();
@@ -126,7 +127,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('link', { name: /Preferências/ }).click();
   await page.getByLabel('Nome', { exact: true }).first().fill('Conta local atualizada');
   await page.getByLabel('Reduzir transparência').check();
-  await page.getByRole('button', { name: 'Salvar perfil' }).click();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
   await expect(page.locator('.app-shell')).toHaveClass(/solid/);
   await page.getByLabel('Nome', { exact: true }).last().fill(categoryName);
   await page.getByRole('button', { name: 'Criar categoria' }).click();
@@ -137,9 +138,10 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Tipo').selectOption('event');
   await page.getByLabel('Título').fill(`Compromisso persistente ${suffix}`);
-  await page.locator('select[name="categoryId"]').selectOption({ label: categoryName });
   await page.getByLabel('Início').fill(today);
-  await page.getByLabel('Horário', { exact: true }).fill('10:00');
+  await page.getByLabel('Horário inicial', { exact: true }).fill('10:00');
+  await page.locator('.activity-composer .optional-fields > summary').click();
+  await page.locator('select[name="categoryId"]').selectOption({ label: categoryName });
   await page.getByLabel('Fim').fill(today);
   await page.getByLabel('Horário final').fill('11:00');
   await page.getByRole('button', { name: 'Adicionar atividade' }).click();
@@ -174,7 +176,7 @@ test('lixeira global restaura item de compras', async ({ page }) => {
   await page.goto('/compras');
   await page.getByLabel('Nome da lista').fill(listTitle);
   await page.getByRole('button', { name: 'Criar lista' }).click();
-  await page.getByRole('link', { name: new RegExp(listTitle) }).click();
+  await expect(page.getByRole('heading', { name: listTitle, exact: true })).toBeVisible();
   await page.getByLabel('Adicionar item', { exact: true }).fill('Item para restaurar');
   await page.getByRole('button', { name: 'Adicionar item' }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();

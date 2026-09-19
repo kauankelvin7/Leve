@@ -17,7 +17,7 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await page.goto('/configuracoes');
   if (await page.getByLabel('Reduzir transparência', { exact: true }).isChecked()) {
     await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
-    await page.getByRole('button', { name: 'Salvar perfil' }).click();
+    await page.getByRole('button', { name: 'Salvar preferências' }).click();
     await expect(page.locator('.form-status')).toHaveText('Preferências salvas.');
     await expect(page.locator('.app-shell')).not.toHaveClass(/solid/);
   }
@@ -59,12 +59,12 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   }
   await page.goto('/configuracoes');
   await page.getByLabel('Reduzir transparência', { exact: true }).check();
-  await page.getByRole('button', { name: 'Salvar perfil' }).click();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
   await expect(page.locator('.sidebar')).toHaveCSS('backdrop-filter', 'none');
   await page.reload();
   await expect(page.getByLabel('Reduzir transparência', { exact: true })).toBeChecked();
   await expect(page.locator('.sidebar')).toHaveCSS('background-color', /^rgb\(/);
   await page.getByLabel('Reduzir transparência', { exact: true }).uncheck();
-  await page.getByRole('button', { name: 'Salvar perfil' }).click();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
   await expect(page.locator('.app-shell')).not.toHaveClass(/solid/);
 });
