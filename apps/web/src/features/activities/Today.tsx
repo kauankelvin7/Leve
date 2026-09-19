@@ -21,10 +21,11 @@ import { plannerDraftFromSearchParams } from './calendar/calendarDraftModel';
 type StoredActivity = Activity & { id: string };
 
 function describe(activity: StoredActivity) {
-  if (activity.schedule.type === 'task')
-    return activity.schedule.dueDate
-      ? `${formatCivilDate(activity.schedule.dueDate)}${activity.schedule.dueTime ? ` às ${activity.schedule.dueTime}` : ''}`
-      : 'Sem prazo';
+  if (activity.schedule.type === 'task') {
+    if (!activity.schedule.dueDate) return 'Sem data';
+    const date = formatCivilDate(activity.schedule.dueDate);
+    return activity.schedule.dueTime ? `${date} · ${activity.schedule.dueTime}` : date;
+  }
   return activity.schedule.allDay
     ? `${formatCivilDate(activity.schedule.startDate)} · dia inteiro`
     : `${formatCivilDate(activity.schedule.startDate)} · ${activity.schedule.startTime}–${activity.schedule.endTime}`;
@@ -283,9 +284,67 @@ export function Today() {
     } finally { setBusy(false); }
   }
 
+  function activityRow(activity: StoredActivity) {
+    const color = activity.colorHex ?? categories.find(c => c.id === activity.categoryId)?.colorHex ?? '#ddd';
+    const categoryName = categories.find(c => c.id === activity.categoryId)?.name ?? 'Sem categoria';
+    const isCompleted = activity.status === 'completed';
+    const taskTime = activity.schedule.type === 'task' ? activity.schedule.dueTime : null;
+    const meta = activity.kind === 'task'
+      ? [taskTime, categoryName, activity.estimatedMinutes ? `${activity.estimatedMinutes} min estimados` : null].filter(Boolean).join(' · ')
+      : [describe(activity), categoryName, activity.estimatedMinutes ? `${activity.estimatedMinutes} min estimados` : null].filter(Boolean).join(' · ');
+
+    return (
+      <li
+        key={activity.id}
+        className={`day-activity ${activity.kind === 'task' ? 'checklist-item' : 'event-item'}${isCompleted ? ' is-completed' : ''}`}
+        style={{ borderLeft: `4px solid ${color}` }}
+        aria-label={`${activity.title}${isCompleted ? ', concluída' : ''}`}
+      >
+        <div className="activity-manage">
+          {activity.kind === 'task' ? (
+            <label className="activity-main checklist-main">
+              <input
+                type="checkbox"
+                checked={isCompleted}
+                disabled={busy}
+                onChange={() => void toggle(activity)}
+                aria-label={isCompleted ? `Reabrir ${activity.title}` : `Concluir ${activity.title}`}
+              />
+              <span>
+                <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
+                <small>{meta}</small>
+              </span>
+            </label>
+          ) : (
+            <div className="activity-main event-main">
+              <span className="event-marker" aria-hidden="true" />
+              <span>
+                <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
+                <small>{meta}</small>
+              </span>
+            </div>
+          )}
+          <div className="row-actions">
+            <Link className="button activity-timer-link" to={`/atividade/${activity.id}#cronometro`} aria-label={`Abrir cronômetro de ${activity.title}`}>
+              <Icon name="clock" /><span>Cronômetro</span>
+            </Link>
+            <button disabled={busy} onClick={() => startEdit(activity)} aria-label={`Editar ${activity.title}`}>Editar</button>
+            <button disabled={busy} onClick={() => void trash(activity)} aria-label={`Excluir ${activity.title}`}>Excluir</button>
+            {activity.seriesId ? <button disabled={busy} onClick={() => void trashSeries(activity)} aria-label={`Excluir toda a série de ${activity.title}`}>Excluir série</button> : null}
+          </div>
+        </div>
+      </li>
+    );
+  }
+
   const pendingCount = activities.filter(a => a.status === 'pending').length;
+  const taskCount = activities.filter(a => a.kind === 'task' && a.status !== 'canceled').length;
+  const completedTaskCount = activities.filter(a => a.kind === 'task' && a.status === 'completed').length;
+  const pendingTaskCount = activities.filter(a => a.kind === 'task' && a.status === 'pending').length;
   const plannedMinutes = activities.filter(a => a.status === 'pending').reduce((total, activity) => total + (activity.estimatedMinutes ?? 0), 0);
   const visibleActivities = activities.filter(activity => (statusFilter === 'all' || activity.status === statusFilter) && (categoryFilter === 'all' || (categoryFilter === 'none' ? !activity.categoryId : activity.categoryId === categoryFilter)));
+  const visibleTasks = visibleActivities.filter(activity => activity.kind === 'task');
+  const visibleEvents = visibleActivities.filter(activity => activity.kind === 'event');
   const activeCategories = categories.filter(c => !c.archivedAt && !c.deletedAt);
 
   useEffect(() => { localStorage.setItem('leve.today.statusFilter', statusFilter); }, [statusFilter]);
@@ -309,7 +368,7 @@ export function Today() {
 
       <section className="day-overview" aria-label="Resumo do dia selecionado">
         <div className="day-overview-date"><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { month: 'long' })}</span><strong>{Temporal.PlainDate.from(selectedDay).day}</strong><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
-        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'atividade' : 'atividades'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : 'Espaço para seus planos'}</h2><p>{plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
+        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingTaskCount ? `${pendingTaskCount} ${pendingTaskCount === 1 ? 'tarefa' : 'tarefas'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : taskCount ? 'Checklist em dia' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'compromisso' : 'compromissos'} neste dia` : 'Espaço para seus planos'}</h2><p>{taskCount ? `${completedTaskCount} de ${taskCount} ${taskCount === 1 ? 'tarefa concluída' : 'tarefas concluídas'}. Faça quando couber na sua rotina.` : plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
       </section>
 
       <div className="agenda-layout">
@@ -341,6 +400,7 @@ export function Today() {
           {composerOpen && (
             <section ref={composer} className="panel activity-composer" aria-labelledby="new-activity">
               <h2 id="new-activity">{editing ? 'Editar atividade' : 'Nova atividade'}</h2>
+              {kind === 'task' ? <p className="composer-hint">Comece pelo que precisa ser feito. O horário é opcional — use apenas quando a tarefa realmente tiver hora marcada.</p> : null}
 
               <form key={editing?.id ?? (plannerDraft ? `${plannerDraft.startDate}:${plannerDraft.startTime}:${plannerDraft.endDate}:${plannerDraft.endTime}` : 'new')} onSubmit={save}>
                 {/* Kind */}
@@ -410,35 +470,64 @@ export function Today() {
                 )}
 
                 {/* Date fields */}
-                <div className="date-fields">
-                  <label>
-                    {kind === 'task' ? 'Data' : 'Início'}
-                    <input
-                      name="dueDate"
-                      type="date"
-                      required={kind === 'event'}
-                      defaultValue={
-                        editing?.schedule.type === 'task' ? editing.schedule.dueDate ?? ''
-                        : editing?.schedule.type === 'event' ? editing.schedule.startDate
-                        : plannerDraft?.startDate ?? selectedDay
-                      }
-                    />
-                  </label>
-                  {(kind === 'task' || !eventAllDay) && (
+                {kind === 'task' ? (
+                  <div className="task-schedule-block">
                     <label>
-                      Horário
+                      Dia
                       <input
-                        name="dueTime"
-                        type="time"
-                        required={kind === 'event'}
+                        name="dueDate"
+                        type="date"
                         defaultValue={
-                          editing?.schedule.type === 'task' ? editing.schedule.dueTime ?? ''
-                          : editingEvent?.startTime ?? plannerDraft?.startTime ?? ''
+                          editing?.schedule.type === 'task'
+                            ? editing.schedule.dueDate ?? selectedDay
+                            : selectedDay
                         }
                       />
                     </label>
-                  )}
-                </div>
+                    <details
+                      className="task-time-details"
+                      open={Boolean(editing?.schedule.type === 'task' && editing.schedule.dueTime)}
+                    >
+                      <summary>Adicionar horário <span>opcional</span></summary>
+                      <label>
+                        Horário
+                        <input
+                          name="dueTime"
+                          type="time"
+                          defaultValue={editing?.schedule.type === 'task' ? editing.schedule.dueTime ?? '' : ''}
+                        />
+                      </label>
+                      <p className="field-hint">Sem horário, a tarefa continua normalmente no checklist do dia.</p>
+                    </details>
+                  </div>
+                ) : (
+                  <div className="date-fields">
+                    <label>
+                      Início
+                      <input
+                        name="dueDate"
+                        type="date"
+                        required
+                        defaultValue={
+                          editing?.schedule.type === 'event'
+                            ? editing.schedule.startDate
+                            : plannerDraft?.startDate ?? selectedDay
+                        }
+                      />
+                    </label>
+                    {!eventAllDay && (
+                      <label>
+                        Horário inicial
+                        <input
+                          name="dueTime"
+                          type="time"
+                          required
+                          defaultValue={editingEvent?.startTime ?? plannerDraft?.startTime ?? ''}
+                        />
+                      </label>
+                    )}
+                  </div>
+                )}
 
                 {/* Event end date/time */}
                 {kind === 'event' && eventAllDay ? (
@@ -470,7 +559,7 @@ export function Today() {
 
                 {/* Reminders */}
                 <fieldset>
-                  <legend>Lembretes</legend>
+                  <legend>Lembretes{kind === 'task' ? ' (se houver horário)' : ''}</legend>
                   {[
                     { value: '0', label: 'No horário da atividade' },
                     { value: '30', label: '30 minutos antes' },
@@ -570,96 +659,64 @@ export function Today() {
 
           {/* Activity list */}
           <section className="real-activities" aria-labelledby="activity-title">
-            <div className="section-heading">
-              <h2 id="activity-title">Atividades</h2>
-              <span className="muted">{visibleActivities.length} {visibleActivities.length === 1 ? 'item' : 'itens'}</span>
+            <div className="section-heading daily-checklist-heading">
+              <div>
+                <p className="eyebrow">Checklist</p>
+                <h2 id="activity-title">Tarefas do dia</h2>
+              </div>
+              <span className="muted">{taskCount ? `${completedTaskCount} de ${taskCount} concluídas` : 'Nenhuma tarefa'}</span>
             </div>
+
+            {taskCount > 0 ? (
+              <div className="checklist-progress-row" aria-label={`Progresso do checklist: ${completedTaskCount} de ${taskCount} tarefas concluídas`}>
+                <progress className="checklist-progress" max={Math.max(taskCount, 1)} value={completedTaskCount} />
+                <strong>{Math.round((completedTaskCount / taskCount) * 100)}%</strong>
+              </div>
+            ) : null}
+
+            <p className="checklist-help">Sem grade de horários: marque cada tarefa quando terminar. Horários aparecem apenas quando você decidir adicioná-los.</p>
+
             <div className="activity-filters" aria-label="Filtros de atividades">
               <label>Estado<select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
               <label>Categoria<select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{activeCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
             </div>
 
             {!composerOpen && message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
-
             {activityQuery.error && <LoadError message={activityQuery.error} retry={activityQuery.retry} />}
-
-            {activityQuery.partial && (
-              <p role="status">
-                Há mais atividades neste dia. Use os filtros para encontrar o que procura.
-              </p>
-            )}
-
-            {activityQuery.cached && activities.length > 0 && (
-              <p className="muted" role="status">Mostrando o que já estava disponível. Reconectando…</p>
-            )}
+            {activityQuery.partial && <p role="status">Há mais atividades neste dia. Use os filtros para encontrar o que procura.</p>}
+            {activityQuery.cached && activities.length > 0 && <p className="muted" role="status">Mostrando o que já estava disponível. Reconectando…</p>}
 
             {loading ? (
               <LoadingState label="Carregando seu dia…" />
-            ) : visibleActivities.length ? (
-              <ul>
-                {visibleActivities.map(activity => {
-                  const color = activity.colorHex ?? categories.find(c => c.id === activity.categoryId)?.colorHex ?? '#ddd';
-                  const categoryName = categories.find(c => c.id === activity.categoryId)?.name ?? 'Sem categoria';
-                  const isCompleted = activity.status === 'completed';
+            ) : (
+              <>
+                {visibleTasks.length ? (
+                  <ul className="activity-list checklist-list">
+                    {visibleTasks.map(activityRow)}
+                  </ul>
+                ) : !activityQuery.error ? (
+                  <div className="empty checklist-empty">
+                    <p>{activities.some(activity => activity.kind === 'task') ? 'Nenhuma tarefa combina com estes filtros.' : 'Nenhuma tarefa neste dia. Adicione algo e vá marcando conforme fizer.'}</p>
+                    <button className="text-link" onClick={openNewActivity}>Adicionar tarefa</button>
+                  </div>
+                ) : null}
 
-                  return (
-                    <li
-                      key={activity.id}
-                      style={{ borderLeft: `4px solid ${color}` }}
-                      aria-label={`${activity.title}${isCompleted ? ', concluída' : ''}`}
-                    >
-                      <div className="activity-manage">
-                        <label>
-                          {activity.kind === 'task' && (
-                            <input
-                              type="checkbox"
-                              checked={isCompleted}
-                              disabled={busy}
-                              onChange={() => void toggle(activity)}
-                              aria-label={isCompleted ? 'Reabrir tarefa' : 'Concluir tarefa'}
-                            />
-                          )}
-                          <span className={isCompleted ? 'completed' : ''}>
-                            <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
-                            <small>{describe(activity)} · {categoryName}{activity.estimatedMinutes ? ` · ${activity.estimatedMinutes} min estimados` : ''}</small>
-                          </span>
-                        </label>
-                        <div className="row-actions">
-                          <Link className="button activity-timer-link" to={`/atividade/${activity.id}#cronometro`} aria-label={`Abrir cronômetro de ${activity.title}`}>
-                            <Icon name="clock" /><span>Cronômetro</span>
-                          </Link>
-                          <button
-                            disabled={busy}
-                            onClick={() => startEdit(activity)}
-                            aria-label={`Editar ${activity.title}`}
-                          >
-                            Editar
-                          </button>
-                          <button
-                            disabled={busy}
-                            onClick={() => void trash(activity)}
-                            aria-label={`Excluir ${activity.title}`}
-                          >
-                            Excluir
-                          </button>
-                          {activity.seriesId ? <button disabled={busy} onClick={() => void trashSeries(activity)} aria-label={`Excluir toda a série de ${activity.title}`}>Excluir série</button> : null}
-                        </div>
+                {visibleEvents.length ? (
+                  <section className="day-events" aria-labelledby="events-title">
+                    <div className="section-heading">
+                      <div>
+                        <p className="eyebrow">Com hora marcada</p>
+                        <h3 id="events-title">Compromissos</h3>
                       </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : !activityQuery.error ? (
-              <div className="empty">
-                <p>{activities.length ? 'Nenhuma atividade combina com estes filtros. Ajuste a seleção para ver outras.' : 'Seu dia está livre. Adicione uma atividade quando quiser.'}</p>
-                <button
-                  className="text-link"
-                  onClick={openNewActivity}
-                >
-                  Criar primeira atividade
-                </button>
-              </div>
-            ) : null}
+                      <span className="muted">{visibleEvents.length} {visibleEvents.length === 1 ? 'item' : 'itens'}</span>
+                    </div>
+                    <ul className="activity-list event-list">
+                      {visibleEvents.map(activityRow)}
+                    </ul>
+                  </section>
+                ) : null}
+              </>
+            )}
           </section>
         </div>
 
