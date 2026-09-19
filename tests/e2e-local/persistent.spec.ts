@@ -89,7 +89,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('navigation').getByRole('link', { name: 'Notas' }).click();
   await page.getByLabel('Título').fill(noteTitle);
   await page.getByLabel('Texto').fill(noteText);
-  await page.getByText('Organização', { exact: true }).click();
+  await page.locator('.note-composer .optional-fields > summary').click();
   await page.getByLabel('Fixar no Meu dia').check();
   await page.getByRole('button', { name: 'Salvar nota' }).click();
   await expect(page.getByText(noteText)).toBeVisible();
@@ -140,7 +140,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByLabel('Título').fill(`Compromisso persistente ${suffix}`);
   await page.getByLabel('Início').fill(today);
   await page.getByLabel('Horário inicial', { exact: true }).fill('10:00');
-  await page.locator('.activity-composer').getByText('Mais opções', { exact: true }).click();
+  await page.locator('.activity-composer .optional-fields > summary').click();
   await page.locator('select[name="categoryId"]').selectOption({ label: categoryName });
   await page.getByLabel('Fim').fill(today);
   await page.getByLabel('Horário final').fill('11:00');
