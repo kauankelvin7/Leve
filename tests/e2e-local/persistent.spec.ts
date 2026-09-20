@@ -161,6 +161,52 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.screenshot({ path: 'docs/evidence/e03-e05-conteudo-persistente.png', fullPage: true });
 });
 
+test('compromisso de dia inteiro salva tempo e pode ser concluído', async ({ page }) => {
+  const suffix = Date.now();
+  const title = `Dia inteiro ${suffix}`;
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+
+  await page.goto('/entrar');
+  await page.getByLabel('E-mail').fill('leve.local@example.test');
+  await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
+  await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
+  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) {
+    await page.getByRole('button', { name: 'Criar minha agenda' }).click();
+  }
+  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
+
+  await page.getByRole('button', { name: 'Nova atividade' }).click();
+  await page.getByLabel('Tipo').selectOption('event');
+  await page.getByLabel('Título').fill(title);
+  await page.getByLabel('Compromisso de dia inteiro').check();
+  await page.getByLabel('Início').fill(today);
+  await expect(page.getByLabel('Último dia')).toHaveValue(today);
+  await page.getByRole('button', { name: 'Adicionar atividade' }).click();
+
+  const row = page.getByRole('listitem').filter({ hasText: title });
+  await expect(row).toBeVisible();
+  await row.getByRole('link', { name: title, exact: true }).click();
+  await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+
+  await page.getByText('Adicionar tempo manualmente', { exact: true }).click();
+  await page.getByLabel('Tempo em minutos').fill('15');
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await expect(page.getByText('Tempo manual registrado.', { exact: true })).toBeVisible();
+  await expect(page.locator('.timer-total')).toContainText('15min');
+
+  await page.getByRole('button', { name: 'Concluir', exact: true }).click();
+  await expect(page.getByText(/Concluída/)).toBeVisible();
+  await page.reload();
+  await expect(page.getByText(/Concluída/)).toBeVisible();
+
+  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  const completedRow = page.getByRole('listitem').filter({ hasText: title });
+  await expect(completedRow).toHaveClass(/is-completed/);
+  await completedRow.getByRole('button', { name: `Reabrir ${title}`, exact: true }).click();
+  await expect(completedRow.getByRole('button', { name: `Concluir ${title}`, exact: true })).toBeVisible();
+});
+
 test('lixeira global restaura item de compras', async ({ page }) => {
   const suffix = Date.now();
   const listTitle = `Lixeira global ${suffix}`;
