@@ -315,6 +315,7 @@ export function Today() {
               <span>
                 <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
                 <small>{meta}</small>
+                {isCompleted ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}
               </span>
             </label>
           ) : (
@@ -323,6 +324,7 @@ export function Today() {
               <span>
                 <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
                 <small>{meta}</small>
+                {isCompleted ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}
               </span>
             </div>
           )}

@@ -5,4 +5,4 @@ export const activityColors = [
   { name: 'Turquesa', hex: '#4C9C96', legacyHex: '#76B4AE' }, { name: 'Lilás', hex: '#9B78B8', legacyHex: '#B393C7' },
   { name: 'Terracota', hex: '#AD6B54', legacyHex: '#C58B75' }, { name: 'Cinza', hex: '#77828C', legacyHex: '#9EA7B0' },
 ] as const;
-export function activityColorName(hex?: string | null) { return activityColors.find(color => color.hex === hex || color.legacyHex === hex)?.name ?? 'Cor da categoria'; }
+export function activityColorName(hex?: string | null) { return activityColors.find(color => color.hex === hex || color.legacyHex === hex)?.name ?? 'Cor personalizada'; }

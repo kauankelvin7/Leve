@@ -203,6 +203,8 @@ test('compromisso de dia inteiro salva tempo e pode ser concluído', async ({ pa
   await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
   const completedRow = page.getByRole('listitem').filter({ hasText: title });
   await expect(completedRow).toHaveClass(/is-completed/);
+  await expect(completedRow.getByText('Concluído', { exact: true })).toBeVisible();
+  await expect(completedRow.getByRole('link', { name: title, exact: true })).toHaveCSS('text-decoration-line', 'line-through');
   await completedRow.getByRole('button', { name: `Reabrir ${title}`, exact: true }).click();
   await expect(completedRow.getByRole('button', { name: `Concluir ${title}`, exact: true })).toBeVisible();
 });
