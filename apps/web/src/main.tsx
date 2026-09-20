@@ -21,6 +21,7 @@ import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
 import { applyColorTheme, applyAppearance, storedColorTheme, storedAppearance } from './platform/theme';
 import { installNotePresetStyles } from './platform/notePresets';
+import { hasNewEntryBundle } from './platform/release';
 
 for (const [group, values] of Object.entries(tokens)) {
   for (const [name, value] of Object.entries(values)) {
@@ -39,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListener('load', () => {
-  void navigator.serviceWorker.register('/sw.js').then(registration => {
+  void navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(registration => {
     function announce() { if (registration.waiting) window.dispatchEvent(new CustomEvent('leve:update-ready', { detail: registration })); }
     function checkForUpdate() { if (navigator.onLine) void registration.update().catch(() => undefined); }
     announce();
@@ -52,17 +53,17 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) window.addEventListene
   }).catch(() => undefined);
 });
 
-const RELEASE_KEY = 'leve.release';
+let releaseAnnounced = false;
 async function checkRelease() {
-  if (!navigator.onLine) return;
+  if (!navigator.onLine || releaseAnnounced) return;
   try {
-    const response = await fetch('/api/version', { cache: 'no-store' });
-    const payload = await response.json() as { release?: string };
-    if (!response.ok || !payload.release) return;
-    const current = sessionStorage.getItem(RELEASE_KEY);
-    sessionStorage.setItem(RELEASE_KEY, payload.release);
-    if (current && current !== payload.release) window.dispatchEvent(new CustomEvent('leve:release-ready'));
-  } catch { /* A próxima abertura tenta novamente. */ }
+    const response = await fetch('/?leve-update-check=1', { cache: 'no-store' });
+    if (!response.ok) return;
+    const html = await response.text();
+    if (!hasNewEntryBundle(import.meta.url, html, window.location.origin)) return;
+    releaseAnnounced = true;
+    window.dispatchEvent(new CustomEvent('leve:release-ready'));
+  } catch { /* A próxima abertura ou foco tenta novamente. */ }
 }
 
 if (import.meta.env.PROD) {
