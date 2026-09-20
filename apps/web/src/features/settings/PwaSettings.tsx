@@ -18,5 +18,5 @@ export function PwaSettings() {
     clearInstallPrompt(); setAvailable(false);
     setMessage(choice.outcome === 'accepted' ? 'Instalação iniciada pelo navegador.' : 'Instalação cancelada.');
   }
-  return <section className="panel content-form"><h2>Aplicativo</h2><p>Você pode continuar usando pelo navegador mesmo sem instalar.</p>{available ? <button type="button" onClick={() => void install()}>Instalar Leve</button> : null}<p role="status">{message || (!standalone && !available ? 'A instalação não está disponível neste navegador agora.' : '')}</p></section>;
+  return <section className="panel content-form"><h2>Aplicativo</h2>{available ? <button type="button" onClick={() => void install()}>Instalar Leve</button> : null}<p role="status">{message || (!standalone && !available ? 'Instalação indisponível neste navegador.' : '')}</p></section>;
 }
