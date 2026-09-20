@@ -271,7 +271,7 @@ export function Calendar() {
     <header className="page-heading">
       <p className="eyebrow">Visão {viewName}</p>
       <h1 id="page-title" tabIndex={-1}>Calendário</h1>
-      <p>Seus compromissos e tarefas no ritmo que fizer mais sentido para o seu dia.</p>
+      <p>Veja o que está marcado.</p>
       <Link className="button primary" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Nova atividade</Link>
     </header>
 
@@ -327,12 +327,12 @@ export function Calendar() {
         onResizeEvent={resizeEvent}
         mutationDisabled={plannerLocked}
       />}
-      {partial ? <p role="status" className="muted">Há mais atividades neste intervalo. Abra um dia específico para conferir todos os itens.</p> : null}
+      {partial ? <p role="status" className="muted">Mostrando parte das atividades.</p> : null}
     </section>}
 
     {view === 'month' ? <>{sheetOpen ? <button className="calendar-sheet-backdrop" aria-label="Fechar atividades do dia" onClick={() => setSheetOpen(false)} /> : null}<section className={`calendar-agenda${sheetOpen ? ' open' : ''}`} aria-labelledby="selected-date"><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className="calendar-sheet-actions"><span className="count-badge">{selectedItems.length} atividades</span><button className="calendar-sheet-close" aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
-      {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><strong>{item.title}</strong><small>{activityColorName(item.colorHex)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'} · {item.status === 'completed' ? 'Concluído' : 'Pendente'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade carregada para este dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
-      <Link className="button primary calendar-add" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Há mais atividades neste mês. Abra o Meu dia para conferir uma data específica.</p>}{categories.error && <p role="status">{categories.error}</p>}
+      {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><strong>{item.title}</strong><small>{activityColorName(item.colorHex)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'} · {item.status === 'completed' ? 'Concluído' : 'Pendente'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade neste dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
+      <Link className="button primary calendar-add" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Mostrando parte das atividades.</p>}{categories.error && <p role="status">{categories.error}</p>}
     </section></> : categories.error ? <p role="status">{categories.error}</p> : null}
 
     <RecurrenceScopeDialog

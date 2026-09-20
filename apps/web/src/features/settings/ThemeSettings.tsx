@@ -76,7 +76,7 @@ export function ThemeSettings() {
 
   return <section className="panel content-form">
     <h2>Aparência e cores</h2>
-    <p>Escolha a luminosidade e a paleta. As cores das suas notas e categorias continuam independentes.</p>
+    <p>Escolha como o Leve deve aparecer.</p>
     <fieldset className="theme-options">
       <legend>Aparência</legend>
       {(Object.keys(appearanceLabels) as Appearance[]).map(value => <label key={value}><input type="radio" name="appearance" checked={appearance === value} disabled={busy} onChange={() => void choose({ appearance: value })} />{appearanceLabels[value]}</label>)}
@@ -88,7 +88,7 @@ export function ThemeSettings() {
     <fieldset className="accessibility-options">
       <legend>Datas especiais</legend>
       <label className="check-label"><input type="checkbox" checked={seasonalEnabled} disabled={busy} onChange={event => void choose({ seasonalDetailsEnabled: event.target.checked })} /> Detalhes sazonais</label>
-      <p className="field-hint">Mostra detalhes discretos em datas especiais. Se você desligar, o Leve mantém a aparência normal.</p>
+      <p className="field-hint">Enfeites em datas especiais.</p>
     </fieldset>
     <p role="status">{message}</p>
   </section>;

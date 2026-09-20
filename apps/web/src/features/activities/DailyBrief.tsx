@@ -50,7 +50,7 @@ export function DailyBrief({ selectedDay, today, activities, notes, shoppingItem
   return <section className="panel daily-brief" aria-labelledby="daily-brief-title">
     <div className="daily-brief-heading"><span className="daily-brief-icon"><Icon name="volume" /></span><div><p className="eyebrow">Resumo do dia</p><h2 id="daily-brief-title">Ouça sua agenda</h2></div><span className="count-badge">{total} {total === 1 ? 'ponto' : 'pontos'}</span></div>
     <p className="daily-brief-text">{brief.visual}</p>
-    <div className="daily-brief-actions"><button type="button" className="primary" disabled={!supported} onClick={toggleSpeech}><Icon name={speaking ? 'stop' : 'volume'} />{speaking ? 'Parar áudio' : 'Ouvir resumo'}</button>{!supported ? <small>O áudio não está disponível neste navegador.</small> : <small>Usa a voz em português disponível neste aparelho.</small>}</div>
+    <div className="daily-brief-actions"><button type="button" className="primary" disabled={!supported} onClick={toggleSpeech}><Icon name={speaking ? 'stop' : 'volume'} />{speaking ? 'Parar áudio' : 'Ouvir resumo'}</button>{!supported ? <small>Áudio indisponível.</small> : null}</div>
     <span className="visually-hidden" aria-live="polite">{speaking ? 'Reproduzindo o resumo do dia.' : ''}</span>
   </section>;
 }

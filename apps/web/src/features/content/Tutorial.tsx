@@ -14,11 +14,11 @@ export function requestTutorial() {
 }
 
 const steps = [
-  { route: '/hoje', target: '.page-heading', title: 'Seu dia no Leve', text: 'Atividades, calendário, notas e compras ficam no mesmo espaço. Este passeio é curto e você pode pular quando quiser.' },
-  { route: '/hoje?nova=1', target: '.activity-composer', title: 'Crie uma atividade', text: 'Dê um título e escolha a data. Em tarefas, o horário é opcional; categoria, cor, lembretes e repetição ficam em Mais opções. Nada é salvo durante o tutorial.' },
-  { route: '/calendario', target: '.calendar-panel', title: 'Seu calendário em cores', text: 'O dia recebe a cor da primeira atividade. Os marcadores preservam as cores das demais. Selecione uma data para ler a lista completa.' },
-  { route: '/configuracoes#settings-device', target: '.notification-settings', title: 'Lembretes neste aparelho', text: 'Ative avisos para receber lembretes fora do Leve. Em iPhone, pode ser necessário instalar o app na tela inicial antes de permitir notificações.' },
-  { route: '/compras', target: '.sidebar nav', title: 'Compras, notas e recuperação', text: 'Crie listas e reutilize modelos em Compras. Recupere exclusões na Lixeira. Aparência, exportação e aparelhos ficam em Preferências. O botão de ajuda continua disponível acima do conteúdo.' },
+  { route: '/hoje', target: '.page-heading', title: 'Seu dia no Leve', text: 'Aqui você acompanha o que importa no dia.' },
+  { route: '/hoje?nova=1', target: '.activity-composer', title: 'Crie uma atividade', text: 'Título e data bastam. O restante é opcional.' },
+  { route: '/calendario', target: '.calendar-panel', title: 'Seu calendário em cores', text: 'Escolha um dia para ver o que está marcado.' },
+  { route: '/configuracoes#settings-device', target: '.notification-settings', title: 'Lembretes neste aparelho', text: 'Ative se quiser receber lembretes fora do Leve.' },
+  { route: '/compras', target: '.sidebar nav', title: 'Compras, notas e recuperação', text: 'Notas, compras, lixeira e preferências ficam no menu.' },
 ] as const;
 
 export function Tutorial() {

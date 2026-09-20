@@ -87,7 +87,7 @@ export function Settings() {
     <header className="page-heading">
       <p className="eyebrow">Conta e aparência</p>
       <h1 id="page-title" tabIndex={-1}>Preferências</h1>
-      <p>Seu perfil, suas cores e o jeito de usar a agenda.</p>
+      <p>Perfil, aparência e dados.</p>
     </header>
     <nav className="settings-nav" aria-label="Seções de preferências">
       <a href="#settings-profile">Perfil</a>
@@ -106,7 +106,7 @@ export function Settings() {
               <AvatarPicker name={session!.profile!.displayName} value={avatarSeed} onChange={setAvatarSeed} />
               <label>Primeiro dia da semana<select name="weekStartsOn" defaultValue={session!.profile!.weekStartsOn}><option value="1">Segunda-feira</option><option value="0">Domingo</option></select></label>
               <label className="check-label"><input type="checkbox" name="reduceTransparency" defaultChecked={session!.profile!.reduceTransparency} /> Reduzir transparência</label>
-              <fieldset className="accessibility-options"><legend>Acessibilidade</legend><label className="check-label"><input type="checkbox" name="reduceMotion" defaultChecked={session!.profile!.reduceMotion ?? false} /> Reduzir animações e movimento</label><label className="check-label"><input type="checkbox" name="highContrast" defaultChecked={session!.profile!.highContrast ?? false} /> Aumentar contraste</label><p className="field-hint">Essas opções ficam ativas em todas as telas, inclusive no cronômetro flutuante.</p></fieldset>
+              <fieldset className="accessibility-options"><legend>Acessibilidade</legend><label className="check-label"><input type="checkbox" name="reduceMotion" defaultChecked={session!.profile!.reduceMotion ?? false} /> Reduzir animações e movimento</label><label className="check-label"><input type="checkbox" name="highContrast" defaultChecked={session!.profile!.highContrast ?? false} /> Aumentar contraste</label><p className="field-hint">Vale para todo o Leve.</p></fieldset>
               <button className="primary" disabled={busy}>Salvar preferências</button>
             </form>
           </section>
@@ -128,17 +128,17 @@ export function Settings() {
         <div className="settings-section-grid">
           <div className="settings-group">
             <PwaSettings />
-            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ative enquanto estiver conectado, em um aparelho pessoal. Depois disso, o Leve guarda a sessão e o conteúdo já aberto neste dispositivo para você continuar sem internet; as alterações ficam na fila até a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
+            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Acesse o que já foi carregado mesmo sem internet. As alterações sincronizam quando a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
           </div>
           <div className="settings-group">
             <NotificationSettings />
-            <section className="panel content-form"><h2><Icon name="question" />Tutorial</h2><p>Revise os principais recursos do Leve quando quiser.</p><button type="button" onClick={requestTutorial}>Ver tutorial novamente</button></section>
+            <section className="panel content-form"><h2><Icon name="question" />Tutorial</h2><button type="button" onClick={requestTutorial}>Ver tutorial novamente</button></section>
           </div>
         </div>
       </section>
       <section id="settings-data" className="settings-section" aria-label="Seus dados">
         <div className="settings-section-grid">
-          <section className="panel content-form"><h2><Icon name="basket" />Seus dados</h2><p>Baixe uma cópia da sua agenda ou importe um arquivo do Leve. A importação cria cópias e não apaga o que já existe.</p><button type="button" disabled={busy} onClick={() => void downloadExport()}>Baixar backup</button><label>Importar backup do Leve<input type="file" accept="application/json,.json" onChange={event => void selectImport(event)} /><small className="field-hint">Aceita arquivos JSON exportados pelo próprio Leve, com até 5 MB.</small></label>{importCounts ? <div className="import-summary"><p><strong>Resumo:</strong> {importCounts.activities} atividades em {importCounts.series} séries, {importCounts.notes} notas, {importCounts.categories} categorias, {importCounts.lists} listas e {importCounts.items} itens.</p><button type="button" className="primary" disabled={busy} onClick={() => void importArchive()}>Importar como cópia</button></div> : null}</section>
+          <section className="panel content-form"><h2><Icon name="basket" />Seus dados</h2><p>Faça backup ou importe um arquivo do Leve sem substituir seus dados.</p><button type="button" disabled={busy} onClick={() => void downloadExport()}>Baixar backup</button><label>Importar backup do Leve<input type="file" accept="application/json,.json" onChange={event => void selectImport(event)} /><small className="field-hint">JSON do Leve · até 5 MB.</small></label>{importCounts ? <div className="import-summary"><p><strong>Resumo:</strong> {importCounts.activities} atividades em {importCounts.series} séries, {importCounts.notes} notas, {importCounts.categories} categorias, {importCounts.lists} listas e {importCounts.items} itens.</p><button type="button" className="primary" disabled={busy} onClick={() => void importArchive()}>Importar como cópia</button></div> : null}</section>
           <details className="panel content-form danger-zone"><summary>Excluir conta</summary><p>Remove permanentemente a agenda, as notas, as compras e os avisos. Esta ação não pode ser desfeita.</p><form onSubmit={deleteOwnAccount}>{user?.providerData.some(provider => provider.providerId === 'password') ? <label>Senha atual<input name="password" type="password" autoComplete="current-password" required /></label> : null}<label>Confirmação<input name="confirmation" autoComplete="off" placeholder="Digite EXCLUIR" required /><small className="field-hint">Digite EXCLUIR exatamente como aparece acima.</small></label><button className="danger" disabled={busy}>Excluir conta permanentemente</button></form></details>
         </div>
       </section>

@@ -368,7 +368,7 @@ export function Today() {
 
       <section className="day-overview" aria-label="Resumo do dia selecionado">
         <div className="day-overview-date"><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { month: 'long' })}</span><strong>{Temporal.PlainDate.from(selectedDay).day}</strong><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
-        <div className="day-overview-content"><p className="eyebrow">No seu ritmo</p><h2>{loading ? 'Abrindo o dia…' : pendingTaskCount ? `${pendingTaskCount} ${pendingTaskCount === 1 ? 'tarefa' : 'tarefas'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : taskCount ? 'Checklist em dia' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'compromisso' : 'compromissos'} neste dia` : 'Espaço para seus planos'}</h2><p>{taskCount ? `${completedTaskCount} de ${taskCount} ${taskCount === 1 ? 'tarefa concluída' : 'tarefas concluídas'}. Faça quando couber na sua rotina.` : plannedMinutes ? `${plannedMinutes} minutos planejados neste dia.` : 'Organize o dia e encontre seus registros por aqui.'}</p><nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
+        <div className="day-overview-content"><p className="eyebrow">Resumo</p><h2>{loading ? 'Abrindo o dia…' : pendingTaskCount ? `${pendingTaskCount} ${pendingTaskCount === 1 ? 'tarefa' : 'tarefas'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : taskCount ? 'Checklist em dia' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'compromisso' : 'compromissos'} neste dia` : 'Nada planejado'}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}<nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
       </section>
 
       <div className="agenda-layout">
@@ -400,8 +400,6 @@ export function Today() {
           {composerOpen && (
             <section ref={composer} className="panel activity-composer" aria-labelledby="new-activity">
               <h2 id="new-activity">{editing ? 'Editar atividade' : 'Nova atividade'}</h2>
-              {kind === 'task' ? <p className="composer-hint">Comece pelo que precisa ser feito. O horário é opcional — use apenas quando a tarefa realmente tiver hora marcada.</p> : null}
-
               <form key={editing?.id ?? (plannerDraft ? `${plannerDraft.startDate}:${plannerDraft.startTime}:${plannerDraft.endDate}:${plannerDraft.endTime}` : 'new')} onSubmit={save}>
                 {/* Kind */}
                 <label>
@@ -469,7 +467,6 @@ export function Today() {
                           defaultValue={editing?.schedule.type === 'task' ? editing.schedule.dueTime ?? '' : ''}
                         />
                       </label>
-                      <p className="field-hint">Sem horário, a tarefa continua normalmente no checklist do dia.</p>
                     </details>
                   </div>
                 ) : (
@@ -561,7 +558,7 @@ export function Today() {
 
                     <fieldset>
                       <legend>Lembretes</legend>
-                      <p className="field-hint">{kind === 'task' ? 'Para tarefas, os lembretes só funcionam quando você adiciona um horário.' : 'Escolha apenas os avisos que forem úteis.'}</p>
+                      {kind === 'task' ? <p className="field-hint">Lembretes exigem horário.</p> : null}
                       {[
                         { value: '0', label: 'No horário da atividade' },
                         { value: '30', label: '30 minutos antes' },
@@ -613,7 +610,7 @@ export function Today() {
                                 </select>
                               </label>
                             )}
-                            <small className="field-hint">Sem data final, o Leve prepara as próximas 180 ocorrências.</small>
+                            <small className="field-hint">Até 180 ocorrências.</small>
                           </>
                         )}
                       </fieldset>
@@ -679,8 +676,6 @@ export function Today() {
               </div>
             ) : null}
 
-            <p className="checklist-help">Sem grade de horários: marque cada tarefa quando terminar. Horários aparecem apenas quando você decidir adicioná-los.</p>
-
             <div className="activity-filters" aria-label="Filtros de atividades">
               <label>Estado<select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
               <label>Categoria<select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{activeCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
@@ -688,8 +683,8 @@ export function Today() {
 
             {!composerOpen && message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
             {activityQuery.error && <LoadError message={activityQuery.error} retry={activityQuery.retry} />}
-            {activityQuery.partial && <p role="status">Há mais atividades neste dia. Use os filtros para encontrar o que procura.</p>}
-            {activityQuery.cached && activities.length > 0 && <p className="muted" role="status">Mostrando o que já estava disponível. Reconectando…</p>}
+            {activityQuery.partial && <p role="status">Mostrando parte das atividades.</p>}
+            {activityQuery.cached && activities.length > 0 && <p className="muted" role="status">Sem conexão. Mostrando dados salvos.</p>}
 
             {loading ? (
               <LoadingState label="Carregando seu dia…" />
@@ -701,7 +696,7 @@ export function Today() {
                   </ul>
                 ) : !activityQuery.error ? (
                   <div className="empty checklist-empty">
-                    <p>{activities.some(activity => activity.kind === 'task') ? 'Nenhuma tarefa combina com estes filtros.' : 'Nenhuma tarefa neste dia. Adicione algo e vá marcando conforme fizer.'}</p>
+                    <p>{activities.some(activity => activity.kind === 'task') ? 'Nenhuma tarefa com estes filtros.' : 'Nenhuma tarefa neste dia.'}</p>
                     <button className="text-link" onClick={openNewActivity}>Adicionar tarefa</button>
                   </div>
                 ) : null}
@@ -713,7 +708,7 @@ export function Today() {
                         <p className="eyebrow">Com hora marcada</p>
                         <h3 id="events-title">Compromissos</h3>
                       </div>
-                      <span className="muted">{visibleEvents.length} {visibleEvents.length === 1 ? 'item' : 'itens'}</span>
+                      <span className="muted">{visibleEvents.length} {visibleEvents.length === 1 ? 'compromisso' : 'compromissos'}</span>
                     </div>
                     <ul className="activity-list event-list">
                       {visibleEvents.map(activityRow)}
@@ -740,13 +735,13 @@ export function Today() {
               <div><strong>{selectedDate.toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</strong><span>{calendarQuery.loading ? 'Carregando compromissos…' : `${activitiesOn(selectedDay).length} ${activitiesOn(selectedDay).length === 1 ? 'atividade neste dia' : 'atividades neste dia'}`}</span></div>
               <div className="month-panel-actions"><Link className="button" to="/calendario">Ver calendário completo</Link><button type="button" className="primary" onClick={openNewActivity}><Icon name="plus" />Adicionar</button></div>
             </div>
-            {calendarQuery.partial ? <p className="muted">Há mais atividades neste período. Abra o calendário completo para consultar tudo.</p> : null}
+            {calendarQuery.partial ? <p className="muted">Mostrando parte das atividades.</p> : null}
           </section>
 
           <article className={`note ${pinnedNote?.paperColorPreset ?? 'butter'}`}>
             <p className="note-kicker">Fixada no Meu dia</p>
             <h2>{pinnedNote?.title ?? 'Uma nota para lembrar'}</h2>
-            <p>{pinnedNote?.plainText ?? 'Fixe uma nota para consultá-la aqui.'}</p>
+            <p>{pinnedNote?.plainText ?? 'Nenhuma nota fixada.'}</p>
             <Link to="/notas">Abrir notas</Link>
           </article>
 
