@@ -87,7 +87,7 @@ export function Settings() {
     <header className="page-heading">
       <p className="eyebrow">Conta e aparência</p>
       <h1 id="page-title" tabIndex={-1}>Preferências</h1>
-      <p>Ajuste o Leve do seu jeito.</p>
+      <p>Perfil, aparência e dados.</p>
     </header>
     <nav className="settings-nav" aria-label="Seções de preferências">
       <a href="#settings-profile">Perfil</a>
