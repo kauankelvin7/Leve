@@ -68,7 +68,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
 
   return <section className={compact ? 'notification-compact' : 'panel content-form notification-settings'}>
     {!compact && <h2>Notificações neste aparelho</h2>}
-    <p>{permission === 'denied' ? 'Permissão bloqueada. Permita notificações nas configurações do Android e deste site no navegador.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Notificações ativas.' : 'Permissão concedida. Ative este aparelho.' : 'Ative para permitir notificações.'}</p>
+    <p>{permission === 'denied' ? 'Notificações bloqueadas. Libere a permissão nas configurações do navegador ou do aparelho.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Notificações ativas.' : 'Permissão concedida. Ative este aparelho.' : 'Ative para permitir notificações.'}</p>
     <div className="dialog-actions">
       <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar notificações' : 'Ativar notificações'}</button>
       {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Testar notificação</button>}
