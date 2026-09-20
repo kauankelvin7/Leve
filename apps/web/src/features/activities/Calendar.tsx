@@ -9,7 +9,6 @@ import { useCurrentDay } from './DayNavigation';
 import { LoadError } from '../../components/ui/LoadError';
 import { SeasonalCalendarMarker } from '../../components/seasonal/SeasonalCalendarMarker';
 import { seasonalCalendarMarkerForDate } from '../../platform/seasonal/seasonalCalendarMarkers';
-import { activityColorName } from '../../../../../packages/domain/src/activityColors';
 import { Icon } from '../../components/ui/Icon';
 import { ApiError, sendCommand } from '../../platform/api';
 import { pendingCommands } from '../../platform/outbox';
@@ -20,6 +19,7 @@ import {
   defaultCalendarView,
   isCalendarView,
   resolveActivityColor,
+  resolveActivityLabel,
   toCalendarEventViewModel,
   type CalendarView,
   type StoredActivity,
@@ -331,7 +331,7 @@ export function Calendar() {
     </section>}
 
     {view === 'month' ? <>{sheetOpen ? <button className="calendar-sheet-backdrop" aria-label="Fechar atividades do dia" onClick={() => setSheetOpen(false)} /> : null}<section className={`calendar-agenda${sheetOpen ? ' open' : ''}`} aria-labelledby="selected-date"><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className="calendar-sheet-actions"><span className="count-badge">{selectedItems.length} atividades</span><button className="calendar-sheet-close" aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
-      {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><strong>{item.title}</strong><small>{activityColorName(item.colorHex)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'} · {item.status === 'completed' ? 'Concluído' : 'Pendente'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade neste dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
+      {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} className={item.status === 'completed' ? 'is-completed' : undefined} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><span className="calendar-item-title"><strong>{item.title}</strong>{item.status === 'completed' ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}</span><small>{resolveActivityLabel(item, categories.items)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade neste dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
       <Link className="button primary calendar-add" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Mostrando parte das atividades.</p>}{categories.error && <p role="status">{categories.error}</p>}
     </section></> : categories.error ? <p role="status">{categories.error}</p> : null}
 
