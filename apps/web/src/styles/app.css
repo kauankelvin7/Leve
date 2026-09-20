@@ -939,16 +939,41 @@ main { scroll-margin-top: 20px; }
 }
 
 .real-activities .day-activity.is-completed {
-  background: color-mix(in srgb, var(--color-field) 80%, var(--color-canvas));
+  border-color: color-mix(in srgb, var(--color-action-primary) 34%, var(--color-border));
+  background: color-mix(in srgb, var(--color-action-primary) 8%, var(--color-field));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-action-primary) 10%, transparent);
 }
 
 .real-activities .day-activity.is-completed .activity-main {
-  opacity: .72;
+  opacity: 1;
 }
 
-.real-activities .checklist-item.is-completed .checklist-main strong {
+.real-activities .day-activity.is-completed .activity-main strong a {
+  color: var(--color-text-muted);
   text-decoration: line-through;
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 2px;
+}
+
+.activity-completion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-action-primary) 28%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-action-primary) 12%, var(--color-field));
+  color: var(--color-action-primary);
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.activity-completion-badge svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
 }
 
 .event-marker {
@@ -1065,7 +1090,18 @@ main { scroll-margin-top: 20px; }
   box-shadow: var(--shadow-sm);
 }
 
-.calendar-list li > a { display: grid; padding: 16px 18px; text-decoration: none; }
+.calendar-list li > a { display: grid; gap: 6px; padding: 16px 18px; text-decoration: none; }
+.calendar-item-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.calendar-item-title > strong { min-width: 0; }
+.calendar-list li.is-completed {
+  border-color: color-mix(in srgb, var(--color-action-primary) 32%, var(--color-border));
+  background: color-mix(in srgb, var(--color-action-primary) 8%, var(--color-field));
+}
+.calendar-list li.is-completed .calendar-item-title > strong {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
 .calendar-list time { font-variant-numeric: tabular-nums; }
 
 /* ── 38. CHECK LABEL ─────────────────────────────────────── */
