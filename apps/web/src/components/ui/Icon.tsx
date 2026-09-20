@@ -22,6 +22,7 @@ const paths = {
   play: 'm8 5 11 7-11 7V5z',
   pause: 'M8 5v14m8-14v14',
   stop: 'M7 7h10v10H7z',
+  check: 'm5 12 4 4L19 6',
 } as const;
 
 export function Icon({ name }: { name: keyof typeof paths }) {
