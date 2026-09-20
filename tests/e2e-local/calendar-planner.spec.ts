@@ -114,6 +114,41 @@ async function reconnectOutbox(context: BrowserContext, page: Page) {
   await page.evaluate(() => window.dispatchEvent(new Event('online')));
 }
 
+test('compromisso de dia inteiro registra tempo, conclui e reaparece concluído no calendário', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await enterLocalAgenda(page);
+  const title = `Dia inteiro ${Date.now()}`;
+
+  await page.goto(`/hoje?dia=${TEST_DAY}&nova=1`);
+  await expect(page.locator('.activity-composer')).toBeVisible();
+  await page.getByLabel('Tipo').selectOption('event');
+  await page.getByLabel('Título', { exact: true }).fill(title);
+  await page.getByLabel('Compromisso de dia inteiro').check();
+  await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
+  await expect(page.getByLabel('Último dia', { exact: true })).toHaveValue(TEST_DAY);
+  await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
+
+  const row = page.getByRole('listitem').filter({ hasText: title });
+  await expect(row).toBeVisible();
+  await row.getByRole('link', { name: title, exact: true }).click();
+
+  await page.getByText('Adicionar tempo manualmente', { exact: true }).click();
+  await page.getByLabel('Tempo em minutos').fill('15');
+  await page.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await expect(page.locator('.timer-total')).toContainText('15min');
+
+  await page.getByRole('button', { name: 'Concluir', exact: true }).click();
+  await expect(page.getByText(/Concluída/)).toBeVisible();
+  await page.reload();
+  await expect(page.getByText(/Concluída/)).toBeVisible();
+
+  await chooseDayView(page);
+  const chip = page.locator('.calendar-time-chip.completed').filter({ hasText: title });
+  await expect(chip).toBeVisible();
+  await expect(chip).toHaveCSS('text-decoration-line', 'line-through');
+});
+
 test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ page }) => {
   test.setTimeout(90_000);
   const pageErrors: string[] = [];
