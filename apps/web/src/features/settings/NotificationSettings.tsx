@@ -28,7 +28,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       const permission = await Notification.requestPermission();
       setPermission(permission);
       if (permission !== 'granted') throw new Error('A permissão de notificações não foi concedida.');
-      const registration = await navigator.serviceWorker.register('/sw.js');
+      const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
       await navigator.serviceWorker.ready;
       const messaging = getMessaging(firebaseApp);
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
