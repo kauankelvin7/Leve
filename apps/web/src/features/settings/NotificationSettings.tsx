@@ -37,7 +37,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       const deviceId = activeDeviceId ?? crypto.randomUUID();
       await sendCommand({ command: 'notificationDevice.register', operationId: crypto.randomUUID(), entityId: deviceId, expectedRevision: 0, payload: { token, platform: 'web', label: navigator.userAgent.slice(0, 80) } }, { queueOnNetworkError: false });
       rememberNotificationDevice(user.uid, deviceId);
-      setMessage('Aparelho registrado. Escolha também um lembrete na atividade, como “No horário da atividade”.');
+      setMessage('Notificações ativadas neste aparelho.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível ativar notificações.'); }
     finally { setBusy(false); }
   }
@@ -59,21 +59,20 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       if (Notification.permission !== 'granted') throw new Error('Permita notificações antes de experimentar.');
       const registration = await navigator.serviceWorker.getRegistration();
       if (!registration?.active) throw new Error('Feche e abra o Leve para concluir a atualização.');
-      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: 'Este aparelho pode tocar e vibrar nos lembretes da sua agenda.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
+      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: 'Teste de lembrete do Leve.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
       await registration.showNotification('Leve', options);
-      setMessage('Aviso solicitado com o som e a vibração padrão do aparelho.');
+      setMessage('Aviso de teste enviado.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível mostrar o aviso.'); }
     finally { setBusy(false); }
   }
 
   return <section className={compact ? 'notification-compact' : 'panel content-form notification-settings'}>
     {!compact && <h2>Notificações neste aparelho</h2>}
-    <p>{permission === 'denied' ? 'Permissão bloqueada. Permita notificações nas configurações do Android e deste site no navegador.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Permissão concedida. Este aparelho tem um registro salvo; renove se os avisos pararam.' : 'Permissão concedida. Ative abaixo para registrar este aparelho.' : 'O navegador pedirá permissão ao ativar.'}</p>
-    <p>Na atividade, escolha “No horário da atividade” ou uma antecedência. O aviso usa o som e a vibração padrão do aparelho quando eles estiverem permitidos.</p>
+    <p>{permission === 'denied' ? 'Permissão bloqueada. Permita notificações nas configurações do Android e deste site no navegador.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Notificações ativas.' : 'Permissão concedida. Ative este aparelho.' : 'Ative para permitir notificações.'}</p>
     <div className="dialog-actions">
-      <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar registro do aparelho' : 'Ativar notificações'}</button>
-      {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Experimentar aviso neste aparelho</button>}
-      {activeDeviceId && <button type="button" disabled={busy} onClick={() => void disable()}>Desativar neste aparelho</button>}
+      <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar notificações' : 'Ativar notificações'}</button>
+      {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Testar notificação</button>}
+      {activeDeviceId && <button type="button" disabled={busy} onClick={() => void disable()}>Desativar notificações</button>}
     </div>
     <p role="status">{message}</p>
   </section>;
