@@ -1747,6 +1747,27 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   .page-heading h1 { font-size: clamp(2.5rem, 12vw, 3.25rem); }
   .page-heading > p:not(.eyebrow), .page-heading > div > p:not(.eyebrow) { font-size: .94rem; }
   .page-heading > button, .page-heading > .button, .page-heading > .primary { width: 100%; margin-top: 18px; }
+
+  /* Keep split page headers left-aligned after the generic heading rule above. */
+  .notes-heading,
+  .trash-heading {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .notes-heading > div:first-child,
+  .trash-heading > div:first-child,
+  .notes-heading-actions,
+  .trash-heading-actions {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .notes-heading-actions,
+  .trash-heading-actions {
+    justify-content: space-between;
+  }
+
   .panel { border-radius: 22px; }
   .sidebar {
     top: auto;

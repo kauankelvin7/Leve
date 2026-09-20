@@ -62,6 +62,9 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await expect(page.locator('.trash-list')).toContainText('Nome muito comprido');
   await page.setViewportSize({ width: 320, height: 720 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const trashHeadingBox = await page.locator('.trash-heading > div:first-child').boundingBox();
+  expect(trashHeadingBox?.x ?? 999).toBeLessThanOrEqual(24);
+  expect(trashHeadingBox?.width ?? 0).toBeGreaterThan(260);
   await expect(page.locator('.trash-list strong').filter({ hasText: 'Nome muito comprido' })).toHaveCSS('white-space', 'nowrap');
   await page.screenshot({ path: 'docs/evidence/v2-trash-320.png', fullPage: true });
   await page.getByRole('button', { name: 'Excluir tudo', exact: true }).click();
@@ -71,6 +74,10 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await page.getByRole('dialog').getByRole('button', { name: 'Excluir definitivamente', exact: true }).click();
   await expect(page.getByText('Lixeira esvaziada.')).toBeVisible();
   await page.reload(); await expect(page.getByText('A lixeira está vazia.')).toBeVisible();
+  await page.getByRole('link', { name: 'Notas', exact: true }).click();
+  const notesHeadingBox = await page.locator('.notes-heading > div:first-child').boundingBox();
+  expect(notesHeadingBox?.x ?? 999).toBeLessThanOrEqual(24);
+  expect(notesHeadingBox?.width ?? 0).toBeGreaterThan(260);
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
   expect(errors).toEqual([]);
 });
