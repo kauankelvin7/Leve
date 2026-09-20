@@ -1,4 +1,4 @@
-const CACHE = 'leve-shell-v6';
+const CACHE = 'leve-shell-v7';
 const SHELL = ['/', '/theme-init.js', '/manifest.webmanifest', '/favicon.svg?v=3', '/robots.txt'];
 
 self.addEventListener('install', event => {
