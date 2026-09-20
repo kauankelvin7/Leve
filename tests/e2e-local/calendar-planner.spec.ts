@@ -84,7 +84,7 @@ async function createFromPlanner(page: Page, title: string) {
   await expect(page.locator('.activity-composer')).toBeVisible();
   await expect(page.getByLabel('Tipo')).toHaveValue('event');
   await expect(page.getByLabel('Início', { exact: true })).toHaveValue(TEST_DAY);
-  await expect(page.getByLabel('Horário', { exact: true })).toHaveValue('14:00');
+  await expect(page.getByLabel('Horário inicial', { exact: true })).toHaveValue('14:00');
   await expect(page.getByLabel('Fim', { exact: true })).toHaveValue(TEST_DAY);
   await expect(page.getByLabel('Horário final', { exact: true })).toHaveValue('15:00');
   await page.getByLabel('Título', { exact: true }).fill(title);
@@ -98,7 +98,7 @@ async function createTimedEvent(page: Page, title: string, startTime: string, en
   await page.getByLabel('Tipo').selectOption('event');
   await page.getByLabel('Título', { exact: true }).fill(title);
   await page.getByLabel('Início', { exact: true }).fill(TEST_DAY);
-  await page.getByLabel('Horário', { exact: true }).fill(startTime);
+  await page.getByLabel('Horário inicial', { exact: true }).fill(startTime);
   await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
   await page.getByLabel('Horário final', { exact: true }).fill(endTime);
   if (weekly) {
