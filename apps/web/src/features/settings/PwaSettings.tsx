@@ -16,7 +16,7 @@ export function PwaSettings() {
     await prompt.prompt();
     const choice = await prompt.userChoice;
     clearInstallPrompt(); setAvailable(false);
-    setMessage(choice.outcome === 'accepted' ? 'Instalação iniciada pelo navegador.' : 'Instalação cancelada.');
+    setMessage(choice.outcome === 'accepted' ? 'Instalação iniciada.' : 'Instalação cancelada.');
   }
   return <section className="panel content-form"><h2>Aplicativo</h2>{available ? <button type="button" onClick={() => void install()}>Instalar Leve</button> : null}<p role="status">{message || (!standalone && !available ? 'Instalação indisponível neste navegador.' : '')}</p></section>;
 }
