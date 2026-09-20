@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import type { Activity, Category } from '../../../../../../packages/domain/src/content';
+import { activityColorName } from '../../../../../../packages/domain/src/activityColors';
 
 export type StoredActivity = Activity & { id: string };
 
@@ -43,6 +44,13 @@ export function activityOccursOn(item: StoredActivity, date: string): boolean {
 
 export function resolveActivityColor(item: StoredActivity, categories: Category[], fallback = '#9EA7B0'): string {
   return item.colorHex ?? categories.find(category => category.id === item.categoryId)?.colorHex ?? fallback;
+}
+
+export function resolveActivityLabel(item: StoredActivity, categories: Category[]): string {
+  const categoryName = item.categoryId ? categories.find(category => category.id === item.categoryId)?.name : null;
+  if (categoryName) return categoryName;
+  if (item.colorHex) return activityColorName(item.colorHex);
+  return 'Sem categoria';
 }
 
 export type CalendarEventViewModel = {
