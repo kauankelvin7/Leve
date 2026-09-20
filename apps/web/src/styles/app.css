@@ -1456,8 +1456,17 @@ html {
     font-size: .6875rem;
   }
   .calendar-agenda .section-heading { flex-wrap: wrap; }
-  .activity-manage { flex-wrap: wrap; padding: 0 12px 12px; }
-  .activity-manage > label { flex-basis: 100%; padding-inline: 0 !important; }
+  .activity-manage { flex-wrap: wrap; align-items: stretch; padding: 0 12px 12px; }
+  .activity-manage > .activity-main {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    padding-inline: 0 !important;
+  }
+  .activity-manage > .row-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
   .row-actions { gap: 6px; }
   .row-actions button { padding-inline: 12px; }
   .shopping { padding-inline: 16px; }

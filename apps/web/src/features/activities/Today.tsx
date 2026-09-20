@@ -712,7 +712,6 @@ export function Today() {
                   <section className="day-events" aria-labelledby="events-title">
                     <div className="section-heading">
                       <div>
-                        <p className="eyebrow">Com hora marcada</p>
                         <h3 id="events-title">Compromissos</h3>
                       </div>
                       <span className="muted">{visibleEvents.length} {visibleEvents.length === 1 ? 'compromisso' : 'compromissos'}</span>
