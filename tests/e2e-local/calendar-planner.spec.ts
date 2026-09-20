@@ -131,6 +131,15 @@ test('compromisso de dia inteiro registra tempo, conclui e reaparece concluído 
 
   const row = page.getByRole('listitem').filter({ hasText: title });
   await expect(row).toBeVisible();
+  const rowBox = await row.boundingBox();
+  const mainBox = await row.locator('.activity-main').boundingBox();
+  const actionsBox = await row.locator('.row-actions').boundingBox();
+  expect(rowBox).not.toBeNull();
+  expect(mainBox).not.toBeNull();
+  expect(actionsBox).not.toBeNull();
+  expect(mainBox!.width).toBeGreaterThan(rowBox!.width * 0.8);
+  expect(actionsBox!.y).toBeGreaterThan(mainBox!.y);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await row.getByRole('link', { name: title, exact: true }).click();
 
   await page.getByText('Adicionar tempo manualmente', { exact: true }).click();
