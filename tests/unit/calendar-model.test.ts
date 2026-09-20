@@ -7,6 +7,7 @@ import {
   isCalendarView,
   normalizeCalendarPageSize,
   resolveActivityColor,
+  resolveActivityLabel,
   toCalendarEventViewModel,
   type StoredActivity,
 } from '../../apps/web/src/features/activities/calendar/calendarModel';
@@ -105,6 +106,17 @@ describe('calendar model', () => {
     expect(resolveActivityColor(explicit, [category])).toBe('#112233');
     expect(resolveActivityColor(inherited, [category])).toBe('#557755');
     expect(resolveActivityColor(fallback, [category])).toBe('#9EA7B0');
+  });
+
+  it('uses category or explicit color labels without exposing technical fallbacks', () => {
+    const categorized = storedActivity('categorized', { type: 'task', dueDate: null, dueTime: null, timeZone: 'America/Sao_Paulo', disambiguation: 'reject' }, { categoryId: category.id });
+    const colored = storedActivity('colored', { type: 'task', dueDate: null, dueTime: null, timeZone: 'America/Sao_Paulo', disambiguation: 'reject' }, { colorHex: '#8872B2' });
+    const customColor = storedActivity('custom', { type: 'task', dueDate: null, dueTime: null, timeZone: 'America/Sao_Paulo', disambiguation: 'reject' }, { colorHex: '#112233' });
+    const plain = storedActivity('plain', { type: 'task', dueDate: null, dueTime: null, timeZone: 'America/Sao_Paulo', disambiguation: 'reject' });
+    expect(resolveActivityLabel(categorized, [category])).toBe('Saúde');
+    expect(resolveActivityLabel(colored, [category])).toBe('Lavanda');
+    expect(resolveActivityLabel(customColor, [category])).toBe('Cor personalizada');
+    expect(resolveActivityLabel(plain, [category])).toBe('Sem categoria');
   });
 
   it('adapts task, timed and all-day schedules without exposing Firestore-specific structure to the renderer', () => {
