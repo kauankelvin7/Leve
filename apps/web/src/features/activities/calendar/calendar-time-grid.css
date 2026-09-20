@@ -177,6 +177,11 @@
   color: var(--color-text-muted);
 }
 
+.calendar-time-chip.completed {
+  opacity: .62;
+  text-decoration: line-through;
+}
+
 .calendar-time-scroll {
   max-height: min(68dvh, 760px);
   overflow-y: auto;

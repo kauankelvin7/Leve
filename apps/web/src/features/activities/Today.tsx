@@ -197,7 +197,10 @@ export function Today() {
     const startTime = String(fields.get('dueTime') || '').trim();
     const endDate = String(fields.get('endDate') || '').trim();
     const endTime = String(fields.get('endTime') || '').trim();
-    const endDateExclusive = String(fields.get('endDateExclusive') || '').trim();
+    const allDayEndDate = String(fields.get('allDayEndDate') || '').trim();
+    const endDateExclusive = eventAllDay && (allDayEndDate || startDate)
+      ? Temporal.PlainDate.from(allDayEndDate || startDate).add({ days: 1 }).toString()
+      : '';
 
     const timeZone = session?.profile?.timeZone ?? 'America/Sao_Paulo';
     const schedule = kind === 'task'
@@ -271,9 +274,8 @@ export function Today() {
     finally { setBusy(false); }
   }
 
-  async function toggle(activity: StoredActivity) {
+  async function changeStatus(activity: StoredActivity, next: Activity['status']) {
     if (busy) return;
-    const next = activity.status === 'completed' ? 'pending' : 'completed';
     setBusy(true); setMessage(''); setMessageTone('info');
     setOptimisticStatus(cur => ({ ...cur, [activity.id]: next }));
     try {
@@ -307,7 +309,7 @@ export function Today() {
                 type="checkbox"
                 checked={isCompleted}
                 disabled={busy}
-                onChange={() => void toggle(activity)}
+                onChange={() => void changeStatus(activity, isCompleted ? 'pending' : 'completed')}
                 aria-label={isCompleted ? `Reabrir ${activity.title}` : `Concluir ${activity.title}`}
               />
               <span>
@@ -325,6 +327,11 @@ export function Today() {
             </div>
           )}
           <div className="row-actions">
+            {activity.kind === 'event' ? <button
+              disabled={busy}
+              onClick={() => void changeStatus(activity, activity.status === 'pending' ? 'completed' : 'pending')}
+              aria-label={`${activity.status === 'completed' ? 'Reabrir' : activity.status === 'canceled' ? 'Reativar' : 'Concluir'} ${activity.title}`}
+            >{activity.status === 'completed' ? 'Reabrir' : activity.status === 'canceled' ? 'Reativar' : 'Concluir'}</button> : null}
             <Link className="button activity-timer-link" to={`/atividade/${activity.id}#cronometro`} aria-label={`Abrir cronômetro de ${activity.title}`}>
               <Icon name="clock" /><span>Cronômetro</span>
             </Link>
@@ -500,15 +507,15 @@ export function Today() {
 
                 {kind === 'event' && eventAllDay ? (
                   <label>
-                    Fim <small>(dia seguinte ao último dia)</small>
+                    Último dia
                     <input
-                      name="endDateExclusive"
+                      name="allDayEndDate"
                       type="date"
                       required
                       defaultValue={
                         editing?.schedule.type === 'event' && editing.schedule.allDay
-                          ? editing.schedule.endDateExclusive
-                          : ''
+                          ? Temporal.PlainDate.from(editing.schedule.endDateExclusive).subtract({ days: 1 }).toString()
+                          : plannerDraft?.startDate ?? selectedDay
                       }
                     />
                   </label>

@@ -248,7 +248,7 @@ export function CalendarTimeGrid({
                 {dates.map(date => (
                   <div className="calendar-time-summary-cell" key={date}>
                     {buckets.get(date)?.allDay.map(event => (
-                      <Link className="calendar-time-chip" key={event.id} to={`/atividade/${event.id}`} style={{ borderColor: event.color }}>
+                      <Link className={`calendar-time-chip${event.status === 'completed' ? ' completed' : ''}`} key={event.id} to={`/atividade/${event.id}`} style={{ borderColor: event.color }}>
                         {event.title}
                       </Link>
                     ))}

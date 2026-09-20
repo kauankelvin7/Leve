@@ -268,6 +268,38 @@ describe('comandos de conteúdo', () => {
     expect((await db.doc(`users/${user.uid}/timeEntries/${sessionId}`).get()).data()?.source).toBe('session');
   });
 
+  it('permite concluir e reabrir compromisso de dia inteiro', async () => {
+    const user = await createUser('dia-inteiro@example.test');
+    await seedAccount(user.uid);
+    const eventPayload = {
+      ...activityPayload,
+      title: 'Evento de dia inteiro',
+      schedule: {
+        type: 'event',
+        allDay: true,
+        startDate: '2026-09-20',
+        endDateExclusive: '2026-09-21',
+        timeZone: 'America/Sao_Paulo',
+      },
+    };
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(
+      activityCommand('create', 'evento-dia-inteiro', '39100000-0000-4000-8000-000000000001', 0, eventPayload),
+    ).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(
+      activityCommand('setStatus', 'evento-dia-inteiro', '39100000-0000-4000-8000-000000000002', 1, { status: 'completed' }),
+    ).expect(200);
+    const completed = (await db.doc(`users/${user.uid}/activities/evento-dia-inteiro`).get()).data()!;
+    expect(completed.status).toBe('completed');
+    expect(completed.completedAt).toEqual(expect.any(String));
+
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(
+      activityCommand('setStatus', 'evento-dia-inteiro', '39100000-0000-4000-8000-000000000003', 2, { status: 'pending' }),
+    ).expect(200);
+    const reopened = (await db.doc(`users/${user.uid}/activities/evento-dia-inteiro`).get()).data()!;
+    expect(reopened.status).toBe('pending');
+    expect(reopened.completedAt).toBeNull();
+  });
+
   it('mantém isolamento com vinte contas gravando simultaneamente', async () => {
     const users = await Promise.all(Array.from({ length: 20 }, (_, index) => createUser(`carga-${index}@example.test`)));
     await Promise.all(users.map(user => seedAccount(user.uid)));

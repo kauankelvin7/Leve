@@ -96,7 +96,6 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (type === 'shoppingList' && writingContent) next = { ...next, sourceTemplateId: old?.sourceTemplateId ?? null, archivedAt: old?.archivedAt ?? null, itemCount: old?.itemCount ?? 0, pendingItemCount: old?.pendingItemCount ?? old?.itemCount ?? 0 };
     if (type === 'shoppingItem' && creating) next = { ...next, checked: false, checkedAt: null };
     if (action === 'setStatus') {
-      if (old?.kind === 'event' && input.status === 'completed') throw new AppError(422, 'VALIDATION_ERROR', 'Compromissos podem ser cancelados, não concluídos como tarefas.');
       next = { ...next, status: input.status, completedAt: input.status === 'completed' ? now : null };
     }
     if (action === 'setChecked') next = { ...next, checked: input.checked, checkedAt: input.checked ? now : null };
