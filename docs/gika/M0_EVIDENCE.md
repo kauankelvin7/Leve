@@ -18,3 +18,7 @@ Data: 2026-09-30. Base verificada: f6b21b6695f4953e28daace00edb05b2dd4bfde1.
 ## Convenção de SHA do checkpoint
 
 O SHA dentro de um arquivo versionado não pode ser o SHA do próprio commit que contém esse arquivo. Cada checkpoint registra o HEAD verificado antes do commit e o identificador da tarefa/assunto do commit. O checkpoint seguinte registra o SHA da tarefa anterior. O checkpoint final registra o SHA do último commit de tarefa. Na retomada, comparar também `git log -1`, ancestry e diff dos commits posteriores; não tratar uma diferença como autorização para ignorar o histórico.
+
+## M0-T2
+
+Rastreio direto de content.ts, identity.ts, server/commands/content.ts, server/reminders.ts, Today.tsx, ActivityDetail.tsx, calendarCommandModel.ts e useCalendarRange.ts. Schemas, recorrência, categorias e todos os fluxos solicitados documentados na arquitetura. Nenhuma entidade fictícia ou alteração de produção. Gates baseline de M0-T1 continuam aplicáveis ao diff documental.

@@ -33,7 +33,9 @@ milestones:
           - "SHA e git status registrados."
       - id: M0-T2
         title: "Mapear domínio da agenda"
-        status: todo
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: schemas reais Activity/Category/series e rastreio create/update/setStatus/reschedule/trash; evidências M0-T2."
         dependencies: [M0-T1]
         owner: domain-auditor
         mutation_scope: "docs only"
