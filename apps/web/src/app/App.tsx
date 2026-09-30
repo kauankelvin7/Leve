@@ -15,6 +15,7 @@ import { ActiveTimerBar } from '../features/activities/ActiveTimerBar';
 import { Avatar } from '../components/ui/Avatar';
 import { RouteMetadata } from './RouteMetadata';
 import { Privacy } from '../features/content/Privacy';
+import { GikaLauncher } from '../features/gika/GikaLauncher';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -67,6 +68,7 @@ function Shell() {
       <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
       <footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
+    <GikaLauncher key={session?.uid} />
   </div>;
 }
 

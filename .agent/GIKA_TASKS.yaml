@@ -98,7 +98,13 @@ milestones:
           - ".agent/skills/humanizer-br/SKILL.md lido integralmente; ADR-GIKA-008; revisão literal do conteúdo fornecido."
       - id: M1-T1
         title: "Botão flutuante e painel"
-        status: todo
+        status: done
+        acceptance_criteria:
+          - "Botão só no Shell autenticado; painel lazy com falha isolada."
+          - "Modal com foco contido, Escape e retorno ao acionador; sem perda de rascunho/navegação."
+          - "Mobile respeita navegação e safe area; texto demo explícito."
+        evidence:
+          - "M1_EVIDENCE.md: 2 E2E autenticados + Axe PASS; lint/build/typechecks e 93 unit PASS."
         dependencies: [M0-T5, M1-S0]
         owner: frontend
         mutation_scope: "UI Gika + testes"
