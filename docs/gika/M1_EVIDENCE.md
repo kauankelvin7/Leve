@@ -19,3 +19,12 @@ GikaLauncher no Shell autenticado, chave por uid, painel lazy e ErrorBoundary lo
 - agent-browser: /entrar carrega, snapshot com campos/login, sem overlay/página vazia nem erros reportados; ambiente emulador local verificado.
 - Falhas corrigidas antes do gate: helper de teste não ativava conta fictícia recém-semeada; corrigido para usar fluxo existente. Tab de dialog nativo ia à barra do navegador; ciclo explícito de controles corrigido e protegido por E2E. Nenhuma falha mascarada.
 - Revisão manual react-best-practices: imports diretos, lazy, cleanup de observers/listeners, isolamento por uid e sem persistência de conversa. Textos revisados com humanizer-br local.
+
+## M1-T2 — composer e estados
+
+Composer com label visível, 2000 caracteres, sugestões que preenchem rascunho, Enter/Shift+Enter e guarda de composição IME. Histórico limitado a 40 mensagens em memória; mantém texto/conversa ao fechar, App key uid e Protected desmontam no logout/troca de conta. AbortController evita resposta atrasada após fechar/desmontar/offline. Pending request estável impede duplicar pergunta em retry. VisualViewport ajusta altura/top do painel mobile e composer fixo dentro do diálogo; aria-live anuncia somente status/última resposta.
+
+- npm run lint, npm run build (dois typechecks), npm test 93/25: PASS.
+- Suite focal 4 cenários: 3 PASS após corrigir locators para textbox (botão e campo têm mesmo nome acessível), 1 falha por dois links Notas. Seletor foi restringido à navigation Principal e o cenário composer/offline foi repetido: 1 PASS (8 s). Todos os quatro cenários cobertos sem falha pendente.
+- Axe painel/mobile e teclado/rascunho seguem protegidos nos cenários que passaram. T2 usa adapter indisponível deliberadamente para provar fallback; mock de sucesso será ligado somente M1-T3.
+- Textos revisados segundo checklist da skill local. Não há raw error/payload privado em log. Nenhuma escrita ou consulta nova em API/Firebase.

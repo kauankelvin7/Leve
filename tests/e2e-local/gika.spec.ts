@@ -28,7 +28,10 @@ test('painel acessível abre e fecha sem perder rascunho nem navegação', async
   const dialog = page.getByRole('dialog', { name: 'Gika', exact: true });
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('as respostas são simuladas');
-  await expect(page.getByRole('button', { name: 'Fechar Gika' })).toBeFocused();
+  await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeFocused();
+  await page.getByRole('button', { name: 'Fechar Gika' }).focus();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Fechar Gika' })).toBeFocused();
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
@@ -42,6 +45,45 @@ test('painel acessível abre e fecha sem perder rascunho nem navegação', async
   await launcher.click();
   await page.getByRole('button', { name: 'Fechar Gika' }).click();
   await expect(dialog).not.toBeVisible();
+});
+
+test('composer preserva texto, permite sugestões e bloqueia envio offline', async ({ page, context }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await page.getByRole('button', { name: 'Organizar meu dia', exact: true }).click();
+  await expect(question).toHaveValue('Organizar meu dia');
+  await expect(question).toBeFocused();
+  await question.fill('Meu rascunho');
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(question).toHaveValue('Meu rascunho');
+  await question.press('Shift+Enter');
+  await expect(question).toHaveValue('Meu rascunho\n');
+  await context.setOffline(true);
+  await expect(page.getByText('A Gika precisa de conexão para responder. Sua agenda continua funcionando normalmente.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeDisabled();
+  await question.press('Enter');
+  await expect(page.locator('.gika-message')).toHaveCount(0);
+  await context.setOffline(false);
+  await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Notas', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText('Notas');
+});
+
+test('falha mantém pergunta e retry não duplica a mensagem', async ({ page }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('Academia amanhã');
+  await question.press('Enter');
+  await expect(page.getByRole('button', { name: 'Tentar novamente', exact: true })).toBeVisible();
+  await expect(question).toHaveValue('Academia amanhã');
+  await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Tentar novamente', exact: true }).click();
+  await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
+  await expect(question).toHaveValue('Academia amanhã');
 });
 
 test('painel cabe em mobile e botão não cobre navegação', async ({ page }) => {

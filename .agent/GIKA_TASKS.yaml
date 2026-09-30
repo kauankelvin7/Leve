@@ -110,7 +110,13 @@ milestones:
         mutation_scope: "UI Gika + testes"
       - id: M1-T2
         title: "Composer, mensagens, estados e responsividade"
-        status: todo
+        status: done
+        acceptance_criteria:
+          - "Composer identificado, sugestões, Shift+Enter/IME, histórico limitado e memória por uid."
+          - "Loading/error/offline com cancelamento e preservação de texto; retry não duplica pergunta."
+          - "Foco/aria-live e composer adaptável ao viewport."
+        evidence:
+          - "M1_EVIDENCE.md: 4 cenários E2E cobertos (3 PASS + repetição focal 1 PASS); build/typechecks/lint/93 unit PASS."
         dependencies: [M1-T1]
         owner: frontend
         mutation_scope: "UI Gika + testes"

@@ -5,20 +5,20 @@
 - Status global: `IN_PROGRESS`
 - Milestone concluído: `M0` (cinco tarefas, cinco commits)
 - Milestone atual: `M1`
-- Tarefa atual: `M1-T2` (`todo`)
+- Tarefa atual: `M1-T3` (`todo`)
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `dbd3a9dc778fc47fa19cf355bfb5ce57d8a83ac6` (anterior ao commit M1-T1)
+- Último SHA verificado / último commit de tarefa Gika: `82a1d3cc0d10b6db147c83cdeb812822711b5047` (anterior ao commit M1-T2)
 - Worktree limpo no último checkpoint: `sim, após M0-T5; este checkpoint altera apenas documentos/estado`
 - Último gate executado: `lint, typecheck via build, build, 93 unitários e 28 integração: PASS; revisão documental M0 e git diff --check: PASS`
-- Commit de checkpoint: `feat(gika): M1-T1 add accessible launcher and panel` (contém este arquivo)
+- Commit de checkpoint: `feat(gika): M1-T2 add composer and resilient conversation states` (contém este arquivo)
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Iniciar M1-T2 com ownership UI Gika e testes, conforme plano factual. Não adicionar provedor/SDK nem mutação real no M1.
+3. Iniciar M1-T3 com ownership UI Gika e testes, conforme plano factual. Não adicionar provedor/SDK nem mutação real no M1.
 4. Antes de M2-T1, decidir provedor compatível com custo obrigatório R$ 0 e configuração segura de credencial servidor. Nenhum provedor escolhido.
 
 ## Bloqueios
@@ -53,3 +53,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M1 | M1-S0 | done: skill local oficial criada e lida; bloqueio resolvido | commit M1-S0 após 5c9c486 |
 
 | 2026-09-30 | M1 | M1-T1 | done: botão/painel, 2 E2E + Axe, lint/build/typecheck e 93 unit PASS | commit M1-T1 após dbd3a9dc778fc47fa19cf355bfb5ce57d8a83ac6 |
+
+| 2026-09-30 | M1 | M1-T2 | done: composer/estados/offline, 4 E2E cobertos e gates PASS | commit M1-T2 após 82a1d3cc0d10b6db147c83cdeb812822711b5047 |
