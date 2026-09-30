@@ -275,4 +275,4 @@ lint, build (inclui typechecks) e unit a cada mudança funcional; integração A
 
 ### Pendências factuais
 
-humanizer-br indisponível nesta sessão: busca filesystem e catálogo não localizaram; pergunta ao usuário sobre caminho ou processo manual equivalente está pendente. 05-capacidade-e-revisao.md ausente: registrar e não inventar capacidade/billing; não bloqueia o mapa de código. Superpowers indisponível: processo manual equivalente já permitido pelo AGENTS.md. Provider ainda não decidido: gate somente quando chegar M2-T1.
+humanizer-br resolvida pelo usuário: fonte oficial local .agent/skills/humanizer-br/SKILL.md, criada e lida integralmente antes do M1 (ADR-008). 05-capacidade-e-revisao.md ausente: registrar e não inventar capacidade/billing; não bloqueia o mapa de código. Superpowers indisponível: processo manual equivalente já permitido pelo AGENTS.md. Provider ainda não decidido: gate somente quando chegar M2-T1.

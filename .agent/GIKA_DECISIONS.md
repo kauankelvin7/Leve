@@ -80,3 +80,13 @@ Formato:
 - Alternativas consideradas: Promise.all chamado de transação, scope inventado, captura de áudio sem fallback.
 - Consequências: invalidar proposals após split/conflito; novos contratos precisam emuladores e E2E; nenhuma mudança antecipada de backend em M0.
 - Arquivos/contratos: server/commands/content.ts (existente), vercel.json (existente), gates futuros M5/M6/M7.
+
+## ADR-GIKA-008 — humanizer-br local oficial
+
+- Data: 2026-09-30
+- Status: accepted
+- Contexto: skill externa ausente bloqueava textos M1; usuário forneceu conteúdo integral e autorizou implementação local explícita.
+- Decisão: versionar exatamente o conteúdo fornecido em .agent/skills/humanizer-br/SKILL.md, ler integralmente e usá-lo como fonte oficial para todo texto de interface Gika. A autorização manual supriu apenas a ausência externa; não é exceção às regras de domínio/segurança/qualidade do Leve.
+- Alternativas consideradas: permanecer bloqueado; substituir a skill silenciosamente (rejeitado).
+- Consequências: M1-T1 desbloqueada; checklist local de linguagem/acessibilidade aplicado por revisão manual. Não se simula instalação global de plugin. skill-creator não está disponível no harness; criação literal autorizada pelo usuário, sem gerar conteúdo alternativo.
+- Arquivos afetados: .agent/skills/humanizer-br/SKILL.md, GIKA_STATE.md, GIKA_TASKS.yaml, GIKA_EXECPLAN.md e docs/gika.

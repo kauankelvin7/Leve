@@ -141,10 +141,10 @@ A etapa planejada seguinte continua sendo a **Fase 7 — auditoria final do plan
 
 Pedido atual autoriza integração Gika e nova branch; não executa a Fase 7 sazonal. Branch `feat/gika-integration`, base real `f6b21b6695f4953e28daace00edb05b2dd4bfde1` (posterior ao HEAD sazonal descrito acima).
 
-- Etapa: M0 concluído; M1-T1 blocked por humanizer-br ausente, sem código de produção novo.
+- Etapa: M0 concluído; M1-T1 liberada; skill local oficial criada antes da implementação, conforme ADR-008.
 - Último commit de tarefa: `033566c350f081f3c3f50953666756b7afb4c38b` (M0-T5).
 - Arquivos alterados: AGENTS.md (original preservado + pacote anexado), GIKA_START_HERE.md, .agent/*, docs/gika/* e este checkpoint.
 - Provas: lint, build incluindo dois typechecks, 93 unitários e 28 integração com Auth/Firestore Emulator PASS. Aviso baseline de bundles grandes; detalhe em docs/gika/M0_EVIDENCE.md.
-- Pendência imediata: disponibilizar a skill exigida ou responder à solicitação de processo manual equivalente. Depois M1-T1 mock, conforme .agent/GIKA_EXECPLAN.md.
+- Pendência imediata: ler .agent/skills/humanizer-br/SKILL.md e iniciar M1-T1, conforme .agent/GIKA_EXECPLAN.md.
 - Memória atual Gika: .agent/GIKA_STATE.md, GIKA_TASKS.yaml, GIKA_EXECPLAN.md, GIKA_DECISIONS.md. Seguir essa ordem e verificar git status/SHA antes de agir.
 - Sem push/deploy/merge nem provedor escolhido; R$ 0 obrigatório permanece.

@@ -2,28 +2,27 @@
 
 ## Estado atual
 
-- Status global: `BLOCKED`
+- Status global: `READY`
 - Milestone concluído: `M0` (cinco tarefas, cinco commits)
 - Milestone atual: `M1`
-- Tarefa atual: `M1-T1` (`blocked`, nenhuma implementação iniciada)
+- Tarefa atual: `M1-T1` (`todo`, pré-requisitos concluídos)
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `033566c350f081f3c3f50953666756b7afb4c38b`
+- Último SHA verificado / último commit de tarefa Gika: `5c9c486399f17d993dc272f6c1af590ddb48ea55`
 - Worktree limpo no último checkpoint: `sim, após M0-T5; este checkpoint altera apenas documentos/estado`
 - Último gate executado: `lint, typecheck via build, build, 93 unitários e 28 integração: PASS; revisão documental M0 e git diff --check: PASS`
-- Commit de checkpoint: `chore(gika): persist M0 completion and M1 skill blocker` (contém este arquivo; localizar em git log)
+- Commit de checkpoint: `docs(gika): M1-S0 add official local humanizer-br skill` (contém este arquivo; localizar em git log)
 
 ## Próxima ação
 
-1. Resolver a disponibilidade da skill humanizer-br ou a autorização solicitada de processo manual equivalente. A pergunta está pendente; ausência de resposta não é autorização.
+1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
 3. Iniciar M1-T1 com ownership UI Gika e testes, conforme plano factual. Não adicionar provedor/SDK nem mutação real no M1.
 4. Antes de M2-T1, decidir provedor compatível com custo obrigatório R$ 0 e configuração segura de credencial servidor. Nenhum provedor escolhido.
 
 ## Bloqueios
 
-- M1-T1: AGENTS.md original exige “Use a skill `humanizer-br` em todo texto exibido ao usuario” e “Leia o `SKILL.md` completo antes de criar ou revisar esses textos”. Busca local (/workspace, /home, /root, /opt) e catálogo de skills não localizaram a skill. O pedido atual é seguir integralmente as instruções; não substituir essa exigência silenciosamente. Pergunta ao usuário enviada, sem resposta até este checkpoint.
 - Documento 05-capacidade-e-revisao.md citado no AGENTS.md está ausente do checkout. Não impede auditoria factual dos limites de código, mas não inferir capacidade operacional/billing a partir dele.
 - Checkout ausente da sessão anterior: resolvido pelo clone HTTPS. Staging antigo em /workspace/scratch/gika-agent-pack não é a fonte de verdade atual.
 
@@ -50,3 +49,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M0 | M0-T4 | done — docs(gika): M0-T4 map shell design system and navigation | `15ce9d11adf065b0bc9bdc766011fed926493451` |
 | 2026-09-30 | M0 | M0-T5 | done — docs(gika): M0-T5 define integration contracts and policy gates | `033566c350f081f3c3f50953666756b7afb4c38b` |
 | 2026-09-30 | M1 | M1-T1 | blocked: humanizer-br ausente; não iniciada | checkpoint após M0-T5 |
+
+| 2026-09-30 | M1 | M1-S0 | done: skill local oficial criada e lida; bloqueio resolvido | commit M1-S0 após 5c9c486 |

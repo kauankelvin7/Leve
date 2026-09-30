@@ -85,13 +85,21 @@ milestones:
   M1:
     name: "Shell visual da Gika"
     tasks:
+      - id: M1-S0
+        title: "Versionar humanizer-br local oficial"
+        status: done
+        dependencies: [M0-T5]
+        owner: orchestrator
+        mutation_scope: "skill e documentação"
+        acceptance_criteria:
+          - "Conteúdo fornecido pelo usuário versionado e lido integralmente."
+          - "ADR e estado removem bloqueio externo sem alterar regras originais."
+        evidence:
+          - ".agent/skills/humanizer-br/SKILL.md lido integralmente; ADR-GIKA-008; revisão literal do conteúdo fornecido."
       - id: M1-T1
         title: "Botão flutuante e painel"
-        status: blocked
-        blocker: "AGENTS.md exige ler humanizer-br antes de criar textos da UI; skill ausente, aguardando caminho/arquivo ou autorização de processo equivalente."
-        evidence:
-          - "2026-09-30: M0 dependências done; busca local e catálogo de skills não localizaram humanizer-br; pergunta enviada ao usuário."
-        dependencies: [M0-T5]
+        status: todo
+        dependencies: [M0-T5, M1-S0]
         owner: frontend
         mutation_scope: "UI Gika + testes"
       - id: M1-T2
