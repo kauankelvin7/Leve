@@ -57,7 +57,9 @@ milestones:
           - "Riscos de idempotência/conflito identificados."
       - id: M0-T4
         title: "Mapear design system e navegação"
-        status: todo
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: Shell/tokens/componentes/mobile/PWA reais e restrições de foco/timer; revisão documental M0-T4."
         dependencies: [M0-T1]
         owner: ui-auditor
         mutation_scope: "docs only"

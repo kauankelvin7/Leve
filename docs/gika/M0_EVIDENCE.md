@@ -26,3 +26,7 @@ Rastreio direto de content.ts, identity.ts, server/commands/content.ts, server/r
 ## M0-T3
 
 Rastreio de AuthProvider, platform/firebase, api, outbox, outboxPolicy, localData, server/app, server/commands/identity e content, server/platform/firebase, firestore.rules, sw.js. Autorização, isolamento, receipts/revisões, fila local e divergências de handlers de série documentados. Baseline integração: 28 testes PASS.
+
+## M0-T4
+
+Rastreio de App.tsx, main.tsx, design-tokens.json, theme.ts/themes.ts, CSS carregado, ConfirmDialog, ActiveTimerBar, sw.js e vercel.json. Rotas, componentes reutilizáveis, fontes, tokens, safe area, modal, PWA e conflito timer/botão documentados. Sem alteração visual; screenshot/E2E não executados nesta tarefa documental.
