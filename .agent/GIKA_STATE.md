@@ -5,14 +5,14 @@
 - Status global: `IN_PROGRESS`
 - Milestones concluídos: `M0` e `M1` (shell/mock/refinement; limites da regressão ampliada abaixo)
 - Milestone atual: `M2` (read-only; M1 visual aprovado pelo usuário)
-- Tarefa atual: nenhuma; M2-T1 concluída, próxima M2-T2
+- Tarefa atual: nenhuma; M2-T2 concluída, próxima M2-T3
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `7a3c343` (M2-S0, worktree limpo antes de M2-T1)
-- Worktree limpo no PRE M2-T1; gates provider PASS; checkpoint registra o commit anterior à tarefa atual
-- Últimos gates: `lint/build/typechecks, 102 unit, 28 integração, 13 Gika E2E + Axe, 13 shell e 7 sazonal PASS; regressão ampliada 32: 27 PASS/5 FAIL, falha Gika corrigida e suite repetida 13 PASS; Planner com 3 falhas baseline explicadas e 1 intermitência, repetição offline atual PASS`
-- Commit atual de tarefa: `feat(gika): M2-T1 add bounded Gemini read-only adapter` (contém este estado)
+- Último SHA verificado / último commit de tarefa Gika: `a1334eb` (M2-T1, worktree limpo antes de M2-T2)
+- Worktree limpo no PRE M2-T2; gates read-only PASS; checkpoint registra o commit anterior à tarefa atual
+- Últimos gates: M2-T2 lint/build/typechecks, 126 unit, 41 integração, 14 Gika mock + 4 UI read-only E2E/Axe PASS. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
+- Commit atual de tarefa: `feat(gika): M2-T2 connect authenticated read tools to chat` (contém este estado)
 
 ## Próxima ação
 
@@ -34,7 +34,7 @@
 - useUserCollection mascara partial; Gika não usará isso como prova de consulta completa.
 - Batch transacional genérico não existe; gate M6. Header microphone=() bloqueia voz; gate M7.
 - Superpowers indisponível; processo manual equivalente conforme AGENTS.md. Nenhum subagente utilizado.
-- M1 usa apenas mock em memória. Não houve deploy, merge, push ou uso de credenciais de produção.
+- M1 mock em memória segue injetável; M2 produção usa API read-only, sem credencial disponível. Limites Gika locais não equivalem a quota global entre instâncias. Não houve deploy, merge, push ou uso de credenciais de produção.
 
 ## Checkpoint de retomada
 
@@ -64,3 +64,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M2 | M2-S0 | done: baseline contraste/recorrência confirmados; regressão dock offline corrigida, gates PASS | commit M2-S0 após d8ee3f0 |
 
 | 2026-09-30 | M2 | M2-T1 | done: adapter Gemini sem segredo; lint/build e 116 unit PASS | commit M2-T1 após 7a3c343 |
+
+| 2026-09-30 | M2 | M2-T2 | done: consultas autenticadas e contrato UI; gates offline PASS | commit M2-T2 após a1334eb |

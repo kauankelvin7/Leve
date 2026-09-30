@@ -5,7 +5,8 @@ export type ModelCall = { name: string; args: Record<string, unknown> };
 export interface ModelAdapter { interpret(input: ModelInput, signal: AbortSignal): Promise<ModelCall[]> }
 export type GikaFaultCode = 'GIKA_NOT_CONFIGURED' | 'GIKA_QUOTA' | 'GIKA_UNAVAILABLE' | 'GIKA_TIMEOUT' | 'GIKA_INVALID_RESPONSE' | 'GIKA_MALFORMED_CALL' | 'GIKA_POLICY';
 export class GikaFault extends Error {
-  constructor(public readonly code: GikaFaultCode) { super(code); }
+  readonly code: GikaFaultCode;
+  constructor(code: GikaFaultCode) { super(code); this.code = code; }
 }
 
 /** Deadline also bounds transports/repositories that ignore AbortSignal. */

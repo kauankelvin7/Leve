@@ -25,7 +25,7 @@ const transport: GeminiTransport = async (payload, signal) => {
   // Header only. Never include the secret in URLs, logs or error causes.
   return fetch(GEMINI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(payload), signal });
 };
-const callSchema = z.object({ name: z.string().min(1).max(100), args: z.record(z.string(), z.unknown()) }).strict();
+const callSchema = z.object({ name: z.string().min(1).max(100), args: z.record(z.string(), z.unknown()).default({}), id: z.string().max(128).optional() }).strict();
 const envelopeSchema = z.object({ candidates: z.array(z.object({
   finishReason: z.string(), content: z.object({ parts: z.array(z.record(z.string(), z.unknown())).min(1).max(32) }).optional(),
 })).length(1) });
@@ -40,7 +40,7 @@ export function parseGeminiResponse(body: unknown) {
     if ('functionCall' in part) {
       const call = callSchema.safeParse(part.functionCall);
       if (!call.success) throw new GikaFault('GIKA_MALFORMED_CALL');
-      calls.push(call.data);
+      calls.push({ name: call.data.name, args: call.data.args });
     } else if (typeof part.text !== 'string') throw new GikaFault('GIKA_INVALID_RESPONSE');
   }
   if (calls.length > 3) throw new GikaFault('GIKA_POLICY');

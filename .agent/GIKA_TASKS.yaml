@@ -165,7 +165,8 @@ milestones:
         owner: ai-integration
       - id: M2-T2
         title: "Tools get_today/get_day/get_week"
-        status: todo
+        status: done
+        evidence: ["M2_EVIDENCE.md: 126 unit, 41 integração, 14 Gika mock + 4 UI read-only E2E/Axe PASS; nenhuma mutação."]
         dependencies: [M2-T1]
         owner: ai-integration
       - id: M2-T3

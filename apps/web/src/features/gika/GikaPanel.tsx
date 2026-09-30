@@ -4,21 +4,26 @@ import type { GikaAdapter } from './conversation';
 import { GikaMark } from './GikaMark';
 import { GikaComposer } from './GikaComposer';
 import { GikaError, GikaLoading, GikaMessage } from './GikaMessage';
-import { mockAdapter } from './mockAdapter';
+import { gikaAdapter, simulated } from './adapter';
 import { useGikaConversation } from './useGikaConversation';
 
-type GikaPanelProps = { open: boolean; onClose: () => void; adapter?: GikaAdapter };
-const suggestions = [
+type GikaPanelProps = { open: boolean; onClose: () => void; adapter?: GikaAdapter; demo?: boolean };
+const demoSuggestions = [
   { text: 'Organizar meu dia', icon: 'day' }, { text: 'Ver minhas pendências', icon: 'list' },
   { text: 'O que tenho amanhã?', icon: 'calendar' }, { text: 'Adicionar uma tarefa', icon: 'plus' },
 ] as const;
 
-export function GikaPanel({ open, onClose, adapter = mockAdapter }: GikaPanelProps) {
+export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulated }: GikaPanelProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const transcript = useRef<HTMLDivElement>(null);
   const conversation = useGikaConversation(adapter);
-  const { draft, setDraft, messages, status, online, send, cancel, retry } = conversation;
+  const { draft, setDraft, messages, status, errorCode, online, send, cancel, retry } = conversation;
+
+  const suggestions = demo ? demoSuggestions : [
+    { text: 'O que tenho hoje?', icon: 'day' }, { text: 'O que tenho amanhã?', icon: 'calendar' },
+    { text: 'Ver minha semana', icon: 'list' }, { text: 'O que tenho depois de amanhã?', icon: 'calendar' },
+  ] as const;
 
   function close() { cancel(); onClose(); }
 
@@ -65,17 +70,17 @@ export function GikaPanel({ open, onClose, adapter = mockAdapter }: GikaPanelPro
       <div className="gika-identity"><span className="gika-identity-mark"><GikaMark /></span><div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
-    <p className="gika-demo-notice" id="gika-demo-notice">Demonstração · as respostas são simuladas. Sua agenda não muda.</p>
+    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : 'Consulte sua agenda. Nenhuma tarefa será alterada.'}</p>
     <div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0}>
       {messages.length === 0 && <div className="gika-welcome">
-        <span className="gika-welcome-mark"><GikaMark /></span><h3>O que vamos organizar?</h3><p>Experimente uma pergunta sobre seu dia.</p>
+        <span className="gika-welcome-mark"><GikaMark /></span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre hoje, outro dia ou sua semana.</p>
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}
       <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map(message => <GikaMessage key={message.id} message={message} />)}</ol>
-      {status === 'loading' && <GikaLoading />}
-      {status === 'error' && <GikaError online={online} onRetry={() => void retry()} />}
-      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? 'Preparando uma resposta de demonstração…' : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
+      {status === 'loading' && <GikaLoading demo={demo} />}
+      {status === 'error' && <GikaError code={errorCode} online={online} onRetry={() => void retry()} />}
+      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Consultando sua agenda…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
     </div>
     <GikaComposer textareaRef={composer} draft={draft} open={open} loading={status === 'loading'} online={online} onDraft={setDraft} onSend={() => void send()} />
   </dialog>;

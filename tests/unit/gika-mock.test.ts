@@ -26,7 +26,7 @@ describe('Gika mock boundary', () => {
 
   it('prévia mock é explícita, limitada e não aceita ações de domínio', async () => {
     const response = await createMockAdapter({ delayMs: 0 })(request('Organizar meu dia'), new AbortController().signal);
-    expect(response.preview).toBe('organize-demo');
+    expect(response.simulated && response.preview).toBe('organize-demo');
     expect(gikaResponseSchema.safeParse({ text: 'ok', simulated: true, preview: { command: 'activity.update' } }).success).toBe(false);
   });
 

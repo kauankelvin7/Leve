@@ -140,6 +140,16 @@ PendingAction planejada: {id, ownerUid, tool, createdAt, expiresAt, summary, pay
 
 ### Gates de decisão e limitações concretas
 
-Provedor não foi escolhido, nem há credencial configurada. O custo obrigatório R$ 0 exige decisão humana antes de habilitar provedor real no M2; M1 continua viável só com mock. Não selecionar plano pago, ativar billing ou adivinhar chave. Timeouts, request size cap, limite por uid e orçamento de tool calls serão necessários já no endpoint M2; M9 revisa/hardens, não adia a proteção inicial. Sem App Check factual hoje; avaliar no M9.
+Registro M0: naquele checkpoint não havia provedor escolhido nem credencial. Escolha posterior autorizada em ADR-009 e implementação M2 abaixo; credencial ainda ausente. M1 permanece testável com mock. Não selecionar plano pago, ativar billing ou adivinhar chave. Timeouts, request size cap, limite por uid e orçamento de tool calls serão necessários já no endpoint M2; M9 revisa/hardens, não adia a proteção inicial. Sem App Check factual hoje; avaliar no M9.
 
 Domínio não oferece batch transacional genérico nem undo universal. M6 não poderá declarar atomicidade via Promise.all de comandos: gate para contrato composto validado/transacional ou proposta explicitamente sequencial com resultados parciais e recuperação. Recorrência inteira não suportada por updateFuture; não inventar scope series. Voz M7 precisa resolver Permissions-Policy microphone=() antes de afirmar funcionamento em produção. Proatividade M8 será opt-in/regra local, sem monitoramento LLM contínuo.
+
+## Implementação M2 — 2026-09-30
+
+Provider escolhido pelo usuário: Gemini Developer API gemini-3.5-flash-lite, medium, Free Tier sem billing (ADR-009/011). server/gika/model.ts é a interface de interpretação independente; gemini.ts não importa Firebase/commands. Uma chamada HTTP por pergunta; resultados da agenda nunca vão ao modelo. Narrativa livre é descartada; respostas/itens são formatados deterministicamente.
+
+POST /api/gika/respond passa pelo middleware Firebase ID token existente e body cap 12 KiB; request {requestId,text} idêntica à M1. Admin executor verifica email, membership/profile ativos e controls normal. Só get_today/get_day/get_week; argumentos strict (sem uid/path), data civil do perfil, weekStartsOn e intervalo <=7 dias, distância <=366 dias. Toda allowlist/policy é validada antes de leituras; resultados strict com até50 itens, cap50 por grupo, dedup e exclusão de deletedAt. Query adicional de séries ativas (cap50) sinaliza horizonte incompleto; não materializa/escreve nenhuma ocorrência. Descrições/notas/identidade/reminders não são expostos.
+
+Deadline model10s e rota15s, cap3calls/64KiB resposta, limites locais por uid 3/min/10/dia UTC, single flight, 120 requests/dia por instância, mapa<=5000. Limites em memória não são quota global distribuída nem garantem retenção entre cold starts: a garantia financeira depende de projeto Free Tier sem billing; quota upstream 429 é falha graciosa sem retry/fallback. M9 poderá revisar limite distribuído sem antecipar escrita de agenda em M2.
+
+UI mantém GikaAdapter(request,signal), draft/retry/cancelamento e componentes M1. Response continua text/simulated, union real acrescenta reads obrigatórias; preview é permitido somente simulated:true. Produção usa apiAdapter; regressões M1 injetam mock pelo mesmo módulo adapter.ts. Resposta tardia é descartada por AbortSignal/uid; nenhuma pergunta entra na outbox/sendCommand. A consulta não é disparada ao abrir painel nem em background.

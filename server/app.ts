@@ -1,4 +1,5 @@
 import express, { type ErrorRequestHandler } from 'express';
+import { createGikaRouter } from './gika/router.ts';
 import { randomUUID } from 'node:crypto';
 import { z, ZodError } from 'zod';
 import { commandEnvelopeSchema, type SessionResult, type UserProfile } from '../packages/domain/src/identity.ts';
@@ -66,6 +67,7 @@ app.use('/api', async (request, response, next) => {
   }
   next();
 });
+app.use('/api/gika', createGikaRouter());
 app.use(express.json({ limit: '10mb', strict: true }));
 app.get('/api/session', async (_request, response) => {
   const identity = response.locals.identity;

@@ -2,6 +2,7 @@ import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Icon } from '../../components/ui/Icon';
 import type { GikaMessage as Message } from './conversation';
 import { GikaMark } from './GikaMark';
+import type { ReadItem } from '../../../../../packages/domain/src/gika';
 
 export function GikaToolResult({ title, children }: { title: string; children: ReactNode }) {
   return <section className="gika-result" aria-label={title}><div className="gika-card-title"><Icon name="list" /><strong>{title}</strong></div>{children}</section>;
@@ -33,15 +34,29 @@ function GikaDemoPreview() {
 
 export function GikaMessage({ message }: { message: Message }) {
   return <li className={`gika-message is-${message.role}`}>
-    <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : 'Resposta de demonstração'}</span></div>
-    <p>{message.text}</p>{message.preview === 'organize-demo' && <GikaDemoPreview />}
+    <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
+    <p>{message.text}</p>{message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
+    {message.reads?.map((read, index) => <GikaToolResult key={index} title={read.startDate === read.endDate ? `Agenda de ${civilLabel(read.startDate)}` : `Agenda de ${civilLabel(read.startDate)} a ${civilLabel(read.endDate)}`}>
+      <p>Horários em {read.timeZone}.</p>
+      {read.partial && <p>Consulta parcial. Pode haver outros itens ou rotinas ainda não disponíveis neste período.</p>}
+      {read.items.length ? <ul>{read.items.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {itemLabel(item)}</span></li>)}</ul> : <p>{read.partial ? 'Não há itens nesta parte da consulta.' : 'Nada planejado para esse período.'}</p>}
+    </GikaToolResult>)}
   </li>;
 }
 
-export function GikaLoading() {
-  return <div className="gika-loading"><GikaMark /><span>Preparando uma resposta de demonstração…</span><span className="gika-loading-dots" aria-hidden="true">···</span></div>;
+function civilLabel(date: string) { return date.split('-').reverse().join('/'); }
+function itemLabel(item: ReadItem) {
+  const schedule = item.schedule;
+  const status = { pending: 'Pendente', completed: 'Concluída', canceled: 'Cancelada' }[item.status];
+  const when = schedule.type === 'task' ? `${schedule.dueDate ? civilLabel(schedule.dueDate) : 'Sem data'}${schedule.dueTime ? ` às ${schedule.dueTime}` : ''}`
+    : schedule.allDay ? `Dia inteiro, a partir de ${civilLabel(schedule.startDate)}` : `${civilLabel(schedule.startDate)} às ${schedule.startTime} até ${civilLabel(schedule.endDate)} às ${schedule.endTime}`;
+  return `${status} · ${when}${item.seriesId ? ' · Rotina' : ''}`;
 }
 
-export function GikaError({ online, onRetry }: { online: boolean; onRetry: () => void }) {
-  return <div className="gika-feedback is-error"><p>Não consegui responder agora. Tente novamente em alguns instantes.</p><button type="button" disabled={!online} onClick={onRetry}>Tentar novamente</button></div>;
+export function GikaLoading({ demo = true }: { demo?: boolean }) {
+  return <div className="gika-loading"><GikaMark /><span>{demo ? 'Preparando uma resposta de demonstração…' : 'Consultando sua agenda…'}</span><span className="gika-loading-dots" aria-hidden="true">···</span></div>;
+}
+
+export function GikaError({ online, onRetry, code }: { online: boolean; onRetry: () => void; code?: string }) {
+  return <div className="gika-feedback is-error"><p>{code === 'GIKA_QUOTA' ? 'O limite de consultas foi atingido por agora. Sua agenda continua disponível.' : 'Não consegui responder agora. Tente novamente em alguns instantes.'}</p><button type="button" disabled={!online} onClick={onRetry}>Tentar novamente</button></div>;
 }

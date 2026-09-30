@@ -1,6 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+// M1 regression suite keeps the same explicit mock contract; production uses API.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/features/gika/adapter.ts*', route => route.fulfill({ contentType: 'application/javascript', body: "export { mockAdapter as gikaAdapter } from '/src/features/gika/mockAdapter.ts'; export const simulated = true;" }));
+});
+
 async function enterLocalAgenda(page: Page) {
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');

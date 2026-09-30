@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
+import { ApiError } from '../../platform/api';
 import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, gikaResponseSchema, type GikaAdapter, type GikaMessage, type GikaRequest } from './conversation';
 
 export function useGikaConversation(adapter: GikaAdapter) {
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<GikaMessage[]>([]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [errorCode, setErrorCode] = useState<string | undefined>();
   const [online, setOnline] = useState(() => navigator.onLine);
   const pending = useRef<GikaRequest | null>(null);
   const controller = useRef<AbortController | null>(null);
@@ -36,20 +38,20 @@ export function useGikaConversation(adapter: GikaAdapter) {
     const request = pending.current;
     const active = new AbortController();
     controller.current = active;
-    setStatus('loading');
+    setStatus('loading'); setErrorCode(undefined);
     try {
       const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
-      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, preview: response.preview }].slice(-GIKA_MAX_MESSAGES));
+      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { reads: response.reads }) }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);
       pending.current = null;
       setStatus('idle');
-    } catch {
-      if (!active.signal.aborted && controller.current === active) setStatus('error');
+    } catch (error) {
+      if (!active.signal.aborted && controller.current === active) { setErrorCode(error instanceof ApiError ? error.code : undefined); setStatus('error'); }
     } finally {
       if (controller.current === active) controller.current = null;
     }
   }
 
-  return { draft, setDraft, messages, status, online, send, cancel, retry: () => pending.current ? send(pending.current.text) : Promise.resolve() };
+  return { draft, setDraft, messages, status, errorCode, online, send, cancel, retry: () => pending.current ? send(pending.current.text) : Promise.resolve() };
 }
