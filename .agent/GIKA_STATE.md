@@ -1,59 +1,52 @@
-# Gika — Estado persistente
-
-> Este arquivo é atualizado pelo **orquestrador**. Outros subagentes podem sugerir alterações, mas não devem concorrer escrevendo nele.
+# Gika — estado persistente
 
 ## Estado atual
 
-- Status global: `IN_PROGRESS`
-- Milestone atual: `M0`
-- Tarefa atual: `M1-T1`
-- Último SHA verificado: `15ce9d11adf065b0bc9bdc766011fed926493451` (HEAD anterior ao commit deste checkpoint)
-- Último commit da Gika verificado: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`; checkpoint de M0-T1 identificado no git log pelo ID da tarefa.
-- Worktree limpo no último checkpoint: `sim, antes da extração`
-- Último gate executado: lint/build (inclui typecheck) e 93 unit PASS; diff --check e revisão documental por tarefa.
+- Status global: `BLOCKED`
+- Milestone concluído: `M0` (cinco tarefas, cinco commits)
+- Milestone atual: `M1`
+- Tarefa atual: `M1-T1` (`blocked`, nenhuma implementação iniciada)
+- Branch: `feat/gika-integration`
+- Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
+- Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
+- Último SHA verificado / último commit de tarefa Gika: `033566c350f081f3c3f50953666756b7afb4c38b`
+- Worktree limpo no último checkpoint: `sim, após M0-T5; este checkpoint altera apenas documentos/estado`
+- Último gate executado: `lint, typecheck via build, build, 93 unitários e 28 integração: PASS; revisão documental M0 e git diff --check: PASS`
+- Commit de checkpoint: `chore(gika): persist M0 completion and M1 skill blocker` (contém este arquivo; localizar em git log)
 
 ## Próxima ação
 
-1. Ler o repositório sem modificar código de produção.
-2. Descobrir stack, scripts, modelos de dados, autenticação, regras de negócio, recorrência, offline/outbox e estrutura visual.
-3. Atualizar a documentação com fatos verificados.
-4. Só então decidir a arquitetura concreta de integração.
+1. Resolver a disponibilidade da skill humanizer-br ou a autorização solicitada de processo manual equivalente. A pergunta está pendente; ausência de resposta não é autorização.
+2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
+3. Iniciar M1-T1 com ownership UI Gika e testes, conforme plano factual. Não adicionar provedor/SDK nem mutação real no M1.
+4. Antes de M2-T1, decidir provedor compatível com custo obrigatório R$ 0 e configuração segura de credencial servidor. Nenhum provedor escolhido.
 
 ## Bloqueios
 
-Checkout ausente na sessão anterior: resolvido pelo clone HTTPS em `/workspace/Leve`.
-Branch de trabalho: `feat/gika-integration`.
-Investigar disponibilidade de humanizer-br e dos gates locais antes de M1.
+- M1-T1: AGENTS.md original exige “Use a skill `humanizer-br` em todo texto exibido ao usuario” e “Leia o `SKILL.md` completo antes de criar ou revisar esses textos”. Busca local (/workspace, /home, /root, /opt) e catálogo de skills não localizaram a skill. O pedido atual é seguir integralmente as instruções; não substituir essa exigência silenciosamente. Pergunta ao usuário enviada, sem resposta até este checkpoint.
+- Documento 05-capacidade-e-revisao.md citado no AGENTS.md está ausente do checkout. Não impede auditoria factual dos limites de código, mas não inferir capacidade operacional/billing a partir dele.
+- Checkout ausente da sessão anterior: resolvido pelo clone HTTPS. Staging antigo em /workspace/scratch/gika-agent-pack não é a fonte de verdade atual.
 
-## Riscos ativos
+## Riscos e limitações
 
-- Não assumir que a arquitetura lembrada em conversas corresponde ao estado atual do repositório.
-- Não assumir nomes de schemas, rotas, coleções ou comandos sem verificar no código.
-- Não adicionar SDK de IA antes de concluir M0.
+- Bundles baseline >500 kB; nenhuma otimização fora de escopo. Ver M0_EVIDENCE.md.
+- Handlers de série divergem em controles/limites da command layer genérica; revisão obrigatória antes de expor em M5.
+- useUserCollection mascara partial; Gika não usará isso como prova de consulta completa.
+- Batch transacional genérico não existe; gate M6. Header microphone=() bloqueia voz; gate M7.
+- Superpowers indisponível; processo manual equivalente conforme AGENTS.md. Nenhum subagente utilizado.
+- Não houve UI nova, E2E/screenshot novo, deploy, merge, push ou uso de credenciais de produção. Nenhuma feature de Gika implementada no M0.
 
 ## Checkpoint de retomada
 
-Ao retomar:
+O SHA acima identifica o último commit de tarefa, anterior ao commit que grava este checkpoint (não há SHA auto-referente possível em arquivo versionado). Conferir git log e diff de commits posteriores. O checkpoint esperado posterior só contém estado/documentação. Se HEAD divergir por mudanças adicionais, investigar antes de continuar; não ignorar divergência. Histórico e tarefas são fonte de verdade.
 
-1. `git status`
-2. `git rev-parse HEAD`
-3. comparar SHA com este arquivo;
-4. ler tarefas `in_progress` ou `blocked`;
-5. verificar decisões recentes;
-6. continuar somente da próxima tarefa elegível.
-
-## Histórico resumido
+## Histórico
 
 | Data | Milestone | Tarefa | Resultado | Commit |
 |---|---|---|---|---|
-| — | — | — | Projeto ainda não iniciado | — |
-
-| 2026-09-30 | M0 | M0-T1 | done: docs/gika/ARCHITECTURE.md: stack, scripts, entradas, base SHA e status; M0_EVIDENCE.md: lint/build/typecheck e 93 unit PASS. | HEAD verificado f6b21b6695f4953e28daace00edb05b2dd4bfde1; commit identificado por M0-T1 |
-
-| 2026-09-30 | M0 | M0-T2 | done: ARCHITECTURE.md: schemas reais Activity/Category/series e rastreio create/update/setStatus/reschedule/trash; evidências M0-T2. | HEAD verificado ab35fc545d746af350d646a3ef012b1f79ebc3c3; commit identificado por M0-T2 |
-
-| 2026-09-30 | M0 | M0-T3 | done: ARCHITECTURE.md: auth/Rules/persistência/outbox e riscos verificados; M0_EVIDENCE.md: 28 integration PASS com emuladores. | HEAD verificado 4cd81d5e91eb3479656407d3ca154713e4294e9a; commit identificado por M0-T3 |
-
-| 2026-09-30 | M0 | M0-T4 | done: ARCHITECTURE.md: Shell/tokens/componentes/mobile/PWA reais e restrições de foco/timer; revisão documental M0-T4. | HEAD verificado 6fd5ce12683b19434cc30c205e42b0cf93d2bc40; commit identificado por M0-T4 |
-
-| 2026-09-30 | M0 | M0-T5 | done: Contratos tipados/command bridge/policy matrix e ADRs 004-007; ExecPlan factual revisado; lint/typecheck/build, 93 unit e 28 integration PASS. | HEAD verificado 15ce9d11adf065b0bc9bdc766011fed926493451; commit identificado por M0-T5 |
+| 2026-09-30 | M0 | M0-T1 | done — docs(gika): M0-T1 map repository and quality baseline | `ab35fc545d746af350d646a3ef012b1f79ebc3c3` |
+| 2026-09-30 | M0 | M0-T2 | done — docs(gika): M0-T2 trace agenda domain and recurrence | `4cd81d5e91eb3479656407d3ca154713e4294e9a` |
+| 2026-09-30 | M0 | M0-T3 | done — docs(gika): M0-T3 audit auth persistence and offline | `6fd5ce12683b19434cc30c205e42b0cf93d2bc40` |
+| 2026-09-30 | M0 | M0-T4 | done — docs(gika): M0-T4 map shell design system and navigation | `15ce9d11adf065b0bc9bdc766011fed926493451` |
+| 2026-09-30 | M0 | M0-T5 | done — docs(gika): M0-T5 define integration contracts and policy gates | `033566c350f081f3c3f50953666756b7afb4c38b` |
+| 2026-09-30 | M1 | M1-T1 | blocked: humanizer-br ausente; não iniciada | checkpoint após M0-T5 |

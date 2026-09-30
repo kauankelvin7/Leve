@@ -17,6 +17,8 @@ rules:
 milestones:
   M0:
     name: "Auditoria e arquitetura factual"
+    status: done
+    evidence: "docs/gika/M0_EVIDENCE.md; cinco commits atômicos M0-T1..M0-T5 e gates baseline aprovados."
     gate: "Nenhuma feature de produção é implementada."
     tasks:
       - id: M0-T1
@@ -85,7 +87,10 @@ milestones:
     tasks:
       - id: M1-T1
         title: "Botão flutuante e painel"
-        status: todo
+        status: blocked
+        blocker: "AGENTS.md exige ler humanizer-br antes de criar textos da UI; skill ausente, aguardando caminho/arquivo ou autorização de processo equivalente."
+        evidence:
+          - "2026-09-30: M0 dependências done; busca local e catálogo de skills não localizaram humanizer-br; pergunta enviada ao usuário."
         dependencies: [M0-T5]
         owner: frontend
         mutation_scope: "UI Gika + testes"

@@ -34,3 +34,7 @@ Rastreio de App.tsx, main.tsx, design-tokens.json, theme.ts/themes.ts, CSS carre
 ## M0-T5
 
 Arquitetura de integração e contratos de tools delimitados em ARCHITECTURE.md; matriz concreta em SECURITY_AND_POLICY.md; ADRs 004–007 e ExecPlan atualizado com ownership, sequência, gates e rollback. Riscos de séries, partial, batch, voz e provedor/gratuidade explicitados. Nenhuma feature ou dependência nova. Revisão dos cinco entregáveis M0 contra os critérios YAML concluída.
+
+## Gate M0 final
+
+Cinco tarefas documentais cumpridas em commits separados. Todos os schemas/rotas/arquivos existentes mencionados foram rastreados; caminhos Gika novos estão explicitamente marcados como planejados. AGENTS original preservado integralmente (comparação programática com git show da base). Diff contra a base contém apenas AGENTS/CONTINUAR, pacote .agent e docs/gika, sem mudanças em produção/package-lock/Rules. E2E e screenshots não executados pois nenhuma UI mudou; obrigatórios no M1. Estado/histórico contém SHAs reais dos cinco commits. M1 blocked por skill ausente e pergunta pendente, sem avanço com dependência externa não satisfeita.
