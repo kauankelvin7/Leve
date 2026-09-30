@@ -1,0 +1,229 @@
+version: 1
+project: gika
+source_of_truth: true
+
+status_values:
+  - todo
+  - in_progress
+  - blocked
+  - done
+
+rules:
+  - "Apenas uma tarefa mutável pode estar in_progress no mesmo conjunto de arquivos."
+  - "done exige acceptance_criteria + evidence + checkpoint."
+  - "Toda tarefa concluída atualiza GIKA_STATE.md no mesmo commit."
+  - "Não iniciar tarefa com dependência não concluída."
+
+milestones:
+  M0:
+    name: "Auditoria e arquitetura factual"
+    gate: "Nenhuma feature de produção é implementada."
+    tasks:
+      - id: M0-T1
+        title: "Mapear repositório e comandos de qualidade"
+        status: done
+        evidence:
+          - "docs/gika/ARCHITECTURE.md: stack, scripts, entradas, base SHA e status; M0_EVIDENCE.md: lint/build/typecheck e 93 unit PASS."
+        dependencies: []
+        owner: auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Stack, scripts, diretórios e entrypoints documentados."
+          - "Comandos reais de test/lint/typecheck/build identificados."
+          - "SHA e git status registrados."
+      - id: M0-T2
+        title: "Mapear domínio da agenda"
+        status: todo
+        dependencies: [M0-T1]
+        owner: domain-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Schemas de tarefa, rotina, recorrência e categorias documentados."
+          - "Fluxos create/update/complete/reschedule/delete rastreados."
+          - "Sem suposições não verificadas."
+      - id: M0-T3
+        title: "Mapear auth, persistência, offline e outbox"
+        status: todo
+        dependencies: [M0-T1]
+        owner: platform-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Auth e regras de acesso documentadas."
+          - "Persistência e sincronização documentadas."
+          - "Riscos de idempotência/conflito identificados."
+      - id: M0-T4
+        title: "Mapear design system e navegação"
+        status: todo
+        dependencies: [M0-T1]
+        owner: ui-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Shell, navegação, tokens e componentes reutilizáveis identificados."
+          - "Restrições mobile/PWA/safe-area documentadas."
+      - id: M0-T5
+        title: "Fechar arquitetura concreta da Gika"
+        status: todo
+        dependencies: [M0-T2, M0-T3, M0-T4]
+        owner: architect
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Contratos de tool calling definidos."
+          - "Policy matrix definida."
+          - "Plano de integração sem duplicar regras de negócio."
+          - "Decisões relevantes registradas."
+
+  M1:
+    name: "Shell visual da Gika"
+    tasks:
+      - id: M1-T1
+        title: "Botão flutuante e painel"
+        status: todo
+        dependencies: [M0-T5]
+        owner: frontend
+        mutation_scope: "UI Gika + testes"
+      - id: M1-T2
+        title: "Composer, mensagens, estados e responsividade"
+        status: todo
+        dependencies: [M1-T1]
+        owner: frontend
+        mutation_scope: "UI Gika + testes"
+      - id: M1-T3
+        title: "Mock adapter sem IA real"
+        status: todo
+        dependencies: [M1-T2]
+        owner: frontend
+        mutation_scope: "Gika adapter + testes"
+
+  M2:
+    name: "Gika read-only"
+    tasks:
+      - id: M2-T1
+        title: "Adapter de modelo e configuração"
+        status: todo
+        dependencies: [M1-T3]
+        owner: ai-integration
+      - id: M2-T2
+        title: "Tools get_today/get_day/get_week"
+        status: todo
+        dependencies: [M2-T1]
+        owner: ai-integration
+      - id: M2-T3
+        title: "Evals read-only e fallback"
+        status: todo
+        dependencies: [M2-T2]
+        owner: qa
+
+  M3:
+    name: "Primeira mutação segura"
+    tasks:
+      - id: M3-T1
+        title: "create_task via command layer existente"
+        status: todo
+        dependencies: [M2-T3]
+        owner: ai-integration
+      - id: M3-T2
+        title: "Idempotência básica e duplicate protection"
+        status: todo
+        dependencies: [M3-T1]
+        owner: domain
+      - id: M3-T3
+        title: "Undo de criação quando suportado pelo domínio"
+        status: todo
+        dependencies: [M3-T2]
+        owner: domain
+
+  M4:
+    name: "Edição controlada"
+    tasks:
+      - id: M4-T1
+        title: "complete_task"
+        status: todo
+        dependencies: [M3-T3]
+      - id: M4-T2
+        title: "update_task"
+        status: todo
+        dependencies: [M4-T1]
+      - id: M4-T3
+        title: "reschedule_task"
+        status: todo
+        dependencies: [M4-T2]
+
+  M5:
+    name: "Políticas, lote e recorrência"
+    tasks:
+      - id: M5-T1
+        title: "Policy engine"
+        status: todo
+        dependencies: [M4-T3]
+      - id: M5-T2
+        title: "Confirmation cards e pending actions"
+        status: todo
+        dependencies: [M5-T1]
+      - id: M5-T3
+        title: "Recorrência: occurrence vs series"
+        status: todo
+        dependencies: [M5-T2]
+      - id: M5-T4
+        title: "Batch operations seguras"
+        status: todo
+        dependencies: [M5-T3]
+
+  M6:
+    name: "Organização inteligente"
+    tasks:
+      - id: M6-T1
+        title: "Structured proposal para organizar dia"
+        status: todo
+        dependencies: [M5-T4]
+      - id: M6-T2
+        title: "Preview + confirmação + execução transacional"
+        status: todo
+        dependencies: [M6-T1]
+      - id: M6-T3
+        title: "Organizar semana"
+        status: todo
+        dependencies: [M6-T2]
+
+  M7:
+    name: "Voz"
+    tasks:
+      - id: M7-T1
+        title: "Input de voz com fallback"
+        status: todo
+        dependencies: [M6-T3]
+      - id: M7-T2
+        title: "Evals de linguagem natural falada"
+        status: todo
+        dependencies: [M7-T1]
+
+  M8:
+    name: "Proatividade controlada"
+    tasks:
+      - id: M8-T1
+        title: "Rules engine de sugestões locais"
+        status: todo
+        dependencies: [M7-T2]
+      - id: M8-T2
+        title: "Geração de proposta somente sob interação"
+        status: todo
+        dependencies: [M8-T1]
+
+  M9:
+    name: "Hardening e release"
+    tasks:
+      - id: M9-T1
+        title: "Segurança, App Check/rate limits conforme stack factual"
+        status: todo
+        dependencies: [M8-T2]
+      - id: M9-T2
+        title: "Observabilidade e métricas"
+        status: todo
+        dependencies: [M9-T1]
+      - id: M9-T3
+        title: "Acessibilidade, performance e offline"
+        status: todo
+        dependencies: [M9-T2]
+      - id: M9-T4
+        title: "Regression suite e release candidate"
+        status: todo
+        dependencies: [M9-T3]
