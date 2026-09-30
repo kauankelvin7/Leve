@@ -45,7 +45,9 @@ milestones:
           - "Sem suposições não verificadas."
       - id: M0-T3
         title: "Mapear auth, persistência, offline e outbox"
-        status: todo
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: auth/Rules/persistência/outbox e riscos verificados; M0_EVIDENCE.md: 28 integration PASS com emuladores."
         dependencies: [M0-T1]
         owner: platform-auditor
         mutation_scope: "docs only"

@@ -12,7 +12,7 @@ Data: 2026-09-30. Base verificada: f6b21b6695f4953e28daace00edb05b2dd4bfde1.
 - `npm run lint`: PASS (exit 0).
 - `npm run build`: PASS (exit 0), incluindo os dois typechecks. Aviso baseline de chunks >500 kB; index JS 1.200,56 kB (gzip 360,16 kB), Three 522,06 kB (gzip 129,57 kB).
 - `npm test`: PASS, 25 arquivos / 93 testes.
-- Nenhum código de produção alterado. Integração baseline em andamento.
+- Nenhum código de produção alterado. Integração baseline concluída: `npm run test:integration` PASS (exit 0), 3 arquivos / 28 testes, Auth e Firestore demo-leve. MetadataLookupWarning 403 do SDK apareceu; não impediu emuladores/testes. Nenhum acesso a conta de produção.
 - Ownership do orquestrador: AGENTS.md, GIKA_START_HERE.md, .agent/*, docs/gika/* e checkpoint em CONTINUAR.md. Nenhum subagente altera estado global.
 
 ## Convenção de SHA do checkpoint
@@ -22,3 +22,7 @@ O SHA dentro de um arquivo versionado não pode ser o SHA do próprio commit que
 ## M0-T2
 
 Rastreio direto de content.ts, identity.ts, server/commands/content.ts, server/reminders.ts, Today.tsx, ActivityDetail.tsx, calendarCommandModel.ts e useCalendarRange.ts. Schemas, recorrência, categorias e todos os fluxos solicitados documentados na arquitetura. Nenhuma entidade fictícia ou alteração de produção. Gates baseline de M0-T1 continuam aplicáveis ao diff documental.
+
+## M0-T3
+
+Rastreio de AuthProvider, platform/firebase, api, outbox, outboxPolicy, localData, server/app, server/commands/identity e content, server/platform/firebase, firestore.rules, sw.js. Autorização, isolamento, receipts/revisões, fila local e divergências de handlers de série documentados. Baseline integração: 28 testes PASS.

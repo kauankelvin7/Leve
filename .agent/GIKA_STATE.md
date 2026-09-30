@@ -6,8 +6,8 @@
 
 - Status global: `IN_PROGRESS`
 - Milestone atual: `M0`
-- Tarefa atual: `M0-T3`
-- Último SHA verificado: `ab35fc545d746af350d646a3ef012b1f79ebc3c3` (HEAD anterior ao commit deste checkpoint)
+- Tarefa atual: `M0-T4`
+- Último SHA verificado: `4cd81d5e91eb3479656407d3ca154713e4294e9a` (HEAD anterior ao commit deste checkpoint)
 - Último commit da Gika verificado: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`; checkpoint de M0-T1 identificado no git log pelo ID da tarefa.
 - Worktree limpo no último checkpoint: `sim, antes da extração`
 - Último gate executado: lint/build (inclui typecheck) e 93 unit PASS; diff --check e revisão documental por tarefa.
@@ -51,3 +51,5 @@ Ao retomar:
 | 2026-09-30 | M0 | M0-T1 | done: docs/gika/ARCHITECTURE.md: stack, scripts, entradas, base SHA e status; M0_EVIDENCE.md: lint/build/typecheck e 93 unit PASS. | HEAD verificado f6b21b6695f4953e28daace00edb05b2dd4bfde1; commit identificado por M0-T1 |
 
 | 2026-09-30 | M0 | M0-T2 | done: ARCHITECTURE.md: schemas reais Activity/Category/series e rastreio create/update/setStatus/reschedule/trash; evidências M0-T2. | HEAD verificado ab35fc545d746af350d646a3ef012b1f79ebc3c3; commit identificado por M0-T2 |
+
+| 2026-09-30 | M0 | M0-T3 | done: ARCHITECTURE.md: auth/Rules/persistência/outbox e riscos verificados; M0_EVIDENCE.md: 28 integration PASS com emuladores. | HEAD verificado 4cd81d5e91eb3479656407d3ca154713e4294e9a; commit identificado por M0-T3 |
