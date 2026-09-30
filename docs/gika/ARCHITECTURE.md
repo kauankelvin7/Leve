@@ -102,3 +102,44 @@ M1 exige foco inicial no composer, Tab contido quando modal, Escape fecha, foco 
 PWA: apps/web/public/sw.js cache leve-shell-v7, assets imutáveis e navegação network-first; /api excluído. main.tsx detecta update-ready e release-ready; não modificar política de cache por chat. vercel.json bloqueia microphone em Permissions-Policy: M7 depende de revisão específica desse header e consentimento/fallback. Publicação não é autorizada por criação de branch.
 
 Evidência visual existente: tests/e2e-local/design, calendar-planner-visual, seasonal-experience e docs/screenshots. Nenhum screenshot novo necessário para mapa documental sem UI nova; M1 exigirá E2E autenticado/axe + screenshots focais e não poderá alegar validação em aparelho real com base em emulação desktop.
+
+## Integração concreta planejada — M0-T5
+
+Os caminhos abaixo são novos arquivos planejados, não código já existente:
+
+- `apps/web/src/features/gika/`: GikaLauncher, painel/composer, estado de conversa, mockAdapter e commandBridge. Montagem em Shell de App.tsx com ErrorBoundary local e identidade por uid.
+- `packages/domain/src/gika.ts`: schemas Zod estritos de request, tools, resultado mínimo e propostas/pending actions; importar ActivityInput/civilDateSchema/timeZoneSchema/entityIdSchema, não copiar regras.
+- `server/gika/`: modelAdapter, toolRouter, readTools, policy e contexto autenticado. Rota Express `/api/gika/respond` registrada após middleware Firebase em server/app.ts; api/[...path].ts reaproveitado. Sem chave em VITE_ e sem SDK no M1.
+- Bridge de mutação usa `apps/web/src/platform/api.ts:sendCommand`, nunca setDoc/updateDoc. create/update/setStatus reutilizam comandos existentes de server/commands/content.ts. Não há API CRUD paralela.
+
+Fluxo M1: texto → mock previsível → resposta simulada; nenhum acesso a modelo ou mutação. Fluxo M2: texto → apiRequest autenticado → adapter servidor → allowlist somente leituras → executor determinístico → resultado validado → resposta. Leitura Admin será feita por executor de software, nunca pelo modelo ou query livre, com uid do token, perfil/membership ativo, intervalo limitado e dados projetados. Extrair a especificação das queries de useCalendarRange para função compartilhável somente quando necessário em M2, protegendo semântica inclusiva/exclusiva e overlap por testes. Não importar hook React no servidor.
+
+Fluxo M3/M4: tool router valida intenção e policy antes de produzir descriptor tipado; bridge valida saída, traduz descriptor a comando conhecido e chama sendCommand. Não aceitar command/uid/path/envelope arbitrários gerados pelo LLM. Manter um envelope estável por ação lógica, idempotência existente e atualizações de revisão explícitas. O backend existente permanece autoridade de autorização/dados. Conteúdo vindo de tasks é dado não confiável, nunca instrução.
+
+Fluxo M5 de alto impacto requer pending action server-side, identidade/digest/revisões/expiração, confirmação humana específica e executor no caminho de comandos autenticado. Acrescentar comando Gika mediado à dispatch de /api/commands somente nesta etapa, com delegação ao domínio existente e testes de receipt/retry/outbox; nunca expor generic arbitrary command. Confirmação meramente verbal do modelo ou flag `confirmed: true` enviado pelo modelo não é autorização. A implementação concreta de receipts da confirmação é gate M5 antes de habilitar essas ferramentas. Nenhum high-impact descriptor será executável pelo bridge de M3/M4.
+
+### Contratos de ferramentas
+
+Todas as entradas e saídas terão schemas runtime estritos em gika.ts. O modelo não fornece uid, credenciais, IDs de criação, operação/revisão, instante de agora ou timezone arbitrário. Contexto trusted contém uid autenticado, profile.timeZone, locale pt-BR, weekStartsOn, now UTC, today civil. Resultado de validação inválido é falha tipada e não produz efeitos.
+
+| Tool | Entrada proposta fechada | Resultado mínimo / execução |
+|---|---|---|
+| get_today | {} | resolve today no fuso do perfil; intervalo de um dia |
+| get_day | {date: civilDateSchema} | intervalo inclusivo date..date |
+| get_week | {date: civilDateSchema} | semana contendo date conforme weekStartsOn; máximo sete dias |
+| create_task (M3) | {title, dueDate: civilDate ou null, dueTime: civilTime ou null} | tarefa simples sem recorrência/lembrete; defaults descriptionPlain '', categoryId null, reminderSpecs [], timeZone trusted, reject; ActivityInput validado; create revisão 0 |
+| complete_task (M4) | {activityId: entityIdSchema} | ID resolvido apenas dentre entidades conhecidas na conta; status completed; leitura fresca/revisão obrigatória |
+| update_task (M4) | {activityId, title?} com ao menos alteração | merge determinístico com ActivityInput corrente; não aceitar substituição de campos ocultos |
+| reschedule_task (M4) | {activityId, date: civilDateSchema, time?: civilTimeSchema ou null} | somente task não recorrente nesta fase; distinguir time omitido de null e preservar demais campos |
+
+Saída de consulta: {startDate, endDate, timeZone, partial, cached, items:[{id,revision,title,kind,status,schedule,seriesId,occurrenceKey}]}. Retirar descriptionPlain, notas, compras, reminders e dados de identidade não necessários. Validar dados lidos e limites antes de enviar ao modelo; não usar type assertion como validação. Cap 50 por grupo e marcar partial se saturado; deduplicar IDs e excluir deletedAt. Resposta não afirma agenda vazia/completa se erro, partial ou cache desatualizado. Não materializar séries via leitura da Gika.
+
+Saída de mutação: descriptor de ação validado → CommandResult validado; estados applied/alreadyApplied, queued (SAVED_LOCALLY), conflict (409), failed e unknown; returned revision/refresco de consulta, sem inventar item. Modelo não decide sucesso. `requestId` e `actionId` são UUIDs gerados pelo aplicativo e vinculados a uid, tentativa lógica e payload. Retry de rede da mesma ação mantém operationId/entityId/clientCreatedAt; texto igual enviado novamente pode ser nova intenção. Cancelar, editar proposta ou troca de conta invalida ação anterior.
+
+PendingAction planejada: {id, ownerUid, tool, createdAt, expiresAt, summary, payload validado, payloadDigest, expectedRevisions, status: awaiting_confirmation/confirmed/executed/canceled/expired}. ownerUid e dados de autorização são atribuídos/verificados pelo servidor; não vão ao modelo. A UI confirma ID+digest, revalida contexto e não substitui revisões sem novo preview. Expiração e digest usados para bloquear replay. Undo de criação usa activity.trash com revisão fresca se entidade não foi modificada; não purga e não reverte alterações concorrentes.
+
+### Gates de decisão e limitações concretas
+
+Provedor não foi escolhido, nem há credencial configurada. O custo obrigatório R$ 0 exige decisão humana antes de habilitar provedor real no M2; M1 continua viável só com mock. Não selecionar plano pago, ativar billing ou adivinhar chave. Timeouts, request size cap, limite por uid e orçamento de tool calls serão necessários já no endpoint M2; M9 revisa/hardens, não adia a proteção inicial. Sem App Check factual hoje; avaliar no M9.
+
+Domínio não oferece batch transacional genérico nem undo universal. M6 não poderá declarar atomicidade via Promise.all de comandos: gate para contrato composto validado/transacional ou proposta explicitamente sequencial com resultados parciais e recuperação. Recorrência inteira não suportada por updateFuture; não inventar scope series. Voz M7 precisa resolver Permissions-Policy microphone=() antes de afirmar funcionamento em produção. Proatividade M8 será opt-in/regra local, sem monitoramento LLM contínuo.

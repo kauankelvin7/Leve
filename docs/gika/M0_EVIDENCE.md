@@ -30,3 +30,7 @@ Rastreio de AuthProvider, platform/firebase, api, outbox, outboxPolicy, localDat
 ## M0-T4
 
 Rastreio de App.tsx, main.tsx, design-tokens.json, theme.ts/themes.ts, CSS carregado, ConfirmDialog, ActiveTimerBar, sw.js e vercel.json. Rotas, componentes reutilizáveis, fontes, tokens, safe area, modal, PWA e conflito timer/botão documentados. Sem alteração visual; screenshot/E2E não executados nesta tarefa documental.
+
+## M0-T5
+
+Arquitetura de integração e contratos de tools delimitados em ARCHITECTURE.md; matriz concreta em SECURITY_AND_POLICY.md; ADRs 004–007 e ExecPlan atualizado com ownership, sequência, gates e rollback. Riscos de séries, partial, batch, voz e provedor/gratuidade explicitados. Nenhuma feature ou dependência nova. Revisão dos cinco entregáveis M0 contra os critérios YAML concluída.

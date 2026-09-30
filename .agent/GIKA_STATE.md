@@ -6,8 +6,8 @@
 
 - Status global: `IN_PROGRESS`
 - Milestone atual: `M0`
-- Tarefa atual: `M0-T5`
-- Último SHA verificado: `6fd5ce12683b19434cc30c205e42b0cf93d2bc40` (HEAD anterior ao commit deste checkpoint)
+- Tarefa atual: `M1-T1`
+- Último SHA verificado: `15ce9d11adf065b0bc9bdc766011fed926493451` (HEAD anterior ao commit deste checkpoint)
 - Último commit da Gika verificado: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`; checkpoint de M0-T1 identificado no git log pelo ID da tarefa.
 - Worktree limpo no último checkpoint: `sim, antes da extração`
 - Último gate executado: lint/build (inclui typecheck) e 93 unit PASS; diff --check e revisão documental por tarefa.
@@ -55,3 +55,5 @@ Ao retomar:
 | 2026-09-30 | M0 | M0-T3 | done: ARCHITECTURE.md: auth/Rules/persistência/outbox e riscos verificados; M0_EVIDENCE.md: 28 integration PASS com emuladores. | HEAD verificado 4cd81d5e91eb3479656407d3ca154713e4294e9a; commit identificado por M0-T3 |
 
 | 2026-09-30 | M0 | M0-T4 | done: ARCHITECTURE.md: Shell/tokens/componentes/mobile/PWA reais e restrições de foco/timer; revisão documental M0-T4. | HEAD verificado 6fd5ce12683b19434cc30c205e42b0cf93d2bc40; commit identificado por M0-T4 |
+
+| 2026-09-30 | M0 | M0-T5 | done: Contratos tipados/command bridge/policy matrix e ADRs 004-007; ExecPlan factual revisado; lint/typecheck/build, 93 unit e 28 integration PASS. | HEAD verificado 15ce9d11adf065b0bc9bdc766011fed926493451; commit identificado por M0-T5 |

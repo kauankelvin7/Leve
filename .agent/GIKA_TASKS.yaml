@@ -68,7 +68,9 @@ milestones:
           - "Restrições mobile/PWA/safe-area documentadas."
       - id: M0-T5
         title: "Fechar arquitetura concreta da Gika"
-        status: todo
+        status: done
+        evidence:
+          - "Contratos tipados/command bridge/policy matrix e ADRs 004-007; ExecPlan factual revisado; lint/typecheck/build, 93 unit e 28 integration PASS."
         dependencies: [M0-T2, M0-T3, M0-T4]
         owner: architect
         mutation_scope: "docs only"
