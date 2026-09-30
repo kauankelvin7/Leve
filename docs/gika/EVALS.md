@@ -97,3 +97,11 @@ Esperado:
 ## Critério de regressão
 
 Cada bug da Gika que chegar a teste/produção deve gerar um novo eval reproduzível antes ou junto da correção.
+
+## Shell M1 — regressões visuais e de interação
+
+- M1-U01: mobile 360/390/430 e teclado 360x400: pelo menos parte de uma quick action aparece na viewport inicial; composer compacto continua visível e se expande ao digitar.
+- M1-U02: conversa longa e cards mock: somente a viewport de conversa rola; dialog sem overflow e rodapé não se move. Elementos ocultos/aria-live não ampliam a área rolável.
+- M1-U03: rascunho multilinha sobrevive a fechar/reabrir com altura ajustada; Enter/Shift+Enter/IME, offline e retry permanecem corretos.
+- M1-U04: resultado de exemplo, confirmação/cancelamento e undo são exclusivamente locais, explicitamente simulados, sem requests a commands/Gika/provider; foco acompanha ações.
+- M1-U05: 11 paletas × light/dark/system, solid, reduced motion, zoom 200%, safe area e seis viewports oficiais, com Axe e screenshots. Nenhum resultado desses evals prova integração com IA.

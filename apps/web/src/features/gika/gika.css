@@ -1,88 +1,120 @@
 .gika-launcher {
-  position: fixed;
-  z-index: 11;
-  right: max(24px, env(safe-area-inset-right));
+  position: fixed; z-index: 11; right: max(24px, env(safe-area-inset-right));
   bottom: max(var(--gika-dock-bottom, 24px), env(safe-area-inset-bottom));
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 10px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 24px;
-  color: var(--color-text);
-  background: var(--color-solid);
-  box-shadow: 0 6px 22px #0002;
-  font-family: var(--font-brand, Nunito, sans-serif);
-  font-weight: 800;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 10px 18px;
+  border: 1px solid var(--color-border); border-radius: 24px; color: var(--color-text);
+  background: color-mix(in srgb, var(--color-solid) 94%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 22px #0002; font-family: var(--font-brand, Nunito, sans-serif); font-weight: 800;
 }
 .gika-launcher:hover { background: var(--color-accent-soft); }
-.gika-launcher:focus-visible, .gika-panel :is(button, textarea):focus-visible {
-  outline: 3px solid var(--color-action-primary);
-  outline-offset: 3px;
+.gika-mark { flex-shrink: 0; }
+.gika-launcher:focus-visible, .gika-panel :is(button, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-action-primary); outline-offset: 3px;
 }
 .gika-panel {
-  position: fixed;
-  inset: 0;
-  width: min(440px, calc(100vw - 32px));
-  max-width: none;
-  height: min(650px, calc(var(--gika-viewport-height, 100dvh) - 32px));
-  max-height: calc(var(--gika-viewport-height, 100dvh) - 32px);
-  margin: auto max(24px, env(safe-area-inset-right)) auto auto;
-  padding: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 24px;
-  color: var(--color-text);
-  background: var(--color-solid);
-  box-shadow: 0 16px 56px #0003;
-  overflow: hidden;
+  position: fixed; inset: 0; width: min(460px, calc(100vw - 32px)); max-width: none;
+  height: min(700px, calc(var(--gika-viewport-height, 100dvh) - 32px)); max-height: calc(var(--gika-viewport-height, 100dvh) - 32px);
+  margin: auto max(24px, env(safe-area-inset-right)) auto auto; padding: 0;
+  border: 1px solid var(--color-border); border-radius: 28px; color: var(--color-text);
+  background: color-mix(in srgb, var(--color-solid) 97%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 64px #0002; overflow: hidden; font-family: var(--font-body, 'DM Sans', sans-serif);
 }
 .gika-panel[open] { display: flex; flex-direction: column; }
-.gika-panel::backdrop { background: #101a1666; }
-.gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 20px; border-bottom: 1px solid var(--color-border); }
-.gika-kicker { margin: 0 0 2px; color: var(--color-text-muted); font-size: .8rem; }
-.gika-heading h2 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.6rem; }
-.gika-close { display: grid; place-items: center; flex: 0 0 44px; height: 44px; padding: 0; border: 1px solid var(--color-border); border-radius: 50%; color: var(--color-text); background: var(--color-solid); }
-.gika-content { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; overscroll-behavior: contain; }
-.gika-demo-notice { flex-shrink: 0; margin: 12px 20px 0; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
-.gika-welcome { padding: 16px 4px; text-align: center; }
-.gika-welcome > svg { color: var(--color-action-primary); width: 32px; height: 32px; }
-.gika-welcome h3 { margin: 14px 0 8px; font-family: Nunito, sans-serif; font-size: 1.35rem; }
-.gika-welcome p { color: var(--color-text-muted); line-height: 1.6; }
+.gika-panel::backdrop { background: #101a162e; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+.gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 8px; }
+.gika-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.gika-identity-mark { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; color: var(--color-action-primary); background: var(--color-accent-soft); border-radius: 15px; }
+.gika-heading h2 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.25rem; font-weight: 800; }
+.gika-kicker { margin: 2px 0 0; color: var(--color-text-muted); font-size: .75rem; }
+.gika-close { display: grid; place-items: center; flex: 0 0 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; color: var(--color-text-muted); background: transparent; }
+.gika-close:hover { background: var(--color-accent-soft); color: var(--color-text); }
+.gika-demo-notice { flex-shrink: 0; margin: 0 22px; padding: 2px 0 8px; border: 0; font-size: .7rem; line-height: 1.5; color: var(--color-text-muted); }
+.gika-content { position: relative; flex: 1; min-height: 0; overflow-y: auto; padding: 24px 22px; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.gika-content.is-empty { display: flex; flex-direction: column; }
+.gika-welcome { width: 100%; margin: auto 0; padding: 16px 0; text-align: center; }
+.gika-welcome-mark { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 24px; color: var(--color-action-primary); background: var(--color-accent-soft); }
+.gika-welcome-mark svg { width: 36px; height: 36px; }
+.gika-welcome h3 { margin: 16px 0 8px; font-family: Nunito, sans-serif; font-size: 1.45rem; font-weight: 800; line-height: 1.25; }
+.gika-welcome p { margin: 0; color: var(--color-text-muted); line-height: 1.5; font-size: .875rem; }
+.gika-suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 24px 0 0; }
+.gika-suggestions button { display: flex; align-items: center; gap: 8px; min-height: 52px; min-width: 0; padding: 10px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); font-size: .8rem; text-align: left; line-height: 1.4; }
+.gika-suggestions button svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--color-action-primary); }
+.gika-suggestions button:hover { background: var(--color-accent-soft); }
+.gika-messages { display: grid; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.gika-messages:empty { display: none; }
+.gika-message { min-width: 0; }
+.gika-message.is-user { justify-self: end; max-width: 88%; padding: 12px 16px; border-radius: 18px 18px 5px 18px; background: var(--color-accent-soft); }
+.gika-message.is-assistant { padding: 0 2px; }
+.gika-message-author { display: flex; align-items: center; gap: 6px; font-size: .75rem; font-weight: 700; color: var(--color-text-muted); }
+.gika-message-author svg { width: 18px; height: 18px; color: var(--color-action-primary); }
+.gika-message p { margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.65; font-size: .9rem; }
+.gika-loading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 24px; color: var(--color-text-muted); font-size: .8rem; line-height: 1.5; }
+.gika-loading svg { color: var(--color-action-primary); }
+.gika-loading-dots { font-size: 1.5rem; letter-spacing: 2px; }
+.gika-composer { position: relative; flex-shrink: 0; padding: 8px 18px 12px; background: var(--color-solid); }
+.gika-composer-field { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px; padding: 4px; border: 1px solid var(--color-border); border-radius: 22px; background: color-mix(in srgb, var(--color-solid) 97%, var(--color-accent-soft)); box-shadow: none; }
+.gika-composer-field:focus-within { border-color: var(--color-action-primary); }
+.gika-panel .gika-composer textarea { flex: 1; min-width: min(100%, 12em); width: 100%; min-height: calc(1.5em + 20px); max-height: 132px; resize: none; overflow-y: auto; padding: 10px 6px 10px 10px; border: 0; border-radius: 14px; color: var(--color-text); background: transparent; font-family: inherit; font-size: 1rem; line-height: 1.5; }
+.gika-panel .gika-composer textarea:is(:focus, :focus-visible) { outline: none; box-shadow: none; }
+.gika-composer-field:has(textarea:focus-visible) { outline: 2px solid var(--color-action-primary); outline-offset: 2px; }
+.gika-composer textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
+.gika-composer-actions { display: flex; gap: 2px; flex-shrink: 0; margin-left: auto; }
+.gika-panel .gika-composer-actions button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; }
+.gika-panel .gika-voice { color: var(--color-text-muted); background: transparent; }
+.gika-panel .gika-send { color: var(--color-text); background: var(--color-accent-soft); }
+.gika-send:not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--color-action-primary); }
+.gika-composer-hint { display: block; margin: 6px 8px 0; color: var(--color-text-muted); font-size: .65rem; text-align: center; line-height: 1.5; }
+.gika-feedback { margin: 0 0 12px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
+.gika-feedback.is-error { margin: 24px 0 0; padding: 14px; border: 1px solid var(--color-border); border-radius: 16px; }
+.gika-feedback p { margin: 0 0 8px; }
+.gika-panel :is(.gika-feedback, .gika-card-actions, .gika-undo) button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-solid); color: var(--color-text); font-size: .8rem; }
+.gika-panel button:disabled { opacity: .55; cursor: not-allowed; }
+.gika-panel .visually-hidden { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: -1px; }
+.gika-demo-preview { display: grid; gap: 12px; margin-top: 16px; }
+.gika-result, .gika-confirmation, .gika-undo { padding: 14px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); font-size: .85rem; }
+.gika-card-title { display: flex; align-items: center; gap: 8px; }
+.gika-demo-preview ul { margin: 10px 0 0; padding-left: 20px; line-height: 1.8; }
+.gika-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.gika-card-actions button:last-child { background: var(--color-accent-soft); }
+.gika-undo p { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 8px; }
+.gika-undo svg { flex-shrink: 0; }
+.gika-undo button { display: inline-flex; align-items: center; gap: 6px; }
 .gika-load-error { position: fixed; z-index: 13; right: 16px; bottom: 150px; width: min(400px, calc(100vw - 32px)); padding: 16px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); }
 .gika-load-error p { margin: 0 0 12px; }
-.gika-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
-.gika-suggestions button { min-height: 44px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); font-size: .8rem; text-align: left; }
-.gika-messages { display: grid; gap: 14px; margin: 20px 0 0; padding: 0; list-style: none; }
-.gika-message { min-width: 0; padding: 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-solid); }
-.gika-message.is-user { margin-left: 20px; background: var(--color-accent-soft); }
-.gika-message-author { font-size: .75rem; font-weight: 700; color: var(--color-text-muted); }
-.gika-message p { margin: 6px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.6; font-size: .9rem; }
-.gika-composer { flex-shrink: 0; display: grid; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--color-border); background: var(--color-solid); }
-.gika-composer label { font-weight: 700; font-size: .85rem; }
-.gika-composer textarea { width: 100%; min-height: 68px; max-height: 120px; resize: vertical; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; color: var(--color-text); background: var(--color-solid); font-size: 1rem; line-height: 1.5; }
-.gika-composer-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.gika-composer-actions small { flex: 1 1 150px; color: var(--color-text-muted); font-size: .75rem; }
-.gika-composer-actions button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--color-border); border-radius: 12px; color: var(--color-text); background: var(--color-accent-soft); }
-.gika-feedback { margin: 0 0 4px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
-.gika-feedback p { margin: 0 0 8px; }
-.gika-feedback button { min-height: 44px; border: 1px solid var(--color-border); background: var(--color-solid); color: var(--color-text); }
-.gika-panel button:disabled { opacity: .55; cursor: not-allowed; }
+.solid :is(.gika-panel, .gika-launcher) { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.solid .gika-panel::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+@supports not (backdrop-filter: blur(1px)) { .gika-panel, .gika-launcher { background: var(--color-solid); } }
+@media (prefers-reduced-transparency: reduce) { .gika-panel, .gika-launcher { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; } .gika-panel::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; } }
 @media (max-width: 739px) {
   .gika-launcher { right: max(16px, env(safe-area-inset-right)); bottom: max(var(--gika-dock-bottom, 82px), calc(82px + env(safe-area-inset-bottom))); }
   .gika-panel { top: var(--gika-viewport-top, 0px); bottom: auto; width: 100%; height: min(var(--gika-viewport-height, 100dvh), 100dvh); max-height: min(var(--gika-viewport-height, 100dvh), 100dvh); margin: 0; border: 0; border-radius: 0; }
-  .gika-heading { padding-top: max(16px, env(safe-area-inset-top)); }
-  .gika-kicker { display: none; }
-  .gika-content { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
-  .gika-composer { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .gika-heading { padding: max(12px, env(safe-area-inset-top)) 18px 6px; }
+  .gika-heading h2 { font-size: 1.1rem; }
+  .gika-kicker { font-size: .7rem; }
+  .gika-identity-mark { width: 36px; height: 36px; border-radius: 13px; }
+  .gika-demo-notice { margin: 0 18px; }
+  .gika-content { padding-top: 16px; padding-bottom: 16px; }
+  .gika-welcome { margin: auto 0; padding: 8px 0; }
+  .gika-welcome-mark { width: 52px; height: 52px; border-radius: 20px; }
+  .gika-welcome-mark svg { width: 30px; height: 30px; }
+  .gika-welcome h3 { font-size: 1.25rem; margin: 14px 0 6px; }
+  .gika-welcome p { font-size: .8rem; }
+  .gika-suggestions { margin-top: 18px; }
+  .gika-composer { padding-right: max(14px, env(safe-area-inset-right)); padding-left: max(14px, env(safe-area-inset-left)); padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  .gika-content { padding-right: max(18px, env(safe-area-inset-right)); padding-left: max(18px, env(safe-area-inset-left)); }
 }
 @media (max-width: 400px) {
-  .gika-composer-actions small { display: none; }
+  .gika-composer-hint { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); }
+  .gika-suggestions { grid-template-columns: 1fr; gap: 6px; margin-top: 20px; }
+  .gika-suggestions button { min-height: 44px; }
 }
-.gika-panel[data-compact='true'] .gika-heading { padding: 8px 12px; }
+.gika-panel[data-compact='true'] .gika-heading { padding: max(6px, env(safe-area-inset-top)) 12px 4px; }
 .gika-panel[data-compact='true'] .gika-kicker { display: none; }
-.gika-panel[data-compact='true'] .gika-heading h2 { font-size: 1.2rem; }
-.gika-panel[data-compact='true'] .gika-demo-notice { margin: 8px 12px 0; padding: 8px; font-size: .75rem; }
-.gika-panel[data-compact='true'] .gika-composer { padding: 8px 12px; gap: 4px; }
-.gika-panel[data-compact='true'] .gika-composer textarea { min-height: 48px; max-height: 64px; }
-.gika-panel[data-compact='true'] .gika-composer-actions small { display: none; }
+.gika-panel[data-compact='true'] .gika-demo-notice { margin: 0 12px; padding: 2px 0 4px; font-size: .65rem; }
+.gika-panel[data-compact='true'] .gika-welcome-mark { display: none; }
+.gika-panel[data-compact='true'] .gika-welcome { margin: 0; padding-top: 0; }
+.gika-panel[data-compact='true'] .gika-welcome h3 { margin-top: 0; }
+.gika-panel[data-compact='true'] .gika-suggestions { margin-top: 12px; }
+.gika-panel[data-compact='true'] .gika-composer { padding: 8px 12px max(8px, env(safe-area-inset-bottom)); }
+.gika-panel[data-compact='true'] .gika-composer textarea { max-height: 64px; }
+.gika-panel[data-compact='true'] .gika-composer-hint { display: none; }

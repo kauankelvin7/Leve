@@ -1,5 +1,5 @@
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Icon } from '../../components/ui/Icon';
+import { GikaMark } from './GikaMark';
 import './gika.css';
 
 const loadPanel = () => import('./GikaPanel').then(module => ({ default: module.GikaPanel }));
@@ -57,7 +57,7 @@ export function GikaLauncher() {
     <button ref={launcher} type="button" className="gika-launcher" aria-label="Pergunte à Gika" aria-haspopup="dialog"
       aria-expanded={open} aria-controls={loaded ? 'gika-dialog' : undefined}
       onClick={() => { setLoaded(true); setOpen(true); }}>
-      <Icon name="day" /><span>Gika</span>
+      <GikaMark /><span>Gika</span>
     </button>
     {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setLoaded(false); setAttempt(value => value + 1); }}>
       <Suspense fallback={open ? <div className="gika-load-error" role="status"><p>Abrindo a conversa…</p><button type="button" onClick={close}>Cancelar</button></div> : null}>

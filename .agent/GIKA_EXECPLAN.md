@@ -276,3 +276,7 @@ lint, build (inclui typechecks) e unit a cada mudança funcional; integração A
 ### Pendências factuais
 
 humanizer-br resolvida pelo usuário: fonte oficial local .agent/skills/humanizer-br/SKILL.md, criada e lida integralmente antes do M1 (ADR-008). 05-capacidade-e-revisao.md ausente: registrar e não inventar capacidade/billing; não bloqueia o mapa de código. Superpowers indisponível: processo manual equivalente já permitido pelo AGENTS.md. Provider escolhido pelo usuário (ADR-009); GEMINI_API_KEY ausente bloqueia somente smoke real, não implementação/testes locais.
+
+### Refinement final M1 — pedido atualizado
+
+M1-T4 inclui polimento final solicitado: aviso mais discreto, empty state útil, título/densidade mobile menores e chips visíveis sem scroll excessivo; composer inicialmente compacto, expansível, ícones integrados. Corrigir overflow causado por elementos ocultos sem retirar labels/live region. Não iniciar lógica real de IA nesta tarefa. Validar screenshots e gates antes do checkpoint.

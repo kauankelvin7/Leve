@@ -2,11 +2,11 @@ import { gikaRequestSchema, gikaResponseSchema, type GikaAdapter } from './conve
 
 function reply(text: string) {
   const normalized = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
-  if (normalized.includes('organizar')) return 'Demonstração: primeiro eu consultaria suas tarefas e prepararia uma sugestão para o dia. Nenhuma alteração foi feita.';
-  if (normalized.includes('pendencia')) return 'Demonstração: eu consultaria as tarefas em aberto antes de mostrar suas pendências. Sua agenda não foi consultada nesta etapa.';
-  if (normalized.includes('amanha')) return 'Demonstração: eu consultaria a data de amanhã no fuso da sua agenda. Nenhuma tarefa foi consultada ou criada nesta etapa.';
-  if (normalized.includes('adicionar') || normalized.includes('criar')) return 'Demonstração: escreva o título e a data, como “Academia amanhã”. Nenhuma tarefa será criada nesta etapa.';
-  return 'Demonstração: recebi sua pergunta. A consulta à agenda será conectada na próxima etapa. Nenhuma alteração foi feita.';
+  if (normalized.includes('organizar')) return 'Demonstração: veja uma sugestão com tarefas de exemplo. Nenhuma alteração foi feita.';
+  if (normalized.includes('pendencia')) return 'Demonstração: aqui aparecerão suas tarefas em aberto. Sua agenda não foi consultada.';
+  if (normalized.includes('amanha')) return 'Demonstração: aqui aparecerão as tarefas de amanhã. Nenhuma tarefa foi consultada ou criada.';
+  if (normalized.includes('adicionar') || normalized.includes('criar')) return 'Demonstração: escreva o título e a data, como “Academia amanhã”. Nenhuma tarefa será criada.';
+  return 'Demonstração: recebi sua pergunta. Nenhuma alteração foi feita.';
 }
 
 function pause(delayMs: number, signal: AbortSignal) {
@@ -27,7 +27,7 @@ export function createMockAdapter({ delayMs = 600, failuresBeforeSuccess = 0 }: 
     await pause(delayMs, signal);
     if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
     if (failures > 0) { failures--; throw new Error('Simulated adapter failure'); }
-    return gikaResponseSchema.parse({ text: reply(request.text), simulated: true });
+    return gikaResponseSchema.parse({ text: reply(request.text), simulated: true, ...(request.text.toLocaleLowerCase('pt-BR').includes('organizar') ? { preview: 'organize-demo' } : {}) });
   };
 }
 

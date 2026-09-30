@@ -24,6 +24,12 @@ describe('Gika mock boundary', () => {
     await expect(createMockAdapter({ delayMs: 0 })(request(''), new AbortController().signal)).rejects.toThrow();
   });
 
+  it('prévia mock é explícita, limitada e não aceita ações de domínio', async () => {
+    const response = await createMockAdapter({ delayMs: 0 })(request('Organizar meu dia'), new AbortController().signal);
+    expect(response.preview).toBe('organize-demo');
+    expect(gikaResponseSchema.safeParse({ text: 'ok', simulated: true, preview: { command: 'activity.update' } }).success).toBe(false);
+  });
+
   it('cancelamento impede resposta pendente e libera o timer', async () => {
     vi.useFakeTimers();
     try {

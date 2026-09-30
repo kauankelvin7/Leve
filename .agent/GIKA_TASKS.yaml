@@ -84,6 +84,8 @@ milestones:
 
   M1:
     name: "Shell visual da Gika"
+    status: done
+    evidence: "M1_EVIDENCE.md: gates focais aprovados, refinements T4 e screenshots finais; falhas da regressão ampliada documentadas explicitamente."
     tasks:
       - id: M1-S0
         title: "Versionar humanizer-br local oficial"
@@ -131,13 +133,16 @@ milestones:
 
       - id: M1-T4
         title: "Refinement visual e estrutural solicitado pelo usuário"
-        status: todo
+        status: done
+        evidence:
+          - "M1_EVIDENCE.md: lint/build/typechecks, 102 unit, 28 integração, 13 Gika E2E + Axe, 13 shell e 7 sazonal PASS; Planner 4 falhas na regressão ampliada, comparação com base e repetição offline registradas."
         dependencies: [M1-T3]
         owner: frontend
         mutation_scope: "UI Gika, mock, testes e evidências"
         acceptance_criteria:
           - "Conversation viewport independente, empty state, símbolo próprio, chips com ícones e composer expansível fixo com envio interno."
           - "Voz apenas visual; mensagens, loading, erro, tool result, confirmação e undo exclusivamente simulados."
+          - "Polimento final: aviso discreto, empty state útil, composer leve, título mobile menor e quick actions inicialmente visíveis."
           - "Gates M1, desktop/mobile, temas, solid, 200%, safe areas e acessibilidade aprovados antes do checkpoint."
 
   M2:

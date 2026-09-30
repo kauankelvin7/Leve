@@ -182,6 +182,10 @@ test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o paine
     expect(box!.y + box!.height).toBeLessThanOrEqual(height! + 1);
     expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
     await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeVisible();
+    const firstAction = await page.getByRole('button', { name: 'Organizar meu dia', exact: true }).boundingBox();
+    const conversationArea = await page.locator('.gika-content').boundingBox();
+    expect(firstAction!.y + Math.min(24, firstAction!.height)).toBeLessThanOrEqual(conversationArea!.y + conversationArea!.height);
+    expect((await page.locator('.gika-composer-field').boundingBox())!.height).toBeLessThanOrEqual(70);
   }
   await page.setViewportSize({ width: 360, height: 800 });
   await page.locator('.app-shell').evaluate(el => el.classList.add('solid', 'reduce-motion', 'high-contrast'));
@@ -189,6 +193,10 @@ test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o paine
   expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   await expect(page.getByRole('button', { name: 'Fechar Gika' })).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'Pergunte à Gika' })).toBeVisible();
+  expect((await page.locator('.gika-content').boundingBox())!.height).toBeGreaterThan(100);
+  const firstActionAtZoom = await page.getByRole('button', { name: 'Organizar meu dia', exact: true }).boundingBox();
+  const viewportAtZoom = await page.locator('.gika-content').boundingBox();
+  expect(firstActionAtZoom!.y + 24).toBeLessThanOrEqual(viewportAtZoom!.y + viewportAtZoom!.height);
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
   await page.screenshot({ path: 'docs/gika/evidence/m1-mobile-reflow.png' });
   await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
@@ -299,4 +307,65 @@ test('rascunho editado durante resposta é mantido e offline cancela a resposta'
   await context.setOffline(false); await question.press('Enter');
   await expect(page.locator('.gika-message.is-assistant')).toHaveCount(2);
   await expect(page.locator('.gika-message.is-user')).toHaveCount(2);
+});
+
+
+test('conversa tem scroll independente, composer expansível e cards apenas simulados', async ({ page }) => {
+  await enterLocalAgenda(page);
+  const mutations: string[] = []; const modelRequests: string[] = [];
+  page.on('request', request => {
+    if (request.method() === 'POST' && request.url().includes('/api/commands')) mutations.push(request.url());
+    if (/generativelanguage|\/api\/gika/.test(request.url())) modelRequests.push(request.url());
+  });
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const viewport = page.getByRole('region', { name: 'Conversa com Gika', exact: true });
+  const composer = page.locator('.gika-composer');
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await expect(page.getByRole('button', { name: 'Voz em breve' })).toBeDisabled();
+  await expect(page.locator('.gika-suggestions button svg')).toHaveCount(4);
+  await expect(page.locator('.gika-identity .gika-mark')).toHaveCount(1);
+  const initialHeight = (await question.boundingBox())!.height;
+  await question.fill('Linha um\nLinha dois\nLinha três');
+  await expect.poll(async () => (await question.boundingBox())!.height).toBeGreaterThan(initialHeight);
+  const expandedHeight = (await question.boundingBox())!.height;
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect.poll(async () => (await question.boundingBox())!.height).toBeGreaterThanOrEqual(expandedHeight);
+  await question.fill('Organizar meu dia'); await question.press('Enter');
+  await expect(page.getByRole('region', { name: 'Resultado de exemplo' })).toContainText('não vêm da sua agenda');
+  await expect(page.getByRole('region', { name: 'Prévia de demonstração' })).toBeVisible();
+  await page.getByRole('button', { name: 'Simular organização' }).click();
+  await expect(page.getByRole('button', { name: 'Desfazer demonstração' })).toBeFocused();
+  await page.getByRole('button', { name: 'Desfazer demonstração' }).click();
+  await expect(page.getByText('Demonstração desfeita. Sua agenda não mudou.')).toBeVisible();
+  await page.getByRole('button', { name: 'Ver prévia novamente' }).click();
+  await expect(page.getByRole('button', { name: 'Simular organização' })).toBeFocused();
+  await page.getByRole('button', { name: 'Cancelar demonstração' }).click();
+  await expect(page.getByText('Demonstração cancelada. Sua agenda não mudou.')).toBeVisible();
+  for (let index = 0; index < 2; index++) {
+    await question.fill(`Pergunta de demonstração ${index}: ${'Um texto mais longo para conferir a leitura da conversa. '.repeat(8)}`);
+    await question.press('Enter');
+    await expect(page.locator('.gika-message.is-assistant')).toHaveCount(index + 2);
+  }
+  for (const [width, height] of [[1440, 900], [360, 800], [360, 400]]) {
+    await page.setViewportSize({ width: width!, height: height! });
+    // Let VisualViewport/textarea resize observers settle before comparing footer geometry.
+    await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    await expect.poll(async () => (await composer.boundingBox())!.y + (await composer.boundingBox())!.height).toBeLessThanOrEqual(height!);
+    const before = await composer.boundingBox();
+    await viewport.evaluate(el => { el.scrollTop = 0; });
+    await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeVisible();
+    const after = await composer.boundingBox();
+    expect(after!.y).toBeCloseTo(before!.y, 0);
+    expect(await viewport.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true);
+    expect(await page.locator('#gika-dialog').evaluate(el => el.scrollHeight === el.clientHeight)).toBe(true);
+    expect((await viewport.boundingBox())!.height).toBeGreaterThan(100);
+    expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Ver prévia novamente' }).click();
+  await page.screenshot({ path: 'docs/gika/evidence/m1-conversation-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.screenshot({ path: 'docs/gika/evidence/m1-conversation-desktop.png' });
+  expect(mutations).toEqual([]); expect(modelRequests).toEqual([]);
 });

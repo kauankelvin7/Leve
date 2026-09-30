@@ -40,7 +40,7 @@ export function useGikaConversation(adapter: GikaAdapter) {
     try {
       const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
-      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text }].slice(-GIKA_MAX_MESSAGES));
+      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, preview: response.preview }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);
       pending.current = null;
       setStatus('idle');

@@ -104,3 +104,5 @@ Formato:
 - Status: accepted — instrução explícita do usuário
 - Decisão: adicionar M1-T4 ao fechamento de M1: viewport de conversa, símbolo próprio discreto, composer expansível no rodapé, chips e estados estruturados exclusivamente mock. Preservar tokens/fontes Leve, sem copiar identidade externa.
 - Consequências: M2-T1 depende de M1-T4 aprovado; voz é apenas indicação visual, confirmações/undo nesta etapa nunca acessam domínio ou persistência. Repetir gates e revisão desktop/mobile antes de declarar M1 concluído.
+
+- Refinamento final de ADR-010: usuário pediu polimento de aviso, empty state, composer/microfone/envio, densidade e título mobile; permanece M1-T4, sem avançar lógica IA nesta tarefa.
