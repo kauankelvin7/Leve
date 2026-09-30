@@ -1,4 +1,5 @@
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { GikaMark } from './GikaMark';
 import './gika.css';
 
@@ -17,6 +18,7 @@ class GikaBoundary extends Component<{ children: ReactNode; onClose: () => void 
 }
 
 export function GikaLauncher() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -49,12 +51,12 @@ export function GikaLauncher() {
     window.addEventListener('resize', update);
     observe();
     return () => { resize.disconnect(); mutations.disconnect(); window.removeEventListener('resize', update); };
-  }, []);
+  }, [pathname]);
 
   function close() { setOpen(false); launcher.current?.focus({ preventScroll: true }); }
 
   return <>
-    <button ref={launcher} type="button" className="gika-launcher" aria-label="Pergunte à Gika" aria-haspopup="dialog"
+    <button ref={launcher} type="button" className="gika-launcher" data-calendar={pathname === '/calendario' ? 'true' : undefined} aria-label="Pergunte à Gika" aria-haspopup="dialog"
       aria-expanded={open} aria-controls={loaded ? 'gika-dialog' : undefined}
       onClick={() => { setLoaded(true); setOpen(true); }}>
       <GikaMark /><span>Gika</span>

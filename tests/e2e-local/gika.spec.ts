@@ -369,3 +369,19 @@ test('conversa tem scroll independente, composer expansível e cards apenas simu
   await page.screenshot({ path: 'docs/gika/evidence/m1-conversation-desktop.png' });
   expect(mutations).toEqual([]); expect(modelRequests).toEqual([]);
 });
+
+
+test('launcher no calendário fica fora do grid e da navegação desktop', async ({ page }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
+  const launcher = page.getByRole('button', { name: 'Pergunte à Gika' });
+  for (const width of [1440, 1366, 1024]) {
+    await page.setViewportSize({ width, height: 768 });
+    await expect.poll(async () => {
+      const entry = (await launcher.boundingBox())!;
+      const sidebar = (await page.locator('.sidebar').boundingBox())!;
+      const grid = (await page.locator('.calendar-time-view, .calendar-grid').first().boundingBox())!;
+      return entry.y >= sidebar.y + sidebar.height && entry.x + entry.width < grid.x;
+    }).toBe(true);
+  }
+});

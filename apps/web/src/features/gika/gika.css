@@ -118,3 +118,8 @@
 .gika-panel[data-compact='true'] .gika-composer { padding: 8px 12px max(8px, env(safe-area-inset-bottom)); }
 .gika-panel[data-compact='true'] .gika-composer textarea { max-height: 64px; }
 .gika-panel[data-compact='true'] .gika-composer-hint { display: none; }
+
+/* Keep the floating entry outside the Planner's lower-right resize/move handles. */
+@media (min-width: 740px) {
+  .gika-launcher[data-calendar='true'] { left: max(24px, env(safe-area-inset-left)); right: auto; }
+}

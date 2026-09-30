@@ -4,8 +4,8 @@
 
 - Status global: `IN_PROGRESS`
 - Milestones concluídos: `M0` e `M1` (shell/mock/refinement; limites da regressão ampliada abaixo)
-- Milestone atual: `M1` (`done`); próximo `M2` (`todo`, não iniciado nesta tarefa)
-- Tarefa atual: nenhuma em execução; próxima `M2-T1` (`todo`)
+- Milestone atual: `M2` (preflight; M1 visual aprovado pelo usuário)
+- Tarefa atual: nenhuma em execução; próxima `M2-T1` (`todo`), M2-S0 concluído
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
@@ -18,7 +18,7 @@
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Próxima tarefa M2-T1, conforme ADR-009 e ExecPlan. O pedido mais recente limita esta tarefa ao polimento M1; nenhuma lógica real de IA foi iniciada. Não reiniciar M0/M1 nem regressões fora do escopo.
+3. Pedido atual aprova M1 e autoriza M2 após classificação explícita de baseline/intermitência em M2-S0. Depois executar M2-T1/T2/T3 estritamente read-only, preservando contrato de UI dos mocks. Nenhuma mutação M3 é autorizada neste M2.
 4. M2 autorizado: Gemini Developer API, gemini-3.5-flash-lite, thinking_level medium, exclusivamente Free Tier, sem billing/fallback pago. Implementar sem segredo; somente smoke real depende de GEMINI_API_KEY ausente.
 
 ## Bloqueios
@@ -28,7 +28,7 @@
 
 ## Riscos e limitações
 
-- Regressão Planner ampliada não integralmente verde: contraste completed 4,28:1 e dois testes sem expandir Mais opções são baseline (prova em M1_EVIDENCE.md). Offline falhou em sequência e passou focalmente na base e no código atual: causa intermitente não demonstrada. Nenhum teste desabilitado; nenhuma correção de domínio/Planner fora do escopo.
+- Regressão Planner ampliada não integralmente verde: contraste completed 4,28:1 e dois testes sem expandir Mais opções são baseline (prova em M1_EVIDENCE.md). Offline era regressão do dock Gika, demonstrada por hit-test base/branch e corrigida: sequência original 2 PASS, nova proteção de dock 3 PASS. Ver M2_PREFLIGHT.md. Nenhum teste desabilitado; nenhuma correção de domínio/Planner fora do escopo.
 - Bundles baseline >500 kB; nenhuma otimização fora de escopo. Ver M0_EVIDENCE.md.
 - Handlers de série divergem em controles/limites da command layer genérica; revisão obrigatória antes de expor em M5.
 - useUserCollection mascara partial; Gika não usará isso como prova de consulta completa.
@@ -60,3 +60,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M1 | M1-T3 | done: mock cancelável/validado, 101 unit e 12 E2E + Axe PASS | commit M1-T3 após 8a9ee7e |
 
 | 2026-09-30 | M1 | M1-T4 | done: refinement/polimento final; gates focais PASS, screenshots revisados e limites da regressão global documentados | `ea10ae9d69b2124e0ffc340bc0bfab9128454bbb` |
+
+| 2026-09-30 | M2 | M2-S0 | done: baseline contraste/recorrência confirmados; regressão dock offline corrigida, gates PASS | commit M2-S0 após d8ee3f0 |

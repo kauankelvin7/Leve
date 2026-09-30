@@ -147,11 +147,20 @@ milestones:
 
   M2:
     name: "Gika read-only"
+    status: in_progress
     tasks:
+      - id: M2-S0
+        title: "Classificar falhas Planner e intermitência antes do adapter"
+        status: done
+        evidence: ["M2_PREFLIGHT.md e m2-planner-hit-test.json: regressão de dock corrigida, 2 Planner + 3 Gika E2E e lint/build/102 unit PASS."]
+        dependencies: [M1-T4]
+        owner: qa
+        mutation_scope: "evidências/estado e correção de dock Gika demonstrada por comparação local"
+        acceptance_criteria: ["Classificação sustentada por prova reproduzível em base e branch atual, sem atribuição ambígua."]
       - id: M2-T1
         title: "Adapter de modelo e configuração"
         status: todo
-        dependencies: [M1-T4]
+        dependencies: [M1-T4, M2-S0]
         owner: ai-integration
       - id: M2-T2
         title: "Tools get_today/get_day/get_week"

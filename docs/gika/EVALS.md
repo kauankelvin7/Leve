@@ -105,3 +105,6 @@ Cada bug da Gika que chegar a teste/produção deve gerar um novo eval reproduz�
 - M1-U03: rascunho multilinha sobrevive a fechar/reabrir com altura ajustada; Enter/Shift+Enter/IME, offline e retry permanecem corretos.
 - M1-U04: resultado de exemplo, confirmação/cancelamento e undo são exclusivamente locais, explicitamente simulados, sem requests a commands/Gika/provider; foco acompanha ações.
 - M1-U05: 11 paletas × light/dark/system, solid, reduced motion, zoom 200%, safe area e seis viewports oficiais, com Axe e screenshots. Nenhum resultado desses evals prova integração com IA.
+
+### E72 — launcher e Planner
+Com item de dia inteiro anterior, arrastar evento offline deve atingir o handle do Planner, nunca o launcher. Acesso Gika desktop no calendário fora do grid/sidebar. Regressão M1 corrigida em M2-S0; helper original/proteção focal sem alterar comandos/outbox.
