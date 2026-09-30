@@ -73,3 +73,5 @@ A execução ampliada não está integralmente verde. Os arquivos do Planner/Tod
 - Offline: falhou na sequência ampliada por ausência do feedback esperado. Não reproduzido nas duas execuções focais na base (PASS), nem na repetição focal do código atual: 1 PASS em 11,2 s. Registrar intermitência da suite/gesto com estado compartilhado; causa não foi demonstrada e não se declara correção. Outbox/domínio não foram alterados.
 
 O gate focal M1/Gika está aprovado. A regressão global ampliada conserva três falhas reproduzíveis/explicadas da base e uma intermitência; não é declarada integralmente verde, nem prova de release. M1 visual concluído com essas limitações registradas, conforme protocolo de classificação de baseline e registro de regressões do AGENTS/ExecPlan. M2 permanece todo e não foi iniciado nesta tarefa de polimento.
+
+Checkpoint final: implementação/refinement M1-T4 versionado em ea10ae9d69b2124e0ffc340bc0bfab9128454bbb, worktree limpo verificado após commit. Estado/tarefas/CONTINUAR apontam M2-T1 todo; este fechamento documental não avança lógica real de IA.

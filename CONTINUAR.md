@@ -142,7 +142,7 @@ A etapa planejada seguinte continua sendo a **Fase 7 — auditoria final do plan
 Pedido atual autoriza integração Gika e branch feat/gika-integration; não executa Fase 7 sazonal. Base real f6b21b6695f4953e28daace00edb05b2dd4bfde1.
 
 - M0 e M1 visual/mock/refinement concluídos; polimento final M1-T4 validado. M2-T1 é a próxima tarefa, sem implementação IA nesta sessão por escopo do pedido mais recente.
-- Último SHA de tarefa anterior: f9e924ba002a9d83d935c60bcdafaabe120d3b7f (M1-T3); o checkpoint posterior registra SHA real M1-T4.
+- Último SHA de tarefa: ea10ae9d69b2124e0ffc340bc0bfab9128454bbb (M1-T4); este checkpoint posterior registra o SHA real sem referência circular.
 - Provas: lint/build/typechecks, 102 unitários, 28 integração, 13 E2E Gika + Axe, 13 shell e 7 sazonal PASS. Regressões conhecidas do Planner e intermitência offline estão detalhadas em docs/gika/M1_EVIDENCE.md; suite global não declarada integralmente verde.
 - Fonte oficial para textos: .agent/skills/humanizer-br/SKILL.md. UI apenas mock em memória; confirmação/undo exclusivamente demonstrativos, voz indisponível.
 - M2: Gemini Developer API gemini-3.5-flash-lite, thinking_level medium, Free Tier/R$ 0, sem billing/fallback pago. Implementar sem segredo; GEMINI_API_KEY servidor ausente bloqueia somente smoke real futuro.

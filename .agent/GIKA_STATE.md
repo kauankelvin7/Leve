@@ -9,10 +9,10 @@
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `f9e924ba002a9d83d935c60bcdafaabe120d3b7f` (verificado antes de M1-T4)
-- Worktree: diff restrito a UI/mock/testes/evidências Gika e memória; checkpoint atômico M1-T4 após gates, conferir git status
+- Último SHA verificado / último commit de tarefa Gika: `ea10ae9d69b2124e0ffc340bc0bfab9128454bbb` (M1-T4 verificado após commit)
+- Worktree limpo verificado após M1-T4; este checkpoint posterior altera apenas documentação/estado
 - Últimos gates: `lint/build/typechecks, 102 unit, 28 integração, 13 Gika E2E + Axe, 13 shell e 7 sazonal PASS; regressão ampliada 32: 27 PASS/5 FAIL, falha Gika corrigida e suite repetida 13 PASS; Planner com 3 falhas baseline explicadas e 1 intermitência, repetição offline atual PASS`
-- Commit de checkpoint: `feat(gika): M1-T4 polish native conversation shell` (contém este arquivo)
+- Commit de checkpoint: `docs(gika): checkpoint M1 polish and next M2` (contém este arquivo)
 
 ## Próxima ação
 
@@ -59,4 +59,4 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 
 | 2026-09-30 | M1 | M1-T3 | done: mock cancelável/validado, 101 unit e 12 E2E + Axe PASS | commit M1-T3 após 8a9ee7e |
 
-| 2026-09-30 | M1 | M1-T4 | done: refinement/polimento final; gates focais PASS, screenshots revisados e limites da regressão global documentados | commit M1-T4 após f9e924b |
+| 2026-09-30 | M1 | M1-T4 | done: refinement/polimento final; gates focais PASS, screenshots revisados e limites da regressão global documentados | `ea10ae9d69b2124e0ffc340bc0bfab9128454bbb` |
