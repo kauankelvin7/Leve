@@ -106,3 +106,11 @@ Formato:
 - Consequências: M2-T1 depende de M1-T4 aprovado; voz é apenas indicação visual, confirmações/undo nesta etapa nunca acessam domínio ou persistência. Repetir gates e revisão desktop/mobile antes de declarar M1 concluído.
 
 - Refinamento final de ADR-010: usuário pediu polimento de aviso, empty state, composer/microfone/envio, densidade e título mobile; permanece M1-T4, sem avançar lógica IA nesta tarefa.
+
+## ADR-GIKA-011 — interpretação isolada e resposta ancorada em leituras
+
+- Data: 2026-09-30; accepted.
+- Uma requisição Gemini por pergunta, sem retry/fallback; três tools de leitura, no máximo três chamadas, dez segundos e resposta limitada. O provider recebe somente pergunta e contexto civil mínimo; nunca uid, credencial Firebase, tarefas, descrições ou resultados Firestore.
+- O router valida/politiza chamadas antes de consultar. Resultados tipados são apresentados deterministicamente, sem segundo roundtrip nem afirmações livres geradas pelo modelo. Sem chamada válida, pedir esclarecimento; nenhuma narrativa de sucesso de mutação é exibida.
+- Interface ModelAdapter não importa persistência ou comandos. DI de transport nos testes não requer chave Gemini fictícia. REST generateContent usa thinkingConfig.thinkingLevel MEDIUM (equivalente ao thinking_level medium solicitado).
+- Documentação oficial consultada: https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite (estável, function calling/thinking); https://ai.google.dev/gemini-api/docs/pricing (Standard Free Tier input/output gratuitos); https://ai.google.dev/api/generate-content (REST). Sem billing, grounding, caching, batch ou serviço pago. Smoke real permanece pendente da credencial de projeto sem billing; código não pode comprovar o estado financeiro de uma credencial ausente.

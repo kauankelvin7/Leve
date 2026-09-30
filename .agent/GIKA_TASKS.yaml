@@ -159,7 +159,8 @@ milestones:
         acceptance_criteria: ["Classificação sustentada por prova reproduzível em base e branch atual, sem atribuição ambígua."]
       - id: M2-T1
         title: "Adapter de modelo e configuração"
-        status: todo
+        status: done
+        evidence: ["M2_EVIDENCE.md: lint/build/typechecks e 116 unit PASS; falhas/limites/privacidade do adapter sem segredo."]
         dependencies: [M1-T4, M2-S0]
         owner: ai-integration
       - id: M2-T2

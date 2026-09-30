@@ -4,15 +4,15 @@
 
 - Status global: `IN_PROGRESS`
 - Milestones concluídos: `M0` e `M1` (shell/mock/refinement; limites da regressão ampliada abaixo)
-- Milestone atual: `M2` (preflight; M1 visual aprovado pelo usuário)
-- Tarefa atual: nenhuma em execução; próxima `M2-T1` (`todo`), M2-S0 concluído
+- Milestone atual: `M2` (read-only; M1 visual aprovado pelo usuário)
+- Tarefa atual: nenhuma; M2-T1 concluída, próxima M2-T2
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `ea10ae9d69b2124e0ffc340bc0bfab9128454bbb` (M1-T4 verificado após commit)
-- Worktree limpo verificado após M1-T4; este checkpoint posterior altera apenas documentação/estado
+- Último SHA verificado / último commit de tarefa Gika: `7a3c343` (M2-S0, worktree limpo antes de M2-T1)
+- Worktree limpo no PRE M2-T1; gates provider PASS; checkpoint registra o commit anterior à tarefa atual
 - Últimos gates: `lint/build/typechecks, 102 unit, 28 integração, 13 Gika E2E + Axe, 13 shell e 7 sazonal PASS; regressão ampliada 32: 27 PASS/5 FAIL, falha Gika corrigida e suite repetida 13 PASS; Planner com 3 falhas baseline explicadas e 1 intermitência, repetição offline atual PASS`
-- Commit de checkpoint: `docs(gika): checkpoint M1 polish and next M2` (contém este arquivo)
+- Commit atual de tarefa: `feat(gika): M2-T1 add bounded Gemini read-only adapter` (contém este estado)
 
 ## Próxima ação
 
@@ -62,3 +62,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M1 | M1-T4 | done: refinement/polimento final; gates focais PASS, screenshots revisados e limites da regressão global documentados | `ea10ae9d69b2124e0ffc340bc0bfab9128454bbb` |
 
 | 2026-09-30 | M2 | M2-S0 | done: baseline contraste/recorrência confirmados; regressão dock offline corrigida, gates PASS | commit M2-S0 após d8ee3f0 |
+
+| 2026-09-30 | M2 | M2-T1 | done: adapter Gemini sem segredo; lint/build e 116 unit PASS | commit M2-T1 após 7a3c343 |
