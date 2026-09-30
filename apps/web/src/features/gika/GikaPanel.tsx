@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Icon } from '../../components/ui/Icon';
-import { GIKA_MAX_INPUT, unavailableAdapter, type GikaAdapter } from './conversation';
+import { GIKA_MAX_INPUT, type GikaAdapter } from './conversation';
+import { mockAdapter } from './mockAdapter';
 import { useGikaConversation } from './useGikaConversation';
 
 type GikaPanelProps = { open: boolean; onClose: () => void; adapter?: GikaAdapter };
 const suggestions = ['Organizar meu dia', 'Ver minhas pendências', 'O que tenho amanhã?', 'Adicionar uma tarefa'];
 
-export function GikaPanel({ open, onClose, adapter = unavailableAdapter }: GikaPanelProps) {
+export function GikaPanel({ open, onClose, adapter = mockAdapter }: GikaPanelProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const transcript = useRef<HTMLDivElement>(null);
@@ -29,14 +30,16 @@ export function GikaPanel({ open, onClose, adapter = unavailableAdapter }: GikaP
   }, [open]);
 
   useEffect(() => {
-    if (open && transcript.current) transcript.current.scrollTop = transcript.current.scrollHeight;
+    if (open && transcript.current) transcript.current.scrollTop = messages.length ? transcript.current.scrollHeight : 0;
   }, [open, messages.length, status]);
 
   useEffect(() => {
     const viewport = window.visualViewport;
     const update = () => {
-      dialog.current?.style.setProperty('--gika-viewport-height', `${viewport?.height ?? window.innerHeight}px`);
+      const height = viewport?.height ?? window.innerHeight;
+      dialog.current?.style.setProperty('--gika-viewport-height', `${height}px`);
       dialog.current?.style.setProperty('--gika-viewport-top', `${viewport?.offsetTop ?? 0}px`);
+      if (dialog.current) dialog.current.dataset.compact = String(height < 500);
     };
     viewport?.addEventListener('resize', update); viewport?.addEventListener('scroll', update);
     window.addEventListener('resize', update); update();
@@ -57,8 +60,8 @@ export function GikaPanel({ open, onClose, adapter = unavailableAdapter }: GikaP
       <div><p className="gika-kicker">Sua assistente de agenda</p><h2 id="gika-title">Gika</h2></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
+    <p className="gika-demo-notice" id="gika-demo-notice">Demonstração: as respostas são simuladas e não alteram sua agenda.</p>
     <div className="gika-content" ref={transcript}>
-      <p className="gika-demo-notice" id="gika-demo-notice">Demonstração: as respostas são simuladas e não alteram sua agenda.</p>
       {messages.length === 0 && <div className="gika-welcome"><Icon name="day" /><h3>O que vamos organizar?</h3><p>Escolha uma sugestão ou escreva sua pergunta.</p></div>}
       <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(text => <button type="button" key={text}
         disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus(); }}>{text}</button>)}</div>

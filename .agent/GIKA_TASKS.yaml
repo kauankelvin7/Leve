@@ -122,10 +122,23 @@ milestones:
         mutation_scope: "UI Gika + testes"
       - id: M1-T3
         title: "Mock adapter sem IA real"
-        status: todo
+        status: done
+        evidence: ["M1_EVIDENCE.md: 101 unit, 12 E2E + Axe, lint/build/typechecks PASS; screenshots revisados."]
+        acceptance_criteria: ["Mock determinístico cancelável, saída validada, nenhuma consulta/mutação real; isolamento por conta e falhas testados."]
         dependencies: [M1-T2]
         owner: frontend
         mutation_scope: "Gika adapter + testes"
+
+      - id: M1-T4
+        title: "Refinement visual e estrutural solicitado pelo usuário"
+        status: todo
+        dependencies: [M1-T3]
+        owner: frontend
+        mutation_scope: "UI Gika, mock, testes e evidências"
+        acceptance_criteria:
+          - "Conversation viewport independente, empty state, símbolo próprio, chips com ícones e composer expansível fixo com envio interno."
+          - "Voz apenas visual; mensagens, loading, erro, tool result, confirmação e undo exclusivamente simulados."
+          - "Gates M1, desktop/mobile, temas, solid, 200%, safe areas e acessibilidade aprovados antes do checkpoint."
 
   M2:
     name: "Gika read-only"
@@ -133,7 +146,7 @@ milestones:
       - id: M2-T1
         title: "Adapter de modelo e configuração"
         status: todo
-        dependencies: [M1-T3]
+        dependencies: [M1-T4]
         owner: ai-integration
       - id: M2-T2
         title: "Tools get_today/get_day/get_week"

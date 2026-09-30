@@ -28,3 +28,11 @@ Composer com label visível, 2000 caracteres, sugestões que preenchem rascunho,
 - Suite focal 4 cenários: 3 PASS após corrigir locators para textbox (botão e campo têm mesmo nome acessível), 1 falha por dois links Notas. Seletor foi restringido à navigation Principal e o cenário composer/offline foi repetido: 1 PASS (8 s). Todos os quatro cenários cobertos sem falha pendente.
 - Axe painel/mobile e teclado/rascunho seguem protegidos nos cenários que passaram. T2 usa adapter indisponível deliberadamente para provar fallback; mock de sucesso será ligado somente M1-T3.
 - Textos revisados segundo checklist da skill local. Não há raw error/payload privado em log. Nenhuma escrita ou consulta nova em API/Firebase.
+
+## M1-T3 — mock e isolamento
+
+Mock determinístico de cinco intenções, contratos Zod estritos, delay cancelável e falha injetável em testes. Cancelamento descarta até adapters que ignoram AbortSignal. Retry mantém requestId; texto editado durante resposta é preservado. Não importa rede, Firebase ou comandos.
+
+Gates executados: lint e build/typechecks PASS; 101 unitários/26 arquivos PASS; suite Gika local completa 12 PASS em 2 min, incluindo 33 combinações paleta/appearance + Axe, viewports oficiais, 200%, solid/reduced motion, timer real, erro lazy, offline, IME e troca de conta. Screenshots em evidence/. Revisão visual detectou reflow comprimido; espaçamento mobile corrigido antes do último E2E aprovado. Race de carregamento lazy e atualização de viewport dos testes corrigidas com expectativas de estado, sem desabilitar cenários. Bundle baseline >500 kB permanece; painel lazy ~7,88 kB (gzip 3,03 kB).
+
+O usuário solicitou refinement adicional: M1 permanece aberto até M1-T4 e seus gates.

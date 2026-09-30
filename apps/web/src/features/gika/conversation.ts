@@ -1,11 +1,10 @@
-export type GikaRequest = { requestId: string; text: string };
-export type GikaResponse = { text: string; simulated: true };
-export type GikaAdapter = (request: GikaRequest, signal: AbortSignal) => Promise<GikaResponse>;
-export type GikaMessage = { id: string; role: 'user' | 'assistant'; text: string };
+import { z } from 'zod';
+
 export const GIKA_MAX_INPUT = 2000;
 export const GIKA_MAX_MESSAGES = 40;
-
-// Replaced by the predictable mock in M1-T3, never a real provider in M1.
-export const unavailableAdapter: GikaAdapter = async () => {
-  throw new Error('Gika adapter unavailable');
-};
+export const gikaRequestSchema = z.object({ requestId: z.uuid(), text: z.string().trim().min(1).max(GIKA_MAX_INPUT) }).strict();
+export const gikaResponseSchema = z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(true) }).strict();
+export type GikaRequest = z.infer<typeof gikaRequestSchema>;
+export type GikaResponse = z.infer<typeof gikaResponseSchema>;
+export type GikaAdapter = (request: GikaRequest, signal: AbortSignal) => Promise<GikaResponse>;
+export type GikaMessage = { id: string; role: 'user' | 'assistant'; text: string };

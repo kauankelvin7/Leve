@@ -73,6 +73,14 @@ test('composer preserva texto, permite sugestões e bloqueia envio offline', asy
 });
 
 test('falha mantém pergunta e retry não duplica a mensagem', async ({ page }) => {
+  // Test-only module fixture. No failure switch is exposed in the product UI.
+  await page.route('**/features/gika/mockAdapter.ts*', route => route.fulfill({ contentType: 'application/javascript', body: `
+    let calls = 0;
+    export const mockAdapter = async () => {
+      if (++calls === 1) throw new Error('Test failure');
+      return { text: 'Demonstração: resposta recuperada. Nenhuma alteração foi feita.', simulated: true };
+    };
+  ` }));
   await enterLocalAgenda(page);
   await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
   const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
@@ -83,7 +91,113 @@ test('falha mantém pergunta e retry não duplica a mensagem', async ({ page }) 
   await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
   await page.getByRole('button', { name: 'Tentar novamente', exact: true }).click();
   await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
-  await expect(question).toHaveValue('Academia amanhã');
+  await expect(page.locator('.gika-message.is-assistant')).toContainText('resposta recuperada');
+  await expect(question).toHaveValue('');
+});
+
+test('mock responde sem consulta, comandos ou duplicação por envio repetido', async ({ page }) => {
+  await enterLocalAgenda(page);
+  const mutations: string[] = []; const pageErrors: string[] = [];
+  page.on('request', request => { if (request.method() === 'POST' && request.url().includes('/api/commands')) mutations.push(request.url()); });
+  page.on('pageerror', error => pageErrors.push(error.message));
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('O que tenho amanhã?');
+  await question.press('Enter');
+  await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeDisabled();
+  await question.press('Enter');
+  await expect(page.locator('.gika-message.is-assistant')).toContainText('Nenhuma tarefa foi consultada ou criada');
+  await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
+  await expect(question).toHaveValue('');
+  await question.fill('<img src=x onerror="alert(1)">');
+  await question.press('Enter');
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(2);
+  await expect(page.locator('.gika-messages img')).toHaveCount(0);
+  expect(mutations).toEqual([]); expect(pageErrors).toEqual([]);
+});
+
+test('fechar cancela resposta pendente sem perder pergunta e sair limpa conversa', async ({ page }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('Meu texto privado');
+  await question.press('Enter');
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(question).toHaveValue('Meu texto privado');
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(0);
+  await question.press('Enter');
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(1);
+  await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Sair', exact: true }).click();
+  await expect(page).toHaveURL(/\/entrar$/);
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(question).toHaveValue('');
+  await expect(page.locator('.gika-message')).toHaveCount(0);
+});
+
+test('IME não envia composição e uma saída inválida vira erro sem alegar sucesso', async ({ page }) => {
+  await page.route('**/features/gika/mockAdapter.ts*', route => route.fulfill({ contentType: 'application/javascript', body: `export const mockAdapter = async () => ({ text: 'Tarefa criada.', simulated: false, command: 'activity.create' });` }));
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('Texto em composição');
+  await question.dispatchEvent('compositionstart');
+  await question.press('Enter');
+  await expect(page.locator('.gika-message')).toHaveCount(0);
+  await question.dispatchEvent('compositionend');
+  await question.press('Enter');
+  await expect(page.getByRole('button', { name: 'Tentar novamente', exact: true })).toBeVisible();
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(0);
+  await expect(question).toHaveValue(/Texto em composição/);
+});
+
+test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável', async ({ page }) => {
+  test.setTimeout(120_000);
+  await enterLocalAgenda(page);
+  await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Gika', exact: true });
+  // Exercise real theme resolver without updating the fake user's remote preferences for every case.
+  await expect(dialog).toBeVisible();
+  const palettes = ['green', 'purple', 'blue', 'red', 'orange', 'pink', 'teal', 'indigo', 'amber', 'brown', 'monochrome'];
+  for (const appearance of ['light', 'dark', 'system']) {
+    for (const theme of palettes) {
+      await page.evaluate(async ({ theme, appearance }) => {
+        const modulePath = '/src/platform/theme.ts';
+        const module = await import(/* @vite-ignore */ modulePath);
+        module.applyColorTheme(theme); module.applyAppearance(appearance);
+      }, { theme, appearance });
+      expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations, `${theme}/${appearance}`).toEqual([]);
+    }
+  }
+  for (const [width, height] of [[1440, 900], [1366, 768], [1024, 768], [430, 932], [390, 844], [360, 800], [360, 400]]) {
+    await page.setViewportSize({ width: width!, height: height! });
+    await expect.poll(async () => { const bounds = await dialog.boundingBox(); return bounds!.y + bounds!.height; }).toBeLessThanOrEqual(height! + 1);
+    const box = await dialog.boundingBox();
+    expect(box!.x).toBeGreaterThanOrEqual(0); expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(width! + 1);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(height! + 1);
+    expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeVisible();
+  }
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.locator('.app-shell').evaluate(el => el.classList.add('solid', 'reduce-motion', 'high-contrast'));
+  await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+  expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await expect(page.getByRole('button', { name: 'Fechar Gika' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Pergunte à Gika' })).toBeVisible();
+  expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
+  await page.screenshot({ path: 'docs/gika/evidence/m1-mobile-reflow.png' });
+  await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
+  await page.locator('.app-shell').evaluate(el => el.classList.remove('solid', 'reduce-motion', 'high-contrast'));
+  await page.screenshot({ path: 'docs/gika/evidence/m1-mobile-dark.png' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.screenshot({ path: 'docs/gika/evidence/m1-desktop-dark.png' });
+  await page.evaluate(async () => { const modulePath = '/src/platform/theme.ts'; const module = await import(/* @vite-ignore */ modulePath); module.applyAppearance('light'); });
+  await page.screenshot({ path: 'docs/gika/evidence/m1-desktop-light.png' });
 });
 
 test('painel cabe em mobile e botão não cobre navegação', async ({ page }) => {
@@ -101,4 +215,88 @@ test('painel cabe em mobile e botão não cobre navegação', async ({ page }) =
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
   await page.getByRole('button', { name: 'Fechar Gika' }).click();
   await expect(launcher).toBeFocused();
+});
+
+test('conversa da conta anterior não aparece em uma segunda conta', async ({ page }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true }).fill('Texto privado da primeira conta');
+  await page.getByRole('button', { name: 'Enviar pergunta' }).click();
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Sair', exact: true }).click();
+  await page.goto('/registrar');
+  await page.getByLabel('Seu nome').fill('Conta Gika fictícia');
+  await page.getByLabel('E-mail').fill(`gika.${Date.now()}@example.test`);
+  await page.getByLabel('Senha', { exact: true }).fill('gika-local-123');
+  await page.getByLabel('Confirmar senha', { exact: true }).fill('gika-local-123');
+  await page.getByRole('button', { name: 'Criar conta', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar neste ambiente' }).click();
+  await page.getByRole('button', { name: 'Criar minha agenda' }).click();
+  await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toHaveValue('');
+  await expect(page.locator('.gika-message')).toHaveCount(0);
+  await expect(page.getByText('Texto privado da primeira conta', { exact: true })).toHaveCount(0);
+});
+
+test('falha de carregamento da Gika não desmonta a agenda', async ({ page }) => {
+  await page.route('**/features/gika/GikaPanel.tsx*', route => route.abort('failed'));
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(page.getByRole('alert')).toContainText('Sua agenda continua disponível.');
+  await page.getByRole('button', { name: 'Fechar e tentar novamente' }).click();
+  await expect(page.getByRole('button', { name: 'Fechar e tentar novamente' })).toHaveCount(0);
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText('Calendário');
+});
+
+test('botão respeita cronômetro real em desktop e mobile', async ({ page }) => {
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Nova atividade', exact: true }).click();
+  const title = `Timer Gika ${Date.now()}`;
+  await page.getByLabel('Título', { exact: true }).fill(title);
+  await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
+  await page.getByRole('link', { name: title, exact: true }).click();
+  await page.getByRole('button', { name: 'Iniciar cronômetro', exact: true }).click();
+  const timer = page.locator('.active-timer-bar');
+  await expect(timer).toBeVisible();
+  const launcher = page.getByRole('button', { name: 'Pergunte à Gika' });
+  for (const width of [1440, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect.poll(async () => {
+      const button = await launcher.boundingBox(); const bar = await timer.boundingBox();
+      return button!.y + button!.height <= bar!.y;
+    }).toBe(true);
+  }
+  await page.screenshot({ path: 'docs/gika/evidence/m1-timer-mobile.png' });
+  await timer.getByRole('button', { name: 'Encerrar cronômetro', exact: true }).click();
+  await expect(timer).not.toBeVisible();
+});
+
+test('rascunho editado durante resposta é mantido e offline cancela a resposta', async ({ page, context }) => {
+  await page.route('**/features/gika/mockAdapter.ts*', route => route.fulfill({ contentType: 'application/javascript', body: `
+    export const mockAdapter = async () => {
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      return { text: 'Demonstração: resposta atrasada sem alterações.', simulated: true };
+    };
+  ` }));
+  await enterLocalAgenda(page);
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('Primeira pergunta'); await question.press('Enter');
+  await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeDisabled();
+  await question.fill('Próxima pergunta');
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(1);
+  await expect(question).toHaveValue('Próxima pergunta');
+  await question.press('Enter'); await context.setOffline(true);
+  await expect(page.getByText('A Gika precisa de conexão para responder. Sua agenda continua funcionando normalmente.')).toBeVisible();
+  // This adapter deliberately ignores AbortSignal; stale output must still be discarded by the hook.
+  await page.waitForTimeout(1400);
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(1);
+  await expect(question).toHaveValue('Próxima pergunta');
+  await context.setOffline(false); await question.press('Enter');
+  await expect(page.locator('.gika-message.is-assistant')).toHaveCount(2);
+  await expect(page.locator('.gika-message.is-user')).toHaveCount(2);
 });

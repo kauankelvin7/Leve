@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, type GikaAdapter, type GikaMessage, type GikaRequest } from './conversation';
+import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, gikaResponseSchema, type GikaAdapter, type GikaMessage, type GikaRequest } from './conversation';
 
 export function useGikaConversation(adapter: GikaAdapter) {
   const [draft, setDraft] = useState('');
@@ -38,7 +38,7 @@ export function useGikaConversation(adapter: GikaAdapter) {
     controller.current = active;
     setStatus('loading');
     try {
-      const response = await adapter(request, active.signal);
+      const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
       setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);

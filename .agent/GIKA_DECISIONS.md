@@ -90,3 +90,17 @@ Formato:
 - Alternativas consideradas: permanecer bloqueado; substituir a skill silenciosamente (rejeitado).
 - Consequências: M1-T1 desbloqueada; checklist local de linguagem/acessibilidade aplicado por revisão manual. Não se simula instalação global de plugin. skill-creator não está disponível no harness; criação literal autorizada pelo usuário, sem gerar conteúdo alternativo.
 - Arquivos afetados: .agent/skills/humanizer-br/SKILL.md, GIKA_STATE.md, GIKA_TASKS.yaml, GIKA_EXECPLAN.md e docs/gika.
+
+## ADR-GIKA-009 — Gemini gratuito em M2
+
+- Data: 2026-09-30
+- Status: accepted — instrução explícita do usuário
+- Decisão: Gemini Developer API com gemini-3.5-flash-lite explícito, thinking_level medium; só Free Tier, sem habilitar/vincular billing, cartão ou fallback pago. Segredo exclusivamente servidor GEMINI_API_KEY. Implementação e testes locais não dependem de segredo; somente smoke real será bloqueado pela ausência.
+- Consequências: adapter intercambiável, M2 somente leitura; tratar missing env, 429/quota, 503, timeout, resposta inválida e malformed function call sem interromper a agenda. Disponibilidade/cota reais só podem ser comprovadas no smoke.
+
+## ADR-GIKA-010 — Refinement de M1 antes de M2
+
+- Data: 2026-09-30
+- Status: accepted — instrução explícita do usuário
+- Decisão: adicionar M1-T4 ao fechamento de M1: viewport de conversa, símbolo próprio discreto, composer expansível no rodapé, chips e estados estruturados exclusivamente mock. Preservar tokens/fontes Leve, sem copiar identidade externa.
+- Consequências: M2-T1 depende de M1-T4 aprovado; voz é apenas indicação visual, confirmações/undo nesta etapa nunca acessam domínio ou persistência. Repetir gates e revisão desktop/mobile antes de declarar M1 concluído.

@@ -59,7 +59,7 @@ export function GikaLauncher() {
       onClick={() => { setLoaded(true); setOpen(true); }}>
       <Icon name="day" /><span>Gika</span>
     </button>
-    {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setAttempt(value => value + 1); }}>
+    {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setLoaded(false); setAttempt(value => value + 1); }}>
       <Suspense fallback={open ? <div className="gika-load-error" role="status"><p>Abrindo a conversa…</p><button type="button" onClick={close}>Cancelar</button></div> : null}>
         <GikaPanel open={open} onClose={close} />
       </Suspense>

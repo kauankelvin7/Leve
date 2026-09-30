@@ -5,21 +5,21 @@
 - Status global: `IN_PROGRESS`
 - Milestone concluído: `M0` (cinco tarefas, cinco commits)
 - Milestone atual: `M1`
-- Tarefa atual: `M1-T3` (`todo`)
+- Tarefa atual: `M1-T4` (`todo`)
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `82a1d3cc0d10b6db147c83cdeb812822711b5047` (anterior ao commit M1-T2)
+- Último SHA verificado / último commit de tarefa Gika: `8a9ee7ea8960e4da9a77cada46e2f294e53e4003` (verificado antes de M1-T3)
 - Worktree limpo no último checkpoint: `sim, após M0-T5; este checkpoint altera apenas documentos/estado`
-- Último gate executado: `lint, typecheck via build, build, 93 unitários e 28 integração: PASS; revisão documental M0 e git diff --check: PASS`
-- Commit de checkpoint: `feat(gika): M1-T2 add composer and resilient conversation states` (contém este arquivo)
+- Último gate executado: `M1-T3: lint/build/typechecks PASS; 101 unit/26 arquivos PASS; 12 E2E locais + Axe PASS (2 min); screenshots revisados`
+- Commit de checkpoint: `feat(gika): M1-T3 add deterministic mock and isolation gates` (contém este arquivo)
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Iniciar M1-T3 com ownership UI Gika e testes, conforme plano factual. Não adicionar provedor/SDK nem mutação real no M1.
-4. Antes de M2-T1, decidir provedor compatível com custo obrigatório R$ 0 e configuração segura de credencial servidor. Nenhum provedor escolhido.
+3. Iniciar M1-T4: refinement visual solicitado antes do M2, ownership UI Gika/mock/testes. Não adicionar provedor/SDK nem mutação real no M1.
+4. M2 autorizado: Gemini Developer API, gemini-3.5-flash-lite, thinking_level medium, exclusivamente Free Tier, sem billing/fallback pago. Implementar sem segredo; somente smoke real depende de GEMINI_API_KEY ausente.
 
 ## Bloqueios
 
@@ -33,7 +33,7 @@
 - useUserCollection mascara partial; Gika não usará isso como prova de consulta completa.
 - Batch transacional genérico não existe; gate M6. Header microphone=() bloqueia voz; gate M7.
 - Superpowers indisponível; processo manual equivalente conforme AGENTS.md. Nenhum subagente utilizado.
-- Não houve UI nova, E2E/screenshot novo, deploy, merge, push ou uso de credenciais de produção. Nenhuma feature de Gika implementada no M0.
+- M1 usa apenas mock em memória. Não houve deploy, merge, push ou uso de credenciais de produção.
 
 ## Checkpoint de retomada
 
@@ -55,3 +55,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M1 | M1-T1 | done: botão/painel, 2 E2E + Axe, lint/build/typecheck e 93 unit PASS | commit M1-T1 após dbd3a9dc778fc47fa19cf355bfb5ce57d8a83ac6 |
 
 | 2026-09-30 | M1 | M1-T2 | done: composer/estados/offline, 4 E2E cobertos e gates PASS | commit M1-T2 após 82a1d3cc0d10b6db147c83cdeb812822711b5047 |
+
+| 2026-09-30 | M1 | M1-T3 | done: mock cancelável/validado, 101 unit e 12 E2E + Axe PASS | commit M1-T3 após 8a9ee7e |

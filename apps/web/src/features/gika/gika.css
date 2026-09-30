@@ -44,8 +44,8 @@
 .gika-heading h2 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.6rem; }
 .gika-close { display: grid; place-items: center; flex: 0 0 44px; height: 44px; padding: 0; border: 1px solid var(--color-border); border-radius: 50%; color: var(--color-text); background: var(--color-solid); }
 .gika-content { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; overscroll-behavior: contain; }
-.gika-demo-notice { margin: 0; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
-.gika-welcome { padding: 40px 8px; text-align: center; }
+.gika-demo-notice { flex-shrink: 0; margin: 12px 20px 0; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
+.gika-welcome { padding: 16px 4px; text-align: center; }
 .gika-welcome > svg { color: var(--color-action-primary); width: 32px; height: 32px; }
 .gika-welcome h3 { margin: 14px 0 8px; font-family: Nunito, sans-serif; font-size: 1.35rem; }
 .gika-welcome p { color: var(--color-text-muted); line-height: 1.6; }
@@ -70,8 +70,19 @@
 .gika-panel button:disabled { opacity: .55; cursor: not-allowed; }
 @media (max-width: 739px) {
   .gika-launcher { right: max(16px, env(safe-area-inset-right)); bottom: max(var(--gika-dock-bottom, 82px), calc(82px + env(safe-area-inset-bottom))); }
-  .gika-panel { top: var(--gika-viewport-top, 0px); bottom: auto; width: 100%; height: var(--gika-viewport-height, 100dvh); max-height: var(--gika-viewport-height, 100dvh); margin: 0; border: 0; border-radius: 0; }
+  .gika-panel { top: var(--gika-viewport-top, 0px); bottom: auto; width: 100%; height: min(var(--gika-viewport-height, 100dvh), 100dvh); max-height: min(var(--gika-viewport-height, 100dvh), 100dvh); margin: 0; border: 0; border-radius: 0; }
   .gika-heading { padding-top: max(16px, env(safe-area-inset-top)); }
+  .gika-kicker { display: none; }
   .gika-content { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
   .gika-composer { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
 }
+@media (max-width: 400px) {
+  .gika-composer-actions small { display: none; }
+}
+.gika-panel[data-compact='true'] .gika-heading { padding: 8px 12px; }
+.gika-panel[data-compact='true'] .gika-kicker { display: none; }
+.gika-panel[data-compact='true'] .gika-heading h2 { font-size: 1.2rem; }
+.gika-panel[data-compact='true'] .gika-demo-notice { margin: 8px 12px 0; padding: 8px; font-size: .75rem; }
+.gika-panel[data-compact='true'] .gika-composer { padding: 8px 12px; gap: 4px; }
+.gika-panel[data-compact='true'] .gika-composer textarea { min-height: 48px; max-height: 64px; }
+.gika-panel[data-compact='true'] .gika-composer-actions small { display: none; }
