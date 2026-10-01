@@ -1,0 +1,33 @@
+name: Responsive Shell Validation
+
+on:
+  push:
+    branches:
+      - feat/responsive-shell-v2
+  workflow_dispatch:
+
+jobs:
+  verify-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Environment versions
+        run: |
+          node --version
+          npm --version
+      - run: npm ci --include=dev
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Responsive shell E2E
+        run: npx playwright test tests/e2e/responsive-shell.spec.ts
+      - name: Existing shell E2E
+        run: npx playwright test tests/e2e/shell.spec.ts
