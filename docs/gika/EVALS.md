@@ -182,3 +182,20 @@ M3-E36 (baseline de UI, sem mudança de produto): pausar CSS timer-dock-in no pr
 ## M3-SMOKE — prova live após revisão T3
 
 M3-E37/E10/E11: `Adiciona Teste Gika M3 amanhã` → Gemini real gemini-3.5-flash-lite/medium HTTP200, somente create_task; contexto civil America/Sao_Paulo →2026-10-02; validation/policy/command/receipt transacional reais em demo-leve. Commit antes de perder ack; UI não confirma; retry mesma identidade recupera receipt/alreadyApplied com entidade exata, delta de uma tarefa e zero chamadas upstream adicionais. Undo opcional real activity.trash/ack/revision2 remove somente alvo; zero Gemini. scripts/gika-m3-smoke.mjs/M3_SMOKE_EVIDENCE.md/evidence/m3-smoke.json. Interpretação não fixture neste cenário; demais evals upstream continuam determinísticos. Nenhum segredo ou dado pessoal persistido; não executar automaticamente nem iniciar M4.
+
+## M4-T1 — complete_task sem interpretação live
+
+| Eval | Cenário | Prova |
+|---|---|---|
+| M4-E01 | Terminei academia / Concluí estudar Java / Marca a tarefa Faculdade como concluída | schema strict, intenção original, default hoje ou data civil explícita, único ID/revisão read layer; gika-completion unit e integração |
+| M4-E02 | dois homônimos, inclusive completed+pending; nenhum candidato; partial; cancelada/event/série | resolução não escolhe primeiro nem inventa, nenhuma escrita; unit/integração/UI |
+| M4-E03 | já concluída | observação honesta sem novo command/receipt/revision; integração/UI |
+| M4-E04 | case/trim; sexta/amanhã; data divergente/fuzzy/unknown fields/IDs/owner | título exato conforme domínio, civil determinístico/payload strict; unidade e integração |
+| M4-E05 | auth ausente; logout/troca durante resolução/token/ack; outro UID; membership revogada | nenhum dispatch/resultado fora da conta; command-auth/adapter/integração/UI |
+| M4-E06 | revisão muda depois da resolução; command falha pre/postcommit | conflito preserva edição, sem refresh/ack fictício; integração/UI |
+| M4-E07 | requestId repetido sequencial/concurrent/lost ack; nova intenção posterior | receipt existente atômico, revision incrementa uma vez, recovered original sem modelo, nova intenção observa completed; integração/adapter/UI |
+| M4-E08 | functionCall repetida igual; desconhecida/mista; create errada para Terminei, inclusive Por favor/Pode | collapse só depois strict, erro sem escrita/mutação errada; integração/unidade |
+| M4-E09 | UI antes de ack/persistência; mobile/dark/Axe; sem undo/reopen | card structured só após ack real/entity/revision corretos; gika-complete.spec.ts |
+| M4-E10 | model/policy/router/bridge sem persistência; sem secrets/live | architecture unit, diff/escopo/gates; provider fixo/mocks determinísticos |
+
+Interpretação nesta tarefa é fixture; escrita/status/receipts/persistência/Auth/Firestore são reais emulados. Smoke real M4 só depois de T1/T2/T3 revisados; M4-T2/T3 não iniciados aqui. Baselines M3 preservados.

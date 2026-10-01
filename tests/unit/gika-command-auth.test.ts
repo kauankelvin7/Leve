@@ -45,3 +45,19 @@ describe('M3-T3 actual undo bridge/token boundary', () => {
     expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.queue).not.toHaveBeenCalled();
   });
 });
+
+describe('M4-T1 completion auth immediately after token wait',()=>{
+  it.each([null,{uid:'account-b',getIdToken:vi.fn()}])('does not dispatch completion on logout/switch %j',async changed=>{
+    const {executeCompletion}=await import('../../apps/web/src/features/gika/completionBridge');
+    const {completionEnvelope}=await import('../../packages/domain/src/gikaCompletion');
+    const task={id:'target',title:'Academia',dueDate:'2026-10-01',timeZone:'America/Sao_Paulo',revision:3};
+    let resume!: (token:string)=>void;
+    fixture.user={uid:'account-a',getIdToken:vi.fn(()=>new Promise(resolve=>{resume=resolve;}))};
+    const cmd=await completionEnvelope(task,{requestId:crypto.randomUUID(),text:'Terminei academia'});
+    const result=executeCompletion(task,cmd,'account-a',new AbortController().signal);
+    const rejected=expect(result).rejects.toMatchObject({code:'AUTH_REQUIRED'});
+    await vi.waitFor(()=>expect(resume).toBeTypeOf('function'));
+    fixture.user=changed;resume('local-fixture-token');await rejected;
+    expect(fixture.fetch).not.toHaveBeenCalled();expect(fixture.queue).not.toHaveBeenCalled();
+  });
+});

@@ -48,9 +48,12 @@ export const commandEnvelopeSchema = z.object({
   payload: z.unknown(),
   clientCreatedAt: z.iso.datetime().optional(),
   dependsOn: z.array(z.uuid()).max(20).optional(),
+  gikaCompletion: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaUndo: z.object({ uid: z.string().min(1).max(128), creationOperationId: z.uuid() }).strict().optional(),
   gika: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
-}).strict().refine(command => !command.gika || (command.command === 'activity.create'
+}).strict().refine(command => !command.gikaCompletion || (!command.gika && !command.gikaUndo
+  && command.command === 'activity.setStatus' && (command.expectedRevision ?? 0) > 0
+  && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de conclusão inválida.').refine(command => !command.gika || (command.command === 'activity.create'
   && command.expectedRevision === 0 && command.entityId === command.operationId
   && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de criação inválida.').refine(command => !command.gikaUndo || (!command.gika
   && command.command === 'activity.trash' && command.expectedRevision === 1

@@ -1,3 +1,4 @@
+import { completionDescriptorSchema, completionResultSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
 import { z } from 'zod';
 import { Temporal } from '@js-temporal/polyfill';
 import type { DecodedIdToken } from 'firebase-admin/auth';
@@ -13,19 +14,26 @@ export type ReadRange = { startDate: string; endDate: string; timeZone: string }
 export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
-  recoverCreation(uid: string, request: GikaRequest): Promise<CreateTaskDescriptor | null>;
+  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
-  async recoverCreation(uid, request) {
+  async recoverMutation(uid, request) {
     const receipt = await db.doc(`commandReceipts/${entityIdSchema.parse(uid)}_${request.requestId}`).get();
     if (!receipt.exists) return null;
     const data = receipt.data()!;
-    if (data.uid !== uid || !data.gika || data.gika.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    const metadata = data.gikaCompletion ?? data.gika;
+    if (data.uid !== uid || !metadata || metadata.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    if (data.gikaCompletion) {
+      const response = completionResultSchema.safeParse(data.response);
+      const task = completionDescriptorSchema.safeParse(data.gikaCompletion.task);
+      if (!response.success || !task.success || response.data.operationId !== request.requestId || response.data.entityId !== task.data.id || response.data.revision !== task.data.revision + 1) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      return { kind: 'complete', task: task.data };
+    }
     const response = commandCreationResultSchema.safeParse(data.response);
     const task = createTaskDescriptorSchema.safeParse(data.gika.task);
     if (!response.success || !task.success || response.data.operationId !== request.requestId || response.data.entityId !== request.requestId) throw new GikaFault('GIKA_INVALID_RESPONSE');
-    return task.data;
+    return { kind: 'create', task: task.data };
   },
   async authorize(identity, purpose) {
     if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail para continuar.');

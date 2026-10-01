@@ -128,3 +128,50 @@ describe('M3-T2 independent adapters and technical retransmission', () => {
     expect(fixture.command).toHaveBeenCalledTimes(2);
   });
 });
+
+const completeTask = { id: 'target', title: 'Academia', dueDate: '2026-10-01', timeZone: 'America/Sao_Paulo', revision: 3 };
+const completion = { text: 'Preparando a conclusão…', simulated: false, reads: [], completeTask };
+const completeAck = (c: { operationId: string; entityId: string; expectedRevision: number }) => ({ operationId: c.operationId, entityId: c.entityId, revision: c.expectedRevision + 1, serverTime: '2026-10-01T12:00:00Z', result: 'applied' });
+describe('M4-T1 structured completion only after actual command acknowledgement', () => {
+  it('success preserves exact resolved entity and revision with software identity', async () => {
+    fixture.request.mockResolvedValue(completion); fixture.command.mockImplementation(async c => completeAck(c));
+    const result=await createApiAdapter()({...input,text:'Terminei academia'},new AbortController().signal);
+    expect(result).toMatchObject({text:'Tarefa concluída.',completedTask:{...completeTask,revision:4,result:'applied'}});
+    expect(fixture.command.mock.calls[0]![0]).toMatchObject({command:'activity.setStatus',operationId:input.requestId,entityId:'target',expectedRevision:3,payload:{status:'completed'}});
+  });
+  it('lost acknowledgement retains original envelope/revision, not refreshed model selection', async () => {
+    const adapter=createApiAdapter(); fixture.request.mockResolvedValue(completion);
+    fixture.command.mockRejectedValueOnce(new Error('lost ack')).mockImplementation(async c=>({...completeAck(c),result:'alreadyApplied'}));
+    await expect(adapter(input,new AbortController().signal)).rejects.toThrow();
+    fixture.request.mockResolvedValue({...completion,completeTask:{...completeTask,id:'wrong',revision:99}});
+    await expect(adapter(input,new AbortController().signal)).resolves.toMatchObject({completedTask:{id:'target',revision:4,result:'alreadyApplied'}});
+    expect(fixture.request).toHaveBeenCalledTimes(1);expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);
+  });
+  it.each([null,{uid:'account-b'}])('account changes during resolution prevent any completion %j',async user=>{
+    fixture.request.mockImplementation(async()=>{fixture.user=user;return completion;});
+    await expect(createApiAdapter()(input,new AbortController().signal)).rejects.toMatchObject({code:'AUTH_REQUIRED'});expect(fixture.command).not.toHaveBeenCalled();
+  });
+  it('already-completed observation, ambiguity and missing task never dispatch',async()=>{
+    for(const status of ['already_completed','ambiguous','not_found']){
+      fixture.request.mockResolvedValue({text:'Confira sua agenda.',simulated:false,reads:[],completionResolution:{status,candidates:[]}});
+      await createApiAdapter()(input,new AbortController().signal);
+    }
+    expect(fixture.command).not.toHaveBeenCalled();
+  });
+  it('command failure, wrong ack and account change during ack never confirm',async()=>{
+    for(const outcome of ['failure','wrong','logout']){
+      fixture.user={uid:'account-a'};fixture.request.mockResolvedValue(completion);
+      fixture.command.mockImplementation(async c=>{if(outcome==='failure')throw new Error('failure');if(outcome==='logout')fixture.user=null;return {...completeAck(c),entityId:outcome==='wrong'?'wrong':c.entityId};});
+      await expect(createApiAdapter()(input,new AbortController().signal)).rejects.toThrow();
+    }
+  });
+});
+
+it('M4 pending technical retry recovers receipt if concurrent execution committed a different envelope',async()=>{
+  const {ApiError}=await import('../../apps/web/src/platform/api');
+  const adapter=createApiAdapter();fixture.request.mockResolvedValueOnce(completion).mockResolvedValueOnce({...completion,completeTask:{...completeTask,revision:4}});
+  fixture.command.mockRejectedValueOnce(new Error('lost response')).mockRejectedValueOnce(new ApiError(409,'OPERATION_MISMATCH','Mismatch')).mockImplementationOnce(async c=>({...completeAck(c),result:'alreadyApplied'}));
+  await expect(adapter(input,new AbortController().signal)).rejects.toThrow();
+  await expect(adapter(input,new AbortController().signal)).resolves.toMatchObject({completedTask:{id:'target',revision:5,result:'alreadyApplied'}});
+  expect(fixture.request).toHaveBeenCalledTimes(2);expect(fixture.command).toHaveBeenCalledTimes(3);
+});

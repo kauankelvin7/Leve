@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 describe('Gika boundary: interpretation cannot write; command bridge has one existing writer', () => {
-  it.each(['server/gika/gemini.ts', 'server/gika/model.ts', 'server/gika/router.ts', 'server/gika/createPolicy.ts', 'apps/web/src/features/gika/apiAdapter.ts', 'apps/web/src/features/gika/commandBridge.ts', 'apps/web/src/features/gika/creationUndoBridge.ts'])('%s has no persistence entry point', path => {
+  it.each(['server/gika/gemini.ts', 'server/gika/model.ts', 'server/gika/router.ts', 'server/gika/createPolicy.ts', 'server/gika/completePolicy.ts', 'apps/web/src/features/gika/completionBridge.ts', 'apps/web/src/features/gika/apiAdapter.ts', 'apps/web/src/features/gika/commandBridge.ts', 'apps/web/src/features/gika/creationUndoBridge.ts'])('%s has no persistence entry point', path => {
     const source = readFileSync(path, 'utf8');
     expect(source).not.toMatch(/firebase-admin|firebase\/firestore|platform\/firebase\.ts|\b(?:setDoc|addDoc|updateDoc|deleteDoc|writeBatch|runTransaction|contentCommand)\s*\(/);
   });
@@ -11,6 +11,14 @@ describe('Gika boundary: interpretation cannot write; command bridge has one exi
     expect(source).not.toMatch(/apiRequest|gika\/respond|gemini|modelAdapter/i);
     const schema = readFileSync('packages/domain/src/gikaUndo.ts', 'utf8');
     expect(schema).toContain("command: 'activity.trash'"); expect(schema).not.toMatch(/activity\.(?:purge|update|restore|setStatus)/);
+  });
+  it('completion only uses the existing setStatus command and no other mutation', () => {
+    const source = readFileSync('apps/web/src/features/gika/completionBridge.ts', 'utf8');
+    expect(source).toContain('sendCommand(command');
+    const schema = readFileSync('packages/domain/src/gikaCompletion.ts', 'utf8');
+    expect(schema).toContain("command: 'activity.setStatus'");
+    expect(schema).not.toMatch(/activity\.(?:create|trash|update|restore|createSeries)/);
+    expect(source).not.toMatch(/activity\.(?:update|trash|restore)|status: 'pending'/);
   });
   it('only existing sendCommand dispatches activity.create, never another mutation or direct Firestore', () => {
     const source = readFileSync('apps/web/src/features/gika/commandBridge.ts', 'utf8');

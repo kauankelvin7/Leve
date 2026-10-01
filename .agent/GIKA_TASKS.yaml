@@ -230,10 +230,12 @@ milestones:
 
   M4:
     name: "Edição controlada"
+    status: in_progress
     tasks:
       - id: M4-T1
         title: "complete_task"
-        status: todo
+        status: done
+        evidence: ["M4_T1_EXECPLAN.md/M4_T1_EVIDENCE.md/evidence/m4-t1-gates.json: PRE56b9308 limpo, complete_task strict/title+dia bounded/resolução autenticada/activity.setStatus/revisão/receipt transacional/ack UI real.218 unit/98 integração/38 E2E Gika/lint/dois TS/build PASS;local58/11,check12/1,audit13 baseline explícitos e23 arquivos idênticos à entrada. Sem live; T2/T3 não iniciados, parar para revisão."]
         dependencies: [M3-SMOKE]
       - id: M4-T2
         title: "update_task"

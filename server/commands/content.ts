@@ -1,3 +1,4 @@
+import { completionDescriptorSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
 import { z } from 'zod';
 import type { DecodedIdToken } from 'firebase-admin/auth';
 import type { DocumentReference } from 'firebase-admin/firestore';
@@ -54,6 +55,10 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     gika = { ...command.gika, task };
   }
 
+  if (command.gikaCompletion && (command.command !== 'activity.setStatus' || input.status !== 'completed'
+    || command.clientCreatedAt !== undefined || command.dependsOn !== undefined
+    || commandHash(command) !== commandHash({ ...command, payload: { status: 'completed' } }))) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
+
   if (command.gikaUndo) {
     if (command.gikaUndo.uid !== identity.uid) throw new AppError(403, 'FORBIDDEN', 'Entre na conta que adicionou essa tarefa para desfazer.');
     const canonical = await creationUndoEnvelope({ uid: identity.uid, creationOperationId: command.gikaUndo.creationOperationId, entityId: command.entityId, revision: 1 });
@@ -92,6 +97,12 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    let completionTask: CompletionDescriptor | undefined;
+    if (command.gikaCompletion) {
+      if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa foi alterada. Confira sua agenda e envie um novo pedido.');
+      if (old.kind !== 'task' || old.schedule?.type !== 'task' || old.seriesId || old.occurrenceKey || old.status !== 'pending') throw new AppError(422, 'GIKA_POLICY', 'Essa tarefa não está disponível para conclusão. Confira sua agenda.');
+      completionTask = completionDescriptorSchema.parse({ id: command.entityId, title: old.title, dueDate: old.schedule.dueDate, timeZone: profile!.data()!.timeZone, revision: old.revision });
+    }
     if (command.gikaUndo && (!old || old.deletedAt)) throw new AppError(409, 'GIKA_UNDO_ALREADY_REMOVED', 'Essa tarefa já foi removida.');
     if (command.gikaUndo && (old?.revision !== 1 || old?.seriesId || old?.createdAt !== creationServerTime)) throw new AppError(409, 'REVISION_CONFLICT', 'Não foi possível desfazer porque essa tarefa foi alterada.');
     const creating = action === 'create' || (type === 'note' && action === 'save' && command.expectedRevision === 0);
@@ -148,7 +159,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

@@ -298,3 +298,8 @@ Plano factual M3_T3_EXECPLAN.md, PRE fc30bf9 limpo. Undo somente pelo botão sob
 ### M3-SMOKE autorizado após revisão T3 — 2026-10-01
 
 PRE abbd1e2 limpo; pedido explícito autoriza somente smoke, supersede a espera histórica por revisão. M3_SMOKE_EXECPLAN.md/M3_SMOKE_EVIDENCE.md: conta/emuladores fictícios, uma chamada Gemini real, create_task → comando/receipt/persistência/UI e lost ack/retry; undo opcional determinístico sobre alvo exato. Proxy Codex Remote apenas no processo, nenhum workaround/alteração de produção. Gates finais sem segredo, baseline documentado. M4 não iniciado; requer autorização posterior independente do fechamento M3.
+
+
+## Execução verificada M4-T1 — 2026-10-01
+
+Pedido mais recente autorizou somente complete_task após M3 fechado, PRE56b9308 limpo. T1 done, M4 in_progress. M4_T1_EXECPLAN.md/M4_T1_EVIDENCE.md/ADR014 registram auditoria, diferença do selector original activityId para title/date strict e resolução bounded, reutilização activity.setStatus/revisão/receipt, auth/retry/ack UI.218 unit/98 integração/38 E2E Gika/lint/dois TS/build PASS;global58/11/check12/1/audit13 baseline explícitos. Sem live nem T2/T3. Próxima ação é revisão T1; parar antes de M4-T2.

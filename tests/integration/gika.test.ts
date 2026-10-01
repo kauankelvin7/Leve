@@ -416,3 +416,118 @@ describe('M3-T3 creation-specific undo through existing activity.trash/receipts'
     expect(retry.body).toEqual({ ...ack.body, result: 'alreadyApplied' }); expect(state.inputs).toHaveLength(0);
   });
 });
+
+describe('M4-T1 complete_task resolves through authorized reads and existing setStatus/receipts', () => {
+  const text='Terminei Academia';
+  const target='completion-target';
+  const today=()=>Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+  const fixtureModel=()=>{state.model={interpret:async()=>[{name:'complete_task',args:{title:'academia',date:null}}]};};
+  async function ready(){const user=await account();await seedTask(user.uid,target,today(),'Academia');fixtureModel();return user;}
+  async function interpret(user:{token:string},requestId=id,question=text){return ask(user.token,{requestId,text:question}).expect(200);}
+  async function envelope(body:unknown,requestId=id,question=text){const {completionEnvelope}=await import('../../packages/domain/src/gikaCompletion');const parsed=gikaInterpretationSchema.parse(body);if(!parsed.completeTask)throw Error('Missing descriptor');return completionEnvelope(parsed.completeTask,{requestId,text:question});}
+  const send=(user:{token:string},command:object)=>request(app).post('/api/commands').set('Authorization',`Bearer ${user.token}`).send(command);
+  it('unique title case/trim yields exact ID/current revision, one real completion',async()=>{
+    const user=await ready();const descriptor=await interpret(user);expect(descriptor.body.completeTask).toMatchObject({id:target,title:'Academia',revision:1});
+    expect(descriptor.body).not.toHaveProperty('completedTask');expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.status).toBe('pending');
+    const command=await envelope(descriptor.body);await send(user,command).expect(200);
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({status:'completed',revision:2});
+    expect((await db.doc(`commandReceipts/${user.uid}_${id}`).get()).data()?.gikaCompletion.task).toMatchObject({id:target,revision:1,title:'Academia'});
+  });
+  it('relative date explicitly mentioned searches only that civil day',async()=>{
+    const user=await account();const tomorrow=Temporal.PlainDate.from(today()).add({days:1}).toString();await seedTask(user.uid,target,tomorrow,'Java');
+    state.model={interpret:async()=>[{name:'complete_task',args:{title:'Java',date:tomorrow}}]};
+    const r=await interpret(user,id,'Concluí Java amanhã');expect(r.body.completeTask).toMatchObject({id:target,dueDate:tomorrow});
+  });
+  it.each(['ambiguous','not_found','already_completed','unsupported','partial'])('%s is honest and never writes',async status=>{
+    const user=await ready();
+    if(status==='ambiguous')await seedTask(user.uid,'second',today(),'academia',{status:'completed'});
+    if(status==='not_found')await db.doc(`users/${user.uid}/activities/${target}`).update({title:'Outra'});
+    if(status==='already_completed')await db.doc(`users/${user.uid}/activities/${target}`).update({status:'completed'});
+    if(status==='unsupported')await db.doc(`users/${user.uid}/activities/${target}`).update({seriesId:'series'});
+    if(status==='partial')await db.doc(`users/${user.uid}/series/unmaterialized`).set({state:'active'});
+    const before=(await db.doc(`users/${user.uid}/activities/${target}`).get()).data();const r=await interpret(user);
+    expect(r.body).not.toHaveProperty('completeTask');expect(r.body.completionResolution.status).toBe(status);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toEqual(before);
+  });
+  it('same-operation concurrent and sequential retries are atomic; lost response recovered without model',async()=>{
+    const user=await ready();const r=await interpret(user);const command=await envelope(r.body);
+    const acks=await Promise.all([send(user,command).expect(200),send(user,command).expect(200)]);
+    expect(acks.map(a=>a.body.result).sort()).toEqual(['alreadyApplied','applied']);
+    // Original response considered lost: a new server request reconstructs original descriptor.
+    state.model={interpret:async()=>{throw Error('Must not call model after receipt');}};
+    const recovered=await interpret(user);expect(recovered.body.completeTask).toEqual(r.body.completeTask);
+    const again=await send(user,await envelope(recovered.body)).expect(200);expect(again.body).toMatchObject({result:'alreadyApplied',entityId:target,revision:2});
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.revision).toBe(2);expect((await db.collection('commandReceipts').get()).size).toBe(1);
+    const changed=await envelope(recovered.body,id,'Terminei Outra');await send(user,changed).expect(409);
+  });
+  it('new intent gets a new identity and observes already completed without second mutation',async()=>{
+    const user=await ready();const r=await interpret(user);await send(user,await envelope(r.body)).expect(200);
+    const observed=await interpret(user,crypto.randomUUID());expect(observed.body.completionResolution.status).toBe('already_completed');expect(observed.body.text).toContain('já estava concluída');
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.revision).toBe(2);
+  });
+  it('other UID cannot complete/recover original entity; anonymous denied before model',async()=>{
+    const user=await ready(),other=await account();const r=await interpret(user);const command=await envelope(r.body);
+    await send(other,command).expect(409);expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.status).toBe('pending');
+    await request(app).post('/api/gika/respond').send({requestId:id,text}).expect(401);
+    await send(user,command).expect(200);const otherResult=await interpret(other);expect(otherResult.body.completionResolution.status).toBe('not_found');
+    expect((await db.collection(`users/${other.uid}/activities`).get()).size).toBe(0);
+  });
+  it('revision changed after resolution conflicts and preserves later edit without receipt',async()=>{
+    const user=await ready();const r=await interpret(user);const command=await envelope(r.body);
+    await db.doc(`users/${user.uid}/activities/${target}`).update({revision:2,title:'Academia alterada'});
+    const failure=await send(user,command).expect(409);expect(failure.body.code).toBe('REVISION_CONFLICT');expect(failure.body).not.toHaveProperty('details.current');
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({status:'pending',revision:2,title:'Academia alterada'});expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it('auth revoked during upstream or resolution never produces descriptor',async()=>{
+    const user=await ready();state.model={interpret:async()=>{await db.doc(`memberships/${user.uid}`).update({state:'suspended'});return [{name:'complete_task',args:{title:'Academia',date:null}}];}};
+    await ask(user.token,{requestId:id,text}).expect(403);expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it('auth revoked after resolution blocks command and replay',async()=>{
+    const user=await ready();const r=await interpret(user);const command=await envelope(r.body);
+    await db.doc(`memberships/${user.uid}`).update({state:'suspended'});await send(user,command).expect(403);
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.status).toBe('pending');
+  });
+  it('equal repeated function calls collapse; unknown/mixed/forged calls do not write',async()=>{
+    const user=await ready();const call={name:'complete_task',args:{title:'Academia',date:null}};
+    state.model={interpret:async()=>[call,call]};const r=await interpret(user);expect(r.body.completeTask.id).toBe(target);
+    for(const calls of [[{...call,args:{...call.args,entityId:target}}],[{name:'missing_tool',args:{}}],[call,{name:'get_today',args:{}}]]){
+      const isolated=await account();state.model={interpret:async()=>calls};await ask(isolated.token,{requestId:crypto.randomUUID(),text}).expect(422);
+    }
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.status).toBe('pending');
+  });
+  it('unknown command payload and reopen tagged as Gika are rejected before any write',async()=>{
+    const user=await ready();const r=await interpret(user),command=await envelope(r.body);
+    await send(user,{...command,payload:{status:'completed',extra:true}}).expect(422);
+    await send(user,{...command,payload:{status:'pending'}}).expect(422);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it.each(['before','after'])('command transaction failure %s commit has safe retry semantics',async when=>{
+    const user=await ready(),r=await interpret(user),command=await envelope(r.body);
+    const original=db.runTransaction.bind(db);const spy=vi.spyOn(db,'runTransaction');
+    if(when==='before')spy.mockRejectedValueOnce(new Error('Fixture precommit failure'));
+    else spy.mockImplementationOnce(async (...args:Parameters<typeof db.runTransaction>)=>{await original(...args);throw new Error('Fixture lost after commit');});
+    await send(user,command).expect(503);spy.mockRestore();
+    const ack=await send(user,command).expect(200);expect(ack.body.result).toBe(when==='before'?'applied':'alreadyApplied');
+    expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.revision).toBe(2);expect((await db.collection('commandReceipts').get()).size).toBe(1);
+  });
+});
+
+it.each(['Terminei Academia hoje','Por favor, terminei Academia hoje'])('M4 wrong create tool for completion text never produces a descriptor or write: %s',async text=>{
+  const user=await account();const today=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+  state.model={interpret:async()=>[{name:'create_task',args:{title:text.replace(/ hoje$/, ''),dueDate:today,dueTime:null}}]};
+  const r=await ask(user.token,{requestId:id,text}).expect(200);
+  expect(r.body).not.toHaveProperty('createTask');expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);expect((await db.collection('commandReceipts').get()).size).toBe(0);
+});
+
+it('M4 authorization is rechecked after the candidate read, before exposing a mutation descriptor',async()=>{
+  const {firestoreReads}=await import('../../server/gika/reads');const user=await account();const date=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();await seedTask(user.uid,'target',date,'Academia');
+  state.model={interpret:async()=>[{name:'complete_task',args:{title:'Academia',date:null}}]};
+  const original=firestoreReads.read.bind(firestoreReads);const spy=vi.spyOn(firestoreReads,'read').mockImplementationOnce(async(...args)=>{const result=await original(...args);await db.doc(`memberships/${user.uid}`).update({state:'suspended'});return result;});
+  try{await ask(user.token,{requestId:id,text:'Terminei Academia'}).expect(403);expect((await db.collection('commandReceipts').get()).size).toBe(0);expect((await db.doc(`users/${user.uid}/activities/target`).get()).data()?.status).toBe('pending');}finally{spy.mockRestore();}
+});
+it.each(['canceled','event'])('M4 never mutates a unique %s target',async kind=>{
+  const user=await account(),date=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+  const extra=kind==='canceled'?{status:'canceled'}:{kind:'event',schedule:{type:'event',allDay:true,startDate:date,endDateExclusive:Temporal.PlainDate.from(date).add({days:1}).toString(),timeZone:zone}};
+  await seedTask(user.uid,'target',date,'Academia',extra);state.model={interpret:async()=>[{name:'complete_task',args:{title:'Academia',date:null}}]};
+  const r=await ask(user.token,{requestId:id,text:'Terminei Academia'}).expect(200);expect(r.body.completionResolution.status).toBe('unsupported');expect((await db.collection('commandReceipts').get()).size).toBe(0);
+});

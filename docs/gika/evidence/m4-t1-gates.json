@@ -1,0 +1,393 @@
+{
+  "entryCheckpoint": "56b9308f8311fbd3e7e97a08530a366ede2b06c7",
+  "environment": "demo-leve Auth/Firestore Emulator, synthetic data, no Gemini live",
+  "unit": {
+    "passed": 218,
+    "files": 37
+  },
+  "integration": {
+    "passed": 98,
+    "files": 4
+  },
+  "localE2E": {
+    "passed": 58,
+    "failed": 11,
+    "gikaPassed": 38,
+    "completionPassed": 6,
+    "tests": [
+      {
+        "test": "tests/e2e-local/calendar-planner-visual.spec.ts:64:1 › Mês, Semana e Dia permanecem contidos nos seis viewports de homologação",
+        "result": "PASS",
+        "duration": "15.9s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner-visual.spec.ts:80:1 › planner passa Axe em desktop e mobile nas três visualizações",
+        "result": "PASS",
+        "duration": "14.0s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner-visual.spec.ts:93:1 › controles principais do calendário são alcançáveis por teclado",
+        "result": "PASS",
+        "duration": "8.1s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner-visual.spec.ts:113:1 › planner respeita movimento reduzido e continua utilizável",
+        "result": "PASS",
+        "duration": "7.1s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner-visual.spec.ts:124:1 › calendário mantém contraste automatizado em claro e escuro",
+        "result": "PASS",
+        "duration": "13.4s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:117:1 › compromisso de dia inteiro registra tempo, conclui e reaparece concluído no calendário",
+        "result": "PASS",
+        "duration": "12.5s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:170:1 › planner cria, move, redimensiona e preserva o fluxo de comando",
+        "result": "FAIL",
+        "duration": "16.5s",
+        "classification": "PREEXISTING_PLANNER_COMPLETED_CONTRAST_4_28"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:202:1 › planner pede escopo e cancelar mantém a ocorrência intacta",
+        "result": "FAIL",
+        "duration": "1.5m",
+        "classification": "PREEXISTING_HARNESS_FREQUENCY_HIDDEN"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:220:1 › escopos recorrentes separam ocorrência e futuro corretamente",
+        "result": "FAIL",
+        "duration": "2.0m",
+        "classification": "PREEXISTING_HARNESS_FREQUENCY_HIDDEN"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:254:1 › conflito de revisão mantém o horário confirmado e informa a pessoa",
+        "result": "PASS",
+        "duration": "13.7s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:277:1 › alteração offline bloqueia novos gestos até sair da outbox e sincronizar",
+        "result": "PASS",
+        "duration": "14.3s"
+      },
+      {
+        "test": "tests/e2e-local/calendar-planner.spec.ts:306:1 › semana fica contida no mobile e a preferência de visualização persiste",
+        "result": "PASS",
+        "duration": "7.8s"
+      },
+      {
+        "test": "tests/e2e-local/design.spec.ts:4:1 › paletas acompanham navegação e calendário funciona em desktop e celular",
+        "result": "FAIL",
+        "duration": "13.1s",
+        "classification": "PREEXISTING_HARNESS_COMPLETED_TUTORIAL"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 desktop light completion card only after real ack, exact target and double submit",
+        "result": "PASS",
+        "duration": "15.6s"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 mobile dark completion card only after real ack, exact target and double submit",
+        "result": "PASS",
+        "duration": "14.1s"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:32:1 › M4-T1 lost real ack retry retains exact identity and no extra state transition",
+        "result": "PASS",
+        "duration": "11.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:40:1 › M4-T1 ambiguity, missing and already completed are observations with no commands",
+        "result": "PASS",
+        "duration": "7.2s"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:47:1 › M4-T1 conventional edit after resolution produces conflict without overwriting or automatic retry",
+        "result": "PASS",
+        "duration": "14.7s"
+      },
+      {
+        "test": "tests/e2e-local/gika-complete.spec.ts:56:1 › M4-T1 logout while resolution waits prevents completion dispatch",
+        "result": "PASS",
+        "duration": "17.7s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 desktop light: structured success after actual command, task survives reload",
+        "result": "PASS",
+        "duration": "14.2s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 mobile dark: structured success after actual command, task survives reload",
+        "result": "PASS",
+        "duration": "13.1s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:51:1 › command failure preserves draft, never claims success, conventional agenda remains usable",
+        "result": "PASS",
+        "duration": "6.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:64:1 › unknown descriptor fields fail before any commands; generated text cannot forge creation",
+        "result": "PASS",
+        "duration": "7.0s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:73:1 › logout during upstream wait aborts creation before command dispatch",
+        "result": "PASS",
+        "duration": "13.6s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:83:1 › M3-T2 double submit is one intent; identical content after success is a new intent",
+        "result": "PASS",
+        "duration": "16.1s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:106:1 › M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate",
+        "result": "PASS",
+        "duration": "14.4s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 desktop light exact-ID undo, pending ack, double tap, active list and conventional trash",
+        "result": "PASS",
+        "duration": "24.6s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 mobile dark exact-ID undo, pending ack, double tap, active list and conventional trash",
+        "result": "PASS",
+        "duration": "22.9s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:163:1 › M3-T3 lost undo acknowledgement: same operation retry without Gemini or second effect",
+        "result": "PASS",
+        "duration": "15.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:180:1 › M3-T3 later edit conflicts, user work preserved by revision precondition",
+        "result": "PASS",
+        "duration": "16.0s"
+      },
+      {
+        "test": "tests/e2e-local/gika-create.spec.ts:198:1 › M3-T3 close during lost acknowledgement then reopen permits same-ID reconciliation",
+        "result": "PASS",
+        "duration": "17.2s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:17:1 › missing env real: fallback preserva draft e agenda convencional",
+        "result": "PASS",
+        "duration": "7.6s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:35:1 › contrato real mostra tool result escapado, sem confirmação/undo ou commands",
+        "result": "PASS",
+        "duration": "7.2s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:51:1 › mobile dark: partial/empty honestos, composer fixo e scroll separado",
+        "result": "PASS",
+        "duration": "6.6s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:71:1 › 429 e saída com command/preview real rejeitadas sem mutar",
+        "result": "PASS",
+        "duration": "7.1s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:84:1 › API cancelada ao fechar/sair não publica resposta na segunda conta",
+        "result": "PASS",
+        "duration": "13.7s"
+      },
+      {
+        "test": "tests/e2e-local/gika-readonly.spec.ts:112:1 › E70: 503, timeout e resposta inválida permitem consultar calendário após fallback",
+        "result": "PASS",
+        "duration": "7.3s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:24:1 › painel acessível abre e fecha sem perder rascunho nem navegação",
+        "result": "PASS",
+        "duration": "8.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:55:1 › composer preserva texto, permite sugestões e bloqueia envio offline",
+        "result": "PASS",
+        "duration": "8.2s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:80:1 › falha mantém pergunta e retry não duplica a mensagem",
+        "result": "PASS",
+        "duration": "6.5s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:103:1 › mock responde sem consulta, comandos ou duplicação por envio repetido",
+        "result": "PASS",
+        "duration": "9.3s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:124:1 › fechar cancela resposta pendente sem perder pergunta e sair limpa conversa",
+        "result": "PASS",
+        "duration": "14.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:146:1 › IME não envia composição e uma saída inválida vira erro sem alegar sucesso",
+        "result": "PASS",
+        "duration": "6.8s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:162:1 › paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+        "result": "PASS",
+        "duration": "22.1s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:216:1 › painel cabe em mobile e botão não cobre navegação",
+        "result": "PASS",
+        "duration": "6.3s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:233:1 › conversa da conta anterior não aparece em uma segunda conta",
+        "result": "PASS",
+        "duration": "14.5s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:257:1 › falha de carregamento da Gika não desmonta a agenda",
+        "result": "PASS",
+        "duration": "6.9s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:268:1 › botão respeita cronômetro real em desktop e mobile",
+        "result": "PASS",
+        "duration": "13.5s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:291:1 › rascunho editado durante resposta é mantido e offline cancela a resposta",
+        "result": "PASS",
+        "duration": "12.5s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:318:1 › conversa tem scroll independente, composer expansível e cards apenas simulados",
+        "result": "PASS",
+        "duration": "12.4s"
+      },
+      {
+        "test": "tests/e2e-local/gika.spec.ts:379:1 › launcher no calendário fica fora do grid e da navegação desktop",
+        "result": "PASS",
+        "duration": "7.2s"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+        "result": "FAIL",
+        "duration": "3.6s",
+        "classification": "PREEXISTING_HARNESS_STRICT_SELECTOR"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+        "result": "FAIL",
+        "duration": "23.0s",
+        "classification": "PREEXISTING_HARNESS_CALENDAR_DEFAULT_WEEK"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:164:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+        "result": "FAIL",
+        "duration": "20.8s",
+        "classification": "PREEXISTING_HARNESS_STRICT_SELECTOR"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:212:1 › lixeira global restaura item de compras",
+        "result": "PASS",
+        "duration": "9.9s"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:241:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+        "result": "PASS",
+        "duration": "23.0s"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:287:1 › conflito de nota entre abas preserva as duas versões",
+        "result": "FAIL",
+        "duration": "2.7s",
+        "classification": "PREEXISTING_HARNESS_STRICT_SELECTOR"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:325:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+        "result": "PASS",
+        "duration": "10.8s"
+      },
+      {
+        "test": "tests/e2e-local/persistent.spec.ts:354:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+        "result": "FAIL",
+        "duration": "1.5m",
+        "classification": "PREEXISTING_HARNESS_BACKUP_LABEL"
+      },
+      {
+        "test": "tests/e2e-local/refinements.spec.ts:4:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+        "result": "FAIL",
+        "duration": "15.3s",
+        "classification": "PREEXISTING_HARNESS_TUTORIAL_LABEL"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:65:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+        "result": "PASS",
+        "duration": "4.0s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:80:1 › intro aparece uma vez por período neste aparelho",
+        "result": "PASS",
+        "duration": "6.9s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:99:1 › movimento reduzido mantém apenas ambientação estática",
+        "result": "PASS",
+        "duration": "1.3s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:108:1 › preferência desligada remove toda a experiência e persiste no perfil",
+        "result": "PASS",
+        "duration": "14.1s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:134:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+        "result": "PASS",
+        "duration": "8.6s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:157:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+        "result": "PASS",
+        "duration": "10.2s"
+      },
+      {
+        "test": "tests/e2e-local/seasonal-experience.spec.ts:190:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+        "result": "PASS",
+        "duration": "21.2s"
+      },
+      {
+        "test": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+        "result": "PASS",
+        "duration": "20.3s"
+      },
+      {
+        "test": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+        "result": "FAIL",
+        "duration": "12.3s",
+        "classification": "PREEXISTING_HARNESS_STRICT_SELECTOR"
+      }
+    ]
+  },
+  "shell": {
+    "passed": 12,
+    "failed": 1,
+    "classification": "PREEXISTING_DEMO_COLOR_CONTRAST"
+  },
+  "audit": {
+    "moderate": 9,
+    "high": 4,
+    "classification": "PREEXISTING_UNCHANGED_DEPENDENCIES"
+  },
+  "baselineEvidence": [
+    "m4-t1-baseline-files.json",
+    "m3-legacy-baseline-comparison.json",
+    "m3-t3-timer-baseline.json"
+  ],
+  "newUnresolvedRegression": false,
+  "timerAndReflowPassedThisRunNotFixed": true
+}
