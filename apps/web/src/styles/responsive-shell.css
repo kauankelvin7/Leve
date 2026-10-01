@@ -533,3 +533,15 @@
 .aside-caption {
   color: color-mix(in srgb, var(--color-text) 34%, var(--color-text-muted));
 }
+
+
+/* Fecha os contrastes AA restantes do shell demo sem alterar tokens globais. */
+.calendar-day.adjacent {
+  color: color-mix(in srgb, var(--color-text) 46%, var(--color-text-muted));
+}
+
+.app-shell :is(button.primary, .button.primary) {
+  background: color-mix(in srgb, var(--color-action-primary) 82%, #17231e);
+  border-color: color-mix(in srgb, var(--color-action-primary) 82%, #17231e);
+  color: #fffdf8;
+}
