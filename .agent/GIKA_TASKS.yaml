@@ -147,8 +147,8 @@ milestones:
 
   M2:
     name: "Gika read-only"
-    status: in_progress
-    evidence: "M2_EVIDENCE.md: T1/T2/T3 concluídos; M2-SMOKE real executado FAIL/GIKA_UNAVAILABLE em 2026-10-01; milestone permanece in_progress."
+    status: done
+    evidence: "M2_EVIDENCE.md: T1/T2/T3 e smoke real E01/E02 PASS; diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED, corrigido somente no processo de smoke; M3 não iniciado."
     tasks:
       - id: M2-S0
         title: "Classificar falhas Planner e intermitência antes do adapter"
@@ -182,11 +182,10 @@ milestones:
 
       - id: M2-SMOKE
         title: "Smoke Gemini real Free Tier (E01/E02)"
-        status: blocked
+        status: done
         dependencies: [M2-T3]
         owner: qa
-        evidence: ["2026-10-01: smoke real exit1 FAIL/GIKA_UNAVAILABLE; E01 falhou, E02 não alcançado. 15 testes focais PASS; M2_EVIDENCE.md."]
-        blocker: "Smoke real FAIL/GIKA_UNAVAILABLE; causa upstream/status HTTP não comprovados. Credencial temporária autorizada somente para esta execução, descartada; nenhuma nova chamada autorizada nesta tarefa."
+        evidence: ["2026-10-01: diagnóstico sanitizado HTTP200 com proxy; smoke existente repetido com NODE_USE_ENV_PROXY=1 somente no subprocesso PASS/exit0, E01/E02. M2_EVIDENCE.md."]
         acceptance_criteria: ["Modelo estável/medium interpretam E01/E02 pelo adapter real, nenhum acesso/mutação de agenda; registrar prova e checkpoint sem segredo."]
 
   M3:

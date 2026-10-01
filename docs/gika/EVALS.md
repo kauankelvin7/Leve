@@ -127,3 +127,7 @@ Estes testes usam transports/calls/responses fixture, emuladores e o contrato re
 ### M2-SMOKE real — 2026-10-01
 
 Uma execução autorizada com credencial temporária: FAIL/GIKA_UNAVAILABLE, exit1 na interpretação E01; E02 não alcançado. Não considerar linguagem natural Gemini validada. Sem retry/mudança de modelo ou segredo persistido; M2 permanece aberto. Ver M2_EVIDENCE.md.
+
+### M2-SMOKE repetido após diagnóstico — 2026-10-01
+
+Causa local NETWORK/ENV_PROXY_NOT_ENABLED. Chamada mínima ao mesmo endpoint/modelo HTTP200 com proxy efetivo; repetição explicitamente autorizada do smoke existente E01/E02 PASS/exit0. NODE_USE_ENV_PROXY=1 somente no subprocesso; nenhuma alteração de arquitetura/modelo/credencial persistida. M2 concluído; não iniciar M3.

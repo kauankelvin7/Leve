@@ -3,27 +3,27 @@
 ## Estado atual
 
 - Status global: `IN_PROGRESS`
-- Milestones concluídos: `M0` e `M1` (shell/mock/refinement; limites da regressão ampliada abaixo)
-- Milestone atual: `M2` (read-only; M1 visual aprovado pelo usuário)
-- Tarefa atual: nenhuma em execução; M2-SMOKE blocked após execução real FAIL/GIKA_UNAVAILABLE; parada antes do M3
+- Milestones concluídos: `M0`, `M1` e `M2` (shell/mock/refinement; limites da regressão ampliada abaixo)
+- Milestone atual: `M2` concluído; parada solicitada antes do M3
+- Tarefa atual: nenhuma em execução; M2-SMOKE PASS; M3 não autorizado nesta tarefa
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `f5484919b792e1d0ee6687627c614c231fd136aa` (checkpoint M2, worktree limpo no PRE M2-SMOKE)
+- Último SHA verificado / último commit de tarefa Gika: `c035142202a19a649fbb49e42b3e77dc26bc17c6` (worktree limpo no PRE diagnóstico sanitizado)
 - Worktree limpo no PRE M2-SMOKE; somente documentação/estado alterados nesta tarefa, sem mudanças de modelo ou produção
 - Últimos gates: M2-T3 lint/build/typechecks, 134 unit, 42 integração, 8 E2E finais (6 API Gika + 2 Planner) PASS; mock14 PASS em T2. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
-- Commit desta tarefa: `docs(gika): checkpoint failed M2 smoke and stop before M3` (registra resultado real e mantém M2 aberto)
+- Commit desta tarefa: `docs(gika): close M2 after sanitized proxy diagnosis and smoke pass`
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Autorização mais recente: somente smoke real com credencial temporária nesta tarefa e gates necessários; parar antes do M3. Smoke real executado FAIL/GIKA_UNAVAILABLE; não declarar M2 concluído.
-4. Não reutilizar a credencial temporária. Não foi escrita em arquivo/env/log/commit; subprocesso encerrado. Nenhuma configuração financeira ou de modelo alterada.
+3. Diagnóstico e repetição do smoke explicitamente autorizados nesta tarefa; parar antes do M3. Causa NETWORK/ENV_PROXY_NOT_ENABLED comprovada por TIMEOUT sem proxy efetivo e HTTP200 com proxy; smoke E01/E02 PASS com NODE_USE_ENV_PROXY=1 somente no subprocesso.
+4. Não reutilizar credencial temporária nem iniciar M3. Nenhuma alteração de arquitetura/modelo/produto; credencial não persistida e subprocessos encerrados.
 
 ## Bloqueios
 
-- M2-SMOKE: execução real em 2026-10-01 retornou exit1 FAIL/GIKA_UNAVAILABLE. Primeira interpretação falhou; E02 não alcançado. Sem status HTTP/causa upstream observáveis pelo contrato sanitizado; não inferir credencial inválida, modelo inexistente ou quota. T1/T2/T3 seguem concluídas; somente smoke permanece bloqueado. Credencial de uso único descartada; não repetir requests nesta tarefa, não iniciar M3.
+- Nenhum gate M2 bloqueado. Smoke real PASS após diagnóstico. Parada explícita antes do M3; não interpretar conclusão de M2 como autorização para avançar.
 
 ## Riscos e limitações
 
@@ -73,3 +73,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-10-01 | M2 | M2-SMOKE | blocked: chave ausente; script executado exit2 sem rede, único bloqueio de M2 | `fd0682d` |
 
 | 2026-10-01 | M2 | M2-SMOKE | FAIL/blocked: execução real exit1 GIKA_UNAVAILABLE; 15 testes focais PASS; sem retry/segredo persistido; M3 não iniciado | checkpoint após f548491 |
+
+| 2026-10-01 | M2 | M2-SMOKE | done: diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED; HTTP200 com proxy, smoke real E01/E02 PASS; M3 não iniciado | checkpoint após c035142 |
