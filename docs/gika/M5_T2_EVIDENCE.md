@@ -56,3 +56,5 @@ Todas56 situações Gika únicas tiveram passagem observada; a primeira suíte a
 ## Entrega
 
 M5-T2 done, M5 permanece parcial; M5-T3/T4 todo. Estado/tasks/evals/ADR018/arquitetura/segurança atualizados no commit atômico da implementação. Checkpoint SHA real e worktree limpo verificados após commit. Parar para revisão, sem live ou próximas etapas.
+
+Commit atômico M5-T2 verificado: `9e130c52a2cd211881576f08ff93d9d932d43564`; branch feat/gika-integration/worktree limpo confirmados. Checkpoint documental posterior apenas registra o SHA real, sem reexecutar live ou alterar código/gates. M5-T3 permanece todo.

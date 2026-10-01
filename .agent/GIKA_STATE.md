@@ -65,7 +65,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint M5-T2
 
-Commit atômico desta tarefa contém implementação/testes/ADR018/evals/evidências e STATE/TASKS done juntos; entrada9c2c6fb. Conferir SHA real e worktree após commit; não iniciar M5-T3.
+Commit atômico M5-T2: `9e130c52a2cd211881576f08ff93d9d932d43564` na feat/gika-integration, entrada9c2c6fb. Implementação/testes/ADR018/evals/evidências e STATE/TASKS done juntos; worktree limpo confirmado após commit. Checkpoint documental seguinte registra este SHA sem mudança funcional. Parar para revisão; M5-T3 todo/não iniciado.
 
 ## Checkpoint hardening (histórico)
 
@@ -127,4 +127,4 @@ Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmad
 | 2026-10-01 | Security isolado | DiceBear | done: core/avataaars9.4.3,325unit/2avatarE2E/gates PASS,auditprod13→12 | `73e750c866b620bb6a44147ecebf2b42d5e51b18` |
 | 2026-10-01 | Security isolado | Firebase/Google | done: grpc1.14.5/uuid11.1.1 scoped/clean install/tree,334unit/166integração/53E2E/gates PASS,auditprod0;14dev preexistentes explícitos;parar antes de integrar/T2 | `e8c07be3218cb583fffb5af38e7a8beb10c95851` |
 
-| 2026-10-01 | M5 parcial | M5-T2 | done: contrato/preview selado e recovery receipt-only;343unit/172integração/12focal PASS,56Gika únicos observados PASS,amplo54/2 comparado9c;check12/1/auditprod0;parar antes de T3 | commit atômico M5-T2 após9c2c6fb |
+| 2026-10-01 | M5 parcial | M5-T2 | done: contrato/preview selado e recovery receipt-only;343unit/172integração/12focal PASS,56Gika únicos observados PASS,amplo54/2 comparado9c;check12/1/auditprod0;parar antes de T3 | `9e130c52a2cd211881576f08ff93d9d932d43564` |
