@@ -30,8 +30,8 @@
     "gika:smoke": "node scripts/gika-smoke.mjs"
   },
   "dependencies": {
-    "@dicebear/avataaars": "9.4.2",
-    "@dicebear/core": "9.4.2",
+    "@dicebear/avataaars": "9.4.3",
+    "@dicebear/core": "9.4.3",
     "@fontsource/dm-sans": "5.3.0",
     "@fontsource/nunito": "^5.2.7",
     "@js-temporal/polyfill": "0.5.1",

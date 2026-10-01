@@ -337,3 +337,16 @@ milestones:
         title: "Regression suite e release candidate"
         status: todo
         dependencies: [M9-T3]
+
+# Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.
+security_hardening:
+  branch: chore/security-hardening
+  entry_checkpoint: a922594699cd95e2bc6602bccc215f4a23e75f41
+  status: in_progress
+  dicebear:
+    status: done
+    evidence: docs/security/DICEBEAR_EVIDENCE.md
+  firebase_google:
+    status: todo
+  integration_review:
+    status: pending_user_review

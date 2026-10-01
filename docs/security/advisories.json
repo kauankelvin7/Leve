@@ -1,0 +1,123 @@
+[
+  {
+    "ghsa_id": "GHSA-gcr2-9v8m-gq45",
+    "summary": "DiceBear: SVG injection via the unescaped rotate option in @dicebear/core (and fontSize/fontWeight in @dicebear/initials)",
+    "severity": "medium",
+    "description": "## Summary\n\n`@dicebear/core` builds avatar SVGs from caller-supplied options. The numeric `rotate` option is interpolated into an SVG `transform` attribute without XML-escaping. It is typed as a number, but nothing checks the type at runtime, so a string value passes straight through and can break out of the attribute to inject arbitrary SVG markup.\n\nThis is the same root cause as CVE-2026-33311 (GHSA-mr9r-mww3-v6gv), which escaped the string options `backgroundColor`, `fontFamily`, and `textColor` but did not cover `rotate`. `@dicebear/initials` has the same gap in its numeric `fontSize` and `fontWeight` options.\n\n## Impact\n\nCross-site scripting (CWE-79). When the generated avatar is rendered inline (for example via `innerHTML`) or served as `image/svg+xml` and opened directly, injected markup such as an `<image onerror>` handler runs script in the page's origin.\n\nExploitation requires the application to pass untrusted input into one of these options:\n\n- `rotate` (`@dicebear/core`)\n- `fontSize`, `fontWeight` (`@dicebear/initials`)\n\nIn most integrations these options are set by the developer and only `seed` is user-controlled, so the vulnerable configuration is uncommon. Applications that use trusted, hardcoded values for these options are not at risk.\n\n## Patches\n\nFixed in `@dicebear/core` 9.4.3 and `@dicebear/initials` 9.4.3: the values are now XML-escaped before being written into the SVG, matching the CVE-2026-33311 fix. Upgrade to 9.4.3 or later.\n\nThe 5.x through 8.x lines share the same flaw but are end-of-life and will not receive a backport; upgrade to 9.4.3. The 10.x line is not affected.\n\n## Workarounds\n\nIf you cannot upgrade, coerce the affected options to a number before passing them to `createAvatar`:\n\n```js\nrotate: Number(userInput) || 0,\n```\n\n## Credits\n\nReported by @rz1027.",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@dicebear/core"
+        },
+        "vulnerable_version_range": "<= 9.4.2",
+        "first_patched_version": "9.4.3",
+        "vulnerable_functions": []
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@dicebear/initials"
+        },
+        "vulnerable_version_range": "<= 9.4.2",
+        "first_patched_version": "9.4.3",
+        "vulnerable_functions": []
+      }
+    ],
+    "published_at": "2026-09-02T22:44:25Z",
+    "updated_at": "2026-09-02T22:44:26Z"
+  },
+  {
+    "ghsa_id": "GHSA-m9gg-hp2v-232j",
+    "summary": "@grpc/grpc-js: In certain configurations, getAuthContext can return unauthorized certificates as though they were authorized",
+    "severity": "high",
+    "description": "### Impact\nWhen server credentials are created with the `requireClientCertificate` option set to `false`, `getAuthContext` does not distinguish between authorized and unauthorized certificates in its return value. This can create improper authentication vulnerabilities for `@grpc/grpc-js` users who use the result of `getAuthContext` for authentication.\n\nIn particular, `@grpc/grpc-js-xds` can both set the `requireClientCertificate` option to `false` and use the return value of `getAuthContext` for RBAC authentication in some configurations.\n\n### Patches\n\nThis vulenrability is fixed in 1.13.6 and 1.14.5.\n\n### Workarounds\n`@grpc/grpc-js` users using `getAuthContext` this way can avoid this problem by setting `requireClientCertificate` to `true`. `@grpc/grpc-js-xds` users using RBAC can avoid this by setting the `require_client_certificate` field to `true` in the DownstreamTlsContext in the xDS configuration.",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@grpc/grpc-js"
+        },
+        "vulnerable_version_range": "< 1.13.6",
+        "first_patched_version": "1.13.6",
+        "vulnerable_functions": []
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@grpc/grpc-js"
+        },
+        "vulnerable_version_range": ">= 1.14.0, < 1.14.5",
+        "first_patched_version": "1.14.5",
+        "vulnerable_functions": []
+      }
+    ],
+    "published_at": "2026-09-30T15:35:53Z",
+    "updated_at": "2026-09-30T15:35:57Z"
+  },
+  {
+    "ghsa_id": "GHSA-f596-whhp-79r4",
+    "summary": "@grpc/grpc-js: The server transmits some error messages thrown by method handlers to the client in status messages",
+    "severity": "low",
+    "description": "### Impact\nIf an application method handler crashes, the error message is included in the status message sent to the client. This can leak to the client any sensitive data that may be included in the error message. This impacts anyone using `@grpc/grpc-js` to run servers.\n\n### Patches\nThis vulnerability is fixed in 1.13.6 and 1.14.5.\n\n### Workarounds\nThis can be avoided by using a top-level error handler in method handlers to strip out sensitive error information.",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@grpc/grpc-js"
+        },
+        "vulnerable_version_range": "< 1.13.6",
+        "first_patched_version": "1.13.6",
+        "vulnerable_functions": []
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "@grpc/grpc-js"
+        },
+        "vulnerable_version_range": ">= 1.14.0, < 1.14.5",
+        "first_patched_version": "1.14.5",
+        "vulnerable_functions": []
+      }
+    ],
+    "published_at": "2026-09-30T15:35:41Z",
+    "updated_at": "2026-09-30T15:35:42Z"
+  },
+  {
+    "ghsa_id": "GHSA-w5hq-g745-h8pq",
+    "summary": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+    "severity": "medium",
+    "description": "### Summary\n\nThe `v3()`, `v5()`, and `v6()` [API methods](https://github.com/uuidjs/uuid#api-summary) (not `uuid` release versions) accept external output buffers but do not reject out-of-range writes (small `buf` or large `offset`).  \nBy contrast, `v4()`, `v1()`, and `v7()` API methods explicitly throw `RangeError` on invalid bounds.\n\nThis inconsistency allows **silent partial writes** into caller-provided buffers.\n\n\n### Affected code\n\n- `src/v35.ts` (`v3()`/`v5()` path) writes `buf[offset + i]` without bounds validation.\n- `src/v6.ts` writes `buf[offset + i]` without bounds validation.\n\n### Reproducible PoC\n\n```bash\ncd /home/StrawHat/uuid\nnpm ci\nnpm run build\n\nnode --input-type=module -e \"\nimport {v4,v5,v6} from './dist-node/index.js';\nconst ns='6ba7b810-9dad-11d1-80b4-00c04fd430c8';\nfor (const [name,fn] of [\n  ['v4()',()=>v4({},new Uint8Array(8),4)],\n  ['v5()',()=>v5('x',ns,new Uint8Array(8),4)],\n  ['v6()',()=>v6({},new Uint8Array(8),4)],\n]) {\n  try { fn(); console.log(name,'NO_THROW'); }\n  catch(e){ console.log(name,'THREW',e.name); }\n}\"\n```\n\nObserved:\n\n- `v4() THREW RangeError`\n- `v5() NO_THROW`\n- `v6() NO_THROW`\n\nExample partial overwrite evidence captured during audit:\n\n```text\nsame true buf [\n  170, 170, 170, 170,\n   75, 224, 100,  63\n]\nv6 [\n  187, 187, 187, 187,\n   31,  19, 185,  64\n]\n```\n\n### Security impact\n\n- **Primary**: integrity/robustness issue (silent partial output).\n- If an application assumes full UUID writes into preallocated buffers, this can produce malformed/truncated/partially stale identifiers without error.\n- In systems where caller-controlled offsets/buffer sizes are exposed indirectly, this may become a security-relevant logic flaw.\n\n### Suggested fix\n\nAdd the same guard used by `v4()`/`v1()`/`v7()`:\n\n```ts\nif (offset < 0 || offset + 16 > buf.length) {\n  throw new RangeError(`UUID byte range ${offset}:${offset + 15} is out of buffer bounds`);\n}\n```\n\nApply to:\n\n- `src/v35.ts` (covers `v3()` and `v5()`)\n- `src/v6.ts`",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "uuid"
+        },
+        "vulnerable_version_range": ">= 12.0.0, < 12.0.1",
+        "first_patched_version": "12.0.1",
+        "vulnerable_functions": []
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "uuid"
+        },
+        "vulnerable_version_range": ">= 13.0.0, < 13.0.1",
+        "first_patched_version": "13.0.1",
+        "vulnerable_functions": []
+      },
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "uuid"
+        },
+        "vulnerable_version_range": "< 11.1.1",
+        "first_patched_version": "11.1.1",
+        "vulnerable_functions": []
+      }
+    ],
+    "published_at": "2026-04-22T20:53:24Z",
+    "updated_at": "2026-05-21T18:25:57Z"
+  }
+]

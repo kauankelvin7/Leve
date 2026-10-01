@@ -2,7 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M5_T1_DONE_STOP_BEFORE_T2`.
+- Branch de trabalho temporária: `chore/security-hardening`, entrada `a922594699cd95e2bc6602bccc215f4a23e75f41` limpa. DiceBear9.4.3/325 unit/2 avatarE2E/lint/build/dois TS PASS; audit12 (4high/8moderate) provisório. Nenhuma mudança Firebase/policy nesta etapa.
+
+- Status global: `SECURITY_HARDENING_DICEBEAR_DONE_IN_PROGRESS`.
 - M0/M1/M2/M3/M4 done; M5 in_progress, M5-T1 done; M5-T2/T3/T4 e posteriores não iniciados.
 - Entrada `156fe77dd94d24152c4af12c122ce90188b28271`, branch feat/gika-integration e worktree limpo verificados antes de editar. Fontes integrais/evidências M3/M4 relidas, plano M5_T1_EXECPLAN antes do código.
 - Classificação determinística strict tipada allow/clarify/confirm/deny com facts do servidor/registro fechado de quatro mutações atuais. Reschedule continua confirm pelo preview existente; auth/schema/ownership/revision/receipt/command validation/ack não substituídos. Replay histórico reautorizado prevalece sobre resolução nova em corrida. ADR017/evidência M5_T1.
@@ -11,11 +13,11 @@
 
 ## Autorização atual
 
-Pedido em texto anexado autoriza exclusivamente M5-T1 a partir de156fe77, concluído neste checkpoint. Sem Gemini live/chave, batch, delete por linguagem natural, série, PendingAction/confirmation genérico ou M5-T2+.
+M5-T1 revisado/aprovado. Pedido posterior autoriza etapa isolada security dependency hardening a partir de a922594, branch temporária chore/security-hardening criada/worktree limpo de entrada. DiceBear9.4.3 validado; Firebase/Google a analisar/testar em commit separado. Sem merge para feat/main, Gemini live/M5-T2/alteração de policy/tools/domínio/Rules/UI.
 
 ## Próxima ação
 
-Parar para revisão do M5-T1. M5-T2 (`Confirmation cards e pending actions`) permanece todo e requer autorização posterior; não iniciar automaticamente. M5 parcial. Evidências M5_T1_EVIDENCE.md/evidence/m5-t1-gates.json e m5-t1-transport-baseline.json.
+Concluir hardening Firebase/Google limitado e executar gates completos; relatório docs/security/INVENTORY.md/DICEBEAR_EVIDENCE.md. M5-T2 permanece todo, não iniciado. Parar para revisão antes de integrar branch temporária em feat/gika-integration.
 
 ## Contratos preservados
 
