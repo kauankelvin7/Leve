@@ -171,3 +171,5 @@ Commit atômico M3-SMOKE/fechamento M3 verificado: `723d444295fafb08e7706b92a283
 ## Gika — M4-T1 em 01/10/2026
 
 Pedido posterior autorizou exclusivamente complete_task a partir de56b9308 na feat/gika-integration. T1 done: tool strict title/date, resolução autenticada limitada a um dia civil, ambiguidade/no-op honestos, activity.setStatus/revisão/receipt transacional existentes, retry/lost ack seguro e UI structured somente após ack real. ADR014, M4_T1_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais. Lint/build/dois TS/218 unit/98 integração/38 E2E Gika PASS;local58 PASS/11 FAIL baseline,check12/1,audit13 baseline.23 arquivos de baselines idênticos à entrada; timer/reflow passaram sem remover pendências. Sem Gemini live/segredo/billing/push/deploy/merge. M4 parcial, T2/T3 todo: parar para revisão antes de M4-T2, não iniciar automaticamente. SHA real no checkpoint documental posterior.
+
+Commit atômico M4-T1 verificado: `c0de781413f00a00eeb3e498215f1f55db625ba7`, worktree limpo depois do commit. Este registro documental posterior não altera código. M4-T2 não iniciado; aguardar revisão/autorização explícita.

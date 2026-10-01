@@ -34,7 +34,7 @@ Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia 
 
 ## Checkpoint
 
-Último checkpoint de entrada `56b9308`; M3-SMOKE/fechamento M3 atômico `723d444295fafb08e7706b92a283bf3d1f2b0d0b`. M4-T1 verificado, checkpoint atômico desta alteração; SHA real será registrado em checkpoint documental posterior. Preservar histórico abaixo.
+Último checkpoint de entrada `56b9308`; M3-SMOKE/fechamento M3 atômico `723d444295fafb08e7706b92a283bf3d1f2b0d0b`. M4-T1 concluído no commit atômico `c0de781413f00a00eeb3e498215f1f55db625ba7`, worktree limpo confirmado depois do commit. Este checkpoint documental posterior somente registra o SHA real, sem alteração funcional. M4-T2/T3 não iniciados; preservar histórico abaixo.
 
 ## Histórico
 
@@ -81,4 +81,4 @@ Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia 
 
 | 2026-10-01 | M3 | M3-SMOKE | PASS real HTTP200/create_task/receipt/persistência/UI/retry/undo; M3 done; parar antes de M4 | `723d444295fafb08e7706b92a283bf3d1f2b0d0b` |
 
-| 2026-10-01 | M4 parcial | M4-T1 | done: conclusão única bounded via activity.setStatus/revisão/receipts existentes;218 unit/98 integração/38 E2E Gika PASS,global58/11 baseline;sem live;parar antes de T2 | checkpoint atômico desta tarefa |
+| 2026-10-01 | M4 parcial | M4-T1 | done: conclusão única bounded via activity.setStatus/revisão/receipts existentes;218 unit/98 integração/38 E2E Gika PASS,global58/11 baseline;sem live;parar antes de T2 | `c0de781413f00a00eeb3e498215f1f55db625ba7` |
