@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 describe('Gika boundary: interpretation cannot write; command bridge has one existing writer', () => {
-  it.each(['server/gika/actionPolicy.ts', 'server/gika/policyAssessment.ts', 'server/gika/gemini.ts', 'server/gika/model.ts', 'server/gika/router.ts', 'server/gika/createPolicy.ts', 'server/gika/completePolicy.ts', 'server/gika/updatePolicy.ts', 'server/gika/reschedulePolicy.ts', 'apps/web/src/features/gika/rescheduleBridge.ts', 'packages/domain/src/gikaReschedule.ts', 'apps/web/src/features/gika/updateBridge.ts', 'packages/domain/src/gikaUpdate.ts', 'apps/web/src/features/gika/completionBridge.ts', 'apps/web/src/features/gika/apiAdapter.ts', 'apps/web/src/features/gika/commandBridge.ts', 'apps/web/src/features/gika/creationUndoBridge.ts'])('%s has no persistence entry point', path => {
+  it.each(['server/gika/confirmation.ts', 'packages/domain/src/gikaConfirmation.ts', 'apps/web/src/features/gika/confirmationBridge.ts', 'server/gika/actionPolicy.ts', 'server/gika/policyAssessment.ts', 'server/gika/gemini.ts', 'server/gika/model.ts', 'server/gika/router.ts', 'server/gika/createPolicy.ts', 'server/gika/completePolicy.ts', 'server/gika/updatePolicy.ts', 'server/gika/reschedulePolicy.ts', 'apps/web/src/features/gika/rescheduleBridge.ts', 'packages/domain/src/gikaReschedule.ts', 'apps/web/src/features/gika/updateBridge.ts', 'packages/domain/src/gikaUpdate.ts', 'apps/web/src/features/gika/completionBridge.ts', 'apps/web/src/features/gika/apiAdapter.ts', 'apps/web/src/features/gika/commandBridge.ts', 'apps/web/src/features/gika/creationUndoBridge.ts'])('%s has no persistence entry point', path => {
     const source = readFileSync(path, 'utf8');
     expect(source).not.toMatch(/firebase-admin|firebase\/firestore|platform\/firebase\.ts|\b(?:setDoc|addDoc|updateDoc|deleteDoc|writeBatch|runTransaction|contentCommand)\s*\(/);
   });
@@ -35,5 +35,5 @@ describe('Gika boundary: interpretation cannot write; command bridge has one exi
 });
 it('M4-T3 patch delegates existing temporal domain and command; confirmation has no model interpreter',()=>{
  const domain=readFileSync('packages/domain/src/gikaReschedule.ts','utf8');expect(domain).toContain('moveScheduleToDate(input.schedule,patch.dueDate)');expect(domain).toContain("command:'activity.update'");expect(domain).not.toMatch(/activity\.(?:create|updateFuture|trash|setStatus|createSeries)/);
- const bridge=readFileSync('apps/web/src/features/gika/rescheduleBridge.ts','utf8');expect(bridge).toContain('sendCommand(command');expect(bridge).not.toMatch(/gemini|modelAdapter|\.interpret\(/i);expect(bridge).toContain("error.code!=='OPERATION_MISMATCH'");
+ const bridge=readFileSync('apps/web/src/features/gika/rescheduleBridge.ts','utf8');expect(bridge).toContain('sendCommand(command');expect(bridge).not.toMatch(/gemini|modelAdapter|\.interpret\(/i);const confirmation=readFileSync('apps/web/src/features/gika/confirmationBridge.ts','utf8');expect(confirmation).toContain('/gika/recover-confirmation');expect(confirmation).not.toContain('/gika/respond');
 });

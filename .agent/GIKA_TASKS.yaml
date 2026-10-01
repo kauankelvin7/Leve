@@ -266,8 +266,10 @@ milestones:
         evidence: ["M5_T1_EXECPLAN.md/M5_T1_EVIDENCE.md/evidence/m5-t1-gates.json/m5-t1-transport-baseline.json: PRE156fe77 limpo, classifier puro strict/typed allow|clarify|confirm|deny, facts server e gates de quatro mutações, replay reautorizado precede resolução nova; schema/auth/revision/commands/receipts/ack independentes.323 unit/166 integração/lint/build/dois TS/6 focal PASS; amplo50/1 deadline Undo comparado156 original+sondas10200 nas duas versões, todas51 únicas observadas PASS. Check12/1 contraste e audit13 baseline;26 arquivos idênticos. M5 parcial; T2+ todo, sem live/batch/recorrência/delete/novo writer."]
         dependencies: [M4-SMOKE]
       - id: M5-T2
-        title: "Confirmation cards e pending actions"
-        status: todo
+        title: "Confirmation Contract + Preview"
+        status: done
+        evidence: ["M5_T2_EXECPLAN.md/M5_T2_EVIDENCE.md/evidence/m5-t2-gates.json; ADR018: contrato strict server-derived selado UID/op/textHash/descriptor/revision/patch/validade, guard no command convencional/receipt existente e recovery receipt-only sem Gemini.343unit/172integração/lint/doisTS/build/auditprodução0 PASS;12 focal PASS;56 Gika únicos observados PASS (amplo54/2 timeouts comparados9c2c6fb: originais2PASS e sondas2PASS em ambas versões).Check12/1 contraste histórico;6 cenários temporais idênticos,18 referências de escopo idênticas. Sem persistência de preview/conversa, batch/séries/T3/live; parar para revisão."]
+        acceptance_criteria: ["Policy confirm, summary estruturado e efeito server-bound; preview/cancel sem writes/receipt/modelo; confirmação original auth/ownership/revision/receipt/ack real, retry/concurrency/lost ack seguros, tampering bloqueado, estados/foco/teclado/Axe/light/dark/mobile; regressão temporal/evals/gates/checkpoint e parada antes de T3."]
         dependencies: [M5-T1]
       - id: M5-T3
         title: "Recorrência: occurrence vs series"

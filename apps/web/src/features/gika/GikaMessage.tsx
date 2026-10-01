@@ -1,4 +1,4 @@
-import { GikaReschedule } from './GikaReschedule';
+import { GikaConfirmation } from './GikaConfirmation';
 import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Icon } from '../../components/ui/Icon';
 import type { GikaMessage as Message } from './conversation';
@@ -39,7 +39,7 @@ export function GikaMessage({ message, active = true }: { message: Message; acti
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
     <p>{message.text}</p>
     {message.createdTask && <section className="gika-result" role="group" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p>{message.creationUndo && <GikaCreationUndo context={message.creationUndo} active={active} />}</section>}
-    {message.rescheduleTask && message.rescheduleContext && <GikaReschedule task={message.rescheduleTask} context={message.rescheduleContext} active={active} />}
+    {message.confirmation && message.rescheduleContext && <GikaConfirmation confirmation={message.confirmation} context={message.rescheduleContext} active={active} />}
     {message.updatedTask && <section className="gika-result" role="group" aria-label="Tarefa atualizada"><div className="gika-card-title"><Icon name="check" /><strong>{message.updatedTask.title}</strong></div><p>{civilLabel(message.updatedTask.dueDate)}</p></section>}
     {message.completedTask && <section className="gika-result" role="group" aria-label="Tarefa concluída"><div className="gika-card-title"><Icon name="check" /><strong>{message.completedTask.title}</strong></div><p>{civilLabel(message.completedTask.dueDate)}</p></section>}
     {(message.rescheduleResolution ?? message.updateResolution ?? message.completionResolution)?.candidates.length ? <section className="gika-result" role="group" aria-label="Tarefas encontradas"><ul>{(message.rescheduleResolution ?? message.updateResolution ?? message.completionResolution)!.candidates.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {item.dueDate ? civilLabel(item.dueDate) : 'Sem data'} · {item.status === 'completed' ? 'Concluída' : item.status === 'canceled' ? 'Cancelada' : 'Pendente'}</span></li>)}</ul></section> : null}

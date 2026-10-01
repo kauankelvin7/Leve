@@ -1,3 +1,4 @@
+import { issueConfirmation } from './confirmation.ts';
 import { assessCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
 import { validateReschedule,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
@@ -20,6 +21,15 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
     next(error);
   };
   router.use(bodyError);
+  // Receipt-only recovery: this route cannot interpret, resolve a new target or call the provider.
+  router.post('/recover-confirmation', async (request, response) => {
+    const input = gikaRequestSchema.parse(request.body), identity = response.locals.identity;
+    await repository.authorize(identity, 'receipt');
+    const recovered = await repository.recoverMutation(identity.uid, input);
+    await repository.authorize(identity, 'receipt');
+    if (recovered?.kind !== 'reschedule' || !recovered.confirmation) throw new AppError(409, 'OPERATION_MISMATCH', 'Não encontrei a confirmação deste pedido. Faça o pedido novamente.');
+    response.json(recovered.confirmation);
+  });
   router.post('/respond', async (request, response) => {
     const input = gikaRequestSchema.parse(request.body);
     const controller = new AbortController();
@@ -38,7 +48,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           const decision = assessReplay(recovered.kind, 'verified');
           if (decision.kind !== (recovered.kind === 'reschedule' ? 'confirm' : 'allow')) throw new GikaFault('GIKA_POLICY');
           return gikaInterpretationSchema.parse({ text: recovered.kind === 'create' ? 'Preparando a tarefa…' : recovered.kind === 'complete' ? 'Preparando a conclusão…' : 'Preparando a alteração…', simulated: false, reads: [],
-            ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task } : { updateTask: recovered.task }) });
+            ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task, ...(recovered.confirmation ? { confirmation: recovered.confirmation } : {}) } : { updateTask: recovered.task }) });
         }
         const context = await repository.authorize(identity);
         release = acquire(identity.uid);
@@ -65,7 +75,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if (!receipt && resolved.task && decision.kind !== 'confirm') throw new GikaFault('GIKA_POLICY');
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({ text: committed ? 'Confira a nova data antes de mover a tarefa.' : resolved.text, simulated: false, reads: [],
-            ...(committed || resolved.task ? { rescheduleTask: committed ?? resolved.task } : { rescheduleResolution: resolved.resolution }) });
+            ...(committed || resolved.task ? { rescheduleTask: committed ?? resolved.task, ...(receipt ? (receipt.confirmation ? { confirmation: receipt.confirmation } : {}) : { confirmation: issueConfirmation(identity.uid, input, resolved.task!, decision) }) } : { rescheduleResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'update_task') {
           const intent = validateUpdate(calls[0].args, input.text, current);

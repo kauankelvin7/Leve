@@ -1,3 +1,4 @@
+import { gikaConfirmationSchema, type GikaConfirmation } from '../../packages/domain/src/gikaConfirmation.ts';
 import { rescheduleDescriptorSchema,type RescheduleDescriptor } from '../../packages/domain/src/gikaReschedule.ts';
 import { updateDescriptorSchema, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
 import { completionDescriptorSchema, completionResultSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
@@ -16,7 +17,7 @@ export type ReadRange = { startDate: string; endDate: string; timeZone: string }
 export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
-  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor } | null>;
+  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
@@ -30,7 +31,9 @@ export const firestoreReads: ReadRepository = {
       const response = completionResultSchema.safeParse(data.response);
       const task = rescheduleDescriptorSchema.safeParse(data.gikaReschedule.task);
       if (!response.success || !task.success || response.data.operationId !== request.requestId || response.data.entityId !== task.data.id || response.data.revision !== task.data.revision + 1) throw new GikaFault('GIKA_INVALID_RESPONSE');
-      return { kind: 'reschedule', task: task.data };
+      const confirmation = data.gikaReschedule.confirmation ? gikaConfirmationSchema.parse(data.gikaReschedule.confirmation) : undefined;
+      if (confirmation && (confirmation.token !== data.gikaReschedule.confirmationToken || hashValue(JSON.stringify(confirmation.action.task)) !== hashValue(JSON.stringify(task.data)))) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      return { kind: 'reschedule', task: task.data, ...(confirmation ? { confirmation } : {}) };
     }
     if (data.gikaUpdate) {
       const response = completionResultSchema.safeParse(data.response);

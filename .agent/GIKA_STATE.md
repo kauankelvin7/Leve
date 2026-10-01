@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `SECURITY_HARDENING_INTEGRATED_STOP_BEFORE_M5_T2`.
+- Status global: `M5_T2_DONE_STOP_BEFORE_M5_T3`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem push/deploy.
-- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2/T3/T4 e posteriores todo/não iniciados.
+- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2 done exclusivamente; M5-T3/T4 e posteriores todo/não iniciados.
 - DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
 - Firebase12.19/Admin13.6/Firestore4.17.2/7.11.6/Gax4.6.1 preservados. Overrides limitados grpc1.14.5 e uuid11.1.1 nos consumidores auditados; clean install/tree válido,334 unit/166 integração/lint/build/doisTS PASS.53 E2E finais PASS (47+6), incluindo todas51 Gika e2avatar; nenhum FAIL novo.
 - Produção audit omitdev13(4high/9moderate)→0; audit-levelhigh exit0. Audit completo28→14(6high/8moderate), todos14 dev-only preexistentes/mesmas versões/advisories, relatório explícito docs/security/DEVELOPMENT_REMAINING.md. CI não alterado; não declarar audit completo verde.
@@ -12,11 +12,19 @@
 
 ## Autorização atual
 
-Hardening revisado/aprovado pelo usuário. Autorizada somente sua integração ff-only em feat/gika-integration, gates pós-integração e registro neste estado/tarefas. Sem M5-T2, Gemini live, deploy, merge na main, alteração de dependências ou branch visual.
+Pedido atual autoriza exclusivamente M5-T2 Confirmation Contract + Preview na entrada9c2c6fb limpa, conforme docs/gika/M5_T2_EXECPLAN.md. Sem batch/recorrência/M5-T3/Gemini live/deploy/push/merge/dependências.
 
 ## Próxima ação
 
-Parar para revisão da integração concluída. M5-T2 permanece todo e não foi iniciado; aguardar autorização para a próxima tarefa funcional.
+Parar para revisão do M5-T2 concluído. M5-T3/T4 todo/não iniciados; exigir nova autorização antes de qualquer implementação/live.
+
+## M5-T2 — conclusão e retomada após queda
+
+Entrada/retomada9c2c6fb474aa902820b815daa73108b0c38e5b7e na feat/gika-integration; diff preservado e revisado, sem reimplementar. M5_T2_EXECPLAN/EVIDENCE e ADR018: contrato strict policy confirm/action/summary derivados no servidor e selo UID/op/textHash/alvo/revisão/patch/validade15min. Guard na mesma transação activity.update/receipt; recovery somente receipt privado comprometido, sem Gemini/resolução nova. Cancel local terminal sem command/receipt/revision; UI estados/foco/teclado/ack real, conflito sem refresh, lost ack/retry/concurrency idempotentes.
+
+Lint/doisTS/build/343unit/172integração/auditprodução0 PASS;12 focal reschedule/confirmation PASS. Amplo54PASS/2 timeouts de rename: originais2PASS e sondas10200ms vs deadline10000ms2PASS em cada versão9c2c6fb/atual, replay e conflito corretos. Todas56 Gika únicas observadas PASS; não declarar ampla integralmente verde. Check12PASS/1 contraste histórico4,38 vs4,5; tentativa unit no sandbox340/3 e EPERM repetida fora da restrição343PASS sem mudar testes.6 cenários temporais antes/depois idênticos,18 arquivos referência de escopo idênticos. Evidências sanitizadas em docs/gika/evidence/m5-t2-*.json; sondas removidas, screenshots históricos restaurados.
+
+Produção necessita SCHEDULER_HMAC_SECRET existente compartilhado/server-only, ausência falha apenas confirmação. Preview local não comprometido pode invalidar após restart/rotação; sem renovação automática. Receipt exato comprometido conserva replay, legacy sem contrato não cria novo card. Conversa/card não restauram reload. Nenhum segredo real/.env/Gemini live/billing/deploy/push/merge/dependência/batch/series/Undo genérico/M5-T3.
 
 ## Verificação pós-integração — 2026-10-01
 
@@ -55,7 +63,11 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 - Conversa/card/undo não restaurados após reload; sem persistência nova de chat. Cancelar depois de dispatch não é rollback. Não apagar receipts; T1 sem vínculo não backfilled. Gika online/queuefalse, agenda convencional offline/outbox intacta.
 - 05-capacidade-e-revisao.md ausente, Superpowers indisponível/processo manual equivalente. Warning chunks>500kB e MetadataLookupWarning403 emulador preexistentes/não impeditivos.
 
-## Checkpoint
+## Checkpoint M5-T2
+
+Commit atômico desta tarefa contém implementação/testes/ADR018/evals/evidências e STATE/TASKS done juntos; entrada9c2c6fb. Conferir SHA real e worktree após commit; não iniciar M5-T3.
+
+## Checkpoint hardening (histórico)
 
 Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmada. Fast-forward aprovado executado; feat HEAD `8300c2b48408ba12664573ee92c1402b5aafd82f` confirmado antes do registro documental. Commits DiceBear73e750c e Googlee8c07be preservados sem squash. Checkpoint posterior contém somente GIKA_STATE.md/GIKA_TASKS.yaml com integração/gates; SHA final e worktree limpo devem ser confirmados após esse commit. M5-T2 todo, parar para revisão; main/visual/chore intactas.
 
@@ -114,3 +126,5 @@ Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmad
 
 | 2026-10-01 | Security isolado | DiceBear | done: core/avataaars9.4.3,325unit/2avatarE2E/gates PASS,auditprod13→12 | `73e750c866b620bb6a44147ecebf2b42d5e51b18` |
 | 2026-10-01 | Security isolado | Firebase/Google | done: grpc1.14.5/uuid11.1.1 scoped/clean install/tree,334unit/166integração/53E2E/gates PASS,auditprod0;14dev preexistentes explícitos;parar antes de integrar/T2 | `e8c07be3218cb583fffb5af38e7a8beb10c95851` |
+
+| 2026-10-01 | M5 parcial | M5-T2 | done: contrato/preview selado e recovery receipt-only;343unit/172integração/12focal PASS,56Gika únicos observados PASS,amplo54/2 comparado9c;check12/1/auditprod0;parar antes de T3 | commit atômico M5-T2 após9c2c6fb |

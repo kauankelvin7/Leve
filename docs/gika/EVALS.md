@@ -249,3 +249,18 @@ M4-E31..E34: complete_task, update_task título, reschedule_task timed/untimed r
 | M5-E19..E21 | telemetria anônima, histórico replay/reautorização, receipt em corrida precede resolução saturada | unitprivacy, integração receipt/persistência real emulada |
 
 Modelo somente fixture; sem Gemini live/credencial. Confirmation existente de uma tarefa é preservada, não PendingAction deT2. Bulk/destructive/series apenas classificação não executável. Policies não concedem autorização nem criam resultado de sucesso; command layer continua autoridade e UI depende de ack real.
+
+## M5-T2 — contrato e preview determinísticos
+
+| Eval | Comportamento exigido | Prova executável |
+|---|---|---|
+| M5-E22..E24 | somente confirm gera contrato; allow/clarify/deny ou narrativa não executam | gika-confirmation unit; gika-reschedule E2E observations |
+| M5-E25..E27 | resumo before/after e changedFields derivados, strict; horário omitido preservado e sem horário inventado | gika-confirmation unit; regressão temporal integração |
+| M5-E28..E30 | preview/cancel sem write/receipt/revision; cancel terminal; reload não restaura | gika-reschedule integração e keyboard cancellation E2E |
+| M5-E31..E33 | UID/op/entity/revision/patch/textHash selados; adulteração/unknown recusados | gika-confirmation unit; gika-reschedule integração e tampered transport E2E |
+| M5-E34..E36 | double tap/concurrency/lost ack/retry uma aplicação; UI aguarda ack; falha precommit permite retry original | gika-reschedule integração e E2E real commands |
+| M5-E37..E38 | conflito preserva edição; logout/troca de UID bloqueiam; nenhuma renovação de revision | regressão original M4-T3 integração/E2E e stale descriptor |
+| M5-E39..E40 | botão/recovery sem Gemini; recovery ausente não resolve alvo; replay após expiração/rotação preserva receipt original | bridge unit; gika-reschedule integração receipt-only e expiration |
+| M5-E41 | teclado/foco/status/loading disabled/terminal/a11y/light/dark/mobile; model/router/bridge sem writer direto | gika-reschedule E2E+Axe; architecture unit |
+
+Provider fixture apenas, Auth/Firestore/command/receipts reais emulados. Sem Gemini live; somente reschedule_task habilitada no registro de confirmação. Selo/token e segredos não entram em logs/evidências. Limites operacionais e compatibilidade legacy em ADR018/M5_T2_EVIDENCE.md.

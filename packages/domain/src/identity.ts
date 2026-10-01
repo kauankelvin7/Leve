@@ -48,7 +48,7 @@ export const commandEnvelopeSchema = z.object({
   payload: z.unknown(),
   clientCreatedAt: z.iso.datetime().optional(),
   dependsOn: z.array(z.uuid()).max(20).optional(),
-  gikaReschedule: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
+  gikaReschedule: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), confirmationToken: z.string().regex(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/).max(8192).optional() }).strict().optional(),
   gikaUpdate: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaCompletion: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaUndo: z.object({ uid: z.string().min(1).max(128), creationOperationId: z.uuid() }).strict().optional(),

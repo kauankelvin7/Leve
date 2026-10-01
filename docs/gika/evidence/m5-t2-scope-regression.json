@@ -1,0 +1,23 @@
+{
+  "entry": "9c2c6fb474aa902820b815daa73108b0c38e5b7e",
+  "unchanged": {
+    "package.json": true,
+    "package-lock.json": true,
+    "firestore.rules": true,
+    "server/gika/gemini.ts": true,
+    "server/gika/model.ts": true,
+    "server/gika/actionPolicy.ts": true,
+    "server/gika/policyAssessment.ts": true,
+    "server/gika/reschedulePolicy.ts": true,
+    "server/gika/createPolicy.ts": true,
+    "server/gika/completePolicy.ts": true,
+    "server/gika/updatePolicy.ts": true,
+    "server/commands/identity.ts": true,
+    "apps/web/src/platform/api.ts": true,
+    "apps/web/src/platform/outbox.ts": true,
+    "tests/e2e/shell.spec.ts": true,
+    "tests/unit/gika-native-smoke.test.ts": true,
+    "tests/unit/google-dependency-compat.test.ts": true,
+    "scripts/gika-smoke.mjs": true
+  }
+}

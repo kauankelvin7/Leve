@@ -1,4 +1,8 @@
+import { randomBytes } from 'node:crypto';
 import { defineConfig, devices } from '@playwright/test';
+
+// Ephemeral test-only configuration, shared by the webServer and test workers; never written/logged.
+if (!process.env.LEVE_LOCAL_URL) process.env.SCHEDULER_HMAC_SECRET ??= randomBytes(32).toString('hex');
 
 export default defineConfig({
   testDir: './tests/e2e-local',
@@ -9,7 +13,7 @@ export default defineConfig({
   reporter: 'list',
   use: { ...devices['Desktop Chrome'], baseURL: process.env.LEVE_LOCAL_URL ?? 'http://127.0.0.1:5174', trace: 'retain-on-failure', screenshot: 'only-on-failure' },
   webServer: process.env.LEVE_LOCAL_URL ? undefined : {
-    env: { LEVE_EPHEMERAL: 'true' },
+    env: { LEVE_EPHEMERAL: 'true', SCHEDULER_HMAC_SECRET: process.env.SCHEDULER_HMAC_SECRET! },
     command: 'node scripts/dev-local.mjs',
     url: 'http://127.0.0.1:5174',
     reuseExistingServer: false,

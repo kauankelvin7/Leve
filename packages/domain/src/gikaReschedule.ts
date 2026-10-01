@@ -20,10 +20,10 @@ export function applyReschedulePatch(current:Record<string,unknown>,value:unknow
  const schedule=moveScheduleToDate(input.schedule,patch.dueDate);
  return activityInputSchema.parse({...input,schedule:{...schedule,...(patch.dueTime!==undefined?{dueTime:patch.dueTime}:{})}});
 }
-export async function rescheduleEnvelope(descriptor:RescheduleDescriptor,request:{requestId:string;text:string}):Promise<CommandEnvelope>{
+export async function rescheduleEnvelope(descriptor:RescheduleDescriptor,request:{requestId:string;text:string},confirmationToken?:string):Promise<CommandEnvelope>{
  const task=rescheduleDescriptorSchema.parse(descriptor),operationId=z.uuid().parse(request.requestId);
  const text=z.string().trim().min(1).max(2000).parse(request.text);
  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
  const requestTextHash=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
- return commandEnvelopeSchema.parse({command:'activity.update',operationId,entityId:task.id,expectedRevision:task.revision,payload:task.patch,gikaReschedule:{requestTextHash}});
+ return commandEnvelopeSchema.parse({command:'activity.update',operationId,entityId:task.id,expectedRevision:task.revision,payload:task.patch,gikaReschedule:{requestTextHash,...(confirmationToken?{confirmationToken}:{})}});
 }

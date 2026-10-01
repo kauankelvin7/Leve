@@ -123,3 +123,7 @@
 @media (min-width: 740px) {
   .gika-launcher[data-calendar='true'] { left: max(24px, env(safe-area-inset-left)); right: auto; }
 }
+
+.gika-confirmation-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: .65rem 0; }
+.gika-confirmation-diff dt { font-size: .8rem; color: var(--color-text-muted); }
+.gika-confirmation-diff dd { margin: .2rem 0 0; overflow-wrap: anywhere; }
