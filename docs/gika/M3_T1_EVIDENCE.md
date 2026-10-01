@@ -58,3 +58,7 @@ Execução inicial dos cinco E2E novos: 3 PASS/2 FAIL por harness novo capturar 
 - Sem nova ADR: implementação cumpre ADR-GIKA-005 e os contratos M0. Diferenças operacionais/bases mínimas no ExecPlan da tarefa e documentação de arquitetura/policy.
 - Gemini real E10 não foi testado nesta tarefa: nenhuma credencial atual autorizada. O smoke M2 E01/E02 já PASS permanece histórico; não prova a nova interpretação de create_task. Credencial temporária M2 não reutilizada. Todas as interpretações M3 verificadas aqui são fixtures; escrita/receipts/persistência UI são reais em emuladores.
 - Parar após M3-T1 e aguardar revisão do usuário. M3 permanece incompleto; M3-T2/T3 não iniciados.
+
+## Checkpoint
+
+Commit atômico de código/testes/estado/tarefas/evidências:3fa05f0d447724e2ad41ad95e1482e3941c3a8de (feat/gika-integration). Grafo de dependências/escopo/segredos/diff PASS; worktree limpo após o commit. Checkpoint documental posterior registra este SHA sem alteração funcional. Nova autorização é necessária para iniciar T2; não interpretar checkpoint como autorização.

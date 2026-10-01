@@ -30,3 +30,5 @@ lint/build/dois typechecks/unit; integração Auth/Firestore; E2E UI autenticado
 ## Evidências e estado de retomada
 
 M3-T1 concluído: lint/typechecks/build,175 unit/53 integração e25 E2E Gika PASS (5 criação real emulada). Suite inteira56:44 PASS/12 FAIL baseline; check shell12 PASS/1 FAIL baseline reproduzido na cópia92cc9c7. Nove falhas adicionais de harness reproduzidas na UI original, sem Gika. Ver M3_T1_EVIDENCE.md e JSON/screenshots versionados. Sem smoke live Gemini atual. Próxima ação: revisão humana da primeira mutação; não iniciar T2/T3 até autorização. M3 milestone permanece parcial.
+
+Commit de tarefa verificado:3fa05f0d447724e2ad41ad95e1482e3941c3a8de, worktree limpo após commit. Checkpoint posterior é exclusivamente documental. Reverter tarefa e checkpoint juntos caso seja necessário restaurar código/estado M2; sem reset/force/push/deploy.

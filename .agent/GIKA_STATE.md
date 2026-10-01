@@ -10,9 +10,10 @@
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
 - Último SHA verificado no PRE: `92cc9c74f5d865265ebe80a100386f992c97d20d` (checkpoint solicitado; worktree limpo no PRE M3-T1)
+- Último commit de tarefa Gika verificado: `3fa05f0d447724e2ad41ad95e1482e3941c3a8de`, M3-T1 atômico; worktree limpo após o commit, antes deste checkpoint documental
 - Ownership M3-T1 em M3_T1_EXECPLAN.md; bridge M0/ADR005 preservado, sem nova persistência/Rules/contentCommand. Guard UID/signal opcional em sendCommand, sem mudar defaults convencionais
 - Últimos gates: lint/build/dois typechecks/175 unit em33 arquivos e53 integração em4 arquivos PASS. 25 E2E Gika PASS (5 criação real emulada,6 M2,14 mock);5 Planner visual,4 Planner convencionais/offline,7 sazonal PASS. Suíte local completa44 PASS/12 FAIL baseline; check shell12 PASS/1 FAIL baseline. Nove falhas adicionais reproduzidas na UI92cc9c7; detalhes/evals/screenshots em M3_T1_EVIDENCE.md. Nenhuma intermitência Gika pendente
-- Commit de tarefa esperado: `feat(gika): M3-T1 create tasks through existing commands`; checkpoint documental posterior registra seu SHA
+- Commit de tarefa: `feat(gika): M3-T1 create tasks through existing commands`; checkpoint documental esperado: `docs(gika): checkpoint M3-T1 awaiting user review`
 
 ## Próxima ação
 
@@ -84,4 +85,4 @@ PRE M3-T1 partiu de92cc9c7. O commit atômico inclui código/testes/estado/taref
 
 | 2026-10-01 | M2 | fechamento final | done: causa Codex Remote documentada, gates finais PASS; M2/M2-SMOKE done, M3-T1 todo | checkpoint após c1c709d |
 
-| 2026-10-01 | M3 parcial | M3-T1 | done: create_task pelo comando existente,175 unit/53 integração/25 E2E Gika PASS; baseline global classificado; parada para revisão antes de T2/T3 | commit M3-T1 após92cc9c7 |
+| 2026-10-01 | M3 parcial | M3-T1 | done: create_task pelo comando existente,175 unit/53 integração/25 E2E Gika PASS; baseline global classificado; parada para revisão antes de T2/T3 | `3fa05f0d447724e2ad41ad95e1482e3941c3a8de` |
