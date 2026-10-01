@@ -1,0 +1,128 @@
+{
+  "checkpoint": "cfd96c3",
+  "project": "demo-leve",
+  "model": "gemini-3.5-flash-lite",
+  "thinking": "medium",
+  "proxyEnvironmentOnly": true,
+  "provider": [
+    {
+      "http": 200,
+      "identityFieldsAbsent": true,
+      "tools": [
+        "complete_task"
+      ]
+    },
+    {
+      "http": 200,
+      "identityFieldsAbsent": true,
+      "tools": [
+        "update_task"
+      ]
+    },
+    {
+      "http": 200,
+      "identityFieldsAbsent": true,
+      "tools": [
+        "reschedule_task"
+      ]
+    },
+    {
+      "http": 200,
+      "identityFieldsAbsent": true,
+      "tools": [
+        "reschedule_task"
+      ]
+    }
+  ],
+  "result": "PASS",
+  "scenarios": [
+    {
+      "tool": "complete_task",
+      "title": "Teste Gika Complete M4",
+      "today": "2026-10-01",
+      "destination": null,
+      "originalTime": null,
+      "targetMatchesStructuredResultAndAck": true,
+      "patchOnly": true,
+      "revision": 2,
+      "receipt": true,
+      "results": [
+        "applied",
+        "alreadyApplied"
+      ],
+      "sameRetryIdentity": true,
+      "uiNoSuccessBeforeAck": true,
+      "noWriteBeforePreviewConfirmation": null,
+      "doubleTapSingleDispatch": null,
+      "otherEntitiesUnchanged": true,
+      "additionalGeminiCallsOnRetry": 0
+    },
+    {
+      "tool": "update_task",
+      "title": "Teste Gika Rename M4",
+      "today": "2026-10-01",
+      "destination": null,
+      "originalTime": "14:15",
+      "targetMatchesStructuredResultAndAck": true,
+      "patchOnly": true,
+      "revision": 2,
+      "receipt": true,
+      "results": [
+        "applied",
+        "alreadyApplied"
+      ],
+      "sameRetryIdentity": true,
+      "uiNoSuccessBeforeAck": true,
+      "noWriteBeforePreviewConfirmation": null,
+      "doubleTapSingleDispatch": null,
+      "otherEntitiesUnchanged": true,
+      "additionalGeminiCallsOnRetry": 0
+    },
+    {
+      "tool": "reschedule_task",
+      "title": "Teste Gika Move M4",
+      "today": "2026-10-01",
+      "destination": "2026-10-02",
+      "originalTime": "19:00",
+      "targetMatchesStructuredResultAndAck": true,
+      "patchOnly": true,
+      "revision": 2,
+      "receipt": true,
+      "results": [
+        "applied",
+        "alreadyApplied"
+      ],
+      "sameRetryIdentity": true,
+      "uiNoSuccessBeforeAck": true,
+      "noWriteBeforePreviewConfirmation": true,
+      "doubleTapSingleDispatch": true,
+      "otherEntitiesUnchanged": true,
+      "additionalGeminiCallsOnRetry": 0
+    },
+    {
+      "tool": "reschedule_task",
+      "title": "Teste Gika Move Sem Horário M4",
+      "today": "2026-10-01",
+      "destination": "2026-10-02",
+      "originalTime": null,
+      "targetMatchesStructuredResultAndAck": true,
+      "patchOnly": true,
+      "revision": 2,
+      "receipt": true,
+      "results": [
+        "applied",
+        "alreadyApplied"
+      ],
+      "sameRetryIdentity": true,
+      "uiNoSuccessBeforeAck": true,
+      "noWriteBeforePreviewConfirmation": true,
+      "doubleTapSingleDispatch": true,
+      "otherEntitiesUnchanged": true,
+      "additionalGeminiCallsOnRetry": 0
+    }
+  ],
+  "otherUidUnchanged": true,
+  "missingProviderGracefulAndAgendaAvailable": true,
+  "onlyPermittedCommands": true,
+  "testOnlyAccountAndEmulators": true
+}

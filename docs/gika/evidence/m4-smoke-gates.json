@@ -1,0 +1,59 @@
+{
+  "checkpoint": "cfd96c3",
+  "live": {
+    "result": "PASS",
+    "upstreamHttp": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "tools": [
+      "complete_task",
+      "update_task",
+      "reschedule_task",
+      "reschedule_task"
+    ],
+    "proxyEnvironmentOnly": true,
+    "credentialProcessTerminated": true
+  },
+  "lint": "PASS",
+  "buildIncludingBothTypechecks": "PASS",
+  "unit": {
+    "passed": 295,
+    "files": 39
+  },
+  "integration": {
+    "passed": 150,
+    "files": 5
+  },
+  "focalE2E": {
+    "passed": 25,
+    "failed": 0,
+    "files": [
+      "gika-complete.spec.ts",
+      "gika-update.spec.ts",
+      "gika-reschedule.spec.ts",
+      "gika-readonly.spec.ts"
+    ]
+  },
+  "check": {
+    "buildTypecheckUnit": "PASS",
+    "shellPassed": 12,
+    "shellFailed": 1,
+    "classification": "PREEXISTING_DEMO_COLOR_CONTRAST",
+    "contrastRange": "3.25..3.62:1"
+  },
+  "audit": {
+    "moderate": 9,
+    "high": 4,
+    "total": 13,
+    "classification": "PREEXISTING_DEPENDENCIES",
+    "fixExecuted": false
+  },
+  "baselineFilesIdentical": 26,
+  "productionChanged": false,
+  "newUnclassifiedFailures": 0,
+  "secretPatternScan": "PASS",
+  "broaderLocalSuiteNotRepeated": "No production change; prior M4-T3 82-test evidence and classifications preserved"
+}

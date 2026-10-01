@@ -233,3 +233,7 @@ Interpretação fixture nesta tarefa; Auth/command/receipt/Firestore reais emula
 | M4-E30 | nenhuma persistência direta model/router/bridge; provider ausente/falhando | architecture/source/evals M2 preservados, agenda convencional operacional |
 
 Interpretação fixture sem segredo; Auth/commands/receipts/Firestore emulados reais. Nenhum teste declara interpretação Gemini live. M4 permanece parcial aguardando M4-SMOKE explicitamente autorizado após revisão T3; não iniciar M5.
+
+## M4-SMOKE — interpretação Gemini real após revisão T1/T2/T3
+
+M4-E31..E34: complete_task, update_task título, reschedule_task timed/untimed reais HTTP200, civil2026-10-01→02/America_Sao_Paulo; validation/resolution/policy/command/receipt/persistência/UI reais emulados. Ack retido/póscommit perdido, retry applied→alreadyApplied/envelope/ID/revision2 idênticos sem upstream extra. Preview sem command/receipt/escrita, confirmação/double tap determinísticos; patch-only/time null e19:00 preservados, conta vizinha intacta. Remover provider→503 GIKA_NOT_CONFIGURED sem upstream, agenda disponível. Harness opt-in scripts/gika-m4-smoke.mjs e M4_SMOKE_EVIDENCE/evidence/m4-smoke.json. Segredo apenas memória, nenhuma alteração de arquitetura; não executar automaticamente nem iniciar M5.
