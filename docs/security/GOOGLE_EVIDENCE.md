@@ -23,3 +23,7 @@ Todos os152 arquivos produto/harness/CI selecionados byte-idênticos a a922594; 
 ## Manutenção
 
 Reavaliar/remover overrides quando SDK/parents publicarem ranges fixos. Engine/provider/Gika não depende da versão UUID transitiva para idempotência: IDs software/receipts continuam contratos do domínio. SDKNodegrpc cross-range e UUID major têm risco residual de usos futuros não cobertos; escopo limitado/fixação exata/gates existentes reduzem risco observado. Rollback por revert commit e npm ci, sem alterar receipts/dados. Parar para revisão antes de integrar branch em feat; M5-T2 não iniciado.
+
+## Checkpoint final
+
+DiceBear: `73e750c866b620bb6a44147ecebf2b42d5e51b18`. Firebase/Google: `e8c07be3218cb583fffb5af38e7a8beb10c95851`. Branch chore/security-hardening e worktree limpo confirmados após commits atômicos. Checkpoint documental posterior somente registra SHAs/estado e normaliza fim de linha das árvores, sem mudança funcional. feat/gika-integration permanece a922594, não houve merge. Parar para revisão; M5-T2 não iniciado.

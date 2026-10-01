@@ -37,3 +37,7 @@ DiceBear: lint/build/doisTS/325unit/2avatarE2E PASS; seis SVGs padrão SHA256 id
 Firebase/Google final: lint/build/doisTS/334unit/166integração PASS, com Auth/Rules/membership/commands/receipts/idempotência/create/complete/update/reschedule/Undo/M5policy e9 contratos transitivos. Check shell12/1 contraste histórico3,66..4,17:1. E2E finais53 PASS/0 FAIL:47 mutações/shell/avatar +6 leitura/fallback, incluindo51 Gika únicas. Nenhuma nova falha de teste; Undo intermitente passou sem mudança de deadline/produto. Produto/policy/tools/writers/Rules/UI/outbox/CI/harness152 arquivos byte-idênticos à entrada, sem mudanças de deadlines/baselines.
 
 Commit Firebase/Google atômico separado e checkpoint documental registram SHAs reais após gates; worktree limpo confirmado depois dos commits. Sem M5-T2/live/push/deploy/merge/billing/segredos. Parar para revisão antes de integrar branch temporária de volta em feat/gika-integration.
+
+## Checkpoint final
+
+DiceBear: `73e750c866b620bb6a44147ecebf2b42d5e51b18`. Firebase/Google: `e8c07be3218cb583fffb5af38e7a8beb10c95851`. Branch chore/security-hardening e worktree limpo confirmados após commits atômicos. Checkpoint documental posterior somente registra SHAs/estado e normaliza fim de linha das árvores, sem mudança funcional. feat/gika-integration permanece a922594, não houve merge. Parar para revisão; M5-T2 não iniciado.

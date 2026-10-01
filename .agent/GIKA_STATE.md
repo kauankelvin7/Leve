@@ -45,7 +45,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada a922594 limpa na feat/gika-integration; chore/security-hardening criada desse SHA e isolada. DiceBear commit atômico `73e750c`. Firebase/Google/testes/evidências/estado/tarefas no segundo commit atômico desta tarefa; SHA real será registrado no checkpoint documental posterior, sem referência circular. Confirmar worktree limpo depois do commit. feat permanece a922594, sem merge. M5-T2 todo; parar para revisão antes de integrar branch temporária.
+Entrada a922594 limpa na feat/gika-integration; chore/security-hardening criada desse SHA e isolada. DiceBear commit atômico `73e750c866b620bb6a44147ecebf2b42d5e51b18`. Firebase/Google/testes/evidências/estado/tarefas commit atômico `e8c07be3218cb583fffb5af38e7a8beb10c95851`. Branch chore/security-hardening e worktree limpo confirmados depois do segundo commit. Este checkpoint documental registra SHAs reais e normaliza apenas trailing blank em árvores de texto, sem alteração funcional. feat permanece a922594, sem merge. M5-T2 todo; parar para revisão antes de integrar branch temporária.
 
 ## Histórico
 
@@ -99,3 +99,6 @@ Entrada a922594 limpa na feat/gika-integration; chore/security-hardening criada 
 | 2026-10-01 | M4 parcial | M4-T3 | done: reschedule temporal strict/preview/command convencional/revisão/receipt;295 unit/150 integração/7 focal PASS;global67/15 classificado contra d233971, comparação atual8/2;sem live,parar antes M4-SMOKE/M5 | `f774d9c9b1466683e418be8b59f83615eb9495e7` |
 
 | 2026-10-01 | M5 parcial | M5-T1 | done: classifier strict puro/facts software/gates/replay/preview preservado;323 unit/166 integração/6 focal PASS,50/1 amplo classificado156;check12/1/audit13 baseline;sem live,parar antes T2 | `4561cf59db395ac4c10c58118890283a3e45ec1e` |
+
+| 2026-10-01 | Security isolado | DiceBear | done: core/avataaars9.4.3,325unit/2avatarE2E/gates PASS,auditprod13→12 | `73e750c866b620bb6a44147ecebf2b42d5e51b18` |
+| 2026-10-01 | Security isolado | Firebase/Google | done: grpc1.14.5/uuid11.1.1 scoped/clean install/tree,334unit/166integração/53E2E/gates PASS,auditprod0;14dev preexistentes explícitos;parar antes de integrar/T2 | `e8c07be3218cb583fffb5af38e7a8beb10c95851` |
