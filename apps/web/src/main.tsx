@@ -17,6 +17,7 @@ import './styles/glass.css';
 import './styles/refinements.css';
 import './styles/editorial.css';
 import './styles/theme-runtime.css';
+import './styles/responsive-shell.css';
 import tokens from '../../../design-tokens.json';
 import { captureInstallPrompt } from './platform/pwa';
 import { applyColorTheme, applyAppearance, storedColorTheme, storedAppearance } from './platform/theme';

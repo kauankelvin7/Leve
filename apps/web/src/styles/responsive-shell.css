@@ -1,0 +1,210 @@
+/* ============================================================
+   RESPONSIVE SHELL V2
+   Camada final de layout. Mantem dominio e componentes intactos,
+   amplia o workspace em telas grandes e estabiliza a sidebar.
+   ============================================================ */
+
+.app-shell {
+  --shell-max-width: 2240px;
+  --shell-edge: clamp(18px, 2.2vw, 48px);
+  --shell-gap: clamp(22px, 2vw, 44px);
+  --shell-sidebar-width: clamp(216px, 13.5vw, 264px);
+
+  /* Contrato visual reservado para superfícies flutuantes, como a Gika. */
+  --shell-agent-width: clamp(360px, 25vw, 480px);
+  --shell-floating-edge: max(
+    24px,
+    calc((100vw - var(--shell-max-width)) / 2 + var(--shell-edge))
+  );
+
+  width: min(100%, var(--shell-max-width));
+  max-width: var(--shell-max-width);
+  padding: var(--shell-edge);
+  gap: var(--shell-gap);
+  grid-template-columns: var(--shell-sidebar-width) minmax(0, 1fr);
+}
+
+.app-shell .main-wrapper,
+.app-shell .main-wrapper > main {
+  width: 100%;
+  min-width: 0;
+}
+
+.app-shell .main-wrapper > main {
+  max-width: none;
+}
+
+/* Desktop e tablet mantêm a navegação dentro do viewport e usam toda a altura útil. */
+@media (min-width: 740px) {
+  .app-shell .sidebar {
+    top: var(--shell-edge);
+    width: 100%;
+    min-width: 0;
+    height: calc(100dvh - (var(--shell-edge) * 2));
+    max-height: none;
+    overflow-x: hidden;
+  }
+
+  .app-shell .sidebar nav,
+  .app-shell .sidebar nav a,
+  .app-shell .sidebar-bottom,
+  .app-shell .profile-link {
+    min-width: 0;
+  }
+
+  .app-shell .sidebar-bottom {
+    margin-top: auto;
+  }
+
+  .app-shell .nav-label,
+  .app-shell .profile-link > span {
+    min-width: 0;
+  }
+
+  .app-shell .nav-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Tablet e notebooks estreitos: rail compacto em vez de comprimir o conteúdo. */
+@media (min-width: 740px) and (max-width: 959px) {
+  .app-shell {
+    --shell-edge: 14px;
+    --shell-gap: 16px;
+    --shell-sidebar-width: 84px;
+  }
+
+  .app-shell .sidebar {
+    padding: 18px 8px 10px;
+  }
+
+  .app-shell .sidebar > .brand {
+    margin-inline: auto;
+    font-size: 2rem;
+  }
+
+  .app-shell .sidebar > .brand-caption,
+  .app-shell .sidebar .nav-label,
+  .app-shell .profile-link > span {
+    display: none;
+  }
+
+  .app-shell .sidebar nav a,
+  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link),
+  .app-shell .sidebar .profile-link {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link) {
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .app-shell .sidebar nav svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-shell .sidebar .profile-avatar {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .app-shell .workspace-prefix {
+    display: none;
+  }
+}
+
+/* Notebook: sidebar legível, mas contida. */
+@media (min-width: 960px) and (max-width: 1199px) {
+  .app-shell {
+    --shell-edge: 20px;
+    --shell-gap: 22px;
+    --shell-sidebar-width: 188px;
+  }
+
+  .app-shell .sidebar {
+    padding: 22px 10px 12px;
+  }
+
+  .app-shell .sidebar > .brand {
+    font-size: 2.75rem;
+  }
+
+  .app-shell .sidebar .brand-caption {
+    margin-bottom: 20px;
+  }
+}
+
+/* Desktop convencional. */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .app-shell {
+    --shell-edge: clamp(22px, 1.9vw, 32px);
+    --shell-gap: clamp(26px, 2vw, 36px);
+    --shell-sidebar-width: clamp(212px, 15vw, 236px);
+  }
+}
+
+/* Monitores grandes: usa o espaço sem transformar conteúdo em uma faixa estreita. */
+@media (min-width: 1600px) {
+  .app-shell {
+    --shell-edge: clamp(30px, 2.2vw, 52px);
+    --shell-gap: clamp(34px, 2.1vw, 48px);
+    --shell-sidebar-width: clamp(236px, 13vw, 272px);
+  }
+
+  .today-page .agenda-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+    gap: clamp(30px, 2vw, 42px);
+  }
+
+  .today-page .agenda-aside {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 20px;
+  }
+
+  .today-page .today-month-panel {
+    grid-column: auto;
+  }
+
+  .app-shell .settings-section-grid {
+    gap: clamp(22px, 1.8vw, 32px);
+  }
+}
+
+/* Ultrawide: limita a linha de leitura sem desperdiçar o monitor inteiro. */
+@media (min-width: 2240px) {
+  .app-shell {
+    --shell-agent-width: 480px;
+  }
+}
+
+/* Mobile continua usando o shell e a navegação inferior já existentes. */
+@media (max-width: 739px) {
+  .app-shell {
+    width: 100%;
+    max-width: none;
+    --shell-agent-width: min(100vw, 100%);
+    --shell-floating-edge: max(12px, env(safe-area-inset-right));
+  }
+
+  .app-shell .main-wrapper,
+  .app-shell .main-wrapper > main {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Altura curta: mantém todos os destinos alcançáveis sem forçar a página inteira a rolar. */
+@media (min-width: 740px) and (max-height: 720px) {
+  .app-shell .sidebar {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
