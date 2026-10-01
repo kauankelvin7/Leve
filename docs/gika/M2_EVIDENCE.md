@@ -1,5 +1,7 @@
 # M2 — evidências read-only
 
+**Estado atual: M2-SMOKE e M2 `done`.** Smoke real E01/E02 PASS/exit0; chamada mínima ao modelo configurado HTTP200, error.status ausente, reasons vazios. A causa anterior `NETWORK / ENV_PROXY_NOT_ENABLED` pertence à configuração de proxy/egress do Codex Remote; não representa falha do adapter, do modelo ou da arquitetura da Gika. Chamadas externas neste executor exigiram proxy/egress habilitado. Habilitação restrita aos subprocessos autorizados de diagnóstico/smoke; nenhum workaround de proxy introduzido no código de produção. Credencial não registrada nem reutilizada neste fechamento. Registros anteriores de bloqueio/falha abaixo são históricos, substituídos pelo PASS comprovado. Parada antes de M3-T1.
+
 ## Preflight M2-S0
 
 Classificação definitiva em [M2_PREFLIGHT.md](M2_PREFLIGHT.md). Contraste completed e harness recorrência são baseline. Offline era regressão do dock Gika; corrigida no commit 7a3c343 com sequência Planner original 2 PASS e nova proteção desktop. Nenhuma regra/domínio Planner alterada.
@@ -34,7 +36,7 @@ Gates finais executados: npm run lint PASS; npm run build e ambos typechecks PAS
 
 Revisão de escopo: git diff da base para server/commands, outbox e firestore.rules vazio; módulos Gika sem chamadas de escrita/persistência ou commands. Map.set/delete são apenas memória, não Firestore. Bundle dist auditado sem GEMINI_API_KEY, endpoint/model Gemini. Sem nova dependência/SDK/serviço pago; privacy de provider/error/body/cancelamento revisada. Nenhum teste desabilitado, nenhuma chave Gemini fictícia, nenhum billing/Cloud Billing/cartão/push/deploy/merge.
 
-## M2-SMOKE — único bloqueio de M2
+## M2-SMOKE — registro histórico do bloqueio anterior
 
 npm run gika:smoke executado: exit2, BLOCKED: GEMINI_API_KEY ausente; nenhum request enviado. Isto não é PASS nem teste skipped. Script pronto usa adapter real com modelo exato/medium, valida E01/get_today e E02/get_day/depois de amanhã civil, sem dados de agenda/Firestore. Quando credencial servidor de projeto Free Tier sem billing estiver disponível, executar o comando, registrar resultado e checkpoint; falha quota/indisponibilidade permanece falha graciosa e não permite fallback pago. Sem segredo não há evidência de disponibilidade/cota/interpretação reais.
 
@@ -55,3 +57,10 @@ Gates necessários sem segredo: npx vitest run tests/unit/gika-gemini.test.ts te
 PRE c035142202a19a649fbb49e42b3e77dc26bc17c6, worktree limpo. Causa local: NETWORK / ENV_PROXY_NOT_ENABLED. O executor usa proxy HTTP e não possui rota Internet direta; Node24 não estava consumindo as variáveis de proxy no processo anterior. Sem proxy efetivo, diagnóstico público sem segredo terminou em TIMEOUT. Com NODE_USE_ENV_PROXY=1 exclusivamente nos subprocessos de diagnóstico/smoke, chamada mínima ao mesmo endpoint/modelo retornou HTTP200, error.status ausente, reasons vazios: credencial recebida/aceita e modelo acessível. Evidências JSON registram somente HTTP status, error.status, reasons e categoria. Sem corpo completo upstream, headers de autenticação, chave ou conteúdo privado. Nenhuma alteração de arquitetura, modelo, configuração de produto ou persistência da credencial.
 
 Após confirmar aceitação da credencial na chamada mínima, repetição autorizada do smoke existente, com proxy habilitado apenas nesse subprocesso: PASS/exit0, gemini-3.5-flash-lite, medium, E01/get_today e E02/get_day. Sem retry automático ou acesso/mutação de agenda. Credencial descartada ao término do processo; não reutilizar. Gate real M2-SMOKE encerrado; gates funcionais T3 seguem válidos porque não houve mudança de código. M2 concluído, parada solicitada antes do M3.
+
+
+## Fechamento final solicitado — 2026-10-01
+
+PRE c1c709ddcba184b2071c9d591a279e5441cdf9a6, worktree limpo. Alteração somente em M2_EVIDENCE.md, GIKA_STATE.md e GIKA_TASKS.yaml para explicitar `NETWORK / ENV_PROXY_NOT_ENABLED` como limitação/configuração do Codex Remote e consolidar M2-SMOKE/M2 done. Chamadas externas exigiram proxy/egress habilitado no ambiente remoto; adapter, modelo e arquitetura não falharam e não receberam workaround de produção. Evidência sanitizada HTTP200 e smoke real PASS/exit0 E01/E02 já verificados no checkpoint c1c709d; nenhuma nova utilização da credencial neste fechamento.
+
+Gates finais repetidos: npm run lint PASS; npm run build com ambos typechecks PASS; npm test134 PASS/30 arquivos. Grafo YAML validado: M2 done, M2-SMOKE done, M3-T1 todo. git diff --check, inspeção de escopo exclusivamente documental e scan de segredo PASS. Integração42, E2E finais8 e mock14 anteriormente executados seguem registrados, sem repetição dos emuladores/UI por não haver mudança funcional. Warning baseline de bundle >500KiB permanece documentado. Checkpoint final docs(gika): finalize M2 gates and remote proxy evidence; verificar git log/status após commit. Parada antes de M3-T1.

@@ -148,7 +148,7 @@ milestones:
   M2:
     name: "Gika read-only"
     status: done
-    evidence: "M2_EVIDENCE.md: T1/T2/T3 e smoke real E01/E02 PASS; diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED, corrigido somente no processo de smoke; M3 não iniciado."
+    evidence: "M2_EVIDENCE.md: T1/T2/T3 e smoke real E01/E02 PASS/HTTP200; NETWORK / ENV_PROXY_NOT_ENABLED é configuração do Codex Remote, proxy/egress habilitado somente no subprocesso; arquitetura/produção inalteradas, M3-T1 todo; fechamento final lint/build/typechecks/134 unit e grafo/diff/segredos PASS."
     tasks:
       - id: M2-S0
         title: "Classificar falhas Planner e intermitência antes do adapter"
@@ -175,7 +175,7 @@ milestones:
       - id: M2-T3
         title: "Evals read-only e fallback"
         status: done
-        evidence: ["M2_EVIDENCE.md/EVALS.md: 134 unit, 42 integração e 8 E2E finais PASS; smoke real explicitamente blocked/exit2, sem skipped."]
+        evidence: ["M2_EVIDENCE.md/EVALS.md: 134 unit, 42 integração e 8 E2E finais PASS; bloqueio histórico do smoke posteriormente resolvido em M2-SMOKE, sem skipped."]
         acceptance_criteria: ["Evals determinísticos E01/E02/E60/E70 e isolamento/partial/malformed/cancelamento; gates e revisão de escopo concluídos, limite de prova real explícito."]
         dependencies: [M2-T2]
         owner: qa
@@ -185,7 +185,7 @@ milestones:
         status: done
         dependencies: [M2-T3]
         owner: qa
-        evidence: ["2026-10-01: diagnóstico sanitizado HTTP200 com proxy; smoke existente repetido com NODE_USE_ENV_PROXY=1 somente no subprocesso PASS/exit0, E01/E02. M2_EVIDENCE.md."]
+        evidence: ["2026-10-01: diagnóstico sanitizado HTTP200 com proxy; smoke existente repetido com NODE_USE_ENV_PROXY=1 somente no subprocesso Codex Remote PASS/exit0, E01/E02; sem alteração de produção. M2_EVIDENCE.md."]
         acceptance_criteria: ["Modelo estável/medium interpretam E01/E02 pelo adapter real, nenhum acesso/mutação de agenda; registrar prova e checkpoint sem segredo."]
 
   M3:

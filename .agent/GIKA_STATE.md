@@ -9,16 +9,16 @@
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `c035142202a19a649fbb49e42b3e77dc26bc17c6` (worktree limpo no PRE diagnóstico sanitizado)
-- Worktree limpo no PRE M2-SMOKE; somente documentação/estado alterados nesta tarefa, sem mudanças de modelo ou produção
-- Últimos gates: M2-T3 lint/build/typechecks, 134 unit, 42 integração, 8 E2E finais (6 API Gika + 2 Planner) PASS; mock14 PASS em T2. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
-- Commit desta tarefa: `docs(gika): close M2 after sanitized proxy diagnosis and smoke pass`
+- Último SHA verificado / último commit de tarefa Gika: `c1c709ddcba184b2071c9d591a279e5441cdf9a6` (smoke PASS registrado; worktree limpo no PRE fechamento final M2)
+- Worktree limpo no PRE fechamento final M2; ownership somente evidências/estado/tarefas. Arquitetura, adapter, modelo e produção inalterados
+- Últimos gates: fechamento M2 lint/build/dois typechecks e 134 unit/30 arquivos PASS; grafo/escopo/segredos/diff PASS. Smoke real HTTP200/E01/E02 PASS registrado em c1c709d. Integração42, E2E finais8 e mock14 PASS anteriores preservados, sem alteração funcional. Baseline Planner classificado; nenhuma intermitência pendente.
+- Commit final esperado: `docs(gika): finalize M2 gates and remote proxy evidence`
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Diagnóstico e repetição do smoke explicitamente autorizados nesta tarefa; parar antes do M3. Causa NETWORK/ENV_PROXY_NOT_ENABLED comprovada por TIMEOUT sem proxy efetivo e HTTP200 com proxy; smoke E01/E02 PASS com NODE_USE_ENV_PROXY=1 somente no subprocesso.
+3. Diagnóstico e repetição do smoke explicitamente autorizados nesta tarefa; parar antes do M3. Causa `NETWORK / ENV_PROXY_NOT_ENABLED` comprovada por TIMEOUT sem proxy efetivo e HTTP200 com proxy; smoke E01/E02 PASS com NODE_USE_ENV_PROXY=1 somente no subprocesso.
 4. Não reutilizar credencial temporária nem iniciar M3. Nenhuma alteração de arquitetura/modelo/produto; credencial não persistida e subprocessos encerrados.
 
 ## Bloqueios
@@ -26,6 +26,8 @@
 - Nenhum gate M2 bloqueado. Smoke real PASS após diagnóstico. Parada explícita antes do M3; não interpretar conclusão de M2 como autorização para avançar.
 
 ## Riscos e limitações
+
+- `NETWORK / ENV_PROXY_NOT_ENABLED`: limitação/configuração do Codex Remote. Chamadas externas exigiram proxy/egress habilitado; não é falha do adapter/modelo/arquitetura. Somente processos de diagnóstico/smoke receberam habilitação; nenhum workaround no código de produção.
 
 - 05-capacidade-e-revisao.md ausente: pendência documental não bloqueante; não inferir capacidade/billing a partir dele.
 
@@ -74,4 +76,6 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 
 | 2026-10-01 | M2 | M2-SMOKE | FAIL/blocked: execução real exit1 GIKA_UNAVAILABLE; 15 testes focais PASS; sem retry/segredo persistido; M3 não iniciado | checkpoint após f548491 |
 
-| 2026-10-01 | M2 | M2-SMOKE | done: diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED; HTTP200 com proxy, smoke real E01/E02 PASS; M3 não iniciado | checkpoint após c035142 |
+| 2026-10-01 | M2 | M2-SMOKE | done: diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED; HTTP200 com proxy, smoke real E01/E02 PASS; M3 não iniciado | `c1c709d` |
+
+| 2026-10-01 | M2 | fechamento final | done: causa Codex Remote documentada, gates finais PASS; M2/M2-SMOKE done, M3-T1 todo | checkpoint após c1c709d |
