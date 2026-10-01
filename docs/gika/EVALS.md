@@ -123,3 +123,7 @@ Com item de dia inteiro anterior, arrastar evento offline deve atingir o handle 
 | E72 | calendar-planner.spec.ts dia inteiro + alteração offline, Gika dock | sequência original e geometria fora do grid preservadas |
 
 Estes testes usam transports/calls/responses fixture, emuladores e o contrato real da API/UI. Não demonstram que Gemini interpreta corretamente linguagem natural em produção. A interpretação real E01/E02 depende do smoke credentialed: npm run gika:smoke. Ausência de GEMINI_API_KEY retorna BLOCKED/exit2 sem rede, não PASS nem teste skipped. Não modificar tests para ignorar falhas; nenhum fallback/modelo pago. Antes do smoke, usar exclusivamente credencial de projeto Developer API Free Tier sem billing.
+
+### M2-SMOKE real — 2026-10-01
+
+Uma execução autorizada com credencial temporária: FAIL/GIKA_UNAVAILABLE, exit1 na interpretação E01; E02 não alcançado. Não considerar linguagem natural Gemini validada. Sem retry/mudança de modelo ou segredo persistido; M2 permanece aberto. Ver M2_EVIDENCE.md.

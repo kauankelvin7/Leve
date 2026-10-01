@@ -39,3 +39,12 @@ Revisão de escopo: git diff da base para server/commands, outbox e firestore.ru
 npm run gika:smoke executado: exit2, BLOCKED: GEMINI_API_KEY ausente; nenhum request enviado. Isto não é PASS nem teste skipped. Script pronto usa adapter real com modelo exato/medium, valida E01/get_today e E02/get_day/depois de amanhã civil, sem dados de agenda/Firestore. Quando credencial servidor de projeto Free Tier sem billing estiver disponível, executar o comando, registrar resultado e checkpoint; falha quota/indisponibilidade permanece falha graciosa e não permite fallback pago. Sem segredo não há evidência de disponibilidade/cota/interpretação reais.
 
 M2-T1/T2/T3 concluídas, milestone M2 permanece in_progress somente por este smoke. Nenhuma mutação M3 foi iniciada. Próxima tarefa M2-SMOKE blocked; M3-T1 depende dele e de nova continuidade de escopo, preservando o pedido estritamente read-only atual.
+
+
+## Execução real M2-SMOKE — 2026-10-01 UTC
+
+PRE f5484919b792e1d0ee6687627c614c231fd136aa, worktree limpo. Usuário autorizou credencial temporária exclusivamente nesta execução, sem arquivo/env/log/commit e sem avançar ao M3. Credencial fornecida por stdin com echo do terminal desativado, somente na variável GEMINI_API_KEY do subprocesso do script, descartada ao terminar; não herdada pelo servidor ou pelos testes. Nenhum valor de credencial está nesta evidência.
+
+Comando npm run gika:smoke, modelo/thinking/configuração inalterados: **FAIL: GIKA_UNAVAILABLE; exit1**. Primeira interpretação E01 falhou; segundo caso E02 não alcançado, sem retry/fallback/diagnóstico adicional com a credencial. O contrato sanitizado não expõe status HTTP nem causa upstream; não há prova de chave inválida, modelo indisponível/inexistente ou quota. Este resultado não fecha o gate nem M2.
+
+Gates necessários sem segredo: npx vitest run tests/unit/gika-gemini.test.ts tests/unit/gika-native-smoke.test.ts — 15 PASS/2 arquivos; git diff --check e inspeção de diff/segredos PASS. Sem mudança de código funcional, modelo, config financeira ou domínio, os gates completos T3 previamente executados permanecem registrados acima. M2-SMOKE blocked por falha real; nenhuma nova tentativa nesta tarefa. M3 não iniciado.

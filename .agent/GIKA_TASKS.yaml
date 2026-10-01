@@ -148,7 +148,7 @@ milestones:
   M2:
     name: "Gika read-only"
     status: in_progress
-    evidence: "M2_EVIDENCE.md: implementação/evals T1/T2/T3 concluídos; somente M2-SMOKE blocked por credencial ausente."
+    evidence: "M2_EVIDENCE.md: T1/T2/T3 concluídos; M2-SMOKE real executado FAIL/GIKA_UNAVAILABLE em 2026-10-01; milestone permanece in_progress."
     tasks:
       - id: M2-S0
         title: "Classificar falhas Planner e intermitência antes do adapter"
@@ -185,8 +185,8 @@ milestones:
         status: blocked
         dependencies: [M2-T3]
         owner: qa
-        evidence: ["npm run gika:smoke exit2 BLOCKED: GEMINI_API_KEY ausente; nenhum request enviado. M2_EVIDENCE.md."]
-        blocker: "Somente credencial servidor GEMINI_API_KEY indisponível; usar exclusivamente projeto Free Tier sem billing."
+        evidence: ["2026-10-01: smoke real exit1 FAIL/GIKA_UNAVAILABLE; E01 falhou, E02 não alcançado. 15 testes focais PASS; M2_EVIDENCE.md."]
+        blocker: "Smoke real FAIL/GIKA_UNAVAILABLE; causa upstream/status HTTP não comprovados. Credencial temporária autorizada somente para esta execução, descartada; nenhuma nova chamada autorizada nesta tarefa."
         acceptance_criteria: ["Modelo estável/medium interpretam E01/E02 pelo adapter real, nenhum acesso/mutação de agenda; registrar prova e checkpoint sem segredo."]
 
   M3:
