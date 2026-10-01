@@ -274,7 +274,7 @@ milestones:
       - id: M5-T3
         title: "Recorrência: occurrence vs series"
         status: done
-        evidence: ["M5_T3_EXECPLAN/EVIDENCE.md e m5-t3-*.json; ADR019; entradafc0b669 local/origin limpa/exata; occurrence/future convencional, all unsupported, choice distinta de confirmation/prazo original15min; guard/snapshot/receipt no mesmo writer. Auditprodução0/lint/doisTS/build/396unit/212integração/40focal/7E2E PASS; amplo56/7 classificado contrafc com8originais e5sondas PASS em ambas,63Gika únicas observadas PASS;check12/1 contraste histórico comprovado. Checkpoint/backup somente feat;M5-T4 todo/não iniciado."]
+        evidence: ["M5_T3_EXECPLAN/EVIDENCE.md e m5-t3-*.json; ADR019; entradafc0b669 local/origin limpa/exata; occurrence/future convencional, all unsupported, choice distinta de confirmation/prazo original15min; guard/snapshot/receipt no mesmo writer. Auditprodução0/lint/doisTS/build/396unit/212integração/40focal/7E2E PASS; amplo56/7 classificado contrafc com8originais e5sondas PASS em ambas,63Gika únicas observadas PASS;check12/1 contraste histórico comprovado. Commit funcional atômico 8fe12469d9b5d3751109d79d5beafe4449f07aa6, worktree limpo confirmado;checkpoint documental/backup somente feat;M5-T4 todo/não iniciado."]
         dependencies: [M5-T2]
       - id: M5-T4
         title: "Batch operations seguras"

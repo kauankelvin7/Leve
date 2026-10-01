@@ -44,3 +44,5 @@ Sem Gemini live, segredo persistido, billing, PR/deploy/main/visual ou M5-T4. Pr
 ## Checkpoint
 
 M5-T3 done, M5 permanece in_progress; M5-T4 todo/não iniciado. Gates/evidências/ADR019/STATE/TASKS juntos no commit funcional atômico. Checkpoint documental posterior registra seu SHA real e será publicado para backup somente na mesma branch. Comparação remota antes do commit confirmou origin ainda fc0b669; confirmar HEAD local/remoto e worktree limpo após push. Parar para revisão, sem PR/main/deploy/Gemini live.
+
+Commit funcional atômico M5-T3: `8fe12469d9b5d3751109d79d5beafe4449f07aa6`; branch feat/gika-integration e worktree limpo verificados após commit. Checkpoint documental posterior registra somente este SHA/estado, sem nova execução de IA ou alteração de produto. Backup autorizado desta mesma branch; confirmar SHA local/remoto depois do push e parar antes de M5-T4.

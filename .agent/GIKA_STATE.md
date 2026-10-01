@@ -18,7 +18,7 @@ Pedido atual autoriza exclusivamente M5-T3 recorrência occurrence/future, confo
 
 ## Próxima ação
 
-Parar para revisão do M5-T3. M5-T4 todo/não iniciado; não executar sem nova autorização. Concluir apenas checkpoint/backup autorizado na feat/gika-integration e verificar local/origin/worktree.
+Aguardar revisão do M5-T3. M5-T4 todo/não iniciado; não executar sem nova autorização. Checkpoint/backup desta sessão somente feat/gika-integration; conferir SHA local/origin e worktree após publicação, sem outra implementação.
 
 ## M5-T3 — conclusão
 
@@ -138,3 +138,7 @@ Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmad
 | 2026-10-01 | Security isolado | Firebase/Google | done: grpc1.14.5/uuid11.1.1 scoped/clean install/tree,334unit/166integração/53E2E/gates PASS,auditprod0;14dev preexistentes explícitos;parar antes de integrar/T2 | `e8c07be3218cb583fffb5af38e7a8beb10c95851` |
 
 | 2026-10-01 | M5 parcial | M5-T2 | done: contrato/preview selado e recovery receipt-only;343unit/172integração/12focal PASS,56Gika únicos observados PASS,amplo54/2 comparado9c;check12/1/auditprod0;parar antes de T3 | `9e130c52a2cd211881576f08ff93d9d932d43564` |
+
+## Checkpoint M5-T3
+
+Commit funcional atômico verificado: `8fe12469d9b5d3751109d79d5beafe4449f07aa6` na feat/gika-integration, parent fc0b669. Worktree limpo confirmado após commit. Este checkpoint documental registra o SHA real sem alteração de produto/gates; backup autorizado somente desta branch e igualdade local/remoto devem ser conferidos após push. M5-T3 done; status M5_T3_DONE_STOP_BEFORE_M5_T4; M5-T4 todo/não iniciado, aguardar revisão.

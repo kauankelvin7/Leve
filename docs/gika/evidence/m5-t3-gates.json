@@ -114,5 +114,7 @@
   "secrets_persisted": false,
   "gemini_live": false,
   "main_merge_pr_deploy": false,
-  "remote_backup": "authorized; publish final documentary checkpoint on same branch and verify local/remote SHA after push"
+  "remote_backup": "authorized; publish final documentary checkpoint on same branch and verify local/remote SHA after push",
+  "functional_commit": "8fe12469d9b5d3751109d79d5beafe4449f07aa6",
+  "worktree_after_functional_commit": "clean"
 }
