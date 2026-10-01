@@ -97,6 +97,15 @@ describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators',
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     const denied = await ask(user.token).expect(429); expect(denied.body.code).toBe('GIKA_QUOTA');
   });
+  it('membership revogada durante o modelo impede a leitura antes da resposta', async () => {
+    const user = await account(); let resume!: (calls: { name: string; args: Record<string, unknown> }[]) => void;
+    state.model = { interpret: () => new Promise(resolve => { resume = resolve; }) };
+    const pending = ask(user.token).then(response => response);
+    await vi.waitFor(() => expect(resume).toBeTypeOf('function'));
+    await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' });
+    resume([{ name: 'get_today', args: {} }]);
+    const response = await pending; expect(response.status).toBe(403); expect(response.body).not.toHaveProperty('reads');
+  });
   it('inputs não admitem uid/contexto nem body enorme', async () => {
     const user = await account();
     await ask(user.token, { requestId: id, text: 'hoje', uid: 'other' }).expect(422);

@@ -5,14 +5,14 @@
 - Status global: `IN_PROGRESS`
 - Milestones concluídos: `M0` e `M1` (shell/mock/refinement; limites da regressão ampliada abaixo)
 - Milestone atual: `M2` (read-only; M1 visual aprovado pelo usuário)
-- Tarefa atual: nenhuma; M2-T2 concluída, próxima M2-T3
+- Tarefa atual: nenhuma em execução; próxima M2-SMOKE blocked somente por GEMINI_API_KEY ausente
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `a1334eb` (M2-T1, worktree limpo antes de M2-T2)
-- Worktree limpo no PRE M2-T2; gates read-only PASS; checkpoint registra o commit anterior à tarefa atual
-- Últimos gates: M2-T2 lint/build/typechecks, 126 unit, 41 integração, 14 Gika mock + 4 UI read-only E2E/Axe PASS. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
-- Commit atual de tarefa: `feat(gika): M2-T2 connect authenticated read tools to chat` (contém este estado)
+- Último SHA verificado / último commit de tarefa Gika: `ac27289` (M2-T2, worktree limpo antes de M2-T3)
+- Worktree limpo no PRE M2-T3; gates finais read-only PASS; checkpoint registra o commit anterior à tarefa atual
+- Últimos gates: M2-T3 lint/build/typechecks, 134 unit, 42 integração, 8 E2E finais (6 API Gika + 2 Planner) PASS; mock14 PASS em T2. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
+- Commit atual de tarefa: `test(gika): M2-T3 verify read-only evals and isolate real smoke` (contém este estado)
 
 ## Próxima ação
 
@@ -23,10 +23,11 @@
 
 ## Bloqueios
 
-- Documento 05-capacidade-e-revisao.md citado no AGENTS.md está ausente do checkout. Não impede auditoria factual dos limites de código, mas não inferir capacidade operacional/billing a partir dele.
-- Smoke real futuro M2: GEMINI_API_KEY ausente; somente esse smoke poderá ser bloqueado. Implementação/testes locais sem segredo continuam autorizados. Não inventar chave nem billing.
+- M2-SMOKE: GEMINI_API_KEY ausente. npm run gika:smoke executado, exit2 BLOCKED sem rede. T1/T2/T3 concluídas; somente smoke real bloqueado, M2 não marcado done. Não inventar chave/billing. Próximo: disponibilizar variável exclusivamente servidor de projeto Free Tier sem billing e registrar smoke E01/E02. Não iniciar M3 nesta sessão read-only.
 
 ## Riscos e limitações
+
+- 05-capacidade-e-revisao.md ausente: pendência documental não bloqueante; não inferir capacidade/billing a partir dele.
 
 - Regressão Planner ampliada não integralmente verde: contraste completed 4,28:1 e dois testes sem expandir Mais opções são baseline (prova em M1_EVIDENCE.md). Offline era regressão do dock Gika, demonstrada por hit-test base/branch e corrigida: sequência original 2 PASS, nova proteção de dock 3 PASS. Ver M2_PREFLIGHT.md. Nenhum teste desabilitado; nenhuma correção de domínio/Planner fora do escopo.
 - Bundles baseline >500 kB; nenhuma otimização fora de escopo. Ver M0_EVIDENCE.md.
@@ -66,3 +67,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-09-30 | M2 | M2-T1 | done: adapter Gemini sem segredo; lint/build e 116 unit PASS | commit M2-T1 após 7a3c343 |
 
 | 2026-09-30 | M2 | M2-T2 | done: consultas autenticadas e contrato UI; gates offline PASS | commit M2-T2 após a1334eb |
+
+| 2026-10-01 | M2 | M2-T3 | done: evals offline, autorização após espera, gates PASS e somente smoke real blocked | commit M2-T3 após ac27289 |

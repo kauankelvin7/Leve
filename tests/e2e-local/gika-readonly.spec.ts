@@ -80,3 +80,47 @@ test('429 e saída com command/preview real rejeitadas sem mutar', async ({ page
   await expect(page.locator('.gika-message.is-assistant')).toHaveCount(0); await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
   await expect(question).toHaveValue('Adicionar uma tarefa'); expect(commands).toEqual([]);
 });
+
+test('API cancelada ao fechar/sair não publica resposta na segunda conta', async ({ page }) => {
+  await enter(page);
+  let finish: (() => Promise<void>) | undefined;
+  await page.route('**/api/gika/respond', route => { finish = () => route.fulfill({ json: { text: 'Resposta privada tardia', simulated: false, reads: [read] } }).catch(() => undefined); });
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await question.fill('Pergunta privada anterior'); await question.press('Enter');
+  await expect.poll(() => Boolean(finish)).toBe(true);
+  await expect(page.locator('.gika-loading')).toContainText('Consultando sua agenda');
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('button', { name: 'Sair', exact: true }).click();
+  await finish!();
+  await page.goto('/registrar');
+  await page.getByLabel('Seu nome').fill('Conta read-only fictícia');
+  await page.getByLabel('E-mail').fill(`gika.readonly.${Date.now()}@example.test`);
+  await page.getByLabel('Senha', { exact: true }).fill('gika-local-123');
+  await page.getByLabel('Confirmar senha', { exact: true }).fill('gika-local-123');
+  await page.getByRole('button', { name: 'Criar conta', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar neste ambiente' }).click();
+  await page.getByRole('button', { name: 'Criar minha agenda' }).click();
+  await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  await expect(question).toHaveValue('');
+  await expect(page.locator('.gika-message')).toHaveCount(0);
+  await expect(page.getByText('Resposta privada tardia', { exact: true })).toHaveCount(0);
+});
+
+test('E70: 503, timeout e resposta inválida permitem consultar calendário após fallback', async ({ page }) => {
+  await enter(page); let code = 'GIKA_UNAVAILABLE';
+  await page.route('**/api/gika/respond', route => route.fulfill({ status: code === 'GIKA_TIMEOUT' ? 504 : 503, json: { code, message: 'Não consegui falar com a Gika agora. Sua agenda continua disponível.' } }));
+  await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  for (code of ['GIKA_UNAVAILABLE', 'GIKA_TIMEOUT', 'GIKA_INVALID_RESPONSE', 'GIKA_MALFORMED_CALL']) {
+    await question.fill('O que tenho hoje?'); await question.press('Enter');
+    await expect(page.getByRole('button', { name: 'Tentar novamente', exact: true })).toBeVisible();
+    await expect(question).toHaveValue('O que tenho hoje?');
+    await expect(page.locator('.gika-message.is-assistant')).toHaveCount(0);
+  }
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  await page.getByRole('link', { name: 'Calendário', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText('Calendário');
+});

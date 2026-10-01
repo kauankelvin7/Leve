@@ -28,8 +28,11 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
         release = acquire(identity.uid);
         const calls = validateCalls(await model.interpret({ text: input.text, context }, signal));
-        // Validate policy for ALL calls before ANY persistence reads.
-        const ranges = calls.map(call => readRange(call, context));
+        // Recheck account/policy after the upstream wait, before exposing data.
+        const current = calls.length ? await repository.authorize(identity) : context;
+        if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+        // Validate policy for ALL calls before ANY agenda reads.
+        const ranges = calls.map(call => readRange(call, current));
         const reads = [];
         for (const range of ranges) {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');

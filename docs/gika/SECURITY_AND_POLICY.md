@@ -101,3 +101,9 @@ Esta matriz é contrato planejado, não motor já implementado. Autorização Fi
 Policy mínima entra em M2 e cresce com cada tool; M5-T1 consolida alto impacto e confirmação server-side. Nunca adiar allowlist/schema/auth até M5 ou M9. M3/M4 não expõem ferramentas de alto impacto via LLM. Uma resposta que diga 'confirmei' não executa pending action. Propostas e receipts privados exigirão teste de isolamento com emuladores quando forem implementados.
 
 Riscos baseline: updateFuture/trashSeries não replicam controles/rate limits do contentCommand genérico; useUserCollection suprime indicador partial; Admin SDK não é limitado por Rules. M0 registra esses fatos, sem alegar correção. Detalhes em ARCHITECTURE.md. Capacidade operacional do documento ausente 05-capacidade-e-revisao.md não foi inferida; os limites hardcoded atuais estão documentados.
+
+## M2 implementado — limites explícitos
+
+Somente consultas autenticadas. ModelAdapter não recebe uid/token/Firestore/resultados; pergunta e contexto civil mínimo são enviados ao provider. Narrativa livre é descartada. allowlist de três tools strict e policy inteira validadas antes de consultas de agenda; authorize profile/membership é repetido após espera upstream. Executor só lê conta derivada do token, sem paths/uid vindos do modelo/cliente, com projeção e cap50/partial. Séries não são materializadas.
+
+Gika não chama commands/sendCommand/outbox e não escreve domínio, receipts, rate buckets ou histórico. Limites em memória não são distribuídos e podem reiniciar em cold start; não alegar quota global garantida. Garantia R$0 requer projeto Gemini Free Tier sem Cloud Billing; nenhum setup financeiro/serviço pago/retry/fallback existe. Requisição upstream timeout/429/503/invalid/malformed/missing env vira AppError público sem payload/cause privada. Parser de body Gika sanitiza erros JSON antes de chegar ao logger convencional. Servidor atende outras rotas independentemente da chave.

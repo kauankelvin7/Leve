@@ -26,7 +26,8 @@
     "test:e2e:local": "playwright test --config playwright.local.config.ts",
     "test:e2e": "playwright test",
     "screenshots": "tsx scripts/screenshots.ts",
-    "check": "npm run build && npm test && npm run test:e2e"
+    "check": "npm run build && npm test && npm run test:e2e",
+    "gika:smoke": "node scripts/gika-smoke.mjs"
   },
   "dependencies": {
     "@dicebear/avataaars": "9.4.2",

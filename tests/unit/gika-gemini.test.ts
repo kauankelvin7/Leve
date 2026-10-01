@@ -20,6 +20,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
   it('normaliza tool call e ignora narrativa sem ferramentas', () => {
     expect(parseGeminiResponse(body([{ functionCall: { name: 'get_today', args: {} }, thoughtSignature: 'opaque' }]))).toEqual([{ name: 'get_today', args: {} }]);
     expect(parseGeminiResponse(body([{ text: 'Tarefa criada!' }]))).toEqual([]);
+    expect(parseGeminiResponse(body([{ functionCall: { name: 'get_today', id: 'provider-call' } }]))).toEqual([{ name: 'get_today', args: {} }]);
   });
   it.each([[429, 'GIKA_QUOTA'], [503, 'GIKA_UNAVAILABLE'], [403, 'GIKA_UNAVAILABLE']])('HTTP %s não tenta outro modelo/retry', async (status, code) => {
     const http = vi.fn(async () => new Response('private upstream details', { status: status as number }));

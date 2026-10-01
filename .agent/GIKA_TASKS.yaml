@@ -148,6 +148,7 @@ milestones:
   M2:
     name: "Gika read-only"
     status: in_progress
+    evidence: "M2_EVIDENCE.md: implementação/evals T1/T2/T3 concluídos; somente M2-SMOKE blocked por credencial ausente."
     tasks:
       - id: M2-S0
         title: "Classificar falhas Planner e intermitência antes do adapter"
@@ -161,19 +162,32 @@ milestones:
         title: "Adapter de modelo e configuração"
         status: done
         evidence: ["M2_EVIDENCE.md: lint/build/typechecks e 116 unit PASS; falhas/limites/privacidade do adapter sem segredo."]
+        acceptance_criteria: ["Modelo explícito, medium, interface sem persistência e variável somente servidor; falhas requeridas testadas sem chave/billing/fallback pago."]
         dependencies: [M1-T4, M2-S0]
         owner: ai-integration
       - id: M2-T2
         title: "Tools get_today/get_day/get_week"
         status: done
         evidence: ["M2_EVIDENCE.md: 126 unit, 41 integração, 14 Gika mock + 4 UI read-only E2E/Axe PASS; nenhuma mutação."]
+        acceptance_criteria: ["Três leituras autenticadas, allowlist/policy/limites/contexto trusted e partial honestos; contrato de UI dos mocks preservado, nenhuma escrita."]
         dependencies: [M2-T1]
         owner: ai-integration
       - id: M2-T3
         title: "Evals read-only e fallback"
-        status: todo
+        status: done
+        evidence: ["M2_EVIDENCE.md/EVALS.md: 134 unit, 42 integração e 8 E2E finais PASS; smoke real explicitamente blocked/exit2, sem skipped."]
+        acceptance_criteria: ["Evals determinísticos E01/E02/E60/E70 e isolamento/partial/malformed/cancelamento; gates e revisão de escopo concluídos, limite de prova real explícito."]
         dependencies: [M2-T2]
         owner: qa
+
+      - id: M2-SMOKE
+        title: "Smoke Gemini real Free Tier (E01/E02)"
+        status: blocked
+        dependencies: [M2-T3]
+        owner: qa
+        evidence: ["npm run gika:smoke exit2 BLOCKED: GEMINI_API_KEY ausente; nenhum request enviado. M2_EVIDENCE.md."]
+        blocker: "Somente credencial servidor GEMINI_API_KEY indisponível; usar exclusivamente projeto Free Tier sem billing."
+        acceptance_criteria: ["Modelo estável/medium interpretam E01/E02 pelo adapter real, nenhum acesso/mutação de agenda; registrar prova e checkpoint sem segredo."]
 
   M3:
     name: "Primeira mutação segura"
@@ -181,7 +195,7 @@ milestones:
       - id: M3-T1
         title: "create_task via command layer existente"
         status: todo
-        dependencies: [M2-T3]
+        dependencies: [M2-T3, M2-SMOKE]
         owner: ai-integration
       - id: M3-T2
         title: "Idempotência básica e duplicate protection"

@@ -280,3 +280,7 @@ humanizer-br resolvida pelo usuário: fonte oficial local .agent/skills/humanize
 ### Refinement final M1 — pedido atualizado
 
 M1-T4 inclui polimento final solicitado: aviso mais discreto, empty state útil, título/densidade mobile menores e chips visíveis sem scroll excessivo; composer inicialmente compacto, expansível, ícones integrados. Corrigir overflow causado por elementos ocultos sem retirar labels/live region. Não iniciar lógica real de IA nesta tarefa. Validar screenshots e gates antes do checkpoint.
+
+### Checkpoint M2 e smoke real
+
+M2-T1/T2 implementam provider/read tools/UI sem segredo; M2-T3 encerra evals determinísticos e revisão. O gate real foi explicitado em M2-SMOKE, dependente de T3: somente ele fica blocked por GEMINI_API_KEY ausente. M2 permanece in_progress até esse gate, sem declarar integração real concluída. M3-T1 depende também de M2-SMOKE; não iniciar mutações nesta sessão/M2. Script npm run gika:smoke usa a mesma interface/provider e pergunta sintética, nunca agenda ou persistência. Operar exclusivamente Free Tier sem billing; não configurar chave no browser/env VITE nem usar chave fictícia.
