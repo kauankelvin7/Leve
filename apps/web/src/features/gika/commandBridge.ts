@@ -1,16 +1,20 @@
 import { activityInputSchema } from '../../../../../packages/domain/src/content';
 import { commandEnvelopeSchema, type CommandEnvelope } from '../../../../../packages/domain/src/identity';
-import { commandCreationResultSchema, createdTaskSchema, createTaskDescriptorSchema, taskActivityInput, type CreateTaskDescriptor } from '../../../../../packages/domain/src/gika';
+import { commandCreationResultSchema, createdTaskSchema, createTaskDescriptorSchema, gikaRequestSchema, taskActivityInput, type CreateTaskDescriptor, type GikaRequest } from '../../../../../packages/domain/src/gika';
 import { ApiError, sendCommand } from '../../platform/api';
 import { firebaseAuth } from '../../platform/firebase';
-export function createTaskEnvelope(descriptor: CreateTaskDescriptor): CommandEnvelope {
+export async function createTaskEnvelope(descriptor: CreateTaskDescriptor, request: GikaRequest): Promise<CommandEnvelope> {
   const task = createTaskDescriptorSchema.parse(descriptor);
-  return commandEnvelopeSchema.parse({ command: 'activity.create', operationId: crypto.randomUUID(), entityId: crypto.randomUUID(), expectedRevision: 0,
-    clientCreatedAt: new Date().toISOString(), payload: activityInputSchema.parse(taskActivityInput(task)) });
+  const input = gikaRequestSchema.parse(request);
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.text));
+  const requestTextHash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  // Stable across clients/processes. UID namespace and atomic dedup are owned by the existing command layer.
+  return commandEnvelopeSchema.parse({ command: 'activity.create', operationId: input.requestId, entityId: input.requestId, expectedRevision: 0,
+    gika: { requestTextHash }, payload: activityInputSchema.parse(taskActivityInput(task)) });
 }
 export async function executeCreateTask(task: CreateTaskDescriptor, command: CommandEnvelope, uid: string, signal: AbortSignal) {
   createTaskDescriptorSchema.parse(task); commandEnvelopeSchema.parse(command);
-  if (command.command !== 'activity.create' || command.expectedRevision !== 0
+  if (!command.gika || command.command !== 'activity.create' || command.expectedRevision !== 0
     || JSON.stringify(activityInputSchema.parse(command.payload)) !== JSON.stringify(activityInputSchema.parse(taskActivityInput(task)))) {
     throw new ApiError(422, 'GIKA_INVALID_RESPONSE', 'Confira os dados da tarefa e tente novamente.');
   }

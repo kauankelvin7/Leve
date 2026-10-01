@@ -48,7 +48,10 @@ export const commandEnvelopeSchema = z.object({
   payload: z.unknown(),
   clientCreatedAt: z.iso.datetime().optional(),
   dependsOn: z.array(z.uuid()).max(20).optional(),
-}).strict();
+  gika: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
+}).strict().refine(command => !command.gika || (command.command === 'activity.create'
+  && command.expectedRevision === 0 && command.entityId === command.operationId
+  && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de criação inválida.');
 
 export type CommandEnvelope = z.infer<typeof commandEnvelopeSchema>;
 export type CommandResult = {

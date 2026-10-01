@@ -202,3 +202,106 @@ describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators',
     await request(app).get('/api/session').set('Authorization', `Bearer ${user.token}`).expect(200);
   });
 });
+
+describe('M3-T2 E11 existing atomic command receipts across retries/processes', () => {
+  const text = 'Academia amanhã';
+  async function intent(user: { token: string }, requestId = id, requestText = text) {
+    const response = await ask(user.token, { requestId, text: requestText }).expect(200);
+    const { createTask } = gikaInterpretationSchema.parse(response.body);
+    if (!createTask) throw new Error('Missing task');
+    return commandEnvelopeSchema.parse({ command: 'activity.create', operationId: requestId, entityId: requestId, expectedRevision: 0,
+      gika: { requestTextHash: (await import('../../server/hash')).hashValue(requestText) }, payload: taskActivityInput(createTask) });
+  }
+  const dispatch = (user: { token: string }, command: object) => request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command);
+  async function expectOne(uid: string) {
+    expect((await db.collection(`users/${uid}/activities`).get()).size).toBe(1);
+    expect((await db.collection('commandReceipts').where('uid', '==', uid).get()).size).toBe(1);
+    expect((await db.doc(`users/${uid}/internal/counts`).get()).data()?.activities).toBe(1);
+    expect((await db.doc(`users/${uid}`).get()).data()?.dataVersion).toBe(2);
+  }
+  beforeEach(() => {
+    state.model = { interpret: async input => [{ name: 'create_task', args: { title: 'Academia', dueDate: Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString(), dueTime: null } }] };
+  });
+  it('normal creation and sequential replay return the original entity/revision/serverTime; increments occur once', async () => {
+    const user = await account(); const command = await intent(user);
+    const first = await dispatch(user, command).expect(200);
+    const second = await dispatch(user, command).expect(200);
+    expect(second.body).toEqual({ ...first.body, result: 'alreadyApplied' }); await expectOne(user.uid);
+    expect((await db.doc(`commandReceipts/${user.uid}_${id}`).get()).data()).toMatchObject({ uid: user.uid, gika: { requestTextHash: command.gika!.requestTextHash, task: { title: 'Academia' } } });
+  });
+  it('simultaneous HTTP executions of the same operation create at most once atomically', async () => {
+    const user = await account(); const command = await intent(user);
+    const responses = await Promise.all([dispatch(user, command), dispatch(user, structuredClone(command))]);
+    expect(responses.map(response => response.status)).toEqual([200, 200]);
+    expect(responses.map(response => response.body.result).sort()).toEqual(['alreadyApplied', 'applied']);
+    expect(responses[0]!.body.entityId).toBe(responses[1]!.body.entityId); await expectOne(user.uid);
+  });
+  it('lost response after persistence recovers without model/pending memory, even after civil context changes', async () => {
+    const user = await account(); const command = await intent(user);
+    // Transport delivers command but discards the acknowledgement. There is no client pending cache.
+    await dispatch(user, command).expect(200);
+    await db.doc(`users/${user.uid}`).update({ timeZone: 'Pacific/Kiritimati' });
+    state.model = { interpret: async () => { throw new Error('Must not reinterpret a completed intent'); } };
+    const reconstructed = await intent(user);
+    expect(reconstructed).toEqual(command);
+    const replay = await dispatch(user, reconstructed).expect(200); expect(replay.body.result).toBe('alreadyApplied');
+    expect(replay.body.entityId).toBe(id); expect(state.inputs).toHaveLength(1); await expectOne(user.uid);
+  });
+  it('two intentional request IDs with the exact same text/date create two tasks', async () => {
+    const user = await account(); const first = await intent(user); const second = await intent(user, crypto.randomUUID());
+    expect(second.payload).toEqual(first.payload);
+    await dispatch(user, first).expect(200); await dispatch(user, second).expect(200);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(2);
+  });
+  it('the same request ID in another authenticated user has no shared result or private snapshot', async () => {
+    const first = await account(); const second = await account(true, 'active', 'Pacific/Kiritimati');
+    const firstCommand = await intent(first); await dispatch(first, firstCommand).expect(200);
+    const secondCommand = await intent(second); await dispatch(second, secondCommand).expect(200);
+    expect((secondCommand.payload as { schedule: { timeZone: string } }).schedule.timeZone).toBe('Pacific/Kiritimati');
+    expect(state.inputs).toHaveLength(2); await expectOne(first.uid); await expectOne(second.uid);
+  });
+  it('changed original text, metadata or task payload for the same ID explicitly conflict without new writes', async () => {
+    const user = await account(); const command = await intent(user); await dispatch(user, command).expect(200);
+    const changed = await ask(user.token, { requestId: id, text: 'Cria Academia amanhã' }).expect(409);
+    expect(changed.body.code).toBe('OPERATION_MISMATCH');
+    const changedPayload = await dispatch(user, { ...command, payload: { ...(command.payload as object), title: 'Java' } }).expect(409);
+    expect(changedPayload.body.code).toBe('OPERATION_MISMATCH');
+    await dispatch(user, { ...command, gika: { requestTextHash: 'a'.repeat(64) } }).expect(409);
+    expect(state.inputs).toHaveLength(1); await expectOne(user.uid);
+  });
+  it('a failure before persistence leaves no receipt and allows retry of the same identity', async () => {
+    const user = await account(); const command = await intent(user);
+    await db.doc('serviceControls/global').update({ mode: 'restricted' }); await dispatch(user, command).expect(503);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+    await db.doc('serviceControls/global').update({ mode: 'normal' });
+    await dispatch(user, await intent(user)).expect(200); await expectOne(user.uid);
+  });
+  it('loss of HTTP response after commit is replayable even when further writes are restricted', async () => {
+    const user = await account(); const command = await intent(user); await dispatch(user, command).expect(200);
+    await db.doc('serviceControls/global').update({ mode: 'restricted' });
+    const recovered = await intent(user); expect(recovered).toEqual(command); expect(state.inputs).toHaveLength(1);
+    const replay = await dispatch(user, recovered).expect(200); expect(replay.body.result).toBe('alreadyApplied'); await expectOne(user.uid);
+    await ask(user.token, { requestId: crypto.randomUUID(), text }).expect(503);
+  });
+  it('revoked membership cannot recover or acknowledge an existing creation', async () => {
+    const user = await account(); const command = await intent(user); await dispatch(user, command).expect(200);
+    await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' });
+    await ask(user.token, { requestId: id, text }).expect(403); await dispatch(user, command).expect(403); await expectOne(user.uid);
+    await request(app).post('/api/commands').send(command).expect(401);
+  });
+  it('repeated identical model function calls yield only one descriptor/real creation; conflicting calls never write', async () => {
+    const user = await account();
+    state.model = { interpret: async input => {
+      const call = { name: 'create_task', args: { title: 'Academia', dueDate: Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString(), dueTime: null } };
+      return [call, structuredClone(call)];
+    } };
+    const command = await intent(user); await dispatch(user, command).expect(200); await expectOne(user.uid);
+    state.model = { interpret: async () => [{ name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Java', dueDate: null, dueTime: null } }] };
+    await ask(user.token, { requestId: crypto.randomUUID(), text: 'Cria Academia' }).expect(422); await expectOne(user.uid);
+  });
+  it('metadata cannot carry model/owner IDs or enable other commands; invalid payload is never written', async () => {
+    const user = await account(); const command = await intent(user);
+    for (const modified of [{ ...command, gika: { ...command.gika, owner: 'other' } }, { ...command, entityId: 'other' }, { ...command, command: 'activity.update' }, { ...command, clientCreatedAt: new Date().toISOString() }, { ...command, payload: { ...(command.payload as object), owner: 'other' } }, { ...command, payload: { ...(command.payload as object), title: ' Academia ' } }]) await dispatch(user, modified).expect(422);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+});

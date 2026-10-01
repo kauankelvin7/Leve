@@ -8,6 +8,7 @@ import { AppError } from '../errors.ts';
 import { commandHash } from './identity.ts';
 import { hashValue } from '../hash.ts';
 import { createReminderJobs } from '../reminder-jobs.ts';
+import { createTaskDescriptorSchema, taskActivityInput, type CreateTaskDescriptor } from '../../packages/domain/src/gika.ts';
 
 const names: Record<string, string> = { activity: 'activities', category: 'categories', note: 'notes', shoppingList: 'shoppingLists', shoppingItem: 'items' };
 const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200 };
@@ -39,6 +40,17 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   } else if (action === 'setStatus') input = z.object({ status: z.enum(['pending', 'completed', 'canceled']) }).strict().parse(command.payload);
   else if (action === 'setChecked') input = z.object({ listId: entityIdSchema, checked: z.boolean() }).strict().parse(command.payload);
   else input = (type === 'shoppingItem' ? itemLocatorSchema : emptySchema).parse(command.payload);
+
+  // Minimal reconciliation snapshot in the EXISTING atomic receipt, never a second writer/outbox.
+  let gika: { requestTextHash: string; task: CreateTaskDescriptor } | undefined;
+  if (command.gika) {
+    const activity = activityInputSchema.parse(input);
+    if (command.command !== 'activity.create' || activity.schedule.type !== 'task') throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
+    const task = createTaskDescriptorSchema.parse({ title: activity.title, dueDate: activity.schedule.dueDate, dueTime: activity.schedule.dueTime, timeZone: activity.schedule.timeZone });
+    if (command.entityId !== command.operationId || command.expectedRevision !== 0 || command.clientCreatedAt !== undefined || command.dependsOn !== undefined
+      || commandHash(command) !== commandHash({ ...command, payload: activityInputSchema.parse(taskActivityInput(task)) })) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
+    gika = { ...command.gika, task };
+  }
 
   const root = db.doc(`users/${identity.uid}`);
   const parent = type === 'shoppingItem' ? root.collection('shoppingLists').doc(String(input.listId)) : null;
@@ -116,7 +128,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

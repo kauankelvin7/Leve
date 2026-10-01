@@ -148,3 +148,17 @@ Autorização posterior exclusiva M3-T1. E11 e undo continuam gates de M3-T2/T3;
 | M3-E18 | modelo/adapter tentam persistir; lote/recorrência/mutações futuras | módulos de interpretação sem entrypoint de persistência; único bridge sendCommand/activity.create, chamadas mistas negadas; gika-architecture.test.ts e gika-create-policy.test.ts |
 
 Provider/transport/calls são fixtures sem segredo; API de comando/Auth/Firestore em integração e persistência UI E2E são reais emuladores. Não é prova de Gemini interpretar E10 em rede. Sem credencial atual autorizada, smoke Gemini M3 não executado; credencial temporária M2 não reutilizada. Não há testes skipped nem chave fictícia.
+
+## M3-T2 — E11 e regressões de identidade
+
+| Eval | Cenário | Evidência executável |
+|---|---|---|
+| E11 / M3-E19 | Repetição sequencial/concorrente do mesmo UUID cria uma tarefa, mesmo receipt/ID/revisão/serverTime, contadores uma vez | gika.test.ts M3-T2, emuladores reais |
+| M3-E21 | Resposta perdida após commit; novo adapter sem memória; mudança de fuso/contexto não reinterpreta data relativa | gika.test.ts, gika-api-adapter.test.ts, gika-create.spec.ts (abort depois de route.fetch real) |
+| M3-E22 | Texto/data iguais com novo UUID são duas intenções e duas tarefas | gika-idempotency.test.ts, gika.test.ts, gika-api-adapter.test.ts, gika-create.spec.ts |
+| M3-E23 | Mesmo ID com texto/payload diferente conflita; outro UID não recupera resultado alheio; revoked membership não recupera/ack | gika.test.ts M3-T2 |
+| M3-E24 | Falha antes da persistência permite retry sem receipt; depois do commit retry devolve alreadyApplied sem nova escrita | gika.test.ts, gika-create.spec.ts |
+| M3-E25 | Double submit da UI tem uma intenção; chamadas de função iguais colapsam, diferentes/forjadas continuam bloqueadas | gika-create.spec.ts, gika-idempotency.test.ts, gika.test.ts |
+| M3-E26 | IDs/hash não são do modelo; schemas strict; nenhuma segunda infraestrutura ou acesso direto de interpretação à persistência | gika-architecture.test.ts, gika-idempotency.test.ts e integração |
+
+T2 autorizado após revisão do T1. Testes/evals usam modelos fixture e Auth/Firestore reais emulados; não comprovar interpretação live nova sem credencial autorizada. Nenhum undo completo implementado, M3-T3 continua todo.

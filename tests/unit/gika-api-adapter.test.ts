@@ -38,7 +38,7 @@ describe('real API preserves mock adapter contract and account isolation', () =>
 
 const task = { title: 'Academia', dueDate: '2026-10-02', dueTime: null, timeZone: 'America/Sao_Paulo' };
 const creation = { text: 'Preparando a tarefa…', simulated: false, reads: [], createTask: task };
-const receipt = (command: ReturnType<typeof createTaskEnvelope>) => ({ operationId: command.operationId, entityId: command.entityId, revision: 1, serverTime: '2026-10-01T12:00:00Z', result: 'applied' });
+const receipt = (command: Awaited<ReturnType<typeof createTaskEnvelope>>) => ({ operationId: command.operationId, entityId: command.entityId, revision: 1, serverTime: '2026-10-01T12:00:00Z', result: 'applied' });
 describe('M3-T1 one existing command, structured success only after its acknowledgement', () => {
   it('valid creation uses software IDs/revision/defaults and a fresh authenticated command', async () => {
     fixture.request.mockResolvedValue(creation); fixture.command.mockImplementation(async command => receipt(command));
@@ -47,7 +47,7 @@ describe('M3-T1 one existing command, structured success only after its acknowle
     expect(fixture.command).toHaveBeenCalledTimes(1);
     const [command, options] = fixture.command.mock.calls[0]!;
     expect(command).toMatchObject({ command: 'activity.create', expectedRevision: 0, payload: { title: 'Academia', reminderSpecs: [], schedule: { type: 'task', dueDate: task.dueDate, timeZone: task.timeZone } } });
-    expect(command.operationId).not.toBe(input.requestId); expect(command.entityId).not.toBe(command.operationId);
+    expect(command.operationId).toBe(input.requestId); expect(command.entityId).toBe(command.operationId);
     expect(command.payload).not.toHaveProperty('uid'); expect(command.payload).not.toHaveProperty('owner');
     expect(options).toMatchObject({ expectedUid: 'account-a', queueOnNetworkError: false }); expect(options.signal).toBeInstanceOf(AbortSignal);
   });
@@ -67,11 +67,11 @@ describe('M3-T1 one existing command, structured success only after its acknowle
     fixture.request.mockResolvedValue({ ...creation, createTask });
     await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow(); expect(fixture.command).not.toHaveBeenCalled();
   });
-  it('command failure does not confirm; minimal existing receipt envelope remains stable on manual retry', async () => {
+  it('command failure does not confirm; reconstructed receipt envelope remains stable on manual retry', async () => {
     const adapter = createApiAdapter(); fixture.request.mockResolvedValue(creation); fixture.command.mockRejectedValueOnce(new Error('Command failed')).mockImplementationOnce(async command => receipt(command));
     await expect(adapter(input, new AbortController().signal)).rejects.toThrow('Command failed');
     await expect(adapter(input, new AbortController().signal)).resolves.toHaveProperty('createdTask');
-    expect(fixture.request).toHaveBeenCalledTimes(1); expect(fixture.command.mock.calls[1]![0]).toEqual(fixture.command.mock.calls[0]![0]);
+    expect(fixture.request).toHaveBeenCalledTimes(2); expect(fixture.command.mock.calls[1]![0]).toEqual(fixture.command.mock.calls[0]![0]);
   });
   it('model narrative or forged createdTask is never command success', async () => {
     fixture.request.mockResolvedValue(response);
@@ -80,7 +80,7 @@ describe('M3-T1 one existing command, structured success only after its acknowle
     await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow(); expect(fixture.command).not.toHaveBeenCalled();
   });
   it('invalid or mismatched receipt and account change after dispatch never confirm', async () => {
-    for (const value of [null, { result: 'applied' }, { ...receipt(createTaskEnvelope(task)), entityId: 'unrelated' }]) {
+    for (const value of [null, { result: 'applied' }, { ...receipt(await createTaskEnvelope(task, input)), entityId: 'unrelated' }]) {
       fixture.request.mockResolvedValue(creation); fixture.command.mockResolvedValue(value);
       await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow();
     }
@@ -88,10 +88,43 @@ describe('M3-T1 one existing command, structured success only after its acknowle
     await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
   });
   it('bridge rejects a different command/payload before sendCommand', async () => {
-    const envelope = createTaskEnvelope(task);
-    for (const command of [{ ...envelope, command: 'activity.update' }, { ...envelope, payload: { ...(envelope.payload as Record<string, unknown>), title: 'Invented' } }]) {
+    const envelope = await createTaskEnvelope(task, input);
+    for (const command of [{ ...envelope, gika: undefined }, { ...envelope, command: 'activity.update' }, { ...envelope, payload: { ...(envelope.payload as Record<string, unknown>), title: 'Invented' } }]) {
       await expect(executeCreateTask(task, command, 'account-a', new AbortController().signal)).rejects.toThrow();
     }
     expect(fixture.command).not.toHaveBeenCalled();
+  });
+});
+
+describe('M3-T2 independent adapters and technical retransmission', () => {
+  it('simultaneous independent adapters derive identical commands; no shared memory is required', async () => {
+    fixture.request.mockResolvedValue(creation); fixture.command.mockImplementation(async command => receipt(command));
+    const [first, second] = await Promise.all([createApiAdapter()(input, new AbortController().signal), createApiAdapter()(input, new AbortController().signal)]);
+    expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);
+    expect(first).toEqual(second);
+  });
+  it('retry after losing the acknowledgement recreates the command in a fresh adapter and preserves real ID', async () => {
+    fixture.request.mockResolvedValue(creation);
+    fixture.command.mockRejectedValueOnce(new Error('Lost HTTP acknowledgement')).mockImplementationOnce(async command => ({ ...receipt(command), result: 'alreadyApplied' }));
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow('Lost HTTP acknowledgement');
+    const result = await createApiAdapter()(input, new AbortController().signal);
+    expect(result).toMatchObject({ createdTask: { id: input.requestId, result: 'alreadyApplied' }, text: 'Tarefa adicionada.' });
+    expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);
+  });
+  it('a new intentional action with identical content receives a different command ID', async () => {
+    fixture.request.mockResolvedValue(creation); fixture.command.mockImplementation(async command => receipt(command));
+    const adapter = createApiAdapter();
+    await adapter(input, new AbortController().signal); await adapter({ ...input, requestId: crypto.randomUUID() }, new AbortController().signal);
+    expect(fixture.command.mock.calls[0]![0].operationId).not.toBe(fixture.command.mock.calls[1]![0].operationId);
+  });
+  it('an interpretation racing with a committed receipt recovers its snapshot once without treating mismatch as success', async () => {
+    const { ApiError } = await import('../../apps/web/src/platform/api');
+    fixture.request.mockResolvedValueOnce({ ...creation, createTask: { ...task, dueDate: '2026-10-03' } }).mockResolvedValueOnce(creation);
+    fixture.command.mockRejectedValueOnce(new ApiError(409, 'OPERATION_MISMATCH', 'Mismatch')).mockImplementationOnce(async command => ({ ...receipt(command), result: 'alreadyApplied' }));
+    await expect(createApiAdapter()(input, new AbortController().signal)).resolves.toMatchObject({ createdTask: { ...task, id: input.requestId, result: 'alreadyApplied' } });
+    expect(fixture.request).toHaveBeenCalledTimes(2); expect(fixture.command).toHaveBeenCalledTimes(2);
+    fixture.request.mockRejectedValue(new ApiError(409, 'OPERATION_MISMATCH', 'Mismatch'));
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'OPERATION_MISMATCH' });
+    expect(fixture.command).toHaveBeenCalledTimes(2);
   });
 });

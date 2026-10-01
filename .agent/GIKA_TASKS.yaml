@@ -191,7 +191,7 @@ milestones:
   M3:
     name: "Primeira mutação segura"
     status: in_progress
-    evidence: "Somente M3-T1 concluído; M3_T1_EVIDENCE.md. Milestone parcial, aguardando revisão humana; T2/T3 não autorizados."
+    evidence: "M3-T1 e M3-T2 concluídos; M3_T2_EVIDENCE.md. Milestone parcial; M3-T3 todo, não iniciado e depende de revisão/autorização."
     tasks:
       - id: M3-T1
         title: "create_task via command layer existente"
@@ -202,7 +202,9 @@ milestones:
         owner: ai-integration
       - id: M3-T2
         title: "Idempotência básica e duplicate protection"
-        status: todo
+        status: done
+        evidence: ["M3_T2_EXECPLAN.md/M3_T2_EVIDENCE.md: PREa9aff2f limpo, receipt/outbox auditados, ADR012, lint/dois typechecks/build/184 unit/64 integração PASS;27 E2E Gika global e13 finais PASS;58 locais46 PASS/12 FAIL baseline;check12/1 e audit13 vulnerabilidades baseline comparados;parar antes de T3."]
+        acceptance_criteria: ["requestId do sistema ligado a operationId/entityId por UID;receipt existente atômico com snapshot/hash mínimo;replay/concurrency/lost response no máximo uma criação;novo ID com conteúdo igual permitido;outro UID isolado e payload diferente conflita;schemas strict/auth fresca/evals,gates,checkpoint e worktree limpo."]
         dependencies: [M3-T1]
         owner: domain
       - id: M3-T3

@@ -172,7 +172,7 @@ Obrigatório:
 - resultado estruturado;
 - undo se compatível.
 
-Estado M3-T1: somente create_task simples concluída em M3_T1_EVIDENCE.md, bridge M0 preservado. Base mínima de envelope estável do comando existente documentada antes do código; proteção ampla/idempotência e undo são T2/T3 ainda todo. Não marcar M3 done nem iniciar T2 automaticamente; aguardar revisão/autorização explícita do usuário. Gates focais PASS, falhas baseline da regressão ampliada reproduzidas e registradas.
+Estado M3-T1: somente create_task simples concluída em M3_T1_EVIDENCE.md, bridge M0 preservado. Base mínima de envelope estável do comando existente documentada antes do código; proteção ampla/idempotência e undo são T2/T3 ainda todo. M3-T2 concluído após autorização explícita a partir de a9aff2f; plano/evidência M3_T2_EXECPLAN.md/M3_T2_EVIDENCE.md, receipts existentes e ADR012. Não marcar M3 done nem iniciar T3 automaticamente. Gates focais T1 PASS, falhas baseline da regressão ampliada reproduzidas e registradas.
 
 ## M4 — Edit
 

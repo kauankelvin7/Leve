@@ -79,3 +79,52 @@ test('logout during upstream wait aborts creation before command dispatch', asyn
   await enter(page); await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
   await expect(page.locator('.gika-message')).toHaveCount(0); expect(writes).toBe(0);
 });
+
+test('M3-T2 double submit is one intent; identical content after success is a new intent', async ({ page }) => {
+  await enter(page); const title = 'Academia dupla M3-T2'; const interpretations: string[] = []; const commands: string[] = [];
+  let release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/api/gika/respond', async route => {
+    interpretations.push(route.request().postDataJSON().requestId);
+    if (interpretations.length === 1) await gate;
+    await route.fulfill({ json: descriptor(title) });
+  });
+  page.on('request', request => { if (request.url().endsWith('/api/commands') && request.postDataJSON()?.command === 'activity.create') commands.push(request.postDataJSON().operationId); });
+  const question = await ask(page, `${title} amanhã`);
+  await expect.poll(() => interpretations.length).toBe(1);
+  await question.press('Enter');
+  await page.getByRole('button', { name: 'Enviar pergunta', exact: true }).dispatchEvent('click');
+  release();
+  await expect(page.getByRole('region', { name: 'Tarefa adicionada', exact: true })).toHaveCount(1);
+  expect(interpretations).toHaveLength(1); expect(commands).toEqual(interpretations);
+  await question.fill(`${title} amanhã`); await question.press('Enter');
+  await expect(page.getByRole('region', { name: 'Tarefa adicionada', exact: true })).toHaveCount(2);
+  expect(commands).toHaveLength(2); expect(commands[0]).not.toBe(commands[1]); expect(commands).toEqual(interpretations);
+  await page.getByRole('button', { name: 'Fechar Gika' }).click(); await page.goto(`/hoje?dia=${dueDate}`);
+  await expect(page.locator('.day-activity').filter({ hasText: title })).toHaveCount(2);
+});
+
+test('M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate', async ({ page }) => {
+  await enter(page); const title = 'Resposta perdida M3-T2'; const requests: string[] = []; const commandIds: string[] = []; const results: string[] = [];
+  await page.route('**/api/gika/respond', async route => {
+    requests.push(route.request().postDataJSON().requestId);
+    // First call mocks only upstream interpretation; the retry reaches the real receipt recovery route.
+    if (requests.length === 1) await route.fulfill({ json: descriptor(title) }); else await route.continue();
+  });
+  await page.route('**/api/commands', async route => {
+    if (route.request().postDataJSON()?.command !== 'activity.create') { await route.continue(); return; }
+    commandIds.push(route.request().postDataJSON().operationId);
+    const response = await route.fetch(); expect(response.status()).toBe(200);
+    results.push((await response.json()).result);
+    if (commandIds.length === 1) await route.abort('failed'); else await route.fulfill({ response });
+  });
+  await ask(page, `${title} amanhã`);
+  await expect(page.getByRole('button', { name: 'Tentar novamente', exact: true })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Tarefa adicionada', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Tentar novamente', exact: true }).click();
+  await expect(page.getByRole('region', { name: 'Tarefa adicionada', exact: true })).toContainText(title);
+  expect(requests).toHaveLength(2); expect(requests[0]).toBe(requests[1]); expect(commandIds).toEqual(requests);
+  expect(results).toEqual(['applied', 'alreadyApplied']);
+  await page.getByRole('button', { name: 'Fechar Gika' }).click(); await page.goto(`/hoje?dia=${dueDate}`);
+  await expect(page.locator('.day-activity').filter({ hasText: title })).toHaveCount(1);
+  await page.reload(); await expect(page.locator('.day-activity').filter({ hasText: title })).toHaveCount(1);
+});

@@ -25,8 +25,16 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
     try {
       const result = await bounded(async signal => {
         const identity = response.locals.identity;
-        const context = await repository.authorize(identity);
+        await repository.authorize(identity, 'receipt');
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+        const recovered = await repository.recoverCreation(identity.uid, input);
+        if (recovered) {
+          // Receipt is a historical creation snapshot, not current agenda state. The bridge must
+          // still obtain a freshly authorized acknowledgement from the existing command layer.
+          await repository.authorize(identity, 'receipt');
+          return gikaInterpretationSchema.parse({ text: 'Preparando a tarefa…', simulated: false, reads: [], createTask: recovered });
+        }
+        const context = await repository.authorize(identity);
         release = acquire(identity.uid);
         const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
         // Recheck account/policy after the upstream wait, before exposing data.

@@ -49,7 +49,12 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
     if (!parsed.success) throw new GikaFault('GIKA_MALFORMED_CALL');
     return parsed.data;
   });
-  if (tools.some(tool => tool.name === 'create_task') && tools.length !== 1) throw new GikaFault('GIKA_POLICY');
+  if (tools.some(tool => tool.name === 'create_task') && tools.length !== 1) {
+    const first = tools[0];
+    // Schemas above normalize property order and reject unknown fields before collapsing repetition.
+    if (first?.name !== 'create_task' || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) throw new GikaFault('GIKA_POLICY');
+    return [first];
+  }
   return tools;
 }
 export function validateCreation(args: unknown, text: string, context: ModelContext): CreationIntent {

@@ -3,25 +3,39 @@ import { Temporal } from '@js-temporal/polyfill';
 import type { DecodedIdToken } from 'firebase-admin/auth';
 import { activityInputSchema } from '../../packages/domain/src/content.ts';
 import { entityIdSchema, timeZoneSchema } from '../../packages/domain/src/identity.ts';
-import { readItemSchema, readResultSchema, type ReadResult } from '../../packages/domain/src/gika.ts';
+import { commandCreationResultSchema, createTaskDescriptorSchema, readItemSchema, readResultSchema, type CreateTaskDescriptor, type GikaRequest, type ReadResult } from '../../packages/domain/src/gika.ts';
 import { db } from '../platform/firebase.ts';
 import { AppError } from '../errors.ts';
 import { GikaFault, type ModelContext } from './model.ts';
+import { hashValue } from '../hash.ts';
 
 export type ReadRange = { startDate: string; endDate: string; timeZone: string };
 export interface ReadRepository {
-  authorize(identity: DecodedIdToken): Promise<ModelContext>;
+  authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
+  recoverCreation(uid: string, request: GikaRequest): Promise<CreateTaskDescriptor | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
-  async authorize(identity) {
+  async recoverCreation(uid, request) {
+    const receipt = await db.doc(`commandReceipts/${entityIdSchema.parse(uid)}_${request.requestId}`).get();
+    if (!receipt.exists) return null;
+    const data = receipt.data()!;
+    if (data.uid !== uid || !data.gika || data.gika.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    const response = commandCreationResultSchema.safeParse(data.response);
+    const task = createTaskDescriptorSchema.safeParse(data.gika.task);
+    if (!response.success || !task.success || response.data.operationId !== request.requestId || response.data.entityId !== request.requestId) throw new GikaFault('GIKA_INVALID_RESPONSE');
+    return task.data;
+  },
+  async authorize(identity, purpose) {
     if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail para continuar.');
     const uid = entityIdSchema.parse(identity.uid);
     const [profile, member, controls] = await db.getAll(db.doc(`users/${uid}`), db.doc(`memberships/${uid}`), db.doc('serviceControls/global'));
     const parsed = trustedProfileSchema.safeParse(profile?.data());
     if (member?.data()?.state !== 'active' || !parsed.success || parsed.data.uid !== uid) throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
-    if (controls?.data()?.mode !== 'normal') throw new GikaFault('GIKA_UNAVAILABLE');
+    // Completed receipts are reconcilable while new writes/provider calls are restricted,
+    // just like contentCommand's existing receipt branch. Account permissions still apply.
+    if (purpose !== 'receipt' && controls?.data()?.mode !== 'normal') throw new GikaFault('GIKA_UNAVAILABLE');
     return { today: Temporal.Now.instant().toZonedDateTimeISO(parsed.data.timeZone).toPlainDate().toString(), timeZone: parsed.data.timeZone, weekStartsOn: parsed.data.weekStartsOn };
   },
   async read(uid, range) {
