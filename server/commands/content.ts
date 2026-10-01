@@ -1,3 +1,4 @@
+import { rescheduleTaskPatchSchema,rescheduleDescriptorSchema,applyReschedulePatch,type RescheduleDescriptor } from '../../packages/domain/src/gikaReschedule.ts';
 import { updateTaskPatchSchema, updateDescriptorSchema, applyTitlePatch, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
 import { completionDescriptorSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
 import { z } from 'zod';
@@ -38,7 +39,8 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   if (action === 'purge') return purgeContent(identity, command, type, collection);
   const writingContent = ['create', 'update', 'save'].includes(action);
   let validatedInput: Record<string, unknown>;
-  if (command.gikaUpdate) validatedInput = updateTaskPatchSchema.parse(command.payload);
+  if (command.gikaReschedule) validatedInput = rescheduleTaskPatchSchema.parse(command.payload);
+  else if (command.gikaUpdate) validatedInput = updateTaskPatchSchema.parse(command.payload);
   else if (writingContent) {
     const schemas = { activity: activityInputSchema, category: categoryInputSchema, note: noteInputSchema, shoppingList: shoppingListInputSchema, shoppingItem: shoppingItemInputSchema };
     validatedInput = schemas[type as keyof typeof schemas].parse(command.payload);
@@ -56,6 +58,9 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       || commandHash(command) !== commandHash({ ...command, payload: activityInputSchema.parse(taskActivityInput(task)) })) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
     gika = { ...command.gika, task };
   }
+
+  if (command.gikaReschedule && (command.command !== 'activity.update'
+    || commandHash(command) !== commandHash({ ...command, payload: rescheduleTaskPatchSchema.parse(validatedInput) }))) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
 
   if (command.gikaUpdate && (command.command !== 'activity.update'
     || commandHash(command) !== commandHash({ ...command, payload: updateTaskPatchSchema.parse(validatedInput) }))) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
@@ -104,6 +109,15 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    let rescheduleTask: RescheduleDescriptor | undefined;
+    if (command.gikaReschedule) {
+      if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa mudou antes do reagendamento. Faça o pedido novamente.');
+      if (old.kind !== 'task' || old.schedule?.type !== 'task' || !old.schedule.dueDate || old.seriesId || old.occurrenceKey) throw new AppError(422, 'GIKA_POLICY', 'Para mover este item, use sua agenda.');
+      const patch = rescheduleTaskPatchSchema.parse(validatedInput);
+      if (old.schedule.dueDate === patch.dueDate && old.schedule.dueTime === (patch.dueTime ?? old.schedule.dueTime)) throw new AppError(422, 'GIKA_NO_CHANGE', 'Essa tarefa já está nessa data e horário.');
+      input = applyReschedulePatch(old, patch);
+      rescheduleTask = rescheduleDescriptorSchema.parse({ id: command.entityId, title: old.title, dueDate: old.schedule.dueDate, dueTime: old.schedule.dueTime, timeZone: old.schedule.timeZone, revision: old.revision, patch });
+    }
     let updateTask: UpdateDescriptor | undefined;
     if (command.gikaUpdate) {
       if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa mudou enquanto você estava editando. Faça o pedido novamente.');
@@ -175,7 +189,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

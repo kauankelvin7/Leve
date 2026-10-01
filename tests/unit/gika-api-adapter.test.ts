@@ -259,3 +259,23 @@ describe('M4-T2 patch bridge and structured acknowledgement', () => {
     expect(fixture.command).not.toHaveBeenCalled();
   });
 });
+
+const rescheduleTask={...completeTask,dueTime:'10:00',patch:{dueDate:'2026-10-02'}};
+it('M4-T3 interpretation only offers structured preview, never dispatches before UI confirmation',async()=>{
+ fixture.request.mockResolvedValue({...response,rescheduleTask});await expect(createApiAdapter()(input,new AbortController().signal)).resolves.toMatchObject({rescheduleTask});expect(fixture.command).not.toHaveBeenCalled();
+});
+describe('M4-T3 deterministic bridge auth/ack and retry',()=>{
+ it('waits real ack; original identity/revision/patch and no provider call on confirmation',async()=>{
+  const {rescheduleEnvelope}=await import('../../packages/domain/src/gikaReschedule');const {executeReschedule}=await import('../../apps/web/src/features/gika/rescheduleBridge');const c=await rescheduleEnvelope(rescheduleTask,input);
+  let resume!:(value:unknown)=>void;fixture.command.mockImplementation(()=>new Promise(resolve=>{resume=resolve;}));let settled=false;const p=executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal).then(r=>{settled=true;return r;});await vi.waitFor(()=>expect(resume).toBeTypeOf('function'));expect(settled).toBe(false);resume(completeAck(c as Parameters<typeof completeAck>[0]));await expect(p).resolves.toMatchObject({id:'target',dueDate:'2026-10-02',dueTime:'10:00',revision:4});expect(fixture.request).not.toHaveBeenCalled();
+ });
+ it.each([null,{uid:'account-b'}])('logout/switch at dispatch and ack rejects %j',async user=>{
+  const {rescheduleEnvelope}=await import('../../packages/domain/src/gikaReschedule');const {executeReschedule}=await import('../../apps/web/src/features/gika/rescheduleBridge');const c=await rescheduleEnvelope(rescheduleTask,input);fixture.user=user;await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).rejects.toMatchObject({code:'AUTH_REQUIRED'});expect(fixture.command).not.toHaveBeenCalled();fixture.user={uid:'account-a'};fixture.command.mockImplementation(async c=>{fixture.user=user;return completeAck(c);});await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).rejects.toMatchObject({code:'AUTH_REQUIRED'});
+ });
+ it('failure/lost ack reuses exact envelope; wrong ack/conflict cannot falsely confirm',async()=>{
+  const {rescheduleEnvelope}=await import('../../packages/domain/src/gikaReschedule');const {executeReschedule}=await import('../../apps/web/src/features/gika/rescheduleBridge');const {ApiError}=await import('../../apps/web/src/platform/api');const c=await rescheduleEnvelope(rescheduleTask,input);fixture.command.mockRejectedValueOnce(new Error('lost ack')).mockImplementation(async c=>({...completeAck(c),result:'alreadyApplied'}));await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).rejects.toThrow();await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).resolves.toMatchObject({result:'alreadyApplied'});expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);fixture.command.mockRejectedValue(new ApiError(409,'REVISION_CONFLICT','changed'));await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).rejects.toMatchObject({code:'GIKA_RESCHEDULE_CONFLICT'});fixture.command.mockImplementation(async c=>({...completeAck(c),entityId:'wrong'}));await expect(executeReschedule(rescheduleTask,c,'account-a',new AbortController().signal)).rejects.toThrow();
+ });
+});
+it('M4-T3 concurrent descriptor mismatch recovers only receipt once with ack still required',async()=>{
+ const {confirmReschedule}=await import('../../apps/web/src/features/gika/rescheduleBridge');const {ApiError}=await import('../../apps/web/src/platform/api');fixture.request.mockResolvedValue({...response,rescheduleTask:{...rescheduleTask,revision:4}});fixture.command.mockRejectedValueOnce(new ApiError(409,'OPERATION_MISMATCH','Mismatch')).mockImplementationOnce(async c=>({...completeAck(c),result:'alreadyApplied'}));await expect(confirmReschedule(rescheduleTask,input,'account-a',new AbortController().signal)).resolves.toMatchObject({id:'target',revision:5,result:'alreadyApplied'});expect(fixture.request).toHaveBeenCalledTimes(1);expect(fixture.command).toHaveBeenCalledTimes(2);
+});

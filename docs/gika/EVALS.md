@@ -216,3 +216,20 @@ Interpretação nesta tarefa é fixture; escrita/status/receipts/persistência/A
 | M4-E20 | model/router/policy/bridge sem persistência, provider ausente/falhando | guard arquitetural/allowlist e regressões read/fallback; nenhum Gemini live/segredo |
 
 Interpretação fixture nesta tarefa; Auth/command/receipt/Firestore reais emulados. Não prova interpretação Gemini live. Smoke M4 aguarda T1/T2/T3 revisados e autorização; T3 não iniciado. M4-T2 expõe somente título, demais campos ficam no editor convencional.
+
+## M4-T3 — reschedule_task sem Gemini live
+
+| Eval | Cenário | Prova |
+|---|---|---|
+| E30/M4-E21 | Joga Java pra sexta; Move academia para amanhã; segunda/absoluta | parser civil adotado/weekday inclui hoje; gika-reschedule unit/integration |
+| M4-E22 | segunda que vem/próxima/dia10/inválida/compound ou modelo diverge | esclarecimento/deny sem descriptor/escrita; unit/integration |
+| M4-E23 | nenhum/homônimos/partial/cap50/evento/série | resolver bounded/auth exato, não escolhe primeiro; unit/integration/UI |
+| M4-E24 | date-only preserva horário/ausência/fuso/DST/lembretes/campos privados; horário explícito | helper temporal/ActivityInput convencionais, patch somente pedido; unit/integration |
+| M4-E25 | no-op date/time e revision alterada após preview | sem command/revision no-op, conflito sem overwrite/refresh; unit/integration/UI |
+| M4-E26 | replay sequencial/concurrent/lost ack/functionCall repetida/new UUID/divergência | receipt original atomizado, alvo sai dia antigo, um efeito; integration/bridge/UI |
+| M4-E27 | auth ausente/logout/troca/owner/membership precommand/ack/replay | nenhuma dispatch/resultado fora conta; command-auth/bridge/integration/UI |
+| M4-E28 | pre/póscommit falha, payload/tool desconhecido/time inventado | sem sucesso falso/escrita inválida; unit/integration/UI |
+| M4-E29 | preview/cancel/double tap/ack retido/desktop light/mobile dark/Axe | botão determinístico sem Gemini; rescheduledTask/card só após ack; gika-reschedule.spec.ts |
+| M4-E30 | nenhuma persistência direta model/router/bridge; provider ausente/falhando | architecture/source/evals M2 preservados, agenda convencional operacional |
+
+Interpretação fixture sem segredo; Auth/commands/receipts/Firestore emulados reais. Nenhum teste declara interpretação Gemini live. M4 permanece parcial aguardando M4-SMOKE explicitamente autorizado após revisão T3; não iniciar M5.

@@ -303,3 +303,8 @@ PRE abbd1e2 limpo; pedido explícito autoriza somente smoke, supersede a espera 
 ## Execução verificada M4-T1 — 2026-10-01
 
 Pedido mais recente autorizou somente complete_task após M3 fechado, PRE56b9308 limpo. T1 done, M4 in_progress. M4_T1_EXECPLAN.md/M4_T1_EVIDENCE.md/ADR014 registram auditoria, diferença do selector original activityId para title/date strict e resolução bounded, reutilização activity.setStatus/revisão/receipt, auth/retry/ack UI.218 unit/98 integração/38 E2E Gika/lint/dois TS/build PASS;global58/11/check12/1/audit13 baseline explícitos. Sem live nem T2/T3. Próxima ação é revisão T1; parar antes de M4-T2.
+
+
+### Checkpoint M4-T3 — tarefa exclusiva concluída
+
+Autorização mais recente d233971; plano/auditoria M4_T3_EXECPLAN.md antes do código. reschedule_task temporal strict/selector autenticado civil/exato/bounded, preview/confirm específico em memória e activity.update/revision/receipt convencional/ADR016. Horário/fuso/DST e campos não pedidos preservados, sem evento/série/batch/Undo novo.295 unit/150 integração/7 focal/lint/doisTS/build PASS;ampla82=67/15 classificada por cópia isolada d233971/sondas, atual8/2 final históricos, todas51 Gika observadas PASS. check12/1/audit13 baseline,26 arquivos idênticos. M4-T3 done; M4 permanece in_progress aguardando M4-SMOKE após revisão/autorização live. M5 não iniciado. Evidências M4_T3_EVIDENCE.md/evidence/m4-t3-{gates,transport-baseline,baseline-files}.json; estado/tarefas fontes atuais. Sem Gemini live/segredo/produção/billing/push/deploy/merge.

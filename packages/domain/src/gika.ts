@@ -1,3 +1,4 @@
+import { rescheduleTaskCallSchema,rescheduleDescriptorSchema,rescheduleResolutionSchema } from './gikaReschedule.ts';
 import { updateTaskCallSchema, updateDescriptorSchema, updatedTaskSchema, updateResolutionSchema } from './gikaUpdate.ts';
 import { completeTaskCallSchema, completionDescriptorSchema, completedTaskSchema, completionResolutionSchema } from './gikaCompletion.ts';
 import { z } from 'zod';
@@ -29,7 +30,7 @@ export const readResultSchema = z.object({
 });
 export const gikaResponseSchema = z.discriminatedUnion('simulated', [
   z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(true), preview: z.literal('organize-demo').optional() }).strict(),
-  z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false), reads: z.array(readResultSchema).max(3), createdTask: z.lazy(() => createdTaskSchema).optional(), completedTask: completedTaskSchema.optional(), completionResolution: completionResolutionSchema.optional(), updatedTask: updatedTaskSchema.optional(), updateResolution: updateResolutionSchema.optional() }).strict().refine(response => [response.createdTask, response.completedTask, response.completionResolution, response.updatedTask, response.updateResolution].filter(Boolean).length <= 1 && (!(response.createdTask || response.completedTask || response.completionResolution || response.updatedTask || response.updateResolution) || response.reads.length === 0)),
+  z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false), reads: z.array(readResultSchema).max(3), createdTask: z.lazy(() => createdTaskSchema).optional(), completedTask: completedTaskSchema.optional(), completionResolution: completionResolutionSchema.optional(), updatedTask: updatedTaskSchema.optional(), updateResolution: updateResolutionSchema.optional(), rescheduleTask: rescheduleDescriptorSchema.optional(), rescheduleResolution: rescheduleResolutionSchema.optional() }).strict().refine(response => [response.createdTask, response.completedTask, response.completionResolution, response.updatedTask, response.updateResolution, response.rescheduleTask, response.rescheduleResolution].filter(Boolean).length <= 1 && (!(response.createdTask || response.completedTask || response.completionResolution || response.updatedTask || response.updateResolution || response.rescheduleTask || response.rescheduleResolution) || response.reads.length === 0)),
 ]);
 export type GikaRequest = z.infer<typeof gikaRequestSchema>;
 export type GikaResponse = z.infer<typeof gikaResponseSchema>;
@@ -42,7 +43,7 @@ export const createTaskArgsSchema = z.object({
   dueTime: civilTimeSchema.nullable(),
 }).strict();
 export const createTaskCallSchema = z.object({ name: z.literal('create_task'), args: createTaskArgsSchema }).strict();
-export const toolCallSchema = z.union([readCallSchema, createTaskCallSchema, completeTaskCallSchema, updateTaskCallSchema]);
+export const toolCallSchema = z.union([readCallSchema, createTaskCallSchema, completeTaskCallSchema, updateTaskCallSchema, rescheduleTaskCallSchema]);
 export const createTaskDescriptorSchema = createTaskArgsSchema.extend({ timeZone: timeZoneSchema }).strict().superRefine((task, context) => {
   if (!activityInputSchema.safeParse(taskActivityInput(task)).success) context.addIssue({ code: 'custom', message: 'Tarefa inválida.' });
 });
@@ -54,7 +55,7 @@ export const commandCreationResultSchema = z.object({ operationId: z.uuid(), ent
   revision: z.literal(1), serverTime: z.iso.datetime(), result: z.enum(['applied', 'alreadyApplied']) }).strict();
 export const createdTaskSchema = createTaskDescriptorSchema.safeExtend({ id: entityIdSchema, revision: z.literal(1), result: z.enum(['applied', 'alreadyApplied']) }).strict();
 export const gikaInterpretationSchema = z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false),
-  reads: z.array(readResultSchema).max(3), createTask: createTaskDescriptorSchema.optional(), completeTask: completionDescriptorSchema.optional(), completionResolution: completionResolutionSchema.optional(), updateTask: updateDescriptorSchema.optional(), updateResolution: updateResolutionSchema.optional() }).strict().refine(response => [response.createTask, response.completeTask, response.completionResolution, response.updateTask, response.updateResolution].filter(Boolean).length <= 1 && (!(response.createTask || response.completeTask || response.completionResolution || response.updateTask || response.updateResolution) || response.reads.length === 0));
+  reads: z.array(readResultSchema).max(3), createTask: createTaskDescriptorSchema.optional(), completeTask: completionDescriptorSchema.optional(), completionResolution: completionResolutionSchema.optional(), updateTask: updateDescriptorSchema.optional(), updateResolution: updateResolutionSchema.optional(), rescheduleTask: rescheduleDescriptorSchema.optional(), rescheduleResolution: rescheduleResolutionSchema.optional() }).strict().refine(response => [response.createTask, response.completeTask, response.completionResolution, response.updateTask, response.updateResolution, response.rescheduleTask, response.rescheduleResolution].filter(Boolean).length <= 1 && (!(response.createTask || response.completeTask || response.completionResolution || response.updateTask || response.updateResolution || response.rescheduleTask || response.rescheduleResolution) || response.reads.length === 0));
 export type CreateTaskDescriptor = z.infer<typeof createTaskDescriptorSchema>;
 export type CreatedTask = z.infer<typeof createdTaskSchema>;
 export type ToolCall = z.infer<typeof toolCallSchema>;

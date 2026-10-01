@@ -77,3 +77,19 @@ describe('M4-T2 title update auth immediately after token wait', () => {
     expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.queue).not.toHaveBeenCalled();
   });
 });
+
+describe('M4-T3 reschedule auth immediately after token wait', () => {
+  it.each([null, { uid: 'account-b', getIdToken: vi.fn() }])('does not send or queue on logout/switch %j', async changed => {
+    const { executeReschedule } = await import('../../apps/web/src/features/gika/rescheduleBridge');
+    const { rescheduleEnvelope } = await import('../../packages/domain/src/gikaReschedule');
+    const task = { id: 'target', title: 'Academia', dueDate: '2026-10-01', timeZone: 'America/Sao_Paulo', revision: 3, dueTime: null, patch: { dueDate: '2026-10-02' } };
+    let resume!: (token: string) => void;
+    fixture.user = { uid: 'account-a', getIdToken: vi.fn(() => new Promise(resolve => { resume = resolve; })) };
+    const cmd = await rescheduleEnvelope(task, { requestId: crypto.randomUUID(), text: 'Move academia para amanhã' });
+    const result = executeReschedule(task, cmd, 'account-a', new AbortController().signal);
+    const rejected = expect(result).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+    await vi.waitFor(() => expect(resume).toBeTypeOf('function'));
+    fixture.user = changed; resume('local-fixture-token'); await rejected;
+    expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.queue).not.toHaveBeenCalled();
+  });
+});

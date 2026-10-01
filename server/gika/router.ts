@@ -1,3 +1,4 @@
+import { validateReschedule,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
 import express, { Router, type ErrorRequestHandler } from 'express';
@@ -34,7 +35,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           // Historical snapshot only; the bridge still needs a freshly authorized command ack.
           await repository.authorize(identity, 'receipt');
           return gikaInterpretationSchema.parse({ text: recovered.kind === 'create' ? 'Preparando a tarefa…' : recovered.kind === 'complete' ? 'Preparando a conclusão…' : 'Preparando a alteração…', simulated: false, reads: [],
-            ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : { updateTask: recovered.task }) });
+            ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task } : { updateTask: recovered.task }) });
         }
         const context = await repository.authorize(identity);
         release = acquire(identity.uid);
@@ -42,6 +43,24 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+        if (calls[0]?.name === 'reschedule_task') {
+          const intent = validateReschedule(calls[0].args, input.text, current);
+          if ('clarification' in intent) return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } });
+          const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
+          const read = readResultSchema.parse(await repository.read(identity.uid, range));
+          if (read.timeZone !== current.timeZone || signal.aborted) throw new GikaFault('GIKA_POLICY');
+          const afterRead = await repository.authorize(identity);
+          if (afterRead.today !== current.today || afterRead.timeZone !== current.timeZone || afterRead.weekStartsOn !== current.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+          const resolved = resolveReschedule(intent, read);
+          // A same-operation commit may have raced the read. Receipt precedes fresh resolution.
+          const receipt = await repository.recoverMutation(identity.uid, input);
+          if (receipt && receipt.kind !== 'reschedule') throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outra ação. Envie um novo pedido.');
+          const committed = receipt?.task;
+          await repository.authorize(identity, 'receipt');
+          if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+          return gikaInterpretationSchema.parse({ text: committed ? 'Confira a nova data antes de mover a tarefa.' : resolved.text, simulated: false, reads: [],
+            ...(committed || resolved.task ? { rescheduleTask: committed ?? resolved.task } : { rescheduleResolution: resolved.resolution }) });
+        }
         if (calls[0]?.name === 'update_task') {
           const intent = validateUpdate(calls[0].args, input.text, current);
           if ('clarification' in intent) return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], updateResolution: { status: 'clarify', candidates: [] } });
@@ -83,7 +102,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
+        const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         for (const range of ranges) {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
@@ -92,7 +111,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           reads.push(read);
         }
         const text = reads.length === 0
-          ? (isUpdateRequest(input.text) ? ('clarification' in resolveUpdateIntent(input.text, current) ? 'Qual tarefa você quer renomear e qual será o novo título?' : 'Não alterei nenhuma tarefa. Reformule o pedido ou use sua agenda.') : /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text) ? ('clarification' in resolveCompletionIntent(input.text, current) ? 'Qual tarefa você quer concluir? Informe o título e o dia.' : 'Não concluí nenhuma tarefa. Reformule o pedido ou use sua agenda.') : resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Você pode reformular o pedido ou consultar sua agenda.')
+          ? (isRescheduleRequest(input.text) ? 'Não movi nenhuma tarefa. Informe o título, o dia atual e a nova data.' : isUpdateRequest(input.text) ? ('clarification' in resolveUpdateIntent(input.text, current) ? 'Qual tarefa você quer renomear e qual será o novo título?' : 'Não alterei nenhuma tarefa. Reformule o pedido ou use sua agenda.') : /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text) ? ('clarification' in resolveCompletionIntent(input.text, current) ? 'Qual tarefa você quer concluir? Informe o título e o dia.' : 'Não concluí nenhuma tarefa. Reformule o pedido ou use sua agenda.') : resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Você pode reformular o pedido ou consultar sua agenda.')
           : reads.some(read => read.partial) ? 'Esta consulta mostra parte da sua agenda. Confira o calendário para ver mais.'
           : 'Veja sua agenda para o período consultado.';
         return gikaInterpretationSchema.parse({ text, simulated: false, reads });

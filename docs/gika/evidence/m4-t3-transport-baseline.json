@@ -1,0 +1,110 @@
+{
+  "checkpoint": "d23397136ce4033cd164f1628419cda2b97cf548",
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "originalAssertionTimeoutMs": 10000,
+  "controlledTransportDelayMs": 10200,
+  "productionOrOriginalHarnessTimeoutChanged": false,
+  "geminiLive": false,
+  "observedSanitizedTransport": {
+    "gika-update-M4-T2-later": [
+      {
+        "httpStatus": 200,
+        "durationMs": 9589.645999999999,
+        "pendingAtDeadline": false
+      },
+      {
+        "httpStatus": 200,
+        "durationMs": 10006.268,
+        "pendingAtDeadline": false
+      },
+      {
+        "httpStatus": 409,
+        "durationMs": 18.44,
+        "pendingAtDeadline": false
+      }
+    ],
+    "persistent-login": [
+      {
+        "httpStatus": null,
+        "durationMs": null,
+        "pendingAtDeadline": true
+      }
+    ],
+    "persistent-compromisso": [
+      {
+        "httpStatus": null,
+        "durationMs": null,
+        "pendingAtDeadline": true
+      }
+    ],
+    "persistent-duas": [
+      {
+        "httpStatus": null,
+        "durationMs": null,
+        "pendingAtDeadline": true
+      }
+    ],
+    "session-cronômetro-explíci": [
+      {
+        "httpStatus": 200,
+        "durationMs": 14260.04,
+        "pendingAtDeadline": false
+      },
+      {
+        "httpStatus": 200,
+        "durationMs": 200.41199999999998,
+        "pendingAtDeadline": false
+      },
+      {
+        "httpStatus": 200,
+        "durationMs": 227.50900000000001,
+        "pendingAtDeadline": false
+      },
+      {
+        "httpStatus": null,
+        "durationMs": null,
+        "pendingAtDeadline": true
+      },
+      {
+        "httpStatus": null,
+        "durationMs": null,
+        "pendingAtDeadline": true
+      }
+    ]
+  },
+  "lostAckTraceUnavailable": true,
+  "baselineOriginal": {
+    "passed": 4,
+    "failed": 2,
+    "passing": [
+      "T2 lost acknowledgement",
+      "T2 later edit conflict",
+      "conventional sync/offline",
+      "conventional manual"
+    ],
+    "historicFailures": [
+      "persistent52 calendar-agenda assumes Month while Week",
+      "persistent164 duplicate Meu dia"
+    ]
+  },
+  "baselineControlled": {
+    "passed": 4,
+    "failed": 0
+  },
+  "currentOriginalAndControlled": {
+    "passed": 8,
+    "failed": 2,
+    "historicFailures": [
+      "persistent52 calendar-agenda assumes Month while Week",
+      "persistent164 duplicate Meu dia"
+    ]
+  },
+  "controlledCases": [
+    "rename lost real ack: original deadline expires, receipt retry then succeeds",
+    "rename resolution delayed by conventional edit: original deadline expires, conflict preserves edit",
+    "conventional activity.create pending: original deadline expires, ack/list/reload succeed",
+    "conventional addManual pending: original deadline expires, ack/history/reload succeed"
+  ],
+  "temporaryProbesRemoved": true,
+  "setup": "git archive d233971; separate baseline API8789/Vite5177; same emulators/dependencies, writers sequential. Port/fs.allow only in temporary environment config."
+}

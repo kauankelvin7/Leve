@@ -245,8 +245,15 @@ milestones:
         dependencies: [M4-T1]
       - id: M4-T3
         title: "reschedule_task"
-        status: todo
+        status: done
+        evidence: ["M4_T3_EXECPLAN.md/M4_T3_EVIDENCE.md/evidence/m4-t3-gates.json: PREd233971 limpo; patch temporal strict/preview civil/time preservado→activity.update/receipt/revision convencional, ADR016.295 unit/150 integração/7 focal/lint/doisTS/build PASS;82 locais67/15 causas classificadas contra base, comparação atual8/2 históricos, todas51 Gika observadas PASS;check12/1,audit13 baseline e26 arquivos idênticos. Sem live/M5, parar para revisão antes de M4-SMOKE."]
+        acceptance_criteria: ["Um alvo exato/bounded autenticado, civil deterministicamente validado; partial/ambiguidade/recorrência bloqueiam; horário omitido e todos campos preservados, patch somente solicitado, no-op sem command, preview e confirmação específica, auth/revision/receipt/ack real, replay/concurrency/lost ack seguros; testes/evals/gates/evidências/checkpoint e parar antes de M4-SMOKE/M5."]
         dependencies: [M4-T2]
+      - id: M4-SMOKE
+        title: "Smoke real complete/update/reschedule após revisão"
+        status: blocked
+        blocked_reason: "Aguardar revisão M4-T3 e autorização específica de Gemini live; não executar nesta tarefa."
+        dependencies: [M4-T3]
 
   M5:
     name: "Políticas, lote e recorrência"
@@ -254,7 +261,7 @@ milestones:
       - id: M5-T1
         title: "Policy engine"
         status: todo
-        dependencies: [M4-T3]
+        dependencies: [M4-SMOKE]
       - id: M5-T2
         title: "Confirmation cards e pending actions"
         status: todo

@@ -9,7 +9,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     const payload = geminiPayload(input);
     expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
     expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
-    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'get_week']);
+    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'reschedule_task', 'get_week']);
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'update_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'date', 'patch'], properties: { patch: { additionalProperties: false, required: ['title'] } } });
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'create_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'dueDate', 'dueTime'] });
     expect(payload.contents[0]!.parts).toEqual([{ text: input.text }]);
