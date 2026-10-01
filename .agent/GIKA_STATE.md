@@ -2,28 +2,28 @@
 
 ## Estado atual
 
-- Status global: `IN_PROGRESS`
+- Status global: `PAUSED_FOR_REVIEW`
 - Milestones concluídos: `M0`, `M1` e `M2` (shell/mock/refinement; limites da regressão ampliada abaixo)
-- Milestone atual: `M2` concluído; parada solicitada antes do M3
-- Tarefa atual: nenhuma em execução; M2-SMOKE PASS; M3 não autorizado nesta tarefa
+- Milestone atual: `M3` parcial; somente M3-T1 concluído
+- Tarefa atual: nenhuma implementação ativa; M3-T1 done, aguardando revisão humana; M3-T2/T3 todo e não autorizados
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `c1c709ddcba184b2071c9d591a279e5441cdf9a6` (smoke PASS registrado; worktree limpo no PRE fechamento final M2)
-- Worktree limpo no PRE fechamento final M2; ownership somente evidências/estado/tarefas. Arquitetura, adapter, modelo e produção inalterados
-- Últimos gates: fechamento M2 lint/build/dois typechecks e 134 unit/30 arquivos PASS; grafo/escopo/segredos/diff PASS. Smoke real HTTP200/E01/E02 PASS registrado em c1c709d. Integração42, E2E finais8 e mock14 PASS anteriores preservados, sem alteração funcional. Baseline Planner classificado; nenhuma intermitência pendente.
-- Commit final esperado: `docs(gika): finalize M2 gates and remote proxy evidence`
+- Último SHA verificado no PRE: `92cc9c74f5d865265ebe80a100386f992c97d20d` (checkpoint solicitado; worktree limpo no PRE M3-T1)
+- Ownership M3-T1 em M3_T1_EXECPLAN.md; bridge M0/ADR005 preservado, sem nova persistência/Rules/contentCommand. Guard UID/signal opcional em sendCommand, sem mudar defaults convencionais
+- Últimos gates: lint/build/dois typechecks/175 unit em33 arquivos e53 integração em4 arquivos PASS. 25 E2E Gika PASS (5 criação real emulada,6 M2,14 mock);5 Planner visual,4 Planner convencionais/offline,7 sazonal PASS. Suíte local completa44 PASS/12 FAIL baseline; check shell12 PASS/1 FAIL baseline. Nove falhas adicionais reproduzidas na UI92cc9c7; detalhes/evals/screenshots em M3_T1_EVIDENCE.md. Nenhuma intermitência Gika pendente
+- Commit de tarefa esperado: `feat(gika): M3-T1 create tasks through existing commands`; checkpoint documental posterior registra seu SHA
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Diagnóstico e repetição do smoke explicitamente autorizados nesta tarefa; parar antes do M3. Causa `NETWORK / ENV_PROXY_NOT_ENABLED` comprovada por TIMEOUT sem proxy efetivo e HTTP200 com proxy; smoke E01/E02 PASS com NODE_USE_ENV_PROXY=1 somente no subprocesso.
-4. Não reutilizar credencial temporária nem iniciar M3. Nenhuma alteração de arquitetura/modelo/produto; credencial não persistida e subprocessos encerrados.
+3. Revisar M3-T1, M3_T1_EVIDENCE.md e screenshots da primeira criação. Não iniciar M3-T2/T3 automaticamente; aguardar autorização explícita do usuário depois da revisão.
+4. Não reutilizar credencial temporária M2. Smoke Gemini real E10 não executado por ausência de credencial atual autorizada; fixtures e emuladores comprovam o fluxo/command/persistência, não interpretação live. Sem chave fictícia/billing; humanizer-br oficial para UI.
 
 ## Bloqueios
 
-- Nenhum gate M2 bloqueado. Smoke real PASS após diagnóstico. Parada explícita antes do M3; não interpretar conclusão de M2 como autorização para avançar.
+- Nenhum gate focal M3-T1 bloqueado; parada de escopo/revisão antes de T2. M3 ainda não done: proteção ampla/idempotência e undo permanecem T2/T3 todo. Smoke live create_task não realizado nesta sessão sem credencial atual autorizada.
 
 ## Riscos e limitações
 
@@ -32,16 +32,20 @@
 - 05-capacidade-e-revisao.md ausente: pendência documental não bloqueante; não inferir capacidade/billing a partir dele.
 
 - Regressão Planner ampliada não integralmente verde: contraste completed 4,28:1 e dois testes sem expandir Mais opções são baseline (prova em M1_EVIDENCE.md). Offline era regressão do dock Gika, demonstrada por hit-test base/branch e corrigida: sequência original 2 PASS, nova proteção de dock 3 PASS. Ver M2_PREFLIGHT.md. Nenhum teste desabilitado; nenhuma correção de domínio/Planner fora do escopo.
+- M3-T1 executou toda a suíte local:12 FAIL baseline (três Planner +nove harness design/persistent/refinements/session reproduzidos na cópia92cc9c7). Check shell também falhou em contraste/timing da demo, reproduzido na base; comparação com reducedMotion passa em ambas. Não apresentar regressão ampliada como verde; classificações/provas versionadas em M3_T1_EVIDENCE.md.
+- Base mínima de envelope pendente existente mantida como Today; retry manual da mesma tentativa preserva IDs. Cancelar após dispatch não prova rollback. Novas submissões/reload/concurrency/dedup amplo ainda são escopo M3-T2, não concluído. Undo não implementado.
 - Bundles baseline >500 kB; nenhuma otimização fora de escopo. Ver M0_EVIDENCE.md.
 - Handlers de série divergem em controles/limites da command layer genérica; revisão obrigatória antes de expor em M5.
 - useUserCollection mascara partial; Gika não usará isso como prova de consulta completa.
 - Batch transacional genérico não existe; gate M6. Header microphone=() bloqueia voz; gate M7.
 - Superpowers indisponível; processo manual equivalente conforme AGENTS.md. Nenhum subagente utilizado.
-- M1 mock em memória segue injetável; M2 produção usa API read-only; credencial temporária foi usada somente no smoke e não está disponível ao servidor. Limites Gika locais não equivalem a quota global entre instâncias. Não houve deploy, merge, push ou uso de credenciais de produção.
+- M1 mock em memória segue injetável; produção M3-T1 usa API de interpretação/read +bridge de create_task, com sucesso structured somente após receipt de activity.create. Credencial temporária M2 não foi reutilizada e não está disponível ao servidor. Limites Gika locais não equivalem a quota global entre instâncias. Não houve deploy, merge, push ou uso de credenciais de produção.
 
 ## Checkpoint de retomada
 
 O SHA acima identifica o último commit de tarefa, anterior ao commit que grava este checkpoint (não há SHA auto-referente possível em arquivo versionado). Conferir git log e diff de commits posteriores. O checkpoint esperado posterior só contém estado/documentação. Se HEAD divergir por mudanças adicionais, investigar antes de continuar; não ignorar divergência. Histórico e tarefas são fonte de verdade.
+
+PRE M3-T1 partiu de92cc9c7. O commit atômico inclui código/testes/estado/tarefas/evidências; checkpoint documental registra depois o SHA real desse commit. Próxima tarefa técnica registrada é M3-T2, porém não autorizada. Não avançar após ler este estado.
 
 ## Histórico
 
@@ -79,3 +83,5 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 | 2026-10-01 | M2 | M2-SMOKE | done: diagnóstico NETWORK/ENV_PROXY_NOT_ENABLED; HTTP200 com proxy, smoke real E01/E02 PASS; M3 não iniciado | `c1c709d` |
 
 | 2026-10-01 | M2 | fechamento final | done: causa Codex Remote documentada, gates finais PASS; M2/M2-SMOKE done, M3-T1 todo | checkpoint após c1c709d |
+
+| 2026-10-01 | M3 parcial | M3-T1 | done: create_task pelo comando existente,175 unit/53 integração/25 E2E Gika PASS; baseline global classificado; parada para revisão antes de T2/T3 | commit M3-T1 após92cc9c7 |

@@ -9,6 +9,8 @@ vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ in
   state.inputs.push(input); return state.model!.interpret(input, signal);
 } }) }));
 import { app } from '../../server/app';
+import { gikaInterpretationSchema, taskActivityInput } from '../../packages/domain/src/gika';
+import { commandEnvelopeSchema } from '../../packages/domain/src/identity';
 const id = '3dad14e9-a25a-48a3-a5ab-d05d277c3991';
 const zone = 'America/Sao_Paulo';
 async function account(verified = true, membership = 'active', timeZone = zone) {
@@ -16,7 +18,7 @@ async function account(verified = true, membership = 'active', timeZone = zone) 
   const signed = await fetch('http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=local-test', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: user.email, password: 'teste-seguro-123', returnSecureToken: true }) });
   if (!signed.ok) throw new Error('Emulator sign-in failed');
   const { idToken } = await signed.json() as { idToken: string };
-  await db.doc(`users/${user.uid}`).set({ uid: user.uid, accountState: 'active', timeZone, weekStartsOn: 1, revision: 1 });
+  await db.doc(`users/${user.uid}`).set({ uid: user.uid, accountState: 'active', timeZone, weekStartsOn: 1, revision: 1, dataVersion: 1 });
   await db.doc(`memberships/${user.uid}`).set({ state: membership });
   return { uid: user.uid, token: idToken };
 }
@@ -31,6 +33,68 @@ beforeEach(async () => {
   const users = await auth.listUsers(); if (users.users.length) await auth.deleteUsers(users.users.map(user => user.uid));
   await db.doc('serviceControls/global').set({ mode: 'normal' });
   state.inputs = []; state.model = { interpret: async () => [{ name: 'get_today', args: {} }] };
+});
+
+describe('M3-T1 create_task descriptor → existing authenticated activity.create transaction', () => {
+  const creationArgs = (date: string) => ({ title: 'Academia', dueDate: date, dueTime: null });
+  function creationCommand(descriptor: unknown) {
+    const parsed = gikaInterpretationSchema.parse(descriptor);
+    if (!parsed.createTask) throw new Error('Missing validated create descriptor');
+    return commandEnvelopeSchema.parse({ command: 'activity.create', operationId: crypto.randomUUID(), entityId: crypto.randomUUID(), expectedRevision: 0, clientCreatedAt: new Date().toISOString(), payload: taskActivityInput(parsed.createTask) });
+  }
+  it.each([zone, 'Pacific/Kiritimati'])('E10 real command persists one task with trusted relative date and account only %s', async timeZone => {
+    const user = await account(true, 'active', timeZone); const other = await account();
+    let tomorrow = '';
+    state.model = { interpret: async input => {
+      tomorrow = Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString();
+      return [{ name: 'create_task', args: creationArgs(tomorrow) }];
+    } };
+    const interpreted = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200);
+    expect(interpreted.body).toMatchObject({ createTask: { ...creationArgs(tomorrow), timeZone }, reads: [] });
+    expect(interpreted.body).not.toHaveProperty('createdTask');
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+    const command = creationCommand(interpreted.body);
+    const applied = await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect(applied.body).toMatchObject({ entityId: command.entityId, operationId: command.operationId, revision: 1, result: 'applied' });
+    expect((await db.doc(`users/${user.uid}/activities/${command.entityId}`).get()).data()).toMatchObject({ title: 'Academia', kind: 'task', status: 'pending', revision: 1, seriesId: null, schedule: { type: 'task', dueDate: tomorrow, dueTime: null, timeZone } });
+    expect((await db.collection(`users/${other.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(1);
+    expect((await db.doc(`users/${user.uid}`).get()).data()?.dataVersion).toBe(2);
+  });
+  it.each(['Cria uma tarefa', 'Academia'])('missing information asks instead of writing %s', async text => {
+    const user = await account(); state.model = { interpret: async () => [{ name: 'create_task', args: creationArgs('2026-10-02') }] };
+    const response = await ask(user.token, { requestId: id, text }).expect(200);
+    expect(response.body).not.toHaveProperty('createTask'); expect(response.body.text).toContain(text === 'Academia' ? 'qual dia' : 'Qual tarefa');
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it.each([{ name: 'create_task', args: { dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null, owner: 'someone-else' } }, { name: 'complete_task', args: {} }])('malformed/unknown tool never writes %j', async call => {
+    const user = await account(); state.model = { interpret: async () => [call] };
+    await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(422);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it('narrative claiming success without a valid tool is discarded', async () => {
+    const actual = await vi.importActual<typeof import('../../server/gika/gemini')>('../../server/gika/gemini');
+    const user = await account(); state.model = actual.createGeminiAdapter(async () => Response.json({ candidates: [{ finishReason: 'STOP', content: { parts: [{ text: 'Criei Academia amanhã com sucesso.' }] } }] }));
+    const response = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200);
+    expect(response.body.text).toContain('Não adicionei'); expect(response.body).not.toHaveProperty('createTask');
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it('membership revoked during model wait denies the descriptor; unauthenticated creation denies before model', async () => {
+    await request(app).post('/api/gika/respond').send({ requestId: id, text: 'Academia amanhã' }).expect(401);
+    expect(state.inputs).toHaveLength(0); const user = await account();
+    state.model = { interpret: async input => { await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' }); return [{ name: 'create_task', args: creationArgs(Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString()) }]; } };
+    await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(403);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+  });
+  it.each(['membership', 'restricted'])('existing command rechecks policy immediately before the transaction %s', async failure => {
+    const user = await account(); state.model = { interpret: async input => [{ name: 'create_task', args: creationArgs(Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString()) }] };
+    const response = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200); const command = creationCommand(response.body);
+    if (failure === 'membership') await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' }); else await db.doc('serviceControls/global').update({ mode: 'restricted' });
+    await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command).expect(failure === 'membership' ? 403 : 503);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
 });
 describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators', () => {
   it('nega sem token/inválido, e conta não verificada/suspensa antes do modelo', async () => {

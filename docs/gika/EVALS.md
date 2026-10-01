@@ -131,3 +131,20 @@ Uma execução autorizada com credencial temporária: FAIL/GIKA_UNAVAILABLE, exi
 ### M2-SMOKE repetido após diagnóstico — 2026-10-01
 
 Causa local NETWORK/ENV_PROXY_NOT_ENABLED. Chamada mínima ao mesmo endpoint/modelo HTTP200 com proxy efetivo; repetição explicitamente autorizada do smoke existente E01/E02 PASS/exit0. NODE_USE_ENV_PROXY=1 somente no subprocesso; nenhuma alteração de arquitetura/modelo/credencial persistida. M2 concluído; não iniciar M3.
+
+## M3-T1 — criação segura e esclarecimento
+
+Autorização posterior exclusiva M3-T1. E11 e undo continuam gates de M3-T2/T3; E10 nesta tarefa inclui apenas a base mínima de envelope estável exigida pelo comando existente.
+
+| Eval | Pedido/situação | Critério e teste |
+|---|---|---|
+| E10 | Academia amanhã | task simples, data do perfil+1, uma activity.create real, UI structured somente após receipt; gika.test.ts (dois fusos), gika-create.spec.ts (desktop/mobile/reload) |
+| M3-E12 | Adiciona estudar Java sábado; Cria uma tarefa para revisar currículo amanhã; Academia sexta | título original e data civil determinística, sexta inclui hoje; gika-create-policy.test.ts |
+| M3-E13 | Cria uma tarefa; Academia; próxima sexta | pergunta sem descriptor/escrita; gika-create-policy.test.ts e gika.test.ts |
+| M3-E14 | campo desconhecido, owner/uid/path, título/data inventados, data impossível, DST inválido | strict/policy nega, nenhum comando/receipt/escrita; gika-create-policy.test.ts, gika-api-adapter.test.ts, gika.test.ts, gika-create.spec.ts |
+| M3-E15 | sem sessão; logout/troca durante upstream/token; membership revogada | autenticação fresca antes da mutação, nenhuma dispatch/escrita no contexto antigo; gika-command-auth.test.ts, gika-api-adapter.test.ts, gika.test.ts, gika-create.spec.ts |
+| M3-E16 | comando falha, controle restricted, receipt inválido/trocado | nenhum createdTask/sucesso; draft preservado/agenda convencional disponível; gika-api-adapter.test.ts, gika.test.ts, gika-create.spec.ts |
+| M3-E17 | Gemini tool inexistente, narrativa 'criei' sem tool válida | allowlist nega ou narrativa descartada, nunca confirma/escreve; gika-gemini.test.ts e gika.test.ts |
+| M3-E18 | modelo/adapter tentam persistir; lote/recorrência/mutações futuras | módulos de interpretação sem entrypoint de persistência; único bridge sendCommand/activity.create, chamadas mistas negadas; gika-architecture.test.ts e gika-create-policy.test.ts |
+
+Provider/transport/calls são fixtures sem segredo; API de comando/Auth/Firestore em integração e persistência UI E2E são reais emuladores. Não é prova de Gemini interpretar E10 em rede. Sem credencial atual autorizada, smoke Gemini M3 não executado; credencial temporária M2 não reutilizada. Não há testes skipped nem chave fictícia.

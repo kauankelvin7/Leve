@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Temporal } from '@js-temporal/polyfill';
-import { activityInputSchema, civilDateSchema } from './content.ts';
+import { activityInputSchema, civilDateSchema, civilTimeSchema } from './content.ts';
 import { entityIdSchema, timeZoneSchema } from './identity.ts';
 export const GIKA_MAX_INPUT = 2000;
 export const GIKA_MAX_MESSAGES = 40;
@@ -27,10 +27,32 @@ export const readResultSchema = z.object({
 });
 export const gikaResponseSchema = z.discriminatedUnion('simulated', [
   z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(true), preview: z.literal('organize-demo').optional() }).strict(),
-  z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false), reads: z.array(readResultSchema).max(3) }).strict(),
+  z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false), reads: z.array(readResultSchema).max(3), createdTask: z.lazy(() => createdTaskSchema).optional() }).strict().refine(response => !response.createdTask || response.reads.length === 0),
 ]);
 export type GikaRequest = z.infer<typeof gikaRequestSchema>;
 export type GikaResponse = z.infer<typeof gikaResponseSchema>;
 export type ReadCall = z.infer<typeof readCallSchema>;
 export type ReadResult = z.infer<typeof readResultSchema>;
 export type ReadItem = z.infer<typeof readItemSchema>;
+
+export const createTaskArgsSchema = z.object({
+  title: activityInputSchema.shape.title, dueDate: civilDateSchema.nullable(),
+  dueTime: civilTimeSchema.nullable(),
+}).strict();
+export const createTaskCallSchema = z.object({ name: z.literal('create_task'), args: createTaskArgsSchema }).strict();
+export const toolCallSchema = z.union([readCallSchema, createTaskCallSchema]);
+export const createTaskDescriptorSchema = createTaskArgsSchema.extend({ timeZone: timeZoneSchema }).strict().superRefine((task, context) => {
+  if (!activityInputSchema.safeParse(taskActivityInput(task)).success) context.addIssue({ code: 'custom', message: 'Tarefa inválida.' });
+});
+export function taskActivityInput(task: { title: string; dueDate: string | null; dueTime: string | null; timeZone: string }) {
+  return { title: task.title, descriptionPlain: '', categoryId: null, colorHex: null, estimatedMinutes: null,
+    schedule: { type: 'task' as const, dueDate: task.dueDate, dueTime: task.dueTime, timeZone: task.timeZone, disambiguation: 'reject' as const }, reminderSpecs: [] };
+}
+export const commandCreationResultSchema = z.object({ operationId: z.uuid(), entityId: entityIdSchema,
+  revision: z.literal(1), serverTime: z.iso.datetime(), result: z.enum(['applied', 'alreadyApplied']) }).strict();
+export const createdTaskSchema = createTaskDescriptorSchema.safeExtend({ id: entityIdSchema, revision: z.literal(1), result: z.enum(['applied', 'alreadyApplied']) }).strict();
+export const gikaInterpretationSchema = z.object({ text: z.string().trim().min(1).max(1000), simulated: z.literal(false),
+  reads: z.array(readResultSchema).max(3), createTask: createTaskDescriptorSchema.optional() }).strict().refine(response => !response.createTask || response.reads.length === 0);
+export type CreateTaskDescriptor = z.infer<typeof createTaskDescriptorSchema>;
+export type CreatedTask = z.infer<typeof createdTaskSchema>;
+export type ToolCall = z.infer<typeof toolCallSchema>;

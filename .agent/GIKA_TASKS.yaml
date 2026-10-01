@@ -190,10 +190,14 @@ milestones:
 
   M3:
     name: "Primeira mutação segura"
+    status: in_progress
+    evidence: "Somente M3-T1 concluído; M3_T1_EVIDENCE.md. Milestone parcial, aguardando revisão humana; T2/T3 não autorizados."
     tasks:
       - id: M3-T1
         title: "create_task via command layer existente"
-        status: todo
+        status: done
+        evidence: ["M3_T1_EXECPLAN.md/M3_T1_EVIDENCE.md: PRE92cc9c7 limpo, auditoria command layer, lint/typechecks/build/175 unit/53 integração PASS; 25 E2E Gika (5 criação real), baseline12 falhas local e1 shell classificadas; UI structured após receipt, parada antes de T2/T3."]
+        acceptance_criteria: ["Criação simples explicitamente solicitada, schemas strict, data civil determinística e autorização fresca; bridge único sendCommand/activity.create, sucesso estruturado somente após ack, testes/evals/gates e parada antes de T2."]
         dependencies: [M2-T3, M2-SMOKE]
         owner: ai-integration
       - id: M3-T2

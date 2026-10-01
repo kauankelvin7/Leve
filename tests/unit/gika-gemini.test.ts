@@ -5,11 +5,12 @@ const signal = () => new AbortController().signal;
 const body = (parts: unknown[], finishReason = 'STOP') => ({ candidates: [{ finishReason, content: { parts } }] });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 describe('Gemini Developer adapter, sem credenciais fictícias', () => {
-  it('fixa modelo, medium, uma candidate e somente três tools read-only', () => {
+  it('fixa modelo, medium, uma candidate e leituras e somente criação simples', () => {
     const payload = geminiPayload(input);
     expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
     expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
-    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['get_today', 'get_day', 'get_week']);
+    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['get_today', 'get_day', 'create_task', 'get_week']);
+    expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'create_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'dueDate', 'dueTime'] });
     expect(payload.contents[0]!.parts).toEqual([{ text: input.text }]);
   });
   it('variável ausente impede qualquer HTTP', async () => {
@@ -44,5 +45,9 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
   it('consome resposta válida por transport injetado sem chave', async () => {
     const adapter = createGeminiAdapter(async () => Response.json(body([{ functionCall: { name: 'get_day', args: { date: '2026-10-01' } } }])));
     await expect(adapter.interpret(input, signal())).resolves.toEqual([{ name: 'get_day', args: { date: '2026-10-01' } }]);
+  });
+  it('typed create_task normalizes provider envelope without credentials or persistence', async () => {
+    const call = { name: 'create_task', args: { title: 'Academia', dueDate: '2026-10-02', dueTime: null } };
+    await expect(createGeminiAdapter(async () => Response.json(body([{ functionCall: call }]))).interpret(input, signal())).resolves.toEqual([call]);
   });
 });

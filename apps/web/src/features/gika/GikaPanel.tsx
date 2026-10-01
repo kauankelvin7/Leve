@@ -22,7 +22,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
 
   const suggestions = demo ? demoSuggestions : [
     { text: 'O que tenho hoje?', icon: 'day' }, { text: 'O que tenho amanhã?', icon: 'calendar' },
-    { text: 'Ver minha semana', icon: 'list' }, { text: 'O que tenho depois de amanhã?', icon: 'calendar' },
+    { text: 'Ver minha semana', icon: 'list' }, { text: 'Adicionar uma tarefa', icon: 'plus' },
   ] as const;
 
   function close() { cancel(); onClose(); }
@@ -70,10 +70,10 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
       <div className="gika-identity"><span className="gika-identity-mark"><GikaMark /></span><div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
-    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : 'Consulte sua agenda. Nenhuma tarefa será alterada.'}</p>
+    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : 'Consulte sua agenda ou adicione uma tarefa.'}</p>
     <div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0}>
       {messages.length === 0 && <div className="gika-welcome">
-        <span className="gika-welcome-mark"><GikaMark /></span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre hoje, outro dia ou sua semana.</p>
+        <span className="gika-welcome-mark"><GikaMark /></span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre seu dia ou peça para adicionar uma tarefa.</p>
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}

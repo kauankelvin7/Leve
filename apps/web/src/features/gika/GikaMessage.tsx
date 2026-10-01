@@ -35,7 +35,9 @@ function GikaDemoPreview() {
 export function GikaMessage({ message }: { message: Message }) {
   return <li className={`gika-message is-${message.role}`}>
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
-    <p>{message.text}</p>{message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
+    <p>{message.text}</p>
+    {message.createdTask && <section className="gika-result" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p></section>}
+    {message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
     {message.reads?.map((read, index) => <GikaToolResult key={index} title={read.startDate === read.endDate ? `Agenda de ${civilLabel(read.startDate)}` : `Agenda de ${civilLabel(read.startDate)} a ${civilLabel(read.endDate)}`}>
       <p>Horários em {read.timeZone}.</p>
       {read.partial && <p>Consulta parcial. Pode haver outros itens ou rotinas ainda não disponíveis neste período.</p>}

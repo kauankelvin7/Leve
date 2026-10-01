@@ -172,6 +172,8 @@ Obrigatório:
 - resultado estruturado;
 - undo se compatível.
 
+Estado M3-T1: somente create_task simples concluída em M3_T1_EVIDENCE.md, bridge M0 preservado. Base mínima de envelope estável do comando existente documentada antes do código; proteção ampla/idempotência e undo são T2/T3 ainda todo. Não marcar M3 done nem iniciar T2 automaticamente; aguardar revisão/autorização explícita do usuário. Gates focais PASS, falhas baseline da regressão ampliada reproduzidas e registradas.
+
 ## M4 — Edit
 
 Adicionar de forma incremental:
@@ -284,3 +286,7 @@ M1-T4 inclui polimento final solicitado: aviso mais discreto, empty state útil,
 ### Checkpoint M2 e smoke real
 
 M2-T1/T2 implementam provider/read tools/UI sem segredo; M2-T3 encerra evals determinísticos e revisão. O gate real foi explicitado em M2-SMOKE, dependente de T3: somente ele fica blocked por GEMINI_API_KEY ausente. M2 permanece in_progress até esse gate, sem declarar integração real concluída. M3-T1 depende também de M2-SMOKE; não iniciar mutações nesta sessão/M2. Script npm run gika:smoke usa a mesma interface/provider e pergunta sintética, nunca agenda ou persistência. Operar exclusivamente Free Tier sem billing; não configurar chave no browser/env VITE nem usar chave fictícia.
+
+### M3-T1 autorizado — 2026-10-01
+
+Pedido atual autoriza somente primeira criação simples. Plano concreto/auditoria em docs/gika/M3_T1_EXECPLAN.md. Bridge sendCommand/activity.create conforme M0, IDs/envelope pendente mínimos já exigidos pelo handler/Today; não iniciar revisão completa M3-T2 nem undo M3-T3. Guard de uid/signal opcional no client API; fresh command auth/transaction no servidor. Date/title intent determinísticos e resultados estruturados após ack. Não reutilizar segredo M2.

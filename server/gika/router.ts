@@ -1,9 +1,10 @@
 import express, { Router, type ErrorRequestHandler } from 'express';
-import { gikaRequestSchema, gikaResponseSchema, readResultSchema } from '../../packages/domain/src/gika.ts';
+import { gikaRequestSchema, gikaInterpretationSchema, readResultSchema } from '../../packages/domain/src/gika.ts';
 import { AppError } from '../errors.ts';
 import { createGeminiAdapter } from './gemini.ts';
 import { bounded, GikaFault, type ModelAdapter } from './model.ts';
-import { createReadLimiter, readRange, validateCalls } from './policy.ts';
+import { createReadLimiter, readRange } from './policy.ts';
+import { resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
 export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads) {
@@ -27,12 +28,16 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const context = await repository.authorize(identity);
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
         release = acquire(identity.uid);
-        const calls = validateCalls(await model.interpret({ text: input.text, context }, signal));
+        const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+        if (calls[0]?.name === 'create_task') {
+          const intent = validateCreation(calls[0].args, input.text, current);
+          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
+        }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => readRange(call, current));
+        const ranges = calls.map(call => { if (call.name === 'create_task') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         for (const range of ranges) {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
@@ -41,10 +46,10 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           reads.push(read);
         }
         const text = reads.length === 0
-          ? 'Por enquanto, posso consultar hoje, um dia ou uma semana. Qual você quer ver?'
+          ? (resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Você pode reformular o pedido ou consultar sua agenda.')
           : reads.some(read => read.partial) ? 'Esta consulta mostra parte da sua agenda. Confira o calendário para ver mais.'
           : 'Veja sua agenda para o período consultado.';
-        return gikaResponseSchema.parse({ text, simulated: false, reads });
+        return gikaInterpretationSchema.parse({ text, simulated: false, reads });
       }, controller.signal, 15_000);
       if (!controller.signal.aborted) response.json(result);
     } catch (error) {
