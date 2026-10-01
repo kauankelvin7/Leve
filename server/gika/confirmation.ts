@@ -1,3 +1,4 @@
+import { batchPlanSchema, batchConfirmationSchema, batchCommandFields, type BatchPlan, type BatchConfirmation } from '../../packages/domain/src/gikaBatch.ts';
 import { recurrenceProposalSchema, recurrenceChoiceSchema, recurrenceEffectSchema, recurrenceConfirmationSchema, recurrenceCommandFields, type RecurrenceProposal, type RecurrenceChoice, type RecurrenceEffect, type RecurrenceConfirmation } from '../../packages/domain/src/gikaRecurrence.ts';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
@@ -14,6 +15,7 @@ const recurrenceClaimsSchema = z.discriminatedUnion('purpose', [
   z.object({ version: z.literal(2), purpose: z.literal('recurrence_choice'), uid: z.string().min(1).max(128), requestId: z.uuid(), requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), proposal: recurrenceProposalSchema, options: z.array(z.enum(['occurrence', 'future'])).min(1).max(2), issuedAt: z.number().int().nonnegative(), expiresAt: z.number().int().positive() }).strict(),
   z.object({ version: z.literal(2), purpose: z.literal('recurrence_confirmation'), uid: z.string().min(1).max(128), requestId: z.uuid(), requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), effect: recurrenceEffectSchema, issuedAt: z.number().int().nonnegative(), expiresAt: z.number().int().positive() }).strict(),
 ]);
+const batchClaimsSchema = z.object({ version: z.literal(3), purpose: z.literal('batch_confirmation'), uid: z.string().min(1).max(128), requestId: z.uuid(), requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), plan: batchPlanSchema, issuedAt: z.number().int().nonnegative(), expiresAt: z.number().int().positive() }).strict();
 const invalid = () => new AppError(422, 'GIKA_CONFIRMATION_INVALID', 'Não consegui validar essa prévia. Faça o pedido novamente.');
 // No conversation, pending-action storage or in-memory dedup. Randomness is only a local signing key.
 const emulatorKey = randomBytes(32);
@@ -37,6 +39,25 @@ export function createConfirmationSigner(key: Uint8Array, now: () => number = Da
     return claims;
   };
   return {
+    issueBatchConfirmation(uid: string, request: { requestId: string; text: string }, plan: BatchPlan): BatchConfirmation {
+      const issuedAt = now();
+      const claims = batchClaimsSchema.parse({ version: 3, purpose: 'batch_confirmation', uid, requestId: request.requestId, requestTextHash: hashValue(request.text.trim()), plan, issuedAt, expiresAt: issuedAt + lifetime });
+      return batchConfirmationSchema.parse({ plan: claims.plan, token: seal(claims) });
+    },
+    verifyBatchConfirmation(uid: string, command: CommandEnvelope): BatchConfirmation {
+      const metadata = command.gikaBatch;
+      if (!metadata || metadata.confirmationToken.length > 16384 || !/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/.test(metadata.confirmationToken)) throw invalid();
+      const [encoded, supplied] = metadata.confirmationToken.split('.') as [string, string];
+      if (!timingSafeEqual(Buffer.from(signature(encoded), 'hex'), Buffer.from(supplied, 'hex'))) throw invalid();
+      let claims;
+      try { claims = batchClaimsSchema.parse(JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'))); } catch { throw invalid(); }
+      if (claims.uid !== uid || claims.requestId !== metadata.requestId || claims.requestTextHash !== metadata.requestTextHash) throw invalid();
+      if (claims.issuedAt > now() || claims.expiresAt - claims.issuedAt !== lifetime || claims.expiresAt <= now()) throw new AppError(409, 'GIKA_CONFIRMATION_EXPIRED', 'Essa prévia expirou. Faça o pedido novamente.');
+      if (!Number.isInteger(metadata.index) || metadata.index < 0 || metadata.index >= claims.plan.items.length) throw invalid();
+      const expected = batchCommandFields(claims.plan, metadata.index);
+      if (command.command !== expected.command || command.operationId !== expected.operationId || command.entityId !== expected.entityId || command.expectedRevision !== expected.expectedRevision || hashCanonicalValue(command.payload) !== hashCanonicalValue(expected.payload)) throw invalid();
+      return batchConfirmationSchema.parse({ plan: claims.plan, token: metadata.confirmationToken });
+    },
     issueRecurrenceChoice(uid: string, request: { requestId: string; text: string }, proposal: RecurrenceProposal): RecurrenceChoice {
       const options: ('occurrence' | 'future')[] = ['occurrence'];
       if (proposal.operation !== 'complete' && proposal.recurrence.futureAllowed) options.push('future');
@@ -97,3 +118,6 @@ export const issueRecurrenceChoice = (uid: string, request: { requestId: string;
 export const verifyRecurrenceChoice = (uid: string, request: { requestId: string; text: string }, token: string) => createConfirmationSigner(signingKey()).verifyRecurrenceChoice(uid, request, token);
 export const issueRecurrenceConfirmation = (uid: string, request: { requestId: string; text: string }, effect: RecurrenceEffect, sourceChoiceToken?: string) => createConfirmationSigner(signingKey()).issueRecurrenceConfirmation(uid, request, effect, sourceChoiceToken);
 export const verifyRecurrenceConfirmation = (uid: string, command: CommandEnvelope) => createConfirmationSigner(signingKey()).verifyRecurrenceConfirmation(uid, command);
+
+export const issueBatchConfirmation = (uid: string, request: { requestId: string; text: string }, plan: BatchPlan) => createConfirmationSigner(signingKey()).issueBatchConfirmation(uid, request, plan);
+export const verifyBatchConfirmation = (uid: string, command: CommandEnvelope) => createConfirmationSigner(signingKey()).verifyBatchConfirmation(uid, command);

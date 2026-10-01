@@ -127,3 +127,8 @@
 .gika-confirmation-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: .65rem 0; }
 .gika-confirmation-diff dt { font-size: .8rem; color: var(--color-text-muted); }
 .gika-confirmation-diff dd { margin: .2rem 0 0; overflow-wrap: anywhere; }
+
+.gika-batch-items { display: grid; gap: .65rem; padding-left: 1.15rem; }
+.gika-batch-items li { overflow-wrap: anywhere; }
+.gika-batch-items li > strong, .gika-batch-items li > span { display: block; }
+.gika-batch-items li > span { margin-top: .15rem; }

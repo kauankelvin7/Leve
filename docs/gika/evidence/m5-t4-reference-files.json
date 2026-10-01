@@ -1,0 +1,181 @@
+{
+  "entry": "1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4",
+  "files": [
+    {
+      "path": "package.json",
+      "entry_sha256": "506e624377862250223c73d8eb049ec00a5588a1534f65aa1692e686bce34c36",
+      "current_sha256": "506e624377862250223c73d8eb049ec00a5588a1534f65aa1692e686bce34c36",
+      "unchanged": true
+    },
+    {
+      "path": "package-lock.json",
+      "entry_sha256": "8742f983da607c6f38a0c67571590a31d74a2fa3222f7b433280e6306142ed13",
+      "current_sha256": "8742f983da607c6f38a0c67571590a31d74a2fa3222f7b433280e6306142ed13",
+      "unchanged": true
+    },
+    {
+      "path": "firestore.rules",
+      "entry_sha256": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b",
+      "current_sha256": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b",
+      "unchanged": true
+    },
+    {
+      "path": "firestore.indexes.json",
+      "entry_sha256": "3c143549f03663107532ddfcd65fad2dca4f580a4a2d4e93f5ed2e7fb1f9f64b",
+      "current_sha256": "3c143549f03663107532ddfcd65fad2dca4f580a4a2d4e93f5ed2e7fb1f9f64b",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/platform/api.ts",
+      "entry_sha256": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41",
+      "current_sha256": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/platform/outbox.ts",
+      "entry_sha256": "d900074496db4b9894267d896a0c8f5809ea92ad47bec85dbb2e90ae441a1340",
+      "current_sha256": "d900074496db4b9894267d896a0c8f5809ea92ad47bec85dbb2e90ae441a1340",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/platform/theme.ts",
+      "entry_sha256": "0462bf45f2b14e71c8873f031978c277613f319c2c3cbbe7b52e11010e39c4b9",
+      "current_sha256": "0462bf45f2b14e71c8873f031978c277613f319c2c3cbbe7b52e11010e39c4b9",
+      "unchanged": true
+    },
+    {
+      "path": "playwright.config.ts",
+      "entry_sha256": "4351a58763648ba0f9a9244f64959e7ab4d62e20d0608cb1353cd7c47ce77d61",
+      "current_sha256": "4351a58763648ba0f9a9244f64959e7ab4d62e20d0608cb1353cd7c47ce77d61",
+      "unchanged": true
+    },
+    {
+      "path": "playwright.local.config.ts",
+      "entry_sha256": "9e62e6f9f265c790543a3cab44fc0380cec2cade06602c4291ac18dd46df0be6",
+      "current_sha256": "9e62e6f9f265c790543a3cab44fc0380cec2cade06602c4291ac18dd46df0be6",
+      "unchanged": true
+    },
+    {
+      "path": "vitest.integration.config.ts",
+      "entry_sha256": "79ea2aeab2ea1a29cf856420e6a2c6590885d8096d6737a884469b81f50c0cde",
+      "current_sha256": "79ea2aeab2ea1a29cf856420e6a2c6590885d8096d6737a884469b81f50c0cde",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/GikaPanel.tsx",
+      "entry_sha256": "d27a7580b105cef61f8b6e5fa8b247d6ad80d1ee7c7930743f121fe70701ddd6",
+      "current_sha256": "d27a7580b105cef61f8b6e5fa8b247d6ad80d1ee7c7930743f121fe70701ddd6",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/GikaComposer.tsx",
+      "entry_sha256": "1b512a04ff69e61d6d743646fd011d99e63f47556095af50bd12dcfe12b1925c",
+      "current_sha256": "1b512a04ff69e61d6d743646fd011d99e63f47556095af50bd12dcfe12b1925c",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/GikaConfirmation.tsx",
+      "entry_sha256": "1e0d1612292b2fa336565c473cfe36c63b5abab112dedac19d546726cd3716a0",
+      "current_sha256": "1e0d1612292b2fa336565c473cfe36c63b5abab112dedac19d546726cd3716a0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/GikaRecurrence.tsx",
+      "entry_sha256": "af2ed700d95819cc70f3692dbfa0c2fc9521dc5da3d19b02cf9e43aa39be6333",
+      "current_sha256": "af2ed700d95819cc70f3692dbfa0c2fc9521dc5da3d19b02cf9e43aa39be6333",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/confirmationBridge.ts",
+      "entry_sha256": "25d6f2ce95c0db8cb7c2314defc47c8846a2801f557645a62e647e227cd30420",
+      "current_sha256": "25d6f2ce95c0db8cb7c2314defc47c8846a2801f557645a62e647e227cd30420",
+      "unchanged": true
+    },
+    {
+      "path": "apps/web/src/features/gika/recurrenceBridge.ts",
+      "entry_sha256": "f699fc99419d9b74571e65a7ad0e5df9ce557dc0256b34ec3c201e6c5eccd27a",
+      "current_sha256": "f699fc99419d9b74571e65a7ad0e5df9ce557dc0256b34ec3c201e6c5eccd27a",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-create.spec.ts",
+      "entry_sha256": "49c655e1700ba043bbadb718fa41ecc5c0d014844d30626bf5eabeb607b0f30b",
+      "current_sha256": "49c655e1700ba043bbadb718fa41ecc5c0d014844d30626bf5eabeb607b0f30b",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-complete.spec.ts",
+      "entry_sha256": "de17fe9e3f701bfc94d2afcd7067e69a55b5e4bee5f4fcd9f1750f5e1375f7d8",
+      "current_sha256": "de17fe9e3f701bfc94d2afcd7067e69a55b5e4bee5f4fcd9f1750f5e1375f7d8",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-update.spec.ts",
+      "entry_sha256": "c5dd307dbbd5d2955fcae3778c2f842e34f1cc448078c6d5e10e4b358098e9f7",
+      "current_sha256": "c5dd307dbbd5d2955fcae3778c2f842e34f1cc448078c6d5e10e4b358098e9f7",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-reschedule.spec.ts",
+      "entry_sha256": "6be3dd90890264dbc04901ca66e486cd17bc82070bc7c9eb615a8c31768a9c69",
+      "current_sha256": "6be3dd90890264dbc04901ca66e486cd17bc82070bc7c9eb615a8c31768a9c69",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-recurrence.spec.ts",
+      "entry_sha256": "96775029c032a11b41b4851481cc5dc44bcd479b8fde31e5a17d017347d08df4",
+      "current_sha256": "96775029c032a11b41b4851481cc5dc44bcd479b8fde31e5a17d017347d08df4",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika-readonly.spec.ts",
+      "entry_sha256": "98f028e8e79045075da4cac83907cbf569e25146c4286d4d44757f9837314ec8",
+      "current_sha256": "98f028e8e79045075da4cac83907cbf569e25146c4286d4d44757f9837314ec8",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e-local/gika.spec.ts",
+      "entry_sha256": "fb6c30a4d1a38306d1bc52998239d0017add5489922c894e3922f8a0e4e7c98b",
+      "current_sha256": "fb6c30a4d1a38306d1bc52998239d0017add5489922c894e3922f8a0e4e7c98b",
+      "unchanged": true
+    },
+    {
+      "path": "tests/e2e/shell.spec.ts",
+      "entry_sha256": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94",
+      "current_sha256": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94",
+      "unchanged": true
+    },
+    {
+      "path": "tests/integration/gika-recurrence.test.ts",
+      "entry_sha256": "b743500b8ff8d7903de217afa17c493166fb7fcd5db6e56d915341308427b784",
+      "current_sha256": "b743500b8ff8d7903de217afa17c493166fb7fcd5db6e56d915341308427b784",
+      "unchanged": true
+    },
+    {
+      "path": "server/gika/recurrenceGuard.ts",
+      "entry_sha256": "05ff2c7c3f9a529df5c8a88e9460ad058a967e3f806e9d57a6c4442d372d25bb",
+      "current_sha256": "05ff2c7c3f9a529df5c8a88e9460ad058a967e3f806e9d57a6c4442d372d25bb",
+      "unchanged": true
+    },
+    {
+      "path": "server/gika/recurrencePolicy.ts",
+      "entry_sha256": "80bfc9a6e4050ab0849beb7953601ea714b17c0fcf67def6eb08568a73b23f2e",
+      "current_sha256": "80bfc9a6e4050ab0849beb7953601ea714b17c0fcf67def6eb08568a73b23f2e",
+      "unchanged": true
+    },
+    {
+      "path": "packages/domain/src/gikaRecurrence.ts",
+      "entry_sha256": "ce0ee583332da773323e23e49b8dc5ef7ca4cfda8e7f3b186f9354309f753d60",
+      "current_sha256": "ce0ee583332da773323e23e49b8dc5ef7ca4cfda8e7f3b186f9354309f753d60",
+      "unchanged": true
+    },
+    {
+      "path": "packages/domain/src/gikaReschedule.ts",
+      "entry_sha256": "a254568a62ec3d0c87174b07da0009d0b27e9266ce7e6175a183480bbf156823",
+      "current_sha256": "a254568a62ec3d0c87174b07da0009d0b27e9266ce7e6175a183480bbf156823",
+      "unchanged": true
+    }
+  ],
+  "gika_shell_css_original_prefix_unchanged": true,
+  "all_reference_files_unchanged": true
+}

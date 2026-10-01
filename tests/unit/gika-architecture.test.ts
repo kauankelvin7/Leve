@@ -47,3 +47,16 @@ it('M5-T3 scope selection and confirmation cannot call Gemini or introduce a rec
   const domain = readFileSync('packages/domain/src/gikaRecurrence.ts', 'utf8');
   expect(domain).toContain("'activity.updateFuture'"); expect(domain).not.toMatch(/activity\.(?:trash|trashSeries|createSeries|purge)|batch/i);
 });
+
+it('M5-T4 composes only conventional commands; confirmation/recovery cannot reinterpret or persist', () => {
+  for (const path of ['packages/domain/src/gikaBatch.ts', 'server/gika/batchPolicy.ts', 'apps/web/src/features/gika/batchBridge.ts']) {
+    const source = readFileSync(path, 'utf8');
+    expect(source).not.toMatch(/firebase-admin|firebase\/firestore|\b(?:setDoc|addDoc|updateDoc|deleteDoc|writeBatch|runTransaction|contentCommand)\s*\(/);
+  }
+  const bridge = readFileSync('apps/web/src/features/gika/batchBridge.ts', 'utf8');
+  expect(bridge).toContain('sendCommand(command'); expect(bridge).toContain('/gika/recover-batch');
+  expect(bridge).not.toMatch(/gika\/respond|gemini|modelAdapter|\.interpret\(/i);
+  const domain = readFileSync('packages/domain/src/gikaBatch.ts', 'utf8');
+  expect(domain).toContain("'activity.setStatus'"); expect(domain).toContain("'activity.update'");
+  expect(domain).not.toMatch(/activity\.(?:create|updateFuture|trash|purge|restore|createSeries)/);
+});

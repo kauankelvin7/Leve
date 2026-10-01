@@ -1,3 +1,5 @@
+import { validateBatch, resolveBatch } from './batchPolicy.ts';
+import { issueBatchConfirmation } from './confirmation.ts';
 import { z } from 'zod';
 import { verifyRecurrenceChoice, issueRecurrenceConfirmation } from './confirmation.ts';
 import { scopedIntent } from './scopeIntent.ts';
@@ -36,6 +38,14 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
     if (recovered?.kind !== 'reschedule' || !recovered.confirmation) throw new AppError(409, 'OPERATION_MISMATCH', 'Não encontrei a confirmação deste pedido. Faça o pedido novamente.');
     response.json(recovered.confirmation);
   });
+  router.post('/recover-batch', async(request,response)=>{
+    const input=gikaRequestSchema.parse(request.body),identity=response.locals.identity;
+    await repository.authorize(identity,'receipt');
+    const recovered=await repository.recoverBatch?.(identity.uid,input);
+    await repository.authorize(identity,'receipt');
+    if(!recovered)throw new AppError(409,'OPERATION_MISMATCH','Não encontrei alterações deste pedido. Faça o pedido novamente.');
+    response.json(recovered);
+  });
   const selectionSchema = gikaRequestSchema.safeExtend({ token: z.string().regex(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/).max(8192), scope: z.enum(['occurrence', 'future']) }).strict();
   router.post('/choose-recurrence', async (request, response) => {
     const input = selectionSchema.parse(request.body), identity = response.locals.identity;
@@ -67,6 +77,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const identity = response.locals.identity;
         await repository.authorize(identity, 'receipt');
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+        const recoveredBatch = await repository.recoverBatch?.(identity.uid,input);
+        if(recoveredBatch){await repository.authorize(identity,'receipt');return gikaInterpretationSchema.parse({text:'Confira as alterações deste pedido.',simulated:false,reads:[],batchConfirmation:recoveredBatch.confirmation});}
         const recovered = await repository.recoverMutation(identity.uid, input);
         if (recovered) {
           if (recovered.kind === 'recurrence') {
@@ -86,6 +98,22 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+        if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
+          const intent=validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
+          if('clarification' in intent)return gikaInterpretationSchema.parse({text:intent.clarification,simulated:false,reads:[]});
+          const range={startDate:intent.date,endDate:intent.date,timeZone:current.timeZone};
+          const read=readResultSchema.parse(await repository.read(identity.uid,range));
+          if(read.timeZone!==current.timeZone||signal.aborted)throw new GikaFault('GIKA_POLICY');
+          const afterRead=await repository.authorize(identity);
+          if(afterRead.today!==current.today||afterRead.timeZone!==current.timeZone||afterRead.weekStartsOn!==current.weekStartsOn)throw new GikaFault('GIKA_POLICY');
+          const resolved=await resolveBatch(intent,read,repository,identity.uid,input);
+          await repository.authorize(identity);
+          if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
+          const raced=await repository.recoverBatch?.(identity.uid,input);
+          if(raced){await repository.authorize(identity,'receipt');return gikaInterpretationSchema.parse({text:'Confira as alterações deste pedido.',simulated:false,reads:[],batchConfirmation:raced.confirmation});}
+          if('clarification'in resolved)return gikaInterpretationSchema.parse({text:resolved.clarification,simulated:false,reads:[]});
+          return gikaInterpretationSchema.parse({text:resolved.plan.items.length === 1 ? 'Confira a tarefa antes de continuar.' : `Confira as ${resolved.plan.items.length} tarefas antes de continuar.`,simulated:false,reads:[],batchConfirmation:issueBatchConfirmation(identity.uid,input,resolved.plan)});
+        }
         if (calls[0]?.name === 'reschedule_task') {
           const scoped = scopedIntent(input.text, calls[0].args);
           const intent = validateReschedule(calls[0].args, scoped.text, current);
@@ -204,7 +232,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
+        const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         for (const range of ranges) {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');

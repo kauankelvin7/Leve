@@ -1,4 +1,5 @@
-import { verifyConfirmation, verifyRecurrenceConfirmation } from '../gika/confirmation.ts';
+import { assertBatchPending } from '../gika/batchGuard.ts';
+import { verifyConfirmation, verifyRecurrenceConfirmation, verifyBatchConfirmation } from '../gika/confirmation.ts';
 import { recurrenceEffectSchema, recurrenceConfirmationSchema, GIKA_RECURRENCE_FUTURE_LIMIT, type RecurrenceEffect } from '../../packages/domain/src/gikaRecurrence.ts';
 import { applyRecurrencePatch, assertRecurrenceSnapshot, type RecurrenceMember } from '../gika/recurrenceGuard.ts';
 import { rescheduleTaskPatchSchema,rescheduleDescriptorSchema,applyReschedulePatch,type RescheduleDescriptor } from '../../packages/domain/src/gikaReschedule.ts';
@@ -35,6 +36,7 @@ const allowed: Record<string, string[]> = {
 
 export async function contentCommand(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
   if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail para continuar.');
+  if (command.gikaBatch && !['activity.update', 'activity.setStatus'].includes(command.command)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração não está disponível.');
   if (command.gikaRecurrence && !['activity.update', 'activity.setStatus', 'activity.updateFuture'].includes(command.command)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração não está disponível.');
   const [type = '', action = ''] = command.command.split('.');
   const collection = names[type];
@@ -46,7 +48,8 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   if (action === 'purge') return purgeContent(identity, command, type, collection);
   const writingContent = ['create', 'update', 'save'].includes(action);
   let validatedInput: Record<string, unknown>;
-  if (command.gikaRecurrence) validatedInput = z.union([updateTaskPatchSchema, rescheduleTaskPatchSchema, z.object({ status: z.literal('completed') }).strict()]).parse(command.payload);
+  if (command.gikaBatch) validatedInput = z.union([rescheduleTaskPatchSchema, z.object({ status: z.literal('completed') }).strict()]).parse(command.payload);
+  else if (command.gikaRecurrence) validatedInput = z.union([updateTaskPatchSchema, rescheduleTaskPatchSchema, z.object({ status: z.literal('completed') }).strict()]).parse(command.payload);
   else if (command.gikaReschedule) validatedInput = rescheduleTaskPatchSchema.parse(command.payload);
   else if (command.gikaUpdate) validatedInput = updateTaskPatchSchema.parse(command.payload);
   else if (writingContent) {
@@ -112,6 +115,11 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
+    const batchConfirmation = command.gikaBatch ? verifyBatchConfirmation(identity.uid, command) : undefined;
+    if (batchConfirmation) {
+      if (controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
+      await assertBatchPending(transaction, identity.uid, command, batchConfirmation);
+    }
     const confirmation = command.gikaReschedule ? verifyConfirmation(identity.uid, command) : undefined;
     const recurrenceEffect = command.gikaRecurrence ? recurrenceEffectSchema.parse(verifyRecurrenceConfirmation(identity.uid, command)) : undefined;
     if (recurrenceEffect && controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
@@ -120,6 +128,10 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    if (batchConfirmation) {
+      if (!old || old.deletedAt || old.revision !== command.expectedRevision || old.status !== 'pending') throw new AppError(409, 'REVISION_CONFLICT', 'Uma tarefa dessa prévia mudou. Faça o pedido novamente.');
+      input = batchConfirmation.plan.action === 'complete' ? { status: 'completed' } : applyReschedulePatch(old, rescheduleTaskPatchSchema.parse(validatedInput));
+    }
     if (recurrenceEffect) {
       if (recurrenceEffect.scope !== 'occurrence' || !old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa rotina mudou. Faça o pedido novamente.');
       const series = await transaction.get(root.collection('series').doc(recurrenceEffect.recurrence.seriesId));
@@ -213,7 +225,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(recurrenceEffect ? { gikaRecurrence: recurrenceReceipt(command, recurrenceEffect) } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(batchConfirmation ? { gikaBatch: { ...command.gikaBatch!, confirmation: batchConfirmation } } : {}), ...(recurrenceEffect ? { gikaRecurrence: recurrenceReceipt(command, recurrenceEffect) } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

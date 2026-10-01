@@ -1,3 +1,4 @@
+import { GikaBatch } from './GikaBatch';
 import { GikaConfirmation } from './GikaConfirmation';
 import { GikaRecurrence } from './GikaRecurrence';
 import { useRef, useState, type ReactNode, type RefObject } from 'react';
@@ -40,6 +41,7 @@ export function GikaMessage({ message, active = true }: { message: Message; acti
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
     <p>{message.text}</p>
     {message.createdTask && <section className="gika-result" role="group" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p>{message.creationUndo && <GikaCreationUndo context={message.creationUndo} active={active} />}</section>}
+    {message.batchConfirmation && message.rescheduleContext && <GikaBatch confirmation={message.batchConfirmation} context={message.rescheduleContext} active={active} />}
     {message.confirmation && message.rescheduleContext && <GikaConfirmation confirmation={message.confirmation} context={message.rescheduleContext} active={active} />}
     {(message.recurrenceChoice || message.recurrenceConfirmation) && message.rescheduleContext && <GikaRecurrence choice={message.recurrenceChoice} confirmation={message.recurrenceConfirmation} context={message.rescheduleContext} active={active} />}
     {message.updatedTask && <section className="gika-result" role="group" aria-label="Tarefa atualizada"><div className="gika-card-title"><Icon name="check" /><strong>{message.updatedTask.title}</strong></div><p>{civilLabel(message.updatedTask.dueDate)}</p></section>}

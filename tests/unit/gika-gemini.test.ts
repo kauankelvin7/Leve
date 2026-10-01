@@ -5,13 +5,18 @@ const signal = () => new AbortController().signal;
 const body = (parts: unknown[], finishReason = 'STOP') => ({ candidates: [{ finishReason, content: { parts } }] });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 describe('Gemini Developer adapter, sem credenciais fictícias', () => {
-  it('fixa modelo, medium, uma candidate e leituras e somente criação simples', () => {
+  it('fixa modelo, medium, uma candidate e registro fechado de tools atuais', () => {
     const payload = geminiPayload(input);
     expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
     expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
-    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'reschedule_task', 'get_week']);
+    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['batch_complete', 'batch_reschedule', 'get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'reschedule_task', 'get_week']);
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'update_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'date', 'patch'], properties: { patch: { additionalProperties: false, required: ['title'] } } });
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'create_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'dueDate', 'dueTime'] });
+    for (const name of ['batch_complete', 'batch_reschedule']) {
+      const declaration = payload.tools[0]!.functionDeclarations.find(tool => tool.name === name)?.parametersJsonSchema;
+      expect(declaration).toMatchObject({ additionalProperties: false, properties: { excludeTitles: { maxItems: 5 } } });
+      for (const field of ['uid', 'entityId', 'revision', 'operationId']) expect(declaration!.properties).not.toHaveProperty(field);
+    }
     expect(payload.contents[0]!.parts).toEqual([{ text: input.text }]);
   });
   it('variável ausente impede qualquer HTTP', async () => {

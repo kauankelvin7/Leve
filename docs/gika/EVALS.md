@@ -284,3 +284,23 @@ Provider fixture apenas, Auth/Firestore/command/receipts reais emulados. Sem Gem
 Fixtures interpretam tools; Auth/commands/receipts/Firestore são reais emulados. Nenhuma interpretação Gemini live é demonstrada nesta tarefa. 'Esta e as próximas' é capacidade convencional real; all/passado, complete futura, lote/M5-T4 e Undo recorrente permanecem fora de escopo. Detalhes/primeiras tentativas/gates em M5_T3_EVIDENCE.md.
 
 M5-E76: escolha/retry herda issuedAt/expiresAt da proposta; confirmação não estende o prazo original de15min. Unit signer expiry/replay e integração comparing timing claims sem logar token/corpo.
+
+## M5-T4 — batch bounded com preview, sem Gemini live
+
+E31 refinado pela regra de seleção explícita: `Move tudo menos academia para amanhã` não informa origem bounded → pedir o dia, sem executar/truncar. Após pedido explícito como `Move as tarefas de hoje para amanhã exceto "Academia"`, resolver conjunto integral pending/cap5, igualdade de título sem fuzzy, excluir exatamente Academia e exigir confirmação. Nenhuma inferência de 'todas as tarefas' ou organização/M6.
+
+| Eval | Comportamento | Prova executável |
+|---|---|---|
+| M5-E77..E79 | dia civil explícito/título-exclusão exatos; zero/partial/saturado/>5 nunca trunca nem produz autorização | gika-batch/gikaBatchRouter unit; gika-batch integração provider fixture |
+| M5-E80..E82 | somente complete/reschedule pending; tool/field/model IDs/day/patch inventados ou calls mistas negados, chamadas repetidas iguais colapsam | domain/model strict, parser/policy e integração |
+| M5-E83..E85 | preview/cancel0writes/receipt/revision; conjunto/cardinality/IDs/revs/patch/UID/childops/scope/expiry selados | signer/domain unit, integração e E2E tamper target/patch |
+| M5-E86..E88 | occurrence explícito só alvo e irmãs/template intactos; semscope clarify; future/all lote negados sem alterar T3individual | resolução/guard unit, integração, E2E ocorrência, regressão recurrence |
+| M5-E89..E91 | stale em qualquer pendente bloqueia primeiro commit; stale pósprimeiro ack não sobrescreve, partial explícito/semrefresh | writer convencional/guard global em integração; E2E stale + parcial |
+| M5-E92..E94 | receipt/retry/doubleclick/concurrency/lostack/repeatedconfirm: no máximo um efeito por target, envelopesoriginais, ordem fixa | integração transações emuladas, bridge unit e E2E lostfirst/second ack |
+| M5-E95..E97 | UID diferente/logout/troca/token/ack negam/discard, próximos itens não enviam; quota/controls/refs e falha pre/postcommit | integração Auth/commands/receipts; bridge unit; E2E logout |
+| M5-E98..E100 | recovery até5receipts antes provider, hash/UID/plan/ack exatos; não resolve seleção nova nem renova; expired replayapplied só, irmãosnegados | gikaBatchRouter unit/integração; bridge token-only recovery e expiração parcial |
+| M5-E101..E103 | agregado correto aplicado/já aplicado/conflito/falha/pendente/unknown; nenhum sucesso antes ackfinal; transport5xx pode ser póscommit | domain/bridge unit, integração, E2E ackretido/lostackpartial |
+| M5-E104..E106 | confirm/cancel/retomar sem Gemini; apenas activity.setStatus/update APIcommands online-only; nenhum writer/collection/engine novo | arquitetura unit e auditoria command/bridge/router/model |
+| M5-E107..E109 | teclado/foco/Axe/lightdesktop/darkmobile360/390/cap5 inteiro/scrollindependente/composerfixo; reload0autoexec | 13 E2E batch, regressões shell/confirmation/recurrence |
+
+Fixture de interpretação sem credencial; command/Auth/Firestore/receipt/acks reais em emuladores com dados sintéticos. Cada item tem transação convencional própria, guard integral nos pendentes e resultados recuperáveis; composição não promete atomicidade global/rollback. Sem sucesso derivado da narrativa. Recorrência future continua suportada individualmente conforme T3; lote future/all recusado. Limites/primeiras tentativas/gates em M5_T4_EXECPLAN/EVIDENCE e ADR020.

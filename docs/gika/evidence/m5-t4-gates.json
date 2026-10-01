@@ -1,0 +1,149 @@
+{
+  "task": "M5-T4",
+  "entry": "1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4",
+  "branch": "feat/gika-integration",
+  "task_status": "done",
+  "gemini_live": false,
+  "scope": {
+    "operations": [
+      "batch_complete",
+      "batch_reschedule"
+    ],
+    "max_items": 5,
+    "source": "explicit civil day <=366 days",
+    "recurrence_batch": [
+      "occurrence explicit only"
+    ],
+    "future_all_batch": "unsupported",
+    "atomicity": "conventional per-item transaction, not global; explicit partial and exact receipt recovery"
+  },
+  "final": {
+    "production_audit": {
+      "command": "npm audit --omit=dev --audit-level=high",
+      "exit_code": 0,
+      "critical": 0,
+      "high": 0,
+      "moderate": 0
+    },
+    "lint": {
+      "command": "npm run lint",
+      "exit_code": 0
+    },
+    "typechecks": {
+      "command": "npm run typecheck (also inside build)",
+      "client_exit_code": 0,
+      "server_exit_code": 0
+    },
+    "build": {
+      "command": "npm run build",
+      "exit_code": 0,
+      "warning": "preexisting chunks >500kB"
+    },
+    "unit": {
+      "command": "npm test",
+      "exit_code": 0,
+      "passed": 480,
+      "files": 50
+    },
+    "integration": {
+      "command": "npm run test:integration:inside",
+      "environment": "local Auth/Firestore emulators demo-leve; no parallel emulator writers",
+      "exit_code": 0,
+      "passed": 243,
+      "files": 8
+    },
+    "batch_integration_focal": {
+      "command": "npx vitest run --config vitest.integration.config.ts tests/integration/gika-batch.test.ts",
+      "exit_code": 0,
+      "passed": 31
+    },
+    "batch_e2e": {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-batch.spec.ts",
+      "exit_code": 0,
+      "passed": 13,
+      "failed": 0,
+      "duration_minutes": 3.3
+    },
+    "gika_broad_first": {
+      "passed": 64,
+      "failed": 11,
+      "total": 75,
+      "all_green": false,
+      "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+      "evidence": "m5-t4-transport-baseline.json"
+    },
+    "gika_unique_observed_pass": 76,
+    "original_comparison": {
+      "entry_passed": 12,
+      "current_passed": 12,
+      "failed": 0
+    },
+    "controlled_probes": {
+      "entry_passed": 7,
+      "current_passed": 7,
+      "failed": 0,
+      "deadlines_changed": false
+    },
+    "check": {
+      "command": "NODE_OPTIONS=--dns-result-order=ipv4first npm run check",
+      "exit_code": 1,
+      "shell_passed": 12,
+      "shell_failed": 1,
+      "classification": "PREEXISTING_COLOR_CONTRAST",
+      "entry_shell_passed": 12,
+      "entry_shell_failed": 1,
+      "entry_unit_passed": 396,
+      "current_unit_passed": 480,
+      "note": "color-contrast violation type reproduced at exact entry; IPv4 only environment, product/harness unchanged"
+    }
+  },
+  "first_attempts": [
+    {
+      "gate": "unit",
+      "passed": 452,
+      "failed": 1,
+      "cause": "old tool allowlist contract expectation; explicitly updated for two strict batch tools, no tests disabled"
+    },
+    {
+      "gate": "batch integration",
+      "passed": 21,
+      "failed": 1,
+      "cause": "fixture used forbidden pending status and got422 before receipt; corrected fixture to valid divergent temporal patch to test409; strict product schema preserved"
+    },
+    {
+      "gate": "batch signer",
+      "passed": 16,
+      "failed": 1,
+      "cause": "out-of-plan cardinality index blocked write but generic error; explicit invalid check added and unit/integration verify422 no mutation"
+    },
+    {
+      "gate": "batch E2E initial",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "gate": "gika broad first",
+      "passed": 64,
+      "failed": 11,
+      "all_green": false
+    },
+    {
+      "gate": "entry controlled probes interrupted",
+      "observed_pass": 6,
+      "final_result": "interrupted during environment restart; original12PASS preserved; complete7PASS subsequently executed"
+    }
+  ],
+  "reference_files": {
+    "evidence": "m5-t4-reference-files.json",
+    "count": 29,
+    "all_byte_identical": true,
+    "historical_css_prefix_preserved": true
+  },
+  "privacy": {
+    "evidence_sanitized": true,
+    "credential_persisted": false,
+    "raw_traces_logs_probes_committed": false,
+    "accounts": "synthetic emulator-only"
+  },
+  "stop": "review before M6; no PR/main merge/deploy/visual branch/dependency changes"
+}

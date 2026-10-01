@@ -1,3 +1,5 @@
+import { commandHash } from '../commands/identity.ts';
+import { batchOperationId, batchCommandFields, batchConfirmationSchema, batchResult, type BatchConfirmation, type BatchResult } from '../../packages/domain/src/gikaBatch.ts';
 import { recurrenceConfirmationSchema, recurrenceCommandFields, type RecurrenceConfirmation, type RecurrenceSnapshot, type RecurrenceTask } from '../../packages/domain/src/gikaRecurrence.ts';
 import { inspectRecurrence } from './recurrenceGuard.ts';
 import { hashCanonicalValue } from '../hash.ts';
@@ -21,10 +23,34 @@ export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
   inspectRecurrence?(uid: string, task: RecurrenceTask): Promise<RecurrenceSnapshot | null>;
+  recoverBatch?(uid:string, request:GikaRequest):Promise<{confirmation:BatchConfirmation;result:BatchResult}|null>;
   recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | { kind: 'recurrence'; confirmation: RecurrenceConfirmation } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
+  async recoverBatch(uid, request) {
+    entityIdSchema.parse(uid);
+    const ids = await Promise.all(Array.from({length:5},(_,index)=>batchOperationId(uid,request.requestId,index)));
+    const docs = await db.getAll(...ids.map(id=>db.doc(`commandReceipts/${uid}_${id}`)));
+    const committed = docs.filter(document=>document.exists);
+    if (!committed.length) return null;
+    let confirmation:BatchConfirmation|undefined;
+    for (const document of committed) {
+      const data=document.data()!,meta=data.gikaBatch;
+      if(data.uid!==uid||!meta||meta.requestId!==request.requestId||meta.requestTextHash!==hashValue(request.text)) throw new AppError(409,'OPERATION_MISMATCH','Este pedido já foi usado com outros dados. Envie um novo pedido.');
+      const parsed=batchConfirmationSchema.safeParse(meta.confirmation);
+      if(!parsed.success||meta.confirmationToken!==parsed.data.token||!Number.isInteger(meta.index)||meta.index<0||meta.index>=parsed.data.plan.items.length) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      if(confirmation&&hashCanonicalValue(confirmation)!==hashCanonicalValue(parsed.data))throw new GikaFault('GIKA_INVALID_RESPONSE');
+      confirmation=parsed.data;
+      const item=confirmation.plan.items[meta.index]!,ack=completionResultSchema.safeParse(data.response);
+      const canonical={...batchCommandFields(confirmation.plan,meta.index),gikaBatch:{requestId:request.requestId,requestTextHash:meta.requestTextHash,index:meta.index,confirmationToken:confirmation.token}};
+      if(data.hash!==commandHash(canonical))throw new GikaFault('GIKA_INVALID_RESPONSE');
+      if(item.operationId!==ids[meta.index]||document.id!==`${uid}_${item.operationId}`||!ack.success||ack.data.operationId!==item.operationId||ack.data.entityId!==item.id||ack.data.revision!==item.revision+1)throw new GikaFault('GIKA_INVALID_RESPONSE');
+    }
+    const plan=confirmation!.plan;
+    if(plan.items.some((item,index)=>item.operationId!==ids[index])||committed.length>plan.items.length)throw new GikaFault('GIKA_INVALID_RESPONSE');
+    return {confirmation:confirmation!,result:batchResult(plan.items.map((item,index)=>({id:item.id,title:item.title,status:docs[index]!.exists?'alreadyApplied':'pending',...(docs[index]!.exists?{revision:item.revision+1}:{})})))};
+  },
   async inspectRecurrence(uid, task) {
     const root = db.collection(`users/${entityIdSchema.parse(uid)}/activities`);
     const target = await root.doc(entityIdSchema.parse(task.id)).get();

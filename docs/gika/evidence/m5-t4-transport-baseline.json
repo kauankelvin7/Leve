@@ -1,0 +1,726 @@
+{
+  "cases": [
+    {
+      "testcase": "gika-recurrence-M5-T3-desk-9f9af-l-ack-and-sibling-isolation",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-recurrence-M5-T3-desk-9f9af-l-ack-and-sibling-isolation/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 13.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 10322.7
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 7.1
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/choose-recurrence",
+          "status": 200,
+          "durationMs": 123.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 598854.878,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10180.3
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 608750.517,
+          "endMonotonicMs": 608750.721,
+          "durationMs": 0.2
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 598882.571,
+          "endMonotonicMs": 608751.092,
+          "durationMs": 9868.5
+        }
+      ]
+    },
+    {
+      "testcase": "gika-recurrence-M5-T3-futu-65e47--new-Gemini-or-scope-choice",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-recurrence-M5-T3-futu-65e47--new-Gemini-or-scope-choice/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 19.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 10536.8
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 5.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/choose-recurrence",
+          "status": 200,
+          "durationMs": 122.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 672068.297,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10306.0
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 672084.854,
+          "endMonotonicMs": 682094.429,
+          "durationMs": 10009.6
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 672086.164,
+          "endMonotonicMs": 682090.215,
+          "durationMs": 10004.1
+        }
+      ]
+    },
+    {
+      "testcase": "gika-recurrence-M5-T3-mobi-77724-l-ack-and-sibling-isolation",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-recurrence-M5-T3-mobi-77724-l-ack-and-sibling-isolation/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 20.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 10219.4
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 12.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/choose-recurrence",
+          "status": 200,
+          "durationMs": 96.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 626610.546,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10107.7
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 636518.013,
+          "endMonotonicMs": 636518.197,
+          "durationMs": 0.2
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 626647.077,
+          "endMonotonicMs": 636518.398,
+          "durationMs": 9871.3
+        }
+      ]
+    },
+    {
+      "testcase": "gika-reschedule-M4-T3-desk-12cf2-tured-result-after-real-ack",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-reschedule-M4-T3-desk-12cf2-tured-result-after-real-ack/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 13.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 12027.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 11648.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 43.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 776793.565,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10311.2
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 786690.394,
+          "endMonotonicMs": 786690.811,
+          "durationMs": 0.4
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 776815.186,
+          "endMonotonicMs": 786691.084,
+          "durationMs": 9875.9
+        }
+      ]
+    },
+    {
+      "testcase": "gika-reschedule-M4-T3-lost-81d62-hout-new-Gemini-or-revision",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-reschedule-M4-T3-lost-81d62-hout-new-Gemini-or-revision/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 13.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 12058.7
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 57.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 867474.64,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10355.4
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 867521.867,
+          "endMonotonicMs": 877534.99,
+          "durationMs": 10013.1
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 867525.083,
+          "endMonotonicMs": 877530.03,
+          "durationMs": 10004.9
+        }
+      ]
+    },
+    {
+      "testcase": "gika-reschedule-M4-T3-mobi-1a329-tured-result-after-real-ack",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-reschedule-M4-T3-mobi-1a329-tured-result-after-real-ack/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 38.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 12406.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 11820.7
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 70.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 818865.071,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10132.4
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 828770.006,
+          "endMonotonicMs": 828770.188,
+          "durationMs": 0.2
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 818892.549,
+          "endMonotonicMs": 828770.411,
+          "durationMs": 9877.9
+        }
+      ]
+    },
+    {
+      "testcase": "gika-reschedule-M5-T2-fail-ae8ac-led-operation-without-model",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-reschedule-M5-T2-fail-ae8ac-led-operation-without-model/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 41.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 14301.2
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 78.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": 8.7
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 991693.99,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10388.7
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 991715.417,
+          "endMonotonicMs": 1001728.276,
+          "durationMs": 10012.9
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 991715.976,
+          "endMonotonicMs": 1001723.275,
+          "durationMs": 10007.3
+        }
+      ]
+    },
+    {
+      "testcase": "gika-update-M4-T2-desktop--9067d--double-submit-and-real-ack",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-update-M4-T2-desktop--9067d--double-submit-and-real-ack/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 41.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 14874.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 14503.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 5.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 1109833.087,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10268.9
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 1119674.986,
+          "endMonotonicMs": 1119675.18,
+          "durationMs": 0.2
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 1109811.582,
+          "endMonotonicMs": 1119675.392,
+          "durationMs": 9863.8
+        }
+      ]
+    },
+    {
+      "testcase": "gika-update-M4-T2-later-co-b543d-erwrite-or-misleading-retry",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-update-M4-T2-later-co-b543d-erwrite-or-misleading-retry/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 38.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 16350.0
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 1234413.622,
+          "endMonotonicMs": 1244429.183,
+          "durationMs": 10015.6
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 1234418.55,
+          "endMonotonicMs": 1244422.458,
+          "durationMs": 10003.9
+        }
+      ]
+    },
+    {
+      "testcase": "gika-update-M4-T2-lost-rea-86222-on-without-another-revision",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-update-M4-T2-lost-rea-86222-on-without-another-revision/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 81.5
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 15195.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 7.6
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 1191059.908,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10438.3
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 1191062.109,
+          "endMonotonicMs": 1201085.657,
+          "durationMs": 10023.5
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 1191072.439,
+          "endMonotonicMs": 1201081.476,
+          "durationMs": 10009.0
+        }
+      ]
+    },
+    {
+      "testcase": "gika-update-M4-T2-mobile-d-25fda--double-submit-and-real-ack",
+      "tracePath": "/tmp/leve-m5t4-gika-e2e/gika-update-M4-T2-mobile-d-25fda--double-submit-and-real-ack/trace.zip",
+      "http": [
+        {
+          "method": "GET",
+          "path": "/api/session",
+          "status": 200,
+          "durationMs": 37.9
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 14608.2
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": 200,
+          "durationMs": 14481.3
+        },
+        {
+          "method": "POST",
+          "path": "/api/gika/respond",
+          "status": 200,
+          "durationMs": 45.2
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        },
+        {
+          "method": "POST",
+          "path": "/api/commands",
+          "status": -1,
+          "durationMs": -1
+        }
+      ],
+      "fetchTiming": [
+        {
+          "completed": false,
+          "startMonotonicMs": 1155906.943,
+          "endMonotonicMs": null,
+          "durationOrObservedPendingMs": 10179.4
+        }
+      ],
+      "assertionTiming": [
+        {
+          "method": "expect",
+          "startMonotonicMs": 1165796.636,
+          "endMonotonicMs": 1165796.831,
+          "durationMs": 0.2
+        },
+        {
+          "method": "expect",
+          "startMonotonicMs": 1155913.15,
+          "endMonotonicMs": 1165797.038,
+          "durationMs": 9883.9
+        }
+      ]
+    }
+  ],
+  "entry": "1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4",
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "first_broad_run": {
+    "passed": 64,
+    "failed": 11,
+    "total": 75,
+    "all_green": false
+  },
+  "comparison": {
+    "originals_entry": {
+      "passed": 12,
+      "failed": 0
+    },
+    "originals_current": {
+      "passed": 12,
+      "failed": 0
+    },
+    "probes_entry": {
+      "passed": 7,
+      "failed": 0
+    },
+    "probes_current": {
+      "passed": 7,
+      "failed": 0
+    },
+    "prior_interrupted_entry_probe_run": {
+      "observed_pass": 6,
+      "final_result": "interrupted_environment_restart"
+    },
+    "configured_assertion_ms": 10000,
+    "controlled_transport_hold_ms": 10200,
+    "conventional_creation_client_timeout_ms": 20000,
+    "controlled_creation_hold_ms": 20200,
+    "deadlines_changed": false,
+    "probes": [
+      {
+        "file": "m5t3-transport-probe.spec.ts",
+        "sha256": "12aa32f274e9f5c33ae396b9832abed032bc41e5e915947fcd1ba2f15ff87f28",
+        "byte_identical_in_entry_and_current": true
+      },
+      {
+        "file": "m5t4-transport-probe.spec.ts",
+        "sha256": "113313d5990076db9777fc3c0cb0c0d1a9dbde84b690cf9ec819a8c7155e462e",
+        "byte_identical_in_entry_and_current": true
+      }
+    ]
+  },
+  "interpretation": "Ten failures awaited unfinished mutation transport; update conflict awaited conventional edit inside the provider fixture. Incomplete network status -1 is not an upstream HTTP status. Identical original cases passed in both snapshots; controlled holds reproduced existing deadlines then validated ack/receipt/replay/conflict. The mechanism is proved in both versions; no physical network cause is claimed.",
+  "gemini_live": false
+}

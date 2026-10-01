@@ -258,7 +258,7 @@ milestones:
 
   M5:
     name: "Políticas, lote e recorrência"
-    status: in_progress
+    status: done
     tasks:
       - id: M5-T1
         title: "Policy engine"
@@ -278,7 +278,9 @@ milestones:
         dependencies: [M5-T2]
       - id: M5-T4
         title: "Batch operations seguras"
-        status: todo
+        status: done
+        evidence: ["M5_T4_EXECPLAN/EVIDENCE.md; ADR020; m5-t4-gates/transport-baseline/reference-files.json. Entrada1b09f5f local/origin limpa/exata; complete/reschedule cap5/dia explícito/seleção integral; plano selado/guard pendentes/receipts convencionais/recovery5/partial honesto/occurrence explícito, future/all lote recusados sem alterar T3individual. Auditprodução0/lint/doisTS/build/480unit/243integração/31focal/13E2Ebatch PASS; amplo64/11 preservado/classificado contra entrada com12originais+7sondas PASS em cada cópia;76Gika únicas observadas PASS. Check12/1 contraste histórico;29 referências byte-idênticas/CSS antigo intacto. Sem live/novo writer/collection/engine/dependência/M6; commit funcional/checkpoint documental e backup autorizado somente feat, parar para revisão."]
+        acceptance_criteria: ["Conjunto software-owned bounded e integral, preview completo e confirmação vinculam UID/request/targets/revs/patches/scopes/count/expiry; nenhuma escrita preview/cancel/partialread/ambiguidade/cap excedido; auth/revision/receipt/retry/concurrency/lostack/tamper seguros, execução itemizada recuperável e parcial explícita, UI só ack real/sem Gemini nos botões; regressões M4/M5-T2/T3/gates/evals/evidências/checkpoint/backup e parada antes M6."]
         dependencies: [M5-T3]
 
   M6:

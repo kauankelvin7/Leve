@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M5_T3_DONE_STOP_BEFORE_M5_T4`.
+- Status global: `M5_T4_DONE_STOP_BEFORE_M6`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
-- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2 done; M5-T3 done, M5-T4 e posteriores todo/não iniciados.
+- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
 
 - DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
@@ -14,11 +14,19 @@
 
 ## Autorização atual
 
-Pedido atual autoriza exclusivamente M5-T3 recorrência occurrence/future, conforme docs/gika/M5_T3_EXECPLAN.md. Entrada local/origin fc0b66972164e3cee73c6c9a65969ea2e61d3994 e worktree limpo/fetch verificados. Gates/checkpoint e push apenas feat autorizados; sem batch/M5-T4/Gemini live/deploy/main/visual/dependências.
+Pedido atual autoriza exclusivamente M5-T4 batch seguro, conforme docs/gika/M5_T4_EXECPLAN.md. Entrada local/origin 1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4 e worktree limpo/fetch verificados. Gates/checkpoints e push somente feat autorizados; sem M6/Gemini live/deploy/main/visual/dependências.
 
 ## Próxima ação
 
-Aguardar revisão do M5-T3. M5-T4 todo/não iniciado; não executar sem nova autorização. Checkpoint/backup desta sessão somente feat/gika-integration; conferir SHA local/origin e worktree após publicação, sem outra implementação.
+Parar para revisão depois do checkpoint/backup remoto M5-T4. Não iniciar M6, Gemini live, PR, merge ou deploy. Nenhuma ação nova está autorizada automaticamente.
+
+## M5-T4 — conclusão
+
+Entrada1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4 local/origin limpa/exata/fetch verificada; T3 aprovado. M5_T4_EXECPLAN/EVIDENCE e ADR020: somente batch_complete/batch_reschedule, cap5 pending/um dia civil explícito, matching/exclusão exatos, nenhuma leitura parcial/truncamento/no-op silencioso. Plano integral server-owned selado UID/request/childops/IDs/revs/patch/scopes/count/15min; índice fora da lista rejeita422. Modelo não escolhe identidades/cardinalidade. occurrence explícito permitido no lote, semscope clarify; future/all lote recusados, T3 individual occurrence/future intacto. Mesmo activity.setStatus/update e receipts, guard transacional de todos pendentes antes de cada efeito; stale inicial0writes, corrida posterior partial explícito, sem promessa de atomicidade global/rollback. Recovery até5 receipts antes provider, mesmos envelopes/acks originais, nenhum refresh de revisão/seleção/validade. Botões confirm/cancel/retomar sem Gemini; auth fresca e sucesso só ack real. Close póscommit mostra desconhecido honesto e retoma receipts; reload não restaura nem autoexecuta. Sem writer/collection/engine/outbox novos.
+
+Auditprodução0 critical/high/moderate; lint/doisTS/build/480unit PASS;243integração completas PASS;31batchintegração/13E2Ebatch finais PASS, teclado/Axe/lightdesktop/darkmobile360/390/cap5/scroll/composer. Amplo64PASS/11FAIL não verde;76Gika únicas observadas PASS. Classificação temporal comprovada contra1b09f5f:12originais e7sondas byte-idênticas PASS em cada cópia, delays10200/20200 reproduzem deadlines existentes antes de ack/receipt/replay/conflict corretos, sem inferir causa física. Check12/1 color-contrast histórico reproduzido na entrada; nenhum deadline/CI/timer/contraste alterado. Primeiras tentativas unit452/1 allowlist, integração21/1 fixture inválida e signer16/1 cardinalidade documentadas/corrigidas sem relaxar schema ou desabilitar testes; ambiente sinalizou restart durante comparação com6sondas observadas, diff preservado e rodada completa posterior registrada.29 referências byte-idênticas/CSS anterior intacto, screenshots históricos restaurados.
+
+Evidências sanitizadas docs/gika/evidence/m5-t4-{gates,transport-baseline,reference-files}.json e screenshots sintéticos. Nenhuma credencial real/.env/Gemini live/dependência/PR/deploy/main/branch visual/M6. Commit funcional atômico e checkpoint documental registram SHA antes do backup autorizado somente feat; verificação local/origin/worktree no encerramento. Parar para revisão.
 
 ## M5-T3 — conclusão
 

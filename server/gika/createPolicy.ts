@@ -55,10 +55,10 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
     }
     return parsed.data;
   });
-  if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task' || tool.name === 'reschedule_task') && tools.length !== 1) {
+  if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task' || tool.name === 'reschedule_task' || tool.name === 'batch_complete' || tool.name === 'batch_reschedule') && tools.length !== 1) {
     const first = tools[0];
     // Schemas above normalize property order and reject unknown fields before collapsing repetition.
-    if ((first?.name !== 'create_task' && first?.name !== 'complete_task' && first?.name !== 'update_task' && first?.name !== 'reschedule_task') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) {
+    if ((first?.name !== 'create_task' && first?.name !== 'complete_task' && first?.name !== 'update_task' && first?.name !== 'reschedule_task' && first?.name !== 'batch_complete' && first?.name !== 'batch_reschedule') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) {
       const mutation = tools.find(tool => isRegisteredMutation(tool.name));
       if (mutation && isRegisteredMutation(mutation.name)) assessMultipleActions(mutation.name, 'verified');
       throw new GikaFault('GIKA_POLICY');
