@@ -33,3 +33,5 @@ Reverter somente commit desta tarefa, sem reset destrutivo. Metadata opcional é
 
 ## Evidências / estado de retomada
 PRE e implementação concluídos. REDs de identidade/calls, canonicalização e replay em restrição comprovados e corrigidos. Gates finais: lint/typechecks/build/184 unit/64 integração PASS;27 E2E Gika na suíte completa e13 criação+read novamente após última alteração/reinícioAPI PASS.58 locais46 PASS/12 FAIL baseline;check shell12 PASS/1 FAIL baseline;production audit13 vulnerabilidades idênticas à cópiaa9aff2f. Evidência detalhada M3_T2_EVIDENCE.md. T2 done, M3 parcial, parar antes de T3. Commit atômico de tarefa e checkpoint documental registram SHA real/worktree limpo.
+
+Commit de tarefa verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`; worktree limpo após commit. Checkpoint documental posterior, sem alteração funcional; aguardar revisão, não iniciar T3.

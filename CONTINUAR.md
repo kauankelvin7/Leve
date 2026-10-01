@@ -151,3 +151,5 @@ Pedido atual autoriza integração Gika e branch feat/gika-integration; não exe
 ## Gika — M3-T2 em 01/10/2026
 
 M3-T2 concluído na feat/gika-integration a partir de a9aff2f: identidade por requestId/UID, command receipts atômicos existentes, recuperação de resposta perdida e proteção contra duplicação sem dedup por conteúdo. Fontes atuais .agent/GIKA_STATE.md e docs/gika/M3_T2_EVIDENCE.md; ADR-GIKA-012. Lint/typechecks/build/184 unit/64 integração e27 E2E Gika PASS;13 criação+read repetidos após última alteração/reinícioAPI PASS.58 locais46 PASS/12 FAIL baseline,check shell12/1 e audit13 vulnerabilidades baseline comparados à base. M3 parcial; M3-T3 todo e não iniciado, aguardar revisão/autorização. Sem segredo/billing/deploy; SHA real no checkpoint documental posterior.
+
+Commit atômico M3-T2 verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`; worktree limpo depois do commit. Este checkpoint posterior só documenta o SHA real. M3-T3 permanece não iniciado.

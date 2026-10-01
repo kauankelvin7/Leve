@@ -9,7 +9,7 @@
 - Branch: `feat/gika-integration`; repositório `/workspace/Leve`, clone HTTPS https://github.com/kauankelvin7/Leve.git.
 - Base M0: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`.
 - PRE M3-T2: `a9aff2f2009c36c23cc70ae380b642e12bc697a8`, SHA/branch/worktree limpo validados antes de qualquer alteração.
-- Commit de tarefa M3-T2: este commit atômico de código/testes/docs/estado/tarefas; SHA real registrado no checkpoint documental posterior (sem auto-referência).
+- Último commit de tarefa Gika verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`, M3-T2 atômico; worktree limpo após commit, antes deste checkpoint documental.
 - Provas: docs/gika/M3_T2_EXECPLAN.md, M3_T2_EVIDENCE.md e evidence/m3-t2-baseline-*.json. ADR-GIKA-012 documenta extensão mínima dos receipts existentes; modelo não persiste, bridge único sendCommand/activity.create.
 - Gates finais: lint/dois typechecks/build/184 unit em35 arquivos e64 integração em4 arquivos PASS.27 E2E Gika PASS na suíte completa;13 criação+read/fallback novamente PASS após última alteração e reinício API.5 Planner visual/4 convencionais/offline/7 sazonal PASS.58 locais46 PASS/12 FAIL baseline;check shell12 PASS/1 FAIL baseline;production audit13 vulnerabilidades baseline. Nenhum caso Gika falhou na execução completa/final.
 
@@ -40,7 +40,7 @@ Metadado opcional strict gika.requestTextHash vincula pedido ao ID, não dedup p
 
 ## Checkpoint de retomada
 
-Checkpoint documental posterior registra SHA real do commit atômico M3-T2 e worktree limpo. Conferir git log/diff: checkpoint posterior só contém documentação. Não há SHA auto-referente possível em arquivo versionado. T2 autorizado/concluído a partir de a9aff2f; parar antes de T3.
+Checkpoint documental registra o commit atômico M3-T2 `56800b2f933e6d6ee0043856698bd6473eb13e37`, com worktree limpo verificado após o commit. Conferir git log/diff: checkpoint posterior só contém documentação. Não há SHA auto-referente possível em arquivo versionado. T2 autorizado/concluído a partir de a9aff2f; parar antes de T3.
 
 ## Histórico
 
@@ -81,4 +81,4 @@ Checkpoint documental posterior registra SHA real do commit atômico M3-T2 e wor
 
 | 2026-10-01 | M3 parcial | M3-T1 | done: create_task pelo comando existente,175 unit/53 integração/25 E2E Gika PASS; baseline global classificado; parada para revisão antes de T2/T3 | `3fa05f0d447724e2ad41ad95e1482e3941c3a8de` |
 
-| 2026-10-01 | M3 | M3-T2 | done: idempotência/recuperação via receipts atômicos; gates focais PASS, falhas baseline registradas; parar antes de T3 | commit desta tarefa após a9aff2f; SHA no checkpoint posterior |
+| 2026-10-01 | M3 | M3-T2 | done: idempotência/recuperação via receipts atômicos; gates focais PASS, falhas baseline registradas; parar antes de T3 | `56800b2f933e6d6ee0043856698bd6473eb13e37` |

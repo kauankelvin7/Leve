@@ -49,3 +49,5 @@ Sem credencial atual autorizada: não houve chamada live Gemini, chave fictícia
 ## Checkpoint
 
 M3-T2 done, M3 parcial. Estado/tarefas/evidências/evals/ADR012 atualizados no commit atômico da tarefa; checkpoint documental posterior registra SHA real e worktree limpo. Parar antes de M3-T3. Revisão de diff/limites do modelo/auth/metadata/rollback/humanizer e remoção somente de artefatos gerados pelo gate realizadas antes do commit.
+
+Commit atômico de tarefa: `56800b2f933e6d6ee0043856698bd6473eb13e37` (feat/gika-integration), com código/testes/docs/estado/tarefas/evals/ADR. Worktree limpo confirmado após commit. Checkpoint documental posterior registra SHA real sem alteração funcional; M3-T3 todo/não iniciado.
