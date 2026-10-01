@@ -37,3 +37,5 @@ Global não declarada integralmente verde. Baselines M4_T3_EVIDENCE.md continuam
 
 ## Limites/checkpoint
 PASS prova os quatro pedidos live; ambiguidades/falhas extensas seguem evals determinísticos. Persistência real emulada, não produção nem aparelho físico/certificado de release. Fixtures descartáveis permanecem somente em emulador até reset habitual; nenhuma remoção de domínio executada neste smoke. Conversa/preview não persistem reload, limite atual preservado. Nenhuma ADR necessária: arquitetura inalterada. M4-SMOKE done/M4 done após gates/revisão/evidências, checkpoint atômico criado no fechamento. SHA real registrado no checkpoint documental posterior. Parar antes de M5; próxima tarefa M5-T1 permanece todo e exige autorização nova.
+
+Commit atômico M4-SMOKE/fechamento M4: `2443993295e45d7dc215ac0a1ab250437cee6c44`, branch feat/gika-integration e worktree limpo confirmados após commit. Checkpoint documental posterior apenas registra SHA real, sem repetir live/gates funcionais. M4 done, parar antes de M5.

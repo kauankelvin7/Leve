@@ -191,3 +191,5 @@ Commit atômico M4-T3: `f774d9c9b1466683e418be8b59f83615eb9495e7`; worktree limp
 ## Gika — M4-SMOKE e fechamento M4
 
 A partir de cfd96c3 limpo na feat/gika-integration, T3 aprovado e smoke exclusivamente autorizado. Quatro chamadas Gemini reais HTTP200 complete/update/reschedule timed+untimed→validation/resolution/policy→commands/receipt/persistência emulada→ack/UI; retries sem extra efeitos/upstream, preview sem escrita até confirmar, horários preservados e UID vizinho intacto. M4_SMOKE_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md fontes atuais; M4 done.295 unit/150 integração/25 E2E/lint/build/dois TS PASS;check12/1 contraste e audit13 baseline explícitos,26 arquivos idênticos. Credencial somente memória e processo encerrado; proxy/egress apenas Codex Remote, sem produção alterada. M5 não iniciado; parar antes de M5-T1 até autorização nova. SHA real no checkpoint documental posterior.
+
+Commit atômico M4-SMOKE/fechamento M4: `2443993295e45d7dc215ac0a1ab250437cee6c44`, branch feat/gika-integration e worktree limpo confirmados após commit. Checkpoint documental posterior apenas registra SHA real, sem repetir live/gates funcionais. M4 done, parar antes de M5.

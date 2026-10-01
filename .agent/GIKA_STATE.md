@@ -39,7 +39,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada cfd96c3 limpa. M4-SMOKE/fechamento M4 em commit atômico de harness/plano/evidências/evals/estado/tarefas; SHA real no checkpoint documental posterior. Produção inalterada, M5 não iniciado. Worktree será confirmado vazio após o commit.
+Entrada cfd96c3 limpa. M4-SMOKE/fechamento M4 no commit atômico `2443993295e45d7dc215ac0a1ab250437cee6c44` (harness/plano/evidências/evals/estado/tarefas). Branch feat/gika-integration e git status vazio confirmados depois do commit. Este checkpoint documental registra o SHA real sem referência circular ou alteração funcional. M4 done, M5 não iniciado.
 
 ## Histórico
 
