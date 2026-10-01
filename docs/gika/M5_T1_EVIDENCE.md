@@ -55,4 +55,4 @@ M5 parcial, exclusivamente T1. Sem T2/batch/delete por linguagem natural/recorr�
 
 ## Checkpoint/estado final
 
-M5-T1 done; M5 in_progress, M5-T2/T3/T4 todo, sem início. Código/testes/evidências/estado/tarefas/ADR017 no checkpoint atômico desta tarefa. SHA real registrado no checkpoint documental posterior, sem referência circular. Worktree será confirmado limpo após commit.
+M5-T1 done; M5 in_progress, M5-T2/T3/T4 todo, sem início. Commit atômico `4561cf59db395ac4c10c58118890283a3e45ec1e` inclui código/testes/evidências/estado/tarefas/ADR017. Branch feat/gika-integration e git status vazio confirmados após commit. Este checkpoint documental apenas registra o SHA real, sem referência circular ou alteração funcional; worktree confirmado limpo novamente depois dele.

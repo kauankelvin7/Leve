@@ -42,7 +42,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada156fe77 limpa. M5-T1 código/testes/evidências/estado/tarefas/ADR017 no commit atômico desta tarefa; SHA real será registrado no checkpoint documental posterior, sem referência circular. Confirmar branch feat/gika-integration/worktree limpo depois do commit. M5 parcial, parar antes de T2.
+Entrada156fe77 limpa. Commit atômico M5-T1 `4561cf59db395ac4c10c58118890283a3e45ec1e`: código/testes/evidências/estado/tarefas/ADR017. Branch feat/gika-integration e worktree limpo confirmados depois do commit. Este checkpoint documental registra o SHA real sem referência circular ou alteração funcional. M5 parcial, parar antes de T2.
 
 ## Histórico
 
@@ -94,3 +94,5 @@ Entrada156fe77 limpa. M5-T1 código/testes/evidências/estado/tarefas/ADR017 no 
 | 2026-10-01 | M4 parcial | M4-T2 | done: patch title-only via activity.update/receipt/revision existentes;262 unit/123 integração/10 E2E finais PASS,global62/13 causas comparadas02fe;sem live,parar antes de T3 | `ededc2090887c181f6f463d92cda934a9cd6d16a` |
 
 | 2026-10-01 | M4 parcial | M4-T3 | done: reschedule temporal strict/preview/command convencional/revisão/receipt;295 unit/150 integração/7 focal PASS;global67/15 classificado contra d233971, comparação atual8/2;sem live,parar antes M4-SMOKE/M5 | `f774d9c9b1466683e418be8b59f83615eb9495e7` |
+
+| 2026-10-01 | M5 parcial | M5-T1 | done: classifier strict puro/facts software/gates/replay/preview preservado;323 unit/166 integração/6 focal PASS,50/1 amplo classificado156;check12/1/audit13 baseline;sem live,parar antes T2 | `4561cf59db395ac4c10c58118890283a3e45ec1e` |
