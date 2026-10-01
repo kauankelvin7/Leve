@@ -50,4 +50,4 @@ Logs/traces/probes temporários não são versionados. Evidência sanitizada nã
 
 ## Checkpoint
 
-Implementação/testes/ADR020/evals/evidências/STATE/TASKS done compõem o commit funcional atômico. Checkpoint documental seguinte registra seu SHA real e a parada; backup autorizado somente desta branch após os commits, com comparação local/origin no encerramento. Parar para revisão antes de M6.
+Commit funcional atômico `dd2a6e88f9c25e87241187886d6264f4c13375fe`, parent1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4, feat/gika-integration; implementação/testes/ADR020/evals/evidências/STATE/TASKS done juntos. SHA e worktree limpo verificados após commit. Este checkpoint documental registra o commit real e a parada, sem mudança de produto/gates. Backup autorizado somente desta branch após os commits; SHA final local/origin e worktree limpo são verificados e reportados no encerramento, sem hash circular dentro do próprio commit. Parar para revisão antes de M6.

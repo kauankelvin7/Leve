@@ -150,3 +150,7 @@ Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmad
 ## Checkpoint M5-T3
 
 Commit funcional atômico verificado: `8fe12469d9b5d3751109d79d5beafe4449f07aa6` na feat/gika-integration, parent fc0b669. Worktree limpo confirmado após commit. Este checkpoint documental registra o SHA real sem alteração de produto/gates; backup autorizado somente desta branch e igualdade local/remoto devem ser conferidos após push. M5-T3 done; status M5_T3_DONE_STOP_BEFORE_M5_T4; M5-T4 todo/não iniciado, aguardar revisão.
+
+## Checkpoint M5-T4
+
+Commit funcional atômico verificado: `dd2a6e88f9c25e87241187886d6264f4c13375fe` na feat/gika-integration, parent1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4. Implementação/testes/evals/ADR020/evidências e STATE/TASKS done juntos; worktree limpo confirmado após commit. Este checkpoint documental registra o SHA real, sem mudança de produto ou gates. Backup remoto autorizado somente desta branch depois deste checkpoint; igualdade HEAD local/origin e worktree limpo devem ser conferidos após o push e reportados no encerramento. M5-T4 done/M5 done; M6-T1/T2/T3 todo/não iniciados. Parar para revisão, sem PR/main/deploy/Gemini live.
