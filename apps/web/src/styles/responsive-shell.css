@@ -208,3 +208,316 @@
     overscroll-behavior: contain;
   }
 }
+
+
+/* ============================================================
+   FULL-SCREEN LOADING
+   Usa a mesma identidade do Leve, mas ocupa a tela com intenção
+   em vez de deixar um bloco pequeno perdido no centro.
+   ============================================================ */
+
+.loading-state-screen {
+  isolation: isolate;
+  width: min(1120px, calc(100vw - 48px));
+  min-height: min(680px, calc(100svh - 48px));
+  margin: 24px auto;
+  padding: clamp(38px, 5vw, 72px);
+  display: grid;
+  grid-template-columns: minmax(260px, .82fr) minmax(360px, 1.18fr);
+  grid-template-areas:
+    "brand preview"
+    "orbit preview"
+    "label preview"
+    "hint preview";
+  column-gap: clamp(44px, 6vw, 88px);
+  align-content: center;
+  align-items: center;
+  text-align: left;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: clamp(28px, 3vw, 42px);
+  background:
+    radial-gradient(circle at 12% 15%, color-mix(in srgb, var(--color-action-primary) 13%, transparent) 0, transparent 34%),
+    radial-gradient(circle at 90% 84%, color-mix(in srgb, var(--color-canvas-accent) 28%, transparent) 0, transparent 36%),
+    color-mix(in srgb, var(--color-solid) 92%, transparent);
+  box-shadow:
+    0 32px 90px color-mix(in srgb, var(--color-text) 12%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 48%, transparent);
+  backdrop-filter: blur(28px) saturate(125%);
+  -webkit-backdrop-filter: blur(28px) saturate(125%);
+}
+
+.loading-state-screen::before,
+.loading-state-screen::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(1px);
+}
+
+.loading-state-screen::before {
+  width: clamp(220px, 24vw, 360px);
+  aspect-ratio: 1;
+  top: -22%;
+  left: -10%;
+  border: 1px solid color-mix(in srgb, var(--color-action-primary) 18%, transparent);
+  box-shadow:
+    0 0 0 42px color-mix(in srgb, var(--color-action-primary) 3%, transparent),
+    0 0 0 88px color-mix(in srgb, var(--color-action-primary) 2%, transparent);
+}
+
+.loading-state-screen::after {
+  width: clamp(160px, 18vw, 260px);
+  aspect-ratio: 1;
+  right: -8%;
+  bottom: -18%;
+  background: color-mix(in srgb, var(--color-action-primary) 6%, transparent);
+}
+
+.loading-state-screen .loading-brand {
+  grid-area: brand;
+  margin: 0 0 34px;
+  font-size: clamp(4.2rem, 6.4vw, 7rem);
+  line-height: .88;
+  letter-spacing: -.085em;
+  color: var(--color-text);
+}
+
+.loading-state-screen .loading-brand span {
+  color: var(--color-action-primary);
+}
+
+.loading-state-screen .loading-orbit {
+  grid-area: orbit;
+  width: 76px;
+  height: 76px;
+  margin: 0 0 30px;
+  border-color: color-mix(in srgb, var(--color-action-primary) 36%, transparent);
+  background: color-mix(in srgb, var(--color-solid) 46%, transparent);
+  box-shadow:
+    inset 0 0 0 10px color-mix(in srgb, var(--color-action-primary) 3%, transparent),
+    0 10px 30px color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.loading-state-screen .loading-orbit::before {
+  border-color: color-mix(in srgb, var(--color-action-primary) 32%, transparent);
+}
+
+.loading-state-screen .loading-orbit span:nth-child(2) {
+  background: color-mix(in srgb, var(--color-action-primary) 58%, var(--color-text));
+}
+
+.loading-state-screen .loading-orbit span:nth-child(3) {
+  background: var(--color-text-muted);
+}
+
+.loading-state-screen .loading-label {
+  grid-area: label;
+  margin: 0 0 8px;
+  max-width: 24ch;
+  color: var(--color-text);
+  font-size: clamp(1.1rem, 1.35vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -.015em;
+}
+
+.loading-state-screen .loading-hint {
+  grid-area: hint;
+  margin: 0;
+  max-width: 34ch;
+  color: var(--color-text-muted);
+  font-size: .92rem;
+  line-height: 1.6;
+}
+
+.loading-state-screen .loading-preview {
+  grid-area: preview;
+  position: relative;
+  width: 100%;
+  min-height: 390px;
+  padding: clamp(28px, 3vw, 42px);
+  align-content: center;
+  gap: 16px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 30px;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-solid) 94%, transparent),
+      color-mix(in srgb, var(--color-canvas-accent) 16%, var(--color-solid))
+    );
+  box-shadow:
+    0 24px 56px color-mix(in srgb, var(--color-text) 10%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 54%, transparent);
+}
+
+.loading-state-screen .loading-preview::before {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 14px;
+  border-radius: 22px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-action-primary) 32%, var(--color-solid)),
+      color-mix(in srgb, var(--color-action-primary) 12%, var(--color-solid))
+    );
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 42%, transparent);
+}
+
+.loading-state-screen .loading-preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 34%,
+    color-mix(in srgb, white 28%, transparent) 47%,
+    transparent 60%
+  );
+  transform: translateX(-115%);
+  animation: loading-preview-sweep 2.6s ease-in-out infinite;
+}
+
+.loading-state-screen .loading-line {
+  height: 13px;
+  background: color-mix(in srgb, var(--color-text-muted) 24%, var(--color-solid));
+}
+
+.loading-state-screen .loading-line-short { width: 38%; }
+.loading-state-screen .loading-line-medium { width: 72%; }
+
+.loading-state-screen .loading-card-row {
+  margin-top: 24px;
+  gap: 14px;
+}
+
+.loading-state-screen .loading-card-row span {
+  min-height: 104px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--color-canvas-accent) 22%, var(--color-solid));
+}
+
+@keyframes loading-preview-sweep {
+  0%, 22% { transform: translateX(-115%); }
+  70%, 100% { transform: translateX(115%); }
+}
+
+@media (max-width: 899px) {
+  .loading-state-screen {
+    width: min(720px, calc(100vw - 32px));
+    min-height: calc(100svh - 32px);
+    margin: 16px auto;
+    padding: clamp(30px, 6vw, 52px);
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "brand"
+      "orbit"
+      "label"
+      "hint"
+      "preview";
+    gap: 0;
+    text-align: center;
+  }
+
+  .loading-state-screen .loading-brand {
+    margin-bottom: 24px;
+    font-size: clamp(3.8rem, 12vw, 5.6rem);
+  }
+
+  .loading-state-screen .loading-orbit {
+    justify-self: center;
+    margin-bottom: 22px;
+  }
+
+  .loading-state-screen .loading-label,
+  .loading-state-screen .loading-hint {
+    justify-self: center;
+  }
+
+  .loading-state-screen .loading-preview {
+    min-height: 270px;
+    margin-top: 34px;
+    text-align: left;
+  }
+
+  .loading-state-screen .loading-preview::before {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .loading-state-screen .loading-card-row span {
+    min-height: 78px;
+  }
+}
+
+@media (max-width: 520px) {
+  .loading-state-screen {
+    width: 100%;
+    min-height: 100svh;
+    margin: 0;
+    padding:
+      max(30px, env(safe-area-inset-top))
+      20px
+      max(28px, env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .loading-state-screen .loading-brand {
+    margin-bottom: 20px;
+    font-size: clamp(3.4rem, 19vw, 4.7rem);
+  }
+
+  .loading-state-screen .loading-orbit {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+  }
+
+  .loading-state-screen .loading-preview {
+    min-height: 238px;
+    margin-top: 28px;
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .loading-state-screen .loading-card-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .loading-state-screen .loading-card-row span {
+    min-height: 54px;
+    border-radius: 14px;
+  }
+}
+
+.solid .loading-state-screen,
+@media (prefers-reduced-transparency: reduce) {
+  .loading-state-screen {
+    background: var(--color-solid);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-state-screen .loading-preview::after {
+    display: none;
+    animation: none;
+  }
+}

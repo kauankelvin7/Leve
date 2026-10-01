@@ -15,7 +15,7 @@ export function LoadingState({ label, variant = 'list' }: LoadingStateProps) {
         <span className="loading-line loading-line-short" />
         <span className="loading-line" />
         <span className="loading-line loading-line-medium" />
-        {variant === 'cards' ? <div className="loading-card-row"><span /><span /><span /></div> : null}
+        {variant === 'cards' || screen ? <div className="loading-card-row"><span /><span /><span /></div> : null}
       </div>
     </main>
   );

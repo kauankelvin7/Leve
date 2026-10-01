@@ -69,3 +69,17 @@ Critérios:
 - rotas principais preservam reflow.
 
 A integração final com a Gika deve repetir esta matriz mais os testes próprios do painel do agente.
+
+
+## Tela de carregamento
+
+O estado `LoadingState variant="screen"` também recebeu tratamento responsivo.
+
+- desktop grande: composição editorial em duas colunas, com marca/estado de um lado e skeleton do produto do outro;
+- tablet: composição empilhada dentro de uma superfície central;
+- mobile: fullscreen sem moldura externa, respeitando safe area;
+- o preview usa apenas formas decorativas e não inventa dados;
+- animação de brilho é removida com `prefers-reduced-motion`;
+- transparência tem fallback sólido.
+
+O texto e a semântica de `role="status"` / `aria-live` permanecem inalterados.
