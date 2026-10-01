@@ -526,3 +526,10 @@
     animation: none;
   }
 }
+
+
+/* Contraste de metadados pequenos: corrige o baseline AA sem mudar a hierarquia visual. */
+.activity-time,
+.aside-caption {
+  color: color-mix(in srgb, var(--color-text) 34%, var(--color-text-muted));
+}
