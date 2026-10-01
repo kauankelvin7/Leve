@@ -506,7 +506,12 @@
   }
 }
 
-.solid .loading-state-screen,
+.solid .loading-state-screen {
+  background: var(--color-solid);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .loading-state-screen {
     background: var(--color-solid);
