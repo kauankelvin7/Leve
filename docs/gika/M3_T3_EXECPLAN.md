@@ -29,3 +29,5 @@ Revisão T3: vincular também entity.createdAt ao serverTime do receipt original
 
 ## Estado final
 M3-T3 done:194 unit/76 integração,lint/dois TS/build e6 E2E focais finais PASS;63 E2E amplos50/13,check12/1,audit13 vulnerabilidades com baseline classificado e prova de timer emfc30bf9. Evidência completa M3_T3_EVIDENCE.md/ADR013. Código final preserva foco/aria-live e ABA; sem live/smoke/M4. Próxima ação: revisão humana T3, depois M3-SMOKE somente quando autorizado. Commit atômico/checkpoint documental posterior registra SHA real.
+
+Commit de tarefa verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`; worktree limpo após commit. Checkpoint documental posterior só registra SHA real.

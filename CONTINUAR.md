@@ -157,3 +157,5 @@ Commit atômico M3-T2 verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`; wo
 ## Gika — M3-T3 em 01/10/2026
 
 Undo seguro da criação concluído a partir de fc30bf9 na feat/gika-integration. Botão determinístico → activity.trash/soft-delete30dias/receipts transacionais existentes, UID/ID/revisão1/createdAt original e replay seguros; sem Gemini ou purge no undo. ADR013, M3_T3_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md. Gates focais194 unit/76 integração/6 E2E/lint/dois TS/build PASS; amplo50/13:12 falhas anteriores + intermitência dock/timer preexistente demonstrada nas duas versões,check12/1,audit13 baseline. M3 permanece parcial até M3-SMOKE após revisão; não executar live nem iniciar M4 nesta sessão. SHA real no checkpoint documental posterior.
+
+Commit atômico M3-T3 verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`, worktree limpo após commit. Checkpoint posterior é documental; próxima ação revisão T3, sem iniciar smoke/M4 automaticamente.

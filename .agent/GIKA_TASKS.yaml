@@ -218,7 +218,7 @@ milestones:
           - "Receipts existentes tornam replay/concurrency/lost response seguros; edições/remoção/reuso ID posteriores claros sem perda de dados."
           - "UI pending/success/error/conflict somente após ack; auth/logout/conta/falhas/cancelamento cobertos, humanizer/a11y/mobile/dark."
           - "Testes/evals/gates/evidências/checkpoint limpo; parar antes do smoke live/M4, M3 não done."
-        evidence: ["M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md; ADR013; lint/dois TS/build/194 unit/76 integração/6 E2E finais PASS;63 amplos50/13 baseline incluindo timer comprovadofc30bf9;check12/1 e audit13 baseline;checkpoint atômico/clean."]
+        evidence: ["M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md; ADR013; lint/dois TS/build/194 unit/76 integração/6 E2E finais PASS;63 amplos50/13 baseline incluindo timer comprovadofc30bf9;check12/1 e audit13 baseline;checkpoint atômico 55b760ffa80a84070872e82a42a3d8f132f4141a/worktree limpo verificado."]
 
       - id: M3-SMOKE
         title: "Smoke real da cadeia completa create_task após revisão T3"

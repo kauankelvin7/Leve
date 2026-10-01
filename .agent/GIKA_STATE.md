@@ -6,7 +6,7 @@
 - Milestones concluídos: M0/M1/M2; M3 parcial, não done.
 - M3-T1/T2/T3 done; nenhuma tarefa ativa, M3-SMOKE blocked até revisão/autorização e credencial atual. M4 não iniciado.
 - Branch feat/gika-integration; repositório /workspace/Leve, clone HTTPS https://github.com/kauankelvin7/Leve.git.
-- PRE M3-T3: fc30bf9c51a7978cf2cb22280ddaa67d59b48f6d, SHA/branch/worktree limpo validados antes de alterar. Última tarefa T3 concluída neste commit atômico; SHA real no checkpoint documental posterior. T2 histórico56800b2f933e6d6ee0043856698bd6473eb13e37; entradafc30bf9.
+- PRE M3-T3: fc30bf9c51a7978cf2cb22280ddaa67d59b48f6d, SHA/branch/worktree limpo validados antes de alterar. Último commit atômico M3-T3 verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`; worktree limpo confirmado após commit. T2 histórico56800b2f933e6d6ee0043856698bd6473eb13e37; entradafc30bf9.
 - Provas T3: M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md, ADR013, evals e evidence/m3-t3-baseline-files.json. Lint/dois TS/build/194 unit e76 integração PASS. E2E completa63:50 PASS/13 FAIL (12 baseline anteriores + timer/dock preexistente demonstrado emfc30bf9);31 Gika PASS/1 FAIL timer. Focal final6/6 PASS (5 undo +timer).5 Planner visual/4 convencionais/offline/7 sazonal PASS. Check final build/dois TS/194 unit PASS, shell12/1 FAIL baseline; audit13 vuln baseline.
 
 ## Próxima ação autorizada
@@ -33,7 +33,7 @@ Nunca renovar revisão para vencer conflito. Edição posterior causa REVISION_C
 
 ## Checkpoint
 
-fc30bf9 é checkpoint de entrada T3. Tarefa T3 concluída e gates/evidências revisados para commit atômico. SHA real será registrado em checkpoint documental posterior após confirmar worktree limpo, sem SHA auto-referente em arquivo versionado.
+fc30bf9 é checkpoint de entrada T3. Tarefa M3-T3 concluída no commit atômico `55b760ffa80a84070872e82a42a3d8f132f4141a`, com worktree limpo verificado. Este checkpoint documental posterior registra somente SHA real e parada; nenhum código novo/gate funcional requerido para essa alteração documental. Conferir git log/status ao retomar, sem SHA auto-referente.
 
 ## Histórico
 
@@ -76,4 +76,4 @@ fc30bf9 é checkpoint de entrada T3. Tarefa T3 concluída e gates/evidências re
 
 | 2026-10-01 | M3 | M3-T2 | done: idempotência/recuperação via receipts atômicos; gates focais PASS, falhas baseline registradas; parar antes de T3 | `56800b2f933e6d6ee0043856698bd6473eb13e37` |
 
-| 2026-10-01 | M3 parcial | M3-T3 | done: undo pelo activity.trash/receipts existente, auth/revisão/createdAt/ABA,194 unit/76 integração e6 focal PASS; global50/13 baseline demonstrado; parar antes de M3-SMOKE/M4 | commit atômico T3 neste checkpoint |
+| 2026-10-01 | M3 parcial | M3-T3 | done: undo pelo activity.trash/receipts existente, auth/revisão/createdAt/ABA,194 unit/76 integração e6 focal PASS; global50/13 baseline demonstrado; parar antes de M3-SMOKE/M4 | `55b760ffa80a84070872e82a42a3d8f132f4141a` |
