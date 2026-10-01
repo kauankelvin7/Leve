@@ -2,22 +2,21 @@
 
 ## Estado atual
 
-- Branch de trabalho temporária: `chore/security-hardening`, entrada `a922594699cd95e2bc6602bccc215f4a23e75f41` limpa. DiceBear9.4.3/325 unit/2 avatarE2E/lint/build/dois TS PASS; audit12 (4high/8moderate) provisório. Nenhuma mudança Firebase/policy nesta etapa.
-
-- Status global: `SECURITY_HARDENING_DICEBEAR_DONE_IN_PROGRESS`.
-- M0/M1/M2/M3/M4 done; M5 in_progress, M5-T1 done; M5-T2/T3/T4 e posteriores não iniciados.
-- Entrada `156fe77dd94d24152c4af12c122ce90188b28271`, branch feat/gika-integration e worktree limpo verificados antes de editar. Fontes integrais/evidências M3/M4 relidas, plano M5_T1_EXECPLAN antes do código.
-- Classificação determinística strict tipada allow/clarify/confirm/deny com facts do servidor/registro fechado de quatro mutações atuais. Reschedule continua confirm pelo preview existente; auth/schema/ownership/revision/receipt/command validation/ack não substituídos. Replay histórico reautorizado prevalece sobre resolução nova em corrida. ADR017/evidência M5_T1.
-- Lint/build/dois TS/323 unit/166 integração/6 E2E finais PASS. Amplo Gika50/1, Undo deadline classificado contra156fe77 por original e sondas nas duas versões; todas51 únicas tiveram passagem observada, sem alegar execução ampla verde. Check12/1 contraste e audit13(9moderate/4high) baseline;26 arquivos de referência byte-idênticos.
-- Sem Gemini live/credencial/.env/modelo/Rules/outbox/writer/UI/dependências/billing/push/deploy/merge alterados. Contas/dados fictícios demo-leve. Sondas temporárias removidas; IPv4-first apenas processo do check, nenhum workaround de produto.
+- Status global: `SECURITY_HARDENING_DONE_PENDING_INTEGRATION_REVIEW`.
+- Branch de trabalho: `chore/security-hardening`, criada da entrada limpa `a922594699cd95e2bc6602bccc215f4a23e75f41`. Branch feat/gika-integration permanece nesse checkpoint, sem merge/push/deploy.
+- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2/T3/T4 e posteriores todo/não iniciados.
+- DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
+- Firebase12.19/Admin13.6/Firestore4.17.2/7.11.6/Gax4.6.1 preservados. Overrides limitados grpc1.14.5 e uuid11.1.1 nos consumidores auditados; clean install/tree válido,334 unit/166 integração/lint/build/doisTS PASS.53 E2E finais PASS (47+6), incluindo todas51 Gika e2avatar; nenhum FAIL novo.
+- Produção audit omitdev13(4high/9moderate)→0; audit-levelhigh exit0. Audit completo28→14(6high/8moderate), todos14 dev-only preexistentes/mesmas versões/advisories, relatório explícito docs/security/DEVELOPMENT_REMAINING.md. CI não alterado; não declarar audit completo verde.
+- Check shell12/1 contraste histórico3,66..4,17:1, sem fixes/deadlines alterados.152 arquivos produto/harness/CI byte-idênticos à entrada. Sem policy/tools/Rules/writer/UI/outbox/modelo alterados; sem Gemini live/segredo/.env/billing.
 
 ## Autorização atual
 
-M5-T1 revisado/aprovado. Pedido posterior autoriza etapa isolada security dependency hardening a partir de a922594, branch temporária chore/security-hardening criada/worktree limpo de entrada. DiceBear9.4.3 validado; Firebase/Google a analisar/testar em commit separado. Sem merge para feat/main, Gemini live/M5-T2/alteração de policy/tools/domínio/Rules/UI.
+M5-T1 aprovado. Pedido posterior autoriza exclusivamente security dependency hardening na branch temporária chore/security-hardening a partir de a922594. Sem merge para feat/main, Gemini live, M5-T2 ou refactor de arquitetura/UI. Relatórios/inventário/risco/gates em docs/security/REPORT.md e GOOGLE_EVIDENCE.md.
 
 ## Próxima ação
 
-Concluir hardening Firebase/Google limitado e executar gates completos; relatório docs/security/INVENTORY.md/DICEBEAR_EVIDENCE.md. M5-T2 permanece todo, não iniciado. Parar para revisão antes de integrar branch temporária em feat/gika-integration.
+Parar para revisão do hardening concluído antes de integrar chore/security-hardening em feat/gika-integration. Relatório docs/security/REPORT.md e gates.json; sem merge autorizado nesta tarefa. M5-T2 permanece todo, não iniciar automaticamente.
 
 ## Contratos preservados
 
@@ -30,6 +29,8 @@ Update_task: apenas title como patch; data/horário/status/reminders/recorrênci
 Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/partial, igualdade trim/case sem fuzzy. Destino parser existente amanhã/+2/weekday incluindo hoje/absoluta; que vem/próxima/dia10 sem mês/ano pede esclarecimento. Horário explicitamente pedido ou preservado, timezone/disambiguation reais fora do modelo. No-op sem command/revision/receipt. Preview em memória não restaura reload; botão determinístico/auth/ack real, sem novo Gemini. gikaReschedule exclusivo apenas patch temporal em activity.update, moveScheduleToDate/ActivityInput dentro da transação convencional; receipt mínimo recupera alvo depois de mudar dia. Conflito sem refresh. T2 title-only preservado; sem Undo novo.
 
 ## Limites e pendências
+
+- Hardening é isolado: 13 vulnerabilidades de produção antigas corrigidas nesta branch; feat/a922594 ainda não recebeu integração.14 restantes do audit completo são exclusivamente toolingdev preexistente, relatório antes/depois/advisories/cadeias/risco/motivo de adiamento explícitos. Ranges SDK~grpc1.9 e consumidoresuuid^9 foram ultrapassados conscientemente sob overrides exatos: testes comprovam APIs usadas/transportes emulados, não certificação de TLS/serviço Google live nem compatibilidade universal com usos futuros. Reavaliar overrides quando upstream corrigir ranges.
 
 - M5-T1 amplo50/1: Undo lost ack aguardou transporte além do deadline10000ms existente. Original PASS na entrada156fe77 e atual; sonda10200ms após commit em ambas reproduz expiração e depois replay applied/alreadyApplied sem segundo efeito. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, sem causa infra adicional inferida. Novos módulos não são invocados nesse caso simulado, UI/command/harness idênticos à entrada. Check final shell12/1 contraste3,66..4,17:1 e audit13 baseline; sem fix/timeouts alterados. Startup Auth recusado e preview IPv6 vs harnessIPv4 registrados como tentativas ambientais, repetidos após prontidão/resolução somente processo; sonda temporária TS6133 removida antes do check final.
 - M5-T1 só classifica: policies específicas continuam barreiras, decisões não são grants nem ack. Recorrência sem escopo esclarece; alto impacto/multi/bulk/destrutivo nega execução. Auditoria encontrou limitações históricas dos handlers de série (cap500/truncamento/receipt/auth), documentadas sem habilitar ou corrigir esse escopo. Preview reschedule em memória não é PendingAction server-side T2.
@@ -44,7 +45,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada156fe77 limpa. Commit atômico M5-T1 `4561cf59db395ac4c10c58118890283a3e45ec1e`: código/testes/evidências/estado/tarefas/ADR017. Branch feat/gika-integration e worktree limpo confirmados depois do commit. Este checkpoint documental registra o SHA real sem referência circular ou alteração funcional. M5 parcial, parar antes de T2.
+Entrada a922594 limpa na feat/gika-integration; chore/security-hardening criada desse SHA e isolada. DiceBear commit atômico `73e750c`. Firebase/Google/testes/evidências/estado/tarefas no segundo commit atômico desta tarefa; SHA real será registrado no checkpoint documental posterior, sem referência circular. Confirmar worktree limpo depois do commit. feat permanece a922594, sem merge. M5-T2 todo; parar para revisão antes de integrar branch temporária.
 
 ## Histórico
 

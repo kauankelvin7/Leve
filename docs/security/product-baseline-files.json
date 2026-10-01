@@ -1,0 +1,765 @@
+{
+  "entry": "a922594699cd95e2bc6602bccc215f4a23e75f41",
+  "files": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "identicalToEntry": true,
+      "sha256": "04ad657c90fbc2ea8a1b1fca294b4a6b8ce2b68e3a6a8f68157a9e36a5dab0f3"
+    },
+    {
+      "file": ".github/workflows/planner-e2e.yml",
+      "identicalToEntry": true,
+      "sha256": "3ae4b320a5365983c0f182690a6c128fa31809fcccd6164328ab803d66ddc63b"
+    },
+    {
+      "file": ".github/workflows/seasonal-e2e.yml",
+      "identicalToEntry": true,
+      "sha256": "377eeb1a57b3a3a542d0de84ef7e1ecfc3171fddbc389b5b208d56ee5b069aa7"
+    },
+    {
+      "file": "apps/web/src/app/App.tsx",
+      "identicalToEntry": true,
+      "sha256": "7278227be2f046f9eb883b27b85a14d3a3a5aefb8020ee4947c9bab06366e80b"
+    },
+    {
+      "file": "apps/web/src/app/ErrorBoundary.tsx",
+      "identicalToEntry": true,
+      "sha256": "b7a2d306f49e3ac8a949fd2e4b3ca069c27f482a60ee0f148db74f39e1e11ed0"
+    },
+    {
+      "file": "apps/web/src/app/RouteMetadata.tsx",
+      "identicalToEntry": true,
+      "sha256": "305a3d36fb9b62edb4932367f5006d438a939a25dcbf2e08e9758e4cd4afbb97"
+    },
+    {
+      "file": "apps/web/src/app/statusPage.ts",
+      "identicalToEntry": true,
+      "sha256": "4038568f86cac1c8372825894fb86c64e8d524b7b7ca2cd63b30f2189a7c3109"
+    },
+    {
+      "file": "apps/web/src/components/seasonal/SeasonalCalendarMarker.tsx",
+      "identicalToEntry": true,
+      "sha256": "ee3d9539c4ccb51d46749c9212f7f4b2e982f29cbd8a2a3bbe711d2e3097dca8"
+    },
+    {
+      "file": "apps/web/src/components/seasonal/SeasonalExperience.tsx",
+      "identicalToEntry": true,
+      "sha256": "34556883d5c9a18c1eea73ddcdb3adf19f11fc3033090f500f14612e11f4d823"
+    },
+    {
+      "file": "apps/web/src/components/seasonal/SeasonalGlyph.tsx",
+      "identicalToEntry": true,
+      "sha256": "02301b3ee37fc01dec9c3703359de8d7a058cac17c702493e78f6bb813c1d44f"
+    },
+    {
+      "file": "apps/web/src/components/seasonal/seasonal-experience.css",
+      "identicalToEntry": true,
+      "sha256": "87ff6ac19081534555296edcafe39c0d0fcb38d6b4b330dd47aaa259cd5d8c4e"
+    },
+    {
+      "file": "apps/web/src/components/ui/ActivityColorPicker.tsx",
+      "identicalToEntry": true,
+      "sha256": "c47fe818a853ab76189d9fc4dc76f083d10d1561227f9776b4c440bdad2328b4"
+    },
+    {
+      "file": "apps/web/src/components/ui/Avatar.tsx",
+      "identicalToEntry": true,
+      "sha256": "d770efe99117ce3c8145a5cef21a14d86e491f2acd051ff9af3957b4849e7a96"
+    },
+    {
+      "file": "apps/web/src/components/ui/BackButton.tsx",
+      "identicalToEntry": true,
+      "sha256": "c8063d2a46366ec305fea275fb0bceee25f1488c4a82ac6e86ca5306e25d4aab"
+    },
+    {
+      "file": "apps/web/src/components/ui/ConfirmDialog.tsx",
+      "identicalToEntry": true,
+      "sha256": "ca21c3c0eedccdd5dc139f5bed244ef0db9890d5131b44af82cc5b7128bfd1e5"
+    },
+    {
+      "file": "apps/web/src/components/ui/Icon.tsx",
+      "identicalToEntry": true,
+      "sha256": "0f57f0a98b7e3d93238f178342146829c8489b7e396c2b3322e9696bbc4953ec"
+    },
+    {
+      "file": "apps/web/src/components/ui/LoadError.tsx",
+      "identicalToEntry": true,
+      "sha256": "05454cc778decce4a15b2bfd7b25950b34b8a3910fc1bf1c30bf39ff8fa227ee"
+    },
+    {
+      "file": "apps/web/src/components/ui/LoadingState.tsx",
+      "identicalToEntry": true,
+      "sha256": "735e4ab4198391a0fb5dacb2470a50c9229378a7fd0b84e0ee64d025c890aae6"
+    },
+    {
+      "file": "apps/web/src/components/ui/StatusPage.tsx",
+      "identicalToEntry": true,
+      "sha256": "fded1b8ae08e93a7d0d386400f3fecfb1beed991779331f5cc909f4ac9c5260b"
+    },
+    {
+      "file": "apps/web/src/features/activities/ActiveTimerBar.tsx",
+      "identicalToEntry": true,
+      "sha256": "f97d1e3b3b55fcba11d6a25511aadbb1c6a263940d66588c86fc7934ed95134d"
+    },
+    {
+      "file": "apps/web/src/features/activities/ActivityDetail.tsx",
+      "identicalToEntry": true,
+      "sha256": "022bcb99d687ef07a7d75733ece1084e720d8ea8033da91c851b763006072ce9"
+    },
+    {
+      "file": "apps/web/src/features/activities/Calendar.tsx",
+      "identicalToEntry": true,
+      "sha256": "eccdc9997a67a4eb0adbdce930eea6899a04f6db62c6d7a56225e88b2511af8e"
+    },
+    {
+      "file": "apps/web/src/features/activities/DailyBrief.tsx",
+      "identicalToEntry": true,
+      "sha256": "49c8da3e0c41c23c8998e125f49cf4adcfc95053d705c2241772550512317ad5"
+    },
+    {
+      "file": "apps/web/src/features/activities/DayNavigation.tsx",
+      "identicalToEntry": true,
+      "sha256": "f74af252e36a3872407e8c650bcc8c26718f706c4a4619bd8e8d549e580dff56"
+    },
+    {
+      "file": "apps/web/src/features/activities/Review.tsx",
+      "identicalToEntry": true,
+      "sha256": "8c7626f6e17872e45a57d684c35092b779a1b6e14defceab54f9a98b87f470c3"
+    },
+    {
+      "file": "apps/web/src/features/activities/SessionRecovery.tsx",
+      "identicalToEntry": true,
+      "sha256": "1bcd6399cb4c1a2a84dd345a41b659bfb9f1766c5815bece7566bbf6288588f2"
+    },
+    {
+      "file": "apps/web/src/features/activities/Today.tsx",
+      "identicalToEntry": true,
+      "sha256": "3e2030993dc95bbe847be7dae869d9a194cf9022d8caad59c04f34d5c96626ef"
+    },
+    {
+      "file": "apps/web/src/features/activities/buildDailyBrief.ts",
+      "identicalToEntry": true,
+      "sha256": "21ed3d9c8403430ac8a163acc58bd0a7ebbe793046f7b75d3b332120cbd69159"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/CalendarTimeGrid.tsx",
+      "identicalToEntry": true,
+      "sha256": "1dff53ff6148063466aff41ec9984ca5226f3a46944db78b54bb6d0dc9477402"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/RecurrenceScopeDialog.tsx",
+      "identicalToEntry": true,
+      "sha256": "5d127f40518069fe7fd1010717501029a666cd893f3286c16f365879cdb907ba"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendar-time-grid.css",
+      "identicalToEntry": true,
+      "sha256": "977373c609f98d3c23776f7e7fb7c780f0ca21ac4e8fc40783f6a62d6391d13c"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendarCommandModel.ts",
+      "identicalToEntry": true,
+      "sha256": "6bff7368ecefbcd8ff314c4e00fcf16329792019e5ec6dc16a169a7a9e9a4e8c"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendarDraftModel.ts",
+      "identicalToEntry": true,
+      "sha256": "cb0e49211a40e9cf36c975cb2c3a27a8b871d5190475c87b716cca3f45f6a4ed"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendarModel.ts",
+      "identicalToEntry": true,
+      "sha256": "7be6de5477ddca5694ed0a5338c6c566bc087915fdcf1c4afd0b62e78f8e12a2"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendarMutationModel.ts",
+      "identicalToEntry": true,
+      "sha256": "64bc7eb9333bb3d6cba43c19213fc5db51c5fc8af47dabb3ce42b17c19148d30"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/timeGridModel.ts",
+      "identicalToEntry": true,
+      "sha256": "2c1a08b1b5ca9aaca6658f94be894eaa13ce89c52db31f8ed3ec41bcb8d0097d"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/useCalendarRange.ts",
+      "identicalToEntry": true,
+      "sha256": "c86c32485a854919a207a12c5ac6438eb069c63ba688a4ec6c39a8b9ca7da3f9"
+    },
+    {
+      "file": "apps/web/src/features/activities/sessionLifecycle.ts",
+      "identicalToEntry": true,
+      "sha256": "759272fa08725db5a96f9eeffc42b79e0c32f6f944d7b7c5f0ff9e3e2183da61"
+    },
+    {
+      "file": "apps/web/src/features/activities/sessionPersistence.ts",
+      "identicalToEntry": true,
+      "sha256": "cc6e264f73ec68726eda05a3a0b50b2952ce62c4ccf95dff91d957d700413a8f"
+    },
+    {
+      "file": "apps/web/src/features/activities/timeTracking.ts",
+      "identicalToEntry": true,
+      "sha256": "dc981743c25f01a5ba02b695f35d4c1cc30282c4c915b5d0dde8d0e011a27227"
+    },
+    {
+      "file": "apps/web/src/features/content/NotificationBanner.tsx",
+      "identicalToEntry": true,
+      "sha256": "18dc76de2759cf5e4442af56dba53ee07e48707a140acfd50fd6f6f05650a75a"
+    },
+    {
+      "file": "apps/web/src/features/content/OutboxStatus.tsx",
+      "identicalToEntry": true,
+      "sha256": "343d8f6f7de5e73151c81b1a45206b797ea51e37ead947ad90c860ef819eabf1"
+    },
+    {
+      "file": "apps/web/src/features/content/Privacy.tsx",
+      "identicalToEntry": true,
+      "sha256": "363cdf24ca68be4bfd74306150b327c24437ad6c2fa223b98a80ef01630aa069"
+    },
+    {
+      "file": "apps/web/src/features/content/Search.tsx",
+      "identicalToEntry": true,
+      "sha256": "3e6248f6bfe1e8068959ecfdefcbd29a14af3988dd827a240f59f8f46b776d04"
+    },
+    {
+      "file": "apps/web/src/features/content/Tutorial.tsx",
+      "identicalToEntry": true,
+      "sha256": "8951bef9cdd23b872593be6eca2f90d173b9f2f0110ea69a14817b3cdbe05481"
+    },
+    {
+      "file": "apps/web/src/features/content/useLiveQueries.ts",
+      "identicalToEntry": true,
+      "sha256": "c1c834b85a27be15edf8d1e3de5317855554c67daabaafbf67dc0cc7ae16ab0f"
+    },
+    {
+      "file": "apps/web/src/features/content/useUserCollection.ts",
+      "identicalToEntry": true,
+      "sha256": "fd5959c1e79be751758cbd6c77747f33d24e8a6e7daa72fe87c11c58e4c08145"
+    },
+    {
+      "file": "apps/web/src/features/demo/Demo.tsx",
+      "identicalToEntry": true,
+      "sha256": "de734980ae17850e811309a230a297d729492af70c2b89ddd1a0b8e5a139880a"
+    },
+    {
+      "file": "apps/web/src/features/demo/dates.ts",
+      "identicalToEntry": true,
+      "sha256": "5941d3d3b9c078d375940405cad12358f584ebf03af15057bf77687a0192fb32"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaComposer.tsx",
+      "identicalToEntry": true,
+      "sha256": "1b512a04ff69e61d6d743646fd011d99e63f47556095af50bd12dcfe12b1925c"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaCreationUndo.tsx",
+      "identicalToEntry": true,
+      "sha256": "9362b211f92ef98cf590696f121718be5b20d537df15c406a18d01953905b78b"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaLauncher.tsx",
+      "identicalToEntry": true,
+      "sha256": "936b287093b324ed549d16383b7bdcb8af8d25e5d059d774195057d267b3f42c"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaMark.tsx",
+      "identicalToEntry": true,
+      "sha256": "3ad099447b543f0f320790eeb087fcadca2637639a47d0a85600601167ab5589"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaMessage.tsx",
+      "identicalToEntry": true,
+      "sha256": "027d6378a9033f2f5938d4fed5775d101bd041ba040f15e2089997cb8f882f22"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaPanel.tsx",
+      "identicalToEntry": true,
+      "sha256": "d27a7580b105cef61f8b6e5fa8b247d6ad80d1ee7c7930743f121fe70701ddd6"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaReschedule.tsx",
+      "identicalToEntry": true,
+      "sha256": "040c0e1d4cdfe20ec44b273b926ea58849f8ca24dda0e6bd72e6d1f192e8f7ad"
+    },
+    {
+      "file": "apps/web/src/features/gika/adapter.ts",
+      "identicalToEntry": true,
+      "sha256": "24a645d5fe5fdea201f2defe323e983a24e53cf49399fed7f0cc66633e4dd7e4"
+    },
+    {
+      "file": "apps/web/src/features/gika/apiAdapter.ts",
+      "identicalToEntry": true,
+      "sha256": "9a26c156f92a776ef6aaccc5d97608d016acff8162fe2c9928756e44e57228a6"
+    },
+    {
+      "file": "apps/web/src/features/gika/commandBridge.ts",
+      "identicalToEntry": true,
+      "sha256": "3985e0588d8a99b101f383048898d1e123a317412f0c3dd2fafa8deca95a9c85"
+    },
+    {
+      "file": "apps/web/src/features/gika/completionBridge.ts",
+      "identicalToEntry": true,
+      "sha256": "0685bcf0c7b5c03f471172db69a70654b833a819585e455af33403c14ff674fd"
+    },
+    {
+      "file": "apps/web/src/features/gika/conversation.ts",
+      "identicalToEntry": true,
+      "sha256": "bc62488ba64c33cc8712fcd893cffb9394baa72783446a346dc96e37d2b9d970"
+    },
+    {
+      "file": "apps/web/src/features/gika/creationUndoBridge.ts",
+      "identicalToEntry": true,
+      "sha256": "636fd779c9b14ad44c9069d9053d6d1b7aa3bb9da1ca2eff8f218f9e483a4e6a"
+    },
+    {
+      "file": "apps/web/src/features/gika/gika.css",
+      "identicalToEntry": true,
+      "sha256": "ddeb117f939624a08ac7caa326a1ea0221b59da7647263938fb2d015794c2627"
+    },
+    {
+      "file": "apps/web/src/features/gika/mockAdapter.ts",
+      "identicalToEntry": true,
+      "sha256": "0ec4548ac4f93537bbff76bcbde6fe100ea3fe6a1a60f2440f066548da05db1b"
+    },
+    {
+      "file": "apps/web/src/features/gika/rescheduleBridge.ts",
+      "identicalToEntry": true,
+      "sha256": "4d146bb7ee21aa60c66f7442dfb4642729524b43d33e16c0b3fb36edc5866aef"
+    },
+    {
+      "file": "apps/web/src/features/gika/updateBridge.ts",
+      "identicalToEntry": true,
+      "sha256": "d08a19a8da75acf8a5f35e5101ad76033514edf69e6a5e47345905c23b915655"
+    },
+    {
+      "file": "apps/web/src/features/gika/useGikaConversation.ts",
+      "identicalToEntry": true,
+      "sha256": "5da1f6a46c219ab5e627fcb1a27ee2bd0c0bbc3d3609e630db7fc4e2b9556fe3"
+    },
+    {
+      "file": "apps/web/src/features/identity/AuthBackdrop.tsx",
+      "identicalToEntry": true,
+      "sha256": "d4dc17d12f6c043fdbca65084d2684a7baef0108834ffd12fa6708c8c565c109"
+    },
+    {
+      "file": "apps/web/src/features/identity/AuthProvider.tsx",
+      "identicalToEntry": true,
+      "sha256": "90e3ea30a452b88a7a17b9860b700463d2afd2a7e44d3e8f8614b512c8595f02"
+    },
+    {
+      "file": "apps/web/src/features/identity/Login.tsx",
+      "identicalToEntry": true,
+      "sha256": "9fa5c9ae38d7ee7ee63592b19745360364896c50757b31746dd1b840e26387f1"
+    },
+    {
+      "file": "apps/web/src/features/identity/verification.ts",
+      "identicalToEntry": true,
+      "sha256": "2175957f94e34f8e9ae58ac57c6eacbdd51ee1eeff30ad70ccb5b03ac10fce58"
+    },
+    {
+      "file": "apps/web/src/features/notes/NoteDetail.tsx",
+      "identicalToEntry": true,
+      "sha256": "cb66d6716f25bf5d6bd35a9c759bd08694e1a2f5003d933248a7496b58d9fb20"
+    },
+    {
+      "file": "apps/web/src/features/notes/NoteEditor.tsx",
+      "identicalToEntry": true,
+      "sha256": "e13f4b006536a4bc25ea5a7e9cd0814dd4884fba2b5074f23e11ea513313682c"
+    },
+    {
+      "file": "apps/web/src/features/notes/Notes.tsx",
+      "identicalToEntry": true,
+      "sha256": "9c419aa948ce0081be984ff03d0148089ae9b0be584cacdbb264f447b2e5dadb"
+    },
+    {
+      "file": "apps/web/src/features/notes/activityLinking.ts",
+      "identicalToEntry": true,
+      "sha256": "a2047844754efd1fd15aa8e2fcc118ea55ceff56f5515595921811e2158c2806"
+    },
+    {
+      "file": "apps/web/src/features/settings/AvatarPicker.tsx",
+      "identicalToEntry": true,
+      "sha256": "94c960829737d6f4c3bce14e59180ee4f02b7d232013332371d3f05d18c7a30b"
+    },
+    {
+      "file": "apps/web/src/features/settings/NotificationSettings.tsx",
+      "identicalToEntry": true,
+      "sha256": "719b3fa3134668e71b8c920e86f1584d2347f4467afdaa7940c304e708b7f189"
+    },
+    {
+      "file": "apps/web/src/features/settings/PwaSettings.tsx",
+      "identicalToEntry": true,
+      "sha256": "bef699e57f63454a8380930af6491e3c17bff9ccc93972588efb49880472bb63"
+    },
+    {
+      "file": "apps/web/src/features/settings/Settings.tsx",
+      "identicalToEntry": true,
+      "sha256": "5efe3048a58188912217e74f9485270ea4ad800465ddf992fa5be0bad77a1dfa"
+    },
+    {
+      "file": "apps/web/src/features/settings/ThemeSettings.tsx",
+      "identicalToEntry": true,
+      "sha256": "38cf98b97a84c1aae2f3f10c78b5af6a997f76519c9c4f837cf2553451a80c19"
+    },
+    {
+      "file": "apps/web/src/features/shopping/Shopping.tsx",
+      "identicalToEntry": true,
+      "sha256": "e25d9b80ee3cce295297aca56752c8bfcc4b81c780b6bbc50e3305ac23abfc40"
+    },
+    {
+      "file": "apps/web/src/features/trash/Trash.tsx",
+      "identicalToEntry": true,
+      "sha256": "b4255559b9d998bc90c497341975e168c195d0a4cc0e54dcb47c6c8746d796e6"
+    },
+    {
+      "file": "apps/web/src/main.tsx",
+      "identicalToEntry": true,
+      "sha256": "cd79863bb65229b09e1f7e2598e13a5ab1e6eecd02fedcc1d11016a68a308f87"
+    },
+    {
+      "file": "apps/web/src/platform/api.ts",
+      "identicalToEntry": true,
+      "sha256": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41"
+    },
+    {
+      "file": "apps/web/src/platform/drafts.ts",
+      "identicalToEntry": true,
+      "sha256": "6ec39f4b40905bc13390131a089e4beb7c57cc9b19cb526cfe5c236ab9881aa7"
+    },
+    {
+      "file": "apps/web/src/platform/firebase.ts",
+      "identicalToEntry": true,
+      "sha256": "bd2930c7abc51aca8b23e678c8571d34361939f2ff5d207ab05549fb74f7a160"
+    },
+    {
+      "file": "apps/web/src/platform/formatters.ts",
+      "identicalToEntry": true,
+      "sha256": "332b93d7d8b283b33813ac9139a3b9b27906aefc505e5a641ce5a5c2ccf7990d"
+    },
+    {
+      "file": "apps/web/src/platform/localData.ts",
+      "identicalToEntry": true,
+      "sha256": "10a8a6ff7c47e82393e77e07e6802d8838c3723e0e883a373f3353f3863c9ce5"
+    },
+    {
+      "file": "apps/web/src/platform/notePresets.ts",
+      "identicalToEntry": true,
+      "sha256": "dd9a348ea8790f1c56b1f892d1d8b137deba9a4c923c5a29fdcb26c72e727fde"
+    },
+    {
+      "file": "apps/web/src/platform/notifications.ts",
+      "identicalToEntry": true,
+      "sha256": "0d575979df40dee580ea029bb1de13543d73fd9ed0409eb2650045d2fc798252"
+    },
+    {
+      "file": "apps/web/src/platform/outbox.ts",
+      "identicalToEntry": true,
+      "sha256": "d900074496db4b9894267d896a0c8f5809ea92ad47bec85dbb2e90ae441a1340"
+    },
+    {
+      "file": "apps/web/src/platform/outboxPolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "6dae646de21699e180baa95530c9e1408bda13b438a295b7becc6b3b5d7ddae0"
+    },
+    {
+      "file": "apps/web/src/platform/pwa.ts",
+      "identicalToEntry": true,
+      "sha256": "4b004a30ba1640ccc6cce4b221c2008ecf485ccb82ee604b96e99a1fc659ac47"
+    },
+    {
+      "file": "apps/web/src/platform/release.ts",
+      "identicalToEntry": true,
+      "sha256": "83c9a462ef531db9b20ad3d363e1dd6c9593f86e15b507aa669c7e1746b8cedf"
+    },
+    {
+      "file": "apps/web/src/platform/reminderFeedback.ts",
+      "identicalToEntry": true,
+      "sha256": "824fe9c4f1715094b217ed14b4e61edab404fc4363ce0dc2c70c082859906355"
+    },
+    {
+      "file": "apps/web/src/platform/seasonal/seasonalCalendarMarkers.ts",
+      "identicalToEntry": true,
+      "sha256": "a13ce11798a1f68c6e096a596ad4e67e61ca1a4f4f4b766d973666e960ee393b"
+    },
+    {
+      "file": "apps/web/src/platform/seasonal/seasonalEvents.ts",
+      "identicalToEntry": true,
+      "sha256": "906638bf5f7e92c20554d65879be72ecc0e84f12483adbd5b6298d762480f007"
+    },
+    {
+      "file": "apps/web/src/platform/seasonal/seasonalResolver.ts",
+      "identicalToEntry": true,
+      "sha256": "fdb8a84be2b011e30dbde5190dfad42de7cb9d90a3418d46502565695ba66083"
+    },
+    {
+      "file": "apps/web/src/platform/seasonal/seasonalStorage.ts",
+      "identicalToEntry": true,
+      "sha256": "495cc97bf4057154fc25e7c0f634a687a3e3da3668b752c393b8ddc88c996f73"
+    },
+    {
+      "file": "apps/web/src/platform/theme.ts",
+      "identicalToEntry": true,
+      "sha256": "0462bf45f2b14e71c8873f031978c277613f319c2c3cbbe7b52e11010e39c4b9"
+    },
+    {
+      "file": "apps/web/src/styles/app.css",
+      "identicalToEntry": true,
+      "sha256": "d799851b95e46e647072ebbb97af8403cb05fd09561e47d52d0cb9658c6ab298"
+    },
+    {
+      "file": "apps/web/src/styles/editorial.css",
+      "identicalToEntry": true,
+      "sha256": "f7a24a96cbc83b1a3ed42d03013669998a6e5996eb32b67a34c3d592bc352164"
+    },
+    {
+      "file": "apps/web/src/styles/glass.css",
+      "identicalToEntry": true,
+      "sha256": "4b716a59e87c334b631cd26bbc10d693958d335db19f2a5769979a1e9620e33a"
+    },
+    {
+      "file": "apps/web/src/styles/refinements.css",
+      "identicalToEntry": true,
+      "sha256": "ae4dbe86bea7ae2a8a9cabf251906a979fd49cf94be76e553b4718529892935c"
+    },
+    {
+      "file": "apps/web/src/styles/theme-runtime.css",
+      "identicalToEntry": true,
+      "sha256": "8a874c5a404691a4f1d45e3658692a2d187e12e85b517db0d9c1fbf892b247b8"
+    },
+    {
+      "file": "firestore.rules",
+      "identicalToEntry": true,
+      "sha256": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b"
+    },
+    {
+      "file": "packages/domain/src/activityColors.ts",
+      "identicalToEntry": true,
+      "sha256": "f5157979a60de3b4f9c924c8f65dd345a1ee1f2ec9cedcf5c74c8b308c36dcfe"
+    },
+    {
+      "file": "packages/domain/src/archive.ts",
+      "identicalToEntry": true,
+      "sha256": "c66636412bf1481d655fc035615cc85ee3a352c7a4b4a1f5190989bc12db584c"
+    },
+    {
+      "file": "packages/domain/src/content.ts",
+      "identicalToEntry": true,
+      "sha256": "8b166de0d7f4860c5c8ec8ad843c897d5e135806153cf5e32e3822e89e93dd4d"
+    },
+    {
+      "file": "packages/domain/src/gika.ts",
+      "identicalToEntry": true,
+      "sha256": "2ed3d4fae53bd9a664627b1cdb020e72074f507c73e6668ac070a7526021a611"
+    },
+    {
+      "file": "packages/domain/src/gikaCompletion.ts",
+      "identicalToEntry": true,
+      "sha256": "97050dc9a08c222b3df59c7bfe6649f13f513c3a3971071911596205062e07dc"
+    },
+    {
+      "file": "packages/domain/src/gikaReschedule.ts",
+      "identicalToEntry": true,
+      "sha256": "dc3490dcbfa3487fddcfd2dbdb7ead6e473ca0525e9cdb764dbb8e96b630f012"
+    },
+    {
+      "file": "packages/domain/src/gikaUndo.ts",
+      "identicalToEntry": true,
+      "sha256": "0806122a545c0cc9ae02728af6164af3e65a3cfcf1f42249c59ce881f7a94d43"
+    },
+    {
+      "file": "packages/domain/src/gikaUpdate.ts",
+      "identicalToEntry": true,
+      "sha256": "9cb628293199890d22ff6a97c4f0919e9ca467592908c9be5704b25439bcef3a"
+    },
+    {
+      "file": "packages/domain/src/identity.ts",
+      "identicalToEntry": true,
+      "sha256": "d1f18cfb5efc73ddeb8d7e0aba535b897170ede283ab037d9ea71052a855cf52"
+    },
+    {
+      "file": "packages/domain/src/notePresets.ts",
+      "identicalToEntry": true,
+      "sha256": "a3b02295bf6b93da04c2410bfb7df125b2f66f9b5d73533077edb7d73896f56c"
+    },
+    {
+      "file": "packages/domain/src/notifications.ts",
+      "identicalToEntry": true,
+      "sha256": "9c2855b5c8ad795ab464886af26f33afce0103eeb120238529211400d2bfefc1"
+    },
+    {
+      "file": "packages/domain/src/themes.ts",
+      "identicalToEntry": true,
+      "sha256": "bcf49cfc15be51afc2870d4b140485ecb5a166a3ec050d732990d81b31ea80d9"
+    },
+    {
+      "file": "playwright.config.ts",
+      "identicalToEntry": true,
+      "sha256": "4351a58763648ba0f9a9244f64959e7ab4d62e20d0608cb1353cd7c47ce77d61"
+    },
+    {
+      "file": "playwright.local.config.ts",
+      "identicalToEntry": true,
+      "sha256": "d4270143e3156b9ebd5ab84f5dae032460fcd0fe09ce4a2b5cfc7cef207cfa5f"
+    },
+    {
+      "file": "server/account-data.ts",
+      "identicalToEntry": true,
+      "sha256": "af3874754e4a15eb466cb9225a50a9b1985a01304b78891b9f22a8f75bfa11a4"
+    },
+    {
+      "file": "server/app.ts",
+      "identicalToEntry": true,
+      "sha256": "9abaf8b4ac8ff17b89d96ed4b5d9b0cf370128a9867ca26b74810b528a9901d9"
+    },
+    {
+      "file": "server/commands/content.ts",
+      "identicalToEntry": true,
+      "sha256": "f67b8c36f2e7158f9251aacff3db5ca9e881aea5eb5009af764f934c0c2e9124"
+    },
+    {
+      "file": "server/commands/identity.ts",
+      "identicalToEntry": true,
+      "sha256": "0670223654cadb1b5ca363c78c5c4c62369339f92d72b80f7dd72781dd431337"
+    },
+    {
+      "file": "server/commands/notifications.ts",
+      "identicalToEntry": true,
+      "sha256": "969d2cf9ba714da5555854b5dd476c2f4fcbf8c10f07198242a59c4054d10b26"
+    },
+    {
+      "file": "server/commands/time.ts",
+      "identicalToEntry": true,
+      "sha256": "b2ad075b7b0317e074a0646aa0f081d2b46a46d587967a41e2893417eac496ed"
+    },
+    {
+      "file": "server/commands/trash.ts",
+      "identicalToEntry": true,
+      "sha256": "48be75c487e42501caf3205d9f0a274cd2c389be963d1b7d0d3d8d366d346577"
+    },
+    {
+      "file": "server/dev.ts",
+      "identicalToEntry": true,
+      "sha256": "8a2b16495ebcba31d3e1c6347e2f3cf2a0fa0472eb2ffdc0b9087ab4f32c9d39"
+    },
+    {
+      "file": "server/errors.ts",
+      "identicalToEntry": true,
+      "sha256": "a86ae5746ed76904b136ca2f8d9c1486d8bf7a2a3a89425d4b5580d292d6202d"
+    },
+    {
+      "file": "server/gika/actionPolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "df58905e63091d62f0171993e21b69812fcec571f1f6a7007ae9f50a91b87bc3"
+    },
+    {
+      "file": "server/gika/completePolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "b304693add3014d964c8ce486cca9ce2a1344b3d125a76aaa3ce34d29b0173a6"
+    },
+    {
+      "file": "server/gika/createPolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "d580261235cceccbe78420380ebb612c491b8deb23d632269b6c8b3e14c5086f"
+    },
+    {
+      "file": "server/gika/gemini.ts",
+      "identicalToEntry": true,
+      "sha256": "adeadb9c7cb8ad8186da40cf94eae4b86a223385697d0fb46bd5dd0f228238f1"
+    },
+    {
+      "file": "server/gika/model.ts",
+      "identicalToEntry": true,
+      "sha256": "6f3e63fb6605bab887437e96c623d8418a678d7375040ff916dd6255364b4785"
+    },
+    {
+      "file": "server/gika/policy.ts",
+      "identicalToEntry": true,
+      "sha256": "3216836317cdafafa6bb62e8f9cd2f128a8c978e2388b0c46efd114069430385"
+    },
+    {
+      "file": "server/gika/policyAssessment.ts",
+      "identicalToEntry": true,
+      "sha256": "089c2baf5c3e3713c6b4f33782f85442030b561fd6f540b788cbc5340c2e8de4"
+    },
+    {
+      "file": "server/gika/reads.ts",
+      "identicalToEntry": true,
+      "sha256": "4663c96adf8554d7a20df1d4a8a5af188b2697741baefcb7c2660b17d18206e6"
+    },
+    {
+      "file": "server/gika/reschedulePolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "30de208b3c8b921dabff185f8920abff50ddcf73eb8e4d9930db274ed24e655b"
+    },
+    {
+      "file": "server/gika/router.ts",
+      "identicalToEntry": true,
+      "sha256": "2d107a7dee9da77e4288c3a0cf495e6fec8962b7c680ca1c6a1ab31eb7aa17f8"
+    },
+    {
+      "file": "server/gika/updatePolicy.ts",
+      "identicalToEntry": true,
+      "sha256": "f7dbf90ef7d5f73f6694dd99263d2e3d3897c6325daaec3272e0863617bf2e59"
+    },
+    {
+      "file": "server/hash.ts",
+      "identicalToEntry": true,
+      "sha256": "bad390e67e75537626e59c0e18042eb95e98010ec83c543c73f66d150461fd62"
+    },
+    {
+      "file": "server/logger.ts",
+      "identicalToEntry": true,
+      "sha256": "ae35cef02acad152bd62b3602a2e644e87905cd72c9ca1a3951f773226bb083d"
+    },
+    {
+      "file": "server/platform/firebase.ts",
+      "identicalToEntry": true,
+      "sha256": "85a42e308f61feaf6357502fb5f1eed1bc0cffb2cd338139477a9a4f9467f643"
+    },
+    {
+      "file": "server/reminder-jobs.ts",
+      "identicalToEntry": true,
+      "sha256": "170353089a6e6230cb9626eee49674b2cf944b400fea9592b2e3b2b49e9d4c3f"
+    },
+    {
+      "file": "server/reminders.ts",
+      "identicalToEntry": true,
+      "sha256": "f94ea585131cc6607926343ad4533e8ec7bb999eb8e41227a16ec1b6f1dab589"
+    },
+    {
+      "file": "server/tick-signature.ts",
+      "identicalToEntry": true,
+      "sha256": "5dc4f20bdc60ad4df04f3e865cc7a42c9028b0b75f2ef868fd51661834bdc21c"
+    },
+    {
+      "file": "tests/e2e-local/gika-complete.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "de17fe9e3f701bfc94d2afcd7067e69a55b5e4bee5f4fcd9f1750f5e1375f7d8"
+    },
+    {
+      "file": "tests/e2e-local/gika-create.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "49c655e1700ba043bbadb718fa41ecc5c0d014844d30626bf5eabeb607b0f30b"
+    },
+    {
+      "file": "tests/e2e-local/gika-reschedule.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "67a22fe7a483efc2e2765e17c610f42fcb8c16e14ce65b9e5be7316aade409d7"
+    },
+    {
+      "file": "tests/e2e-local/gika-update.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "c5dd307dbbd5d2955fcae3778c2f842e34f1cc448078c6d5e10e4b358098e9f7"
+    },
+    {
+      "file": "tests/e2e-local/gika.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "fb6c30a4d1a38306d1bc52998239d0017add5489922c894e3922f8a0e4e7c98b"
+    },
+    {
+      "file": "tests/e2e/shell.spec.ts",
+      "identicalToEntry": true,
+      "sha256": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94"
+    }
+  ]
+}

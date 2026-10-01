@@ -18,3 +18,7 @@
 ## Rollback
 
 Revert apenas commits exclusivos em ordem inversa e npm ci, sem tocar receipts/dados/arquitetura. Upgrade de dependência não autoriza próxima etapa da Gika. Parar após relatório/checkpoint limpo.
+
+## Escolha após inventário, antes de instalar Firebase/transitivos
+
+Firebase12.19/Admin13.6/Firestore4.17.2 e7.11.6/Gax4.6.1/retry7/teeny9/gaxios6 preservados. Override exato apenas Firestore4.17.2→grpc1.14.5 eGax4.6.1→grpc1.14.5/uuid11.1.1; gaxios6.7.1/teeny9→uuid11.1.1. Sem override global deuuid/SDK/Admin ou versõesmajor dos parents. Firestore ~grpc1.9 é faixa superada conscientemente (mesmo majorgrpc, interface client usada preservada a comprovar em integration); uuid9→11 excede major declarado, mas apenas v4() sem args/buffer nos três consumidores, CJS preserved. Contratos v4, multipart gaxios/teeny, gaxUUID e SDKNode/Admin emuladores serão comprovados antes de aceite. Se falharem, não forçar versão só para zerar audit. Sem upgrade13.10/14.5 que não resolve sozinho ou amplia APIs.

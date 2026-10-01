@@ -342,11 +342,13 @@ milestones:
 security_hardening:
   branch: chore/security-hardening
   entry_checkpoint: a922594699cd95e2bc6602bccc215f4a23e75f41
-  status: in_progress
+  status: done
+  evidence: docs/security/REPORT.md
   dicebear:
     status: done
     evidence: docs/security/DICEBEAR_EVIDENCE.md
   firebase_google:
-    status: todo
+    status: done
+    evidence: docs/security/GOOGLE_EVIDENCE.md
   integration_review:
     status: pending_user_review
