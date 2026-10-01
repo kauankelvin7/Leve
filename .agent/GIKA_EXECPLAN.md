@@ -294,3 +294,7 @@ Pedido atual autoriza somente primeira criação simples. Plano concreto/auditor
 ### M3-T3 autorizado — 2026-10-01
 
 Plano factual M3_T3_EXECPLAN.md, PRE fc30bf9 limpo. Undo somente pelo botão sobre criação confirmada/receipt/UID/revisão1, activity.trash existente; nunca purge/Gemini. Não fechar M3 após T3: M3-SMOKE bloqueado até revisão/autorização explícita, M4 depende desse gate.
+
+### M3-SMOKE autorizado após revisão T3 — 2026-10-01
+
+PRE abbd1e2 limpo; pedido explícito autoriza somente smoke, supersede a espera histórica por revisão. M3_SMOKE_EXECPLAN.md/M3_SMOKE_EVIDENCE.md: conta/emuladores fictícios, uma chamada Gemini real, create_task → comando/receipt/persistência/UI e lost ack/retry; undo opcional determinístico sobre alvo exato. Proxy Codex Remote apenas no processo, nenhum workaround/alteração de produção. Gates finais sem segredo, baseline documentado. M4 não iniciado; requer autorização posterior independente do fechamento M3.

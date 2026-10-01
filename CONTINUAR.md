@@ -159,3 +159,8 @@ Commit atômico M3-T2 verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`; wo
 Undo seguro da criação concluído a partir de fc30bf9 na feat/gika-integration. Botão determinístico → activity.trash/soft-delete30dias/receipts transacionais existentes, UID/ID/revisão1/createdAt original e replay seguros; sem Gemini ou purge no undo. ADR013, M3_T3_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md. Gates focais194 unit/76 integração/6 E2E/lint/dois TS/build PASS; amplo50/13:12 falhas anteriores + intermitência dock/timer preexistente demonstrada nas duas versões,check12/1,audit13 baseline. M3 permanece parcial até M3-SMOKE após revisão; não executar live nem iniciar M4 nesta sessão. SHA real no checkpoint documental posterior.
 
 Commit atômico M3-T3 verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`, worktree limpo após commit. Checkpoint posterior é documental; próxima ação revisão T3, sem iniciar smoke/M4 automaticamente.
+
+
+## Gika — M3-SMOKE e fechamento M3 em 01/10/2026
+
+T3 aprovado e smoke exclusivamente autorizado a partir de abbd1e2 limpo na feat/gika-integration. Gemini real HTTP200/create_task → validation/policy → command layer/receipt/persistência → UI, uma tarefa sintética, ack perdido/retry alreadyApplied sem duplicata nem segundo Gemini. Undo opcional real remove só alvo pela lixeira. M3_SMOKE_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais; M3 done.194 unit/76 integração/32 E2E Gika/lint/build/dois TS PASS;check12/1 contraste e audit13 baseline explícitos. Credencial somente memória e processo encerrado, sem segredo versionado. Proxy Codex Remote ambiente-only; produção/arquitetura/modelo intactos. Parar antes de M4-T1, exige autorização nova. SHA real no checkpoint documental posterior.

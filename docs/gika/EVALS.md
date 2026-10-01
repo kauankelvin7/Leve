@@ -178,3 +178,7 @@ T2 autorizado após revisão do T1. Testes/evals usam modelos fixture e Auth/Fir
 Sem live/segredo: interpretações fixture, Auth/commands/Firestore emulados reais. M3-SMOKE futuro após revisão, M3 não done.
 
 M3-E36 (baseline de UI, sem mudança de produto): pausar CSS timer-dock-in no primeiro frame, disparar resize, terminar animação sem resize de conteúdo e medir launcher/bar. Sobreposição-2,234px reproduzida emfc30bf9/T3; resize seguinte retorna12px. Procedimento/números em M3_T3_EVIDENCE.md e m3-t3-timer-baseline.json. Pendência preexistente, não undo/adapter/modelo, distinta do offline corrigido M2-S0.
+
+## M3-SMOKE — prova live após revisão T3
+
+M3-E37/E10/E11: `Adiciona Teste Gika M3 amanhã` → Gemini real gemini-3.5-flash-lite/medium HTTP200, somente create_task; contexto civil America/Sao_Paulo →2026-10-02; validation/policy/command/receipt transacional reais em demo-leve. Commit antes de perder ack; UI não confirma; retry mesma identidade recupera receipt/alreadyApplied com entidade exata, delta de uma tarefa e zero chamadas upstream adicionais. Undo opcional real activity.trash/ack/revision2 remove somente alvo; zero Gemini. scripts/gika-m3-smoke.mjs/M3_SMOKE_EVIDENCE.md/evidence/m3-smoke.json. Interpretação não fixture neste cenário; demais evals upstream continuam determinísticos. Nenhum segredo ou dado pessoal persistido; não executar automaticamente nem iniciar M4.

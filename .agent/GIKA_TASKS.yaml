@@ -190,8 +190,8 @@ milestones:
 
   M3:
     name: "Primeira mutação segura"
-    status: in_progress
-    evidence: "M3-T1 e M3-T2 concluídos; M3_T2_EVIDENCE.md. Milestone parcial; M3-T3 concluído; M3-SMOKE bloqueado até revisão, sem live/M4."
+    status: done
+    evidence: "M3-T1/T2/T3 e M3-SMOKE done. M3_SMOKE_EVIDENCE.md: Gemini real HTTP200/create_task/persistência/UI/receipt/retry sem duplicata e undo exato PASS;194 unit/76 integração/32 E2E/lint/build/dois TS PASS;check12/1/audit13 baseline explícitos;M4 não iniciado."
     tasks:
       - id: M3-T1
         title: "create_task via command layer existente"
@@ -222,10 +222,10 @@ milestones:
 
       - id: M3-SMOKE
         title: "Smoke real da cadeia completa create_task após revisão T3"
-        status: blocked
+        status: done
         dependencies: [M3-T3]
         owner: qa
-        evidence: ["Aguardar revisão/autorização e credencial atual; Gemini live proibido nesta tarefa."]
+        evidence: ["M3_SMOKE_EXECPLAN.md/M3_SMOKE_EVIDENCE.md/evidence/m3-smoke.json: PREabbd1e2 limpo;1 Gemini real HTTP200/create_task;task2026-10-02 real/ID exato/uma criação/receipt applied→alreadyApplied/UI após ack;undo soft-delete exato sem Gemini;32 E2E/194 unit/76 integração/lint/dois TS/build PASS;check12/1/audit13 baseline;credencial somente memória/processo encerrado;M4 proibido."]
         acceptance_criteria: ["Após revisão T3, smoke real linguagem natural/create_task/persistência/resultado com credencial atual autorizada, Free Tier/R$0; gates e evidência sanitizada antes de fechar M3."]
 
   M4:
