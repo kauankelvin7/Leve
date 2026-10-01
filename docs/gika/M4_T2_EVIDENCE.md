@@ -50,4 +50,4 @@ Gate global segue não verde.13 falhas iniciais =11 causas históricas idêntica
 
 M4-T2 done, M4 in_progress, M4-T3 todo. Fontes de estado/grafo/evals atualizadas; ADR015 necessária ao contrato patch. Revisão spec/security/command/receipt/strict/React/humanizer e auditoria auxiliar somente leitura concluídas. Capturas desktop light/mobile dark revisadas; somente dados sintéticos. Artefatos históricos gerados pelos gates restaurados à entrada e sondas temporárias removidas. Nenhuma dependência/Rule/outbox/modelo/billing/segredo/live alterados.
 
-Commit atômico desta tarefa, SHA real no checkpoint documental posterior. Confirmar worktree limpo depois do commit. Parar para revisão antes de M4-T3, sem Gemini live.
+Commit atômico M4-T2 `ededc2090887c181f6f463d92cda934a9cd6d16a`, branch feat/gika-integration e worktree limpo confirmados depois do commit. Checkpoint documental posterior somente registra esse SHA real. Parar para revisão antes de M4-T3, sem Gemini live.

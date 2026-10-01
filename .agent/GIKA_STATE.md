@@ -36,7 +36,7 @@ Update_task: apenas title como patch; data/horário/status/reminders/recorrênci
 
 ## Checkpoint
 
-Entrada desta tarefa02fe03e (checkpoint documental de M4-T1; atômico T1 c0de781413f00a00eeb3e498215f1f55db625ba7). M4-T2 aceitação concluída; commit atômico e confirmação de worktree limpo nesta tarefa, SHA real registrado no checkpoint documental posterior. M4-T3 permanece todo, sem live.
+Entrada desta tarefa02fe03e (checkpoint documental de M4-T1; atômico T1 c0de781413f00a00eeb3e498215f1f55db625ba7). M4-T2 concluído no commit atômico `ededc2090887c181f6f463d92cda934a9cd6d16a`, worktree limpo confirmado depois do commit. Este checkpoint documental posterior registra o SHA real, sem alteração funcional. M4-T3 permanece todo, sem live.
 
 ## Histórico
 
@@ -85,4 +85,4 @@ Entrada desta tarefa02fe03e (checkpoint documental de M4-T1; atômico T1 c0de781
 
 | 2026-10-01 | M4 parcial | M4-T1 | done: conclusão única bounded via activity.setStatus/revisão/receipts existentes;218 unit/98 integração/38 E2E Gika PASS,global58/11 baseline;sem live;parar antes de T2 | `c0de781413f00a00eeb3e498215f1f55db625ba7` |
 
-| 2026-10-01 | M4 parcial | M4-T2 | done: patch title-only via activity.update/receipt/revision existentes;262 unit/123 integração/10 E2E finais PASS,global62/13 causas comparadas02fe;sem live,parar antes de T3 | commit atômico desta tarefa, SHA no checkpoint posterior |
+| 2026-10-01 | M4 parcial | M4-T2 | done: patch title-only via activity.update/receipt/revision existentes;262 unit/123 integração/10 E2E finais PASS,global62/13 causas comparadas02fe;sem live,parar antes de T3 | `ededc2090887c181f6f463d92cda934a9cd6d16a` |
