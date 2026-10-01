@@ -1,3 +1,5 @@
+import { isRegisteredMutation } from './actionPolicy.ts';
+import { assessInvalidTool, assessMultipleActions } from './policyAssessment.ts';
 import { Temporal } from '@js-temporal/polyfill';
 import { civilDateSchema } from '../../packages/domain/src/content.ts';
 import { createTaskArgsSchema, createTaskDescriptorSchema, toolCallSchema, type CreateTaskDescriptor, type ToolCall } from '../../packages/domain/src/gika.ts';
@@ -47,13 +49,20 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
   if (calls.length > 3) throw new GikaFault('GIKA_POLICY');
   const tools = calls.map(call => {
     const parsed = toolCallSchema.safeParse(call);
-    if (!parsed.success) throw new GikaFault('GIKA_MALFORMED_CALL');
+    if (!parsed.success) {
+      assessInvalidTool(typeof call?.name === 'string' ? call.name : 'unknown');
+      throw new GikaFault('GIKA_MALFORMED_CALL');
+    }
     return parsed.data;
   });
   if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task' || tool.name === 'reschedule_task') && tools.length !== 1) {
     const first = tools[0];
     // Schemas above normalize property order and reject unknown fields before collapsing repetition.
-    if ((first?.name !== 'create_task' && first?.name !== 'complete_task' && first?.name !== 'update_task' && first?.name !== 'reschedule_task') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) throw new GikaFault('GIKA_POLICY');
+    if ((first?.name !== 'create_task' && first?.name !== 'complete_task' && first?.name !== 'update_task' && first?.name !== 'reschedule_task') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) {
+      const mutation = tools.find(tool => isRegisteredMutation(tool.name));
+      if (mutation && isRegisteredMutation(mutation.name)) assessMultipleActions(mutation.name, 'verified');
+      throw new GikaFault('GIKA_POLICY');
+    }
     return [first];
   }
   return tools;

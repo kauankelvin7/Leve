@@ -2,20 +2,20 @@
 
 ## Estado atual
 
-- Status global: `M4_DONE_STOP_BEFORE_M5`.
-- M0/M1/M2/M3/M4 done; M4-T1/T2/T3 revisados e M4-SMOKE real PASS. M5 não iniciado.
-- Entrada cfd96c3c6507a9134f643dfae58d007b3d67727d, feat/gika-integration/worktree limpo antes de editar; fontes e evidências relidas, M4_SMOKE_EXECPLAN.md antes da execução.
-- Quatro chamadas Gemini reais HTTP200 complete_task/update_task/reschedule_task timed+untimed. Validation/resolution/policy→commands convencionais→receipt/persistência real emulada→ack/UI, retry applied→alreadyApplied sem upstream extra, preview antes do move/nenhuma escrita até confirmar/double tap, time19:00/null preservado, vizinhos/UID intactos. Só conta/dados fictícios demo-leve.
-- Gates finais lint/build/dois TS/295 unit/150 integração/25 E2E PASS. check12/1 contraste demo e audit13 baseline;26 arquivos baseline byte-idênticos. Produção/arquitetura/modelo/Rules/outbox/dependências inalterados.
-- Credencial temporária somente stdin sem echo/memória servidor GEMINI_API_KEY; removida/processo encerrado antes dos gates. Nenhum segredo/.env/produção/billing/push/deploy/merge. Proxy/egress herdado/NODE_USE_ENV_PROXY=1 somente smoke Codex Remote, sem workaround no produto.
+- Status global: `M5_T1_DONE_STOP_BEFORE_T2`.
+- M0/M1/M2/M3/M4 done; M5 in_progress, M5-T1 done; M5-T2/T3/T4 e posteriores não iniciados.
+- Entrada `156fe77dd94d24152c4af12c122ce90188b28271`, branch feat/gika-integration e worktree limpo verificados antes de editar. Fontes integrais/evidências M3/M4 relidas, plano M5_T1_EXECPLAN antes do código.
+- Classificação determinística strict tipada allow/clarify/confirm/deny com facts do servidor/registro fechado de quatro mutações atuais. Reschedule continua confirm pelo preview existente; auth/schema/ownership/revision/receipt/command validation/ack não substituídos. Replay histórico reautorizado prevalece sobre resolução nova em corrida. ADR017/evidência M5_T1.
+- Lint/build/dois TS/323 unit/166 integração/6 E2E finais PASS. Amplo Gika50/1, Undo deadline classificado contra156fe77 por original e sondas nas duas versões; todas51 únicas tiveram passagem observada, sem alegar execução ampla verde. Check12/1 contraste e audit13(9moderate/4high) baseline;26 arquivos de referência byte-idênticos.
+- Sem Gemini live/credencial/.env/modelo/Rules/outbox/writer/UI/dependências/billing/push/deploy/merge alterados. Contas/dados fictícios demo-leve. Sondas temporárias removidas; IPv4-first apenas processo do check, nenhum workaround de produto.
 
 ## Autorização atual
 
-Pedido mais recente aprovou M4-T3 e autorizou exclusivamente M4-SMOKE a partir de cfd96c3. Trabalho concluído; parar antes de M5. Humanizer-br oficial, Superpowers indisponível/processo manual equivalente, auditor auxiliar read-only. Evidências M4_SMOKE_EVIDENCE.md/m4-smoke.json/m4-smoke-gates.json.
+Pedido em texto anexado autoriza exclusivamente M5-T1 a partir de156fe77, concluído neste checkpoint. Sem Gemini live/chave, batch, delete por linguagem natural, série, PendingAction/confirmation genérico ou M5-T2+.
 
 ## Próxima ação
 
-Aguardar revisão do fechamento M4 e autorização específica para M5-T1. M5-T1 todo, dependência M4-SMOKE done; não iniciar automaticamente nem repetir Gemini live.
+Parar para revisão do M5-T1. M5-T2 (`Confirmation cards e pending actions`) permanece todo e requer autorização posterior; não iniciar automaticamente. M5 parcial. Evidências M5_T1_EVIDENCE.md/evidence/m5-t1-gates.json e m5-t1-transport-baseline.json.
 
 ## Contratos preservados
 
@@ -29,6 +29,9 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Limites e pendências
 
+- M5-T1 amplo50/1: Undo lost ack aguardou transporte além do deadline10000ms existente. Original PASS na entrada156fe77 e atual; sonda10200ms após commit em ambas reproduz expiração e depois replay applied/alreadyApplied sem segundo efeito. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, sem causa infra adicional inferida. Novos módulos não são invocados nesse caso simulado, UI/command/harness idênticos à entrada. Check final shell12/1 contraste3,66..4,17:1 e audit13 baseline; sem fix/timeouts alterados. Startup Auth recusado e preview IPv6 vs harnessIPv4 registrados como tentativas ambientais, repetidos após prontidão/resolução somente processo; sonda temporária TS6133 removida antes do check final.
+- M5-T1 só classifica: policies específicas continuam barreiras, decisões não são grants nem ack. Recorrência sem escopo esclarece; alto impacto/multi/bulk/destrutivo nega execução. Auditoria encontrou limitações históricas dos handlers de série (cap500/truncamento/receipt/auth), documentadas sem habilitar ou corrigir esse escopo. Preview reschedule em memória não é PendingAction server-side T2.
+
 - Gates globais não integralmente verdes. M4-T3 completa67/15:11 casos históricos (dois tiveram deadline de creation antes de chegar à falha antiga), mais4 casos de deadline (rename lost/conflict, sync e manual). Todos classificados contra d233971 via APIs/UI isolados, originais e quatro sondas10200ms vs10000ms nas duas versões. Atual8/2 final (dois mesmos casos históricos calendar/navigation); todas51 Gika únicas observadas PASS. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, não regressão reschedule; causa infra mais específica não inferida. Check12/1 contraste demo3,59..4,17:1; audit13(9moderate/4high) e26 arquivos baseline byte-idênticos. Sem refactor/auditfix/timeouts originais alterados. m4-t3-gates/transport-baseline/baseline-files.json e M4_T3_EVIDENCE.md.
 
 - Timer PREEXISTING_UI_TRANSFORM_MEASUREMENT_RACE comprovadofc30bf9/T3 (gap-2,234px), passou nos38 Gika desta execução; passagem não corrige a pendência. Offline/dock M1 foi regressão corrigida M2-S0, distinta do timer atual; não chamar essa regressão de baseline.
@@ -39,7 +42,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada cfd96c3 limpa. M4-SMOKE/fechamento M4 no commit atômico `2443993295e45d7dc215ac0a1ab250437cee6c44` (harness/plano/evidências/evals/estado/tarefas). Branch feat/gika-integration e git status vazio confirmados depois do commit. Este checkpoint documental registra o SHA real sem referência circular ou alteração funcional. M4 done, M5 não iniciado.
+Entrada156fe77 limpa. M5-T1 código/testes/evidências/estado/tarefas/ADR017 no commit atômico desta tarefa; SHA real será registrado no checkpoint documental posterior, sem referência circular. Confirmar branch feat/gika-integration/worktree limpo depois do commit. M5 parcial, parar antes de T2.
 
 ## Histórico
 

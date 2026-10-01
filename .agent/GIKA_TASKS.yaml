@@ -258,10 +258,12 @@ milestones:
 
   M5:
     name: "Políticas, lote e recorrência"
+    status: in_progress
     tasks:
       - id: M5-T1
         title: "Policy engine"
-        status: todo
+        status: done
+        evidence: ["M5_T1_EXECPLAN.md/M5_T1_EVIDENCE.md/evidence/m5-t1-gates.json/m5-t1-transport-baseline.json: PRE156fe77 limpo, classifier puro strict/typed allow|clarify|confirm|deny, facts server e gates de quatro mutações, replay reautorizado precede resolução nova; schema/auth/revision/commands/receipts/ack independentes.323 unit/166 integração/lint/build/dois TS/6 focal PASS; amplo50/1 deadline Undo comparado156 original+sondas10200 nas duas versões, todas51 únicas observadas PASS. Check12/1 contraste e audit13 baseline;26 arquivos idênticos. M5 parcial; T2+ todo, sem live/batch/recorrência/delete/novo writer."]
         dependencies: [M4-SMOKE]
       - id: M5-T2
         title: "Confirmation cards e pending actions"

@@ -1,3 +1,4 @@
+import { assessCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
 import { validateReschedule,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
@@ -34,6 +35,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         if (recovered) {
           // Historical snapshot only; the bridge still needs a freshly authorized command ack.
           await repository.authorize(identity, 'receipt');
+          const decision = assessReplay(recovered.kind, 'verified');
+          if (decision.kind !== (recovered.kind === 'reschedule' ? 'confirm' : 'allow')) throw new GikaFault('GIKA_POLICY');
           return gikaInterpretationSchema.parse({ text: recovered.kind === 'create' ? 'Preparando a tarefa…' : recovered.kind === 'complete' ? 'Preparando a conclusão…' : 'Preparando a alteração…', simulated: false, reads: [],
             ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task } : { updateTask: recovered.task }) });
         }
@@ -45,60 +48,71 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
         if (calls[0]?.name === 'reschedule_task') {
           const intent = validateReschedule(calls[0].args, input.text, current);
-          if ('clarification' in intent) return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } });
+          if ('clarification' in intent) { assessMissingIntent('reschedule_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
           if (read.timeZone !== current.timeZone || signal.aborted) throw new GikaFault('GIKA_POLICY');
           const afterRead = await repository.authorize(identity);
           if (afterRead.today !== current.today || afterRead.timeZone !== current.timeZone || afterRead.weekStartsOn !== current.weekStartsOn) throw new GikaFault('GIKA_POLICY');
           const resolved = resolveReschedule(intent, read);
+          const decision = assessResolution('reschedule_task', intent, read, resolved, 'verified');
           // A same-operation commit may have raced the read. Receipt precedes fresh resolution.
           const receipt = await repository.recoverMutation(identity.uid, input);
           if (receipt && receipt.kind !== 'reschedule') throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outra ação. Envie um novo pedido.');
           const committed = receipt?.task;
           await repository.authorize(identity, 'receipt');
+          if (receipt) { const replayDecision = assessReplay(receipt.kind, 'verified'); if (replayDecision.kind !== 'confirm') throw new GikaFault('GIKA_POLICY'); }
+          if (!receipt && resolved.task && decision.kind !== 'confirm') throw new GikaFault('GIKA_POLICY');
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({ text: committed ? 'Confira a nova data antes de mover a tarefa.' : resolved.text, simulated: false, reads: [],
             ...(committed || resolved.task ? { rescheduleTask: committed ?? resolved.task } : { rescheduleResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'update_task') {
           const intent = validateUpdate(calls[0].args, input.text, current);
-          if ('clarification' in intent) return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], updateResolution: { status: 'clarify', candidates: [] } });
+          if ('clarification' in intent) { assessMissingIntent('update_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], updateResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
           if (read.timeZone !== current.timeZone || signal.aborted) throw new GikaFault('GIKA_POLICY');
           const afterRead = await repository.authorize(identity);
           if (afterRead.today !== current.today || afterRead.timeZone !== current.timeZone || afterRead.weekStartsOn !== current.weekStartsOn) throw new GikaFault('GIKA_POLICY');
           const resolved = resolveUpdate(intent, read);
+          const decision = assessResolution('update_task', intent, read, resolved, 'verified');
           // A same-operation commit may have raced the read. Receipt precedes fresh resolution.
           const receipt = await repository.recoverMutation(identity.uid, input);
           if (receipt && receipt.kind !== 'update') throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outra ação. Envie um novo pedido.');
           const committed = receipt?.task;
           await repository.authorize(identity, 'receipt');
+          if (receipt) { const replayDecision = assessReplay(receipt.kind, 'verified'); if (replayDecision.kind !== 'allow') throw new GikaFault('GIKA_POLICY'); }
+          if (!receipt && resolved.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({ text: committed ? 'Preparando a alteração…' : resolved.text, simulated: false, reads: [],
             ...(committed || resolved.task ? { updateTask: committed ?? resolved.task } : { updateResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'complete_task') {
           const intent = validateCompletion(calls[0].args, input.text, current);
-          if ('clarification' in intent) return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], completionResolution: { status: 'clarify', candidates: [] } });
+          if ('clarification' in intent) { assessMissingIntent('complete_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], completionResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
           if (read.timeZone !== current.timeZone || signal.aborted) throw new GikaFault('GIKA_POLICY');
           const afterRead = await repository.authorize(identity);
           if (afterRead.today !== current.today || afterRead.timeZone !== current.timeZone || afterRead.weekStartsOn !== current.weekStartsOn) throw new GikaFault('GIKA_POLICY');
           const resolved = resolveCompletion(intent, read);
+          const decision = assessResolution('complete_task', intent, read, resolved, 'verified');
           // A same-operation commit may have raced the read. Receipt precedes fresh resolution.
           const receipt = await repository.recoverMutation(identity.uid, input);
           if (receipt && receipt.kind !== 'complete') throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outra ação. Envie um novo pedido.');
           const committed = receipt?.task;
           await repository.authorize(identity, 'receipt');
+          if (receipt) { const replayDecision = assessReplay(receipt.kind, 'verified'); if (replayDecision.kind !== 'allow') throw new GikaFault('GIKA_POLICY'); }
+          if (!receipt && resolved.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({ text: committed ? 'Preparando a conclusão…' : resolved.text, simulated: false, reads: [],
             ...(committed || resolved.task ? { completeTask: committed ?? resolved.task } : { completionResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'create_task') {
           const intent = validateCreation(calls[0].args, input.text, current);
+          const decision = assessCreation(Boolean(intent.task), 'verified');
+          if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.

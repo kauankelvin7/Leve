@@ -237,3 +237,15 @@ Interpretação fixture sem segredo; Auth/commands/receipts/Firestore emulados r
 ## M4-SMOKE — interpretação Gemini real após revisão T1/T2/T3
 
 M4-E31..E34: complete_task, update_task título, reschedule_task timed/untimed reais HTTP200, civil2026-10-01→02/America_Sao_Paulo; validation/resolution/policy/command/receipt/persistência/UI reais emulados. Ack retido/póscommit perdido, retry applied→alreadyApplied/envelope/ID/revision2 idênticos sem upstream extra. Preview sem command/receipt/escrita, confirmação/double tap determinísticos; patch-only/time null e19:00 preservados, conta vizinha intacta. Remover provider→503 GIKA_NOT_CONFIGURED sem upstream, agenda disponível. Harness opt-in scripts/gika-m4-smoke.mjs e M4_SMOKE_EVIDENCE/evidence/m4-smoke.json. Segredo apenas memória, nenhuma alteração de arquitetura; não executar automaticamente nem iniciar M5.
+
+## M5-T1 — classificação determinística sem modelo real
+
+| Evals | Cenários | Prova |
+|---|---|---|
+| M5-E01..E06 | create simples/incompleto, complete único/ambíguo, rename/field proibido | gika-action-policy unit e gika-policy integração |
+| M5-E07..E11 | preview confirm reschedule, unknown, multi entity, recurrence scope, destrutivo | classifier strict/gates/router, tools futuras desabilitadas |
+| M5-E12..E15 | partial/saturated sem write, auth ausente/UID trocado, payload/decision manipulado | unit/integração real/command-auth e UI logout regressão |
+| M5-E16..E18 | provider independence, command validation/revision não bypassadas, policy sem persistência | unit/architecture/integração409 e quatro gates deny |
+| M5-E19..E21 | telemetria anônima, histórico replay/reautorização, receipt em corrida precede resolução saturada | unitprivacy, integração receipt/persistência real emulada |
+
+Modelo somente fixture; sem Gemini live/credencial. Confirmation existente de uma tarefa é preservada, não PendingAction deT2. Bulk/destructive/series apenas classificação não executável. Policies não concedem autorização nem criam resultado de sucesso; command layer continua autoridade e UI depende de ack real.

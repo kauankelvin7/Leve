@@ -1,0 +1,92 @@
+{
+  "entryCheckpoint": "156fe77dd94d24152c4af12c122ce90188b28271",
+  "branch": "feat/gika-integration",
+  "scope": "M5-T1 only",
+  "liveGemini": false,
+  "credentialsUsed": false,
+  "gates": {
+    "lint": {
+      "exitCode": 0
+    },
+    "buildAndBothTypechecks": {
+      "exitCode": 0
+    },
+    "unit": {
+      "passed": 323,
+      "filesPassed": 40
+    },
+    "integration": {
+      "passed": 166,
+      "filesPassed": 6,
+      "authFirestoreEmulators": true,
+      "afterEmulatorReadiness": true
+    },
+    "gikaE2EBroad": {
+      "passed": 50,
+      "failed": 1,
+      "category": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE"
+    },
+    "gikaE2EFinalFocal": {
+      "passed": 6,
+      "failed": 0,
+      "includesPreviouslyFailedUndo": true
+    },
+    "entryComparison": {
+      "passed": 2,
+      "failed": 0,
+      "includesOriginalAndControlledProbe": true
+    },
+    "currentControlledProbe": {
+      "passed": 1,
+      "failed": 0
+    },
+    "check": {
+      "exitCode": 1,
+      "buildBothTypechecksPassed": true,
+      "unitPassed": 323,
+      "shellPassed": 12,
+      "shellFailed": 1,
+      "classification": "PREEXISTING_COLOR_CONTRAST",
+      "ratioRange": [
+        3.66,
+        4.17
+      ],
+      "requiredRatio": 4.5,
+      "environmentOnly": "NODE_OPTIONS=--dns-result-order=ipv4first"
+    },
+    "auditReadOnly": {
+      "exitCode": 1,
+      "moderate": 9,
+      "high": 4,
+      "total": 13,
+      "classification": "PREEXISTING_VULNERABILITIES"
+    }
+  },
+  "unsuccessfulGateAttempts": [
+    {
+      "gate": "integration",
+      "cause": "ENV_AUTH_EMULATOR_NOT_READY",
+      "setupConnectionRefused": true,
+      "passed": 92,
+      "failed": 74,
+      "laterFullPass": 166
+    },
+    {
+      "gate": "check",
+      "cause": "ENV_PREVIEW_IPV6_BIND_IPV4_HARNESS",
+      "localhostHttpStatus": 200,
+      "ipv4Reachable": false,
+      "noHarnessOrProductChanges": true
+    },
+    {
+      "gate": "check",
+      "cause": "TEMPORARY_PROBE_UNUSED_IMPORT_TS6133",
+      "probeRemovedBeforeFinalGate": true
+    }
+  ],
+  "baselineFilesCompared": 26,
+  "allBaselineFilesIdentical": true,
+  "originalHarnessUnchanged": true,
+  "independentReadOnlyReview": "approved-no-blocker",
+  "nextTask": "M5-T2 todo; stop for review"
+}
