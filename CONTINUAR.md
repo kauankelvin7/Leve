@@ -185,3 +185,5 @@ Commit atômico M4-T2 verificado: `ededc2090887c181f6f463d92cda934a9cd6d16a`, wo
 ## Gika — checkpoint M4-T3
 
 Na branch feat/gika-integration, reagendamento simples concluído a partir de d233971. Fonte atual `.agent/GIKA_STATE.md`, tarefas/ExecPlan e `docs/gika/M4_T3_EVIDENCE.md`. Patch temporal/preview→activity.update convencional/revisão/receipt/ack reais; sem recorrência/batch/Undo genérico.295 unit/150 integração/7 focal PASS; ampla67/15 e check12/1/audit13 baseline classificados, sem mascarar gates. M4 parcial: parar para revisão antes do M4-SMOKE real, não iniciar M5/Gemini live automaticamente. Checkpoint SHA real no estado/documentação após commit atômico.
+
+Commit atômico M4-T3: `f774d9c9b1466683e418be8b59f83615eb9495e7`; worktree limpo após commit. Checkpoint documental seguinte somente registra este SHA, sem mudança funcional.

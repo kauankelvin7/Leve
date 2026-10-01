@@ -39,7 +39,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada d233971 (documental T2; atômico ededc2090887c181f6f463d92cda934a9cd6d16a). M4-T3 concluída em commit atômico código/testes/docs/estado/tarefas/ADR016; SHA real será registrado no checkpoint documental posterior, sem referência circular. Worktree consistente antes do commit, clean verificado depois. Parar antes de M4-SMOKE/M5; M4 parcial.
+Entrada d233971 (documental T2; atômico ededc2090887c181f6f463d92cda934a9cd6d16a). M4-T3 concluída no commit atômico `f774d9c9b1466683e418be8b59f83615eb9495e7` (código/testes/docs/estado/tarefas/ADR016); git status vazio confirmado após commit. Este checkpoint documental registra SHA real sem alteração funcional ou referência circular. Parar antes de M4-SMOKE/M5; M4 parcial.
 
 ## Histórico
 
@@ -90,4 +90,4 @@ Entrada d233971 (documental T2; atômico ededc2090887c181f6f463d92cda934a9cd6d16
 
 | 2026-10-01 | M4 parcial | M4-T2 | done: patch title-only via activity.update/receipt/revision existentes;262 unit/123 integração/10 E2E finais PASS,global62/13 causas comparadas02fe;sem live,parar antes de T3 | `ededc2090887c181f6f463d92cda934a9cd6d16a` |
 
-| 2026-10-01 | M4 parcial | M4-T3 | done: reschedule temporal strict/preview/command convencional/revisão/receipt;295 unit/150 integração/7 focal PASS;global67/15 classificado contra d233971, comparação atual8/2;sem live,parar antes M4-SMOKE/M5 | checkpoint após d233971 |
+| 2026-10-01 | M4 parcial | M4-T3 | done: reschedule temporal strict/preview/command convencional/revisão/receipt;295 unit/150 integração/7 focal PASS;global67/15 classificado contra d233971, comparação atual8/2;sem live,parar antes M4-SMOKE/M5 | `f774d9c9b1466683e418be8b59f83615eb9495e7` |

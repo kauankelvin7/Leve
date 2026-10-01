@@ -42,3 +42,5 @@ Cópia git archive d233971 com dependências iguais, API própria8789 e Vite5177
 M4-T3 somente task simples com data; T2 continua title-only. Sem batch/série/delete/organização/M5/novo undo. Sem Gemini live/chave fictícia/credencial/.env/billing/cartão/push/deploy/merge. gemini-3.5-flash-lite/medium mantidos; proxy/egress histórico Codex Remote só configuração ambiente, nada no produto. Warning MetadataLookup403 emulador não impediu gates.
 
 M4-T3 concluída após classificação/revisão/gates/evidências; M4 permanece parcial. M4-SMOKE registrado blocked até revisão e autorização específica live; não executar agora, não iniciar M5. Commit atômico código/testes/docs/estado/tarefas, SHA real em checkpoint documental posterior; worktree limpo verificado ao concluir.
+
+Checkpoint atômico M4-T3: `f774d9c9b1466683e418be8b59f83615eb9495e7`, branch feat/gika-integration e worktree limpo confirmados após commit. Checkpoint documental posterior só registra SHA real; nenhum gate funcional repetido por essa atualização de memória. M4 in_progress/M4-SMOKE blocked para revisão/autorização; parar antes de M5, sem live.
