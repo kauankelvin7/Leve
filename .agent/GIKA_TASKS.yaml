@@ -351,4 +351,11 @@ security_hardening:
     status: done
     evidence: docs/security/GOOGLE_EVIDENCE.md
   integration_review:
-    status: pending_user_review
+    status: approved
+  integration:
+    status: done
+    branch: feat/gika-integration
+    from_checkpoint: a922594699cd95e2bc6602bccc215f4a23e75f41
+    source_checkpoint: 8300c2b48408ba12664573ee92c1402b5aafd82f
+    method: fast_forward_only
+    evidence: ".agent/GIKA_STATE.md: pré-condições exatas/ancestralidade/worktree limpo; ff-only e HEAD8300c2b confirmados. Audit produção0; lint/doisTS/build/334unit/166integração PASS; check12/1 somente contraste histórico; E2E52/1 timeout temporal e original isolado1PASS, todas53 únicas observadas PASS, sem esconder tentativa inicial. Sem alteração funcional/dependências/main/visual, sem Gemini live. M5-T2 todo/não iniciado; parar para revisão."

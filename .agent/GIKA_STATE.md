@@ -2,8 +2,8 @@
 
 ## Estado atual
 
-- Status global: `SECURITY_HARDENING_DONE_PENDING_INTEGRATION_REVIEW`.
-- Branch de trabalho: `chore/security-hardening`, criada da entrada limpa `a922594699cd95e2bc6602bccc215f4a23e75f41`. Branch feat/gika-integration permanece nesse checkpoint, sem merge/push/deploy.
+- Status global: `SECURITY_HARDENING_INTEGRATED_STOP_BEFORE_M5_T2`.
+- Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem push/deploy.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2/T3/T4 e posteriores todo/não iniciados.
 - DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
 - Firebase12.19/Admin13.6/Firestore4.17.2/7.11.6/Gax4.6.1 preservados. Overrides limitados grpc1.14.5 e uuid11.1.1 nos consumidores auditados; clean install/tree válido,334 unit/166 integração/lint/build/doisTS PASS.53 E2E finais PASS (47+6), incluindo todas51 Gika e2avatar; nenhum FAIL novo.
@@ -12,11 +12,23 @@
 
 ## Autorização atual
 
-M5-T1 aprovado. Pedido posterior autoriza exclusivamente security dependency hardening na branch temporária chore/security-hardening a partir de a922594. Sem merge para feat/main, Gemini live, M5-T2 ou refactor de arquitetura/UI. Relatórios/inventário/risco/gates em docs/security/REPORT.md e GOOGLE_EVIDENCE.md.
+Hardening revisado/aprovado pelo usuário. Autorizada somente sua integração ff-only em feat/gika-integration, gates pós-integração e registro neste estado/tarefas. Sem M5-T2, Gemini live, deploy, merge na main, alteração de dependências ou branch visual.
 
 ## Próxima ação
 
-Parar para revisão do hardening concluído antes de integrar chore/security-hardening em feat/gika-integration. Relatório docs/security/REPORT.md e gates.json; sem merge autorizado nesta tarefa. M5-T2 permanece todo, não iniciar automaticamente.
+Parar para revisão da integração concluída. M5-T2 permanece todo e não foi iniciado; aguardar autorização para a próxima tarefa funcional.
+
+## Verificação pós-integração — 2026-10-01
+
+- Pré-condições: feat exata a922594; hardening exata8300c2b; merge-base/ancestral a922594; nenhuma alteração local nem commit posterior em feat. `git checkout feat/gika-integration` e `git merge --ff-only chore/security-hardening` executados; HEAD8300c2b confirmado imediatamente após fast-forward, sem squash/rebase/merge commit.
+- `npm audit --omit=dev --audit-level=high`: PASS/exit0, found 0 vulnerabilities; produção 0 critical/0 high/0 moderate. Dependências não modificadas novamente; audit completo dev-only histórico permanece divulgado no relatório do hardening.
+- `npm run lint`, `npm run typecheck` (cliente/servidor), `npm run build`: PASS/exit0. `npm test`:334 PASS/42 arquivos.
+- Auth/Firestore locais disponíveis antes dos testes. `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 FIRESTORE_EMULATOR_HOST=localhost:8080 npm run test:integration:inside`:166 PASS/6 arquivos/exit0, incluindo Rules/Auth/commands/receipts/idempotência/create/complete/update/reschedule/Undo/policy M5-T1. Apenas contas e dados fictícios.
+- `NODE_OPTIONS=--dns-result-order=ipv4first npm run check`: exit1 exclusivamente contraste histórico no shell (3,59..4,17:1 vs4,5:1);12 E2E PASS/1 FAIL, build/dois TS/334 unit PASS. Resolução IPv4 apenas no processo remoto, sem mudança de produto/harness.
+- `LEVE_LOCAL_URL=http://localhost:5174 npm run test:e2e:local -- tests/e2e-local/gika.spec.ts tests/e2e-local/gika-create.spec.ts tests/e2e-local/gika-complete.spec.ts tests/e2e-local/gika-update.spec.ts tests/e2e-local/gika-reschedule.spec.ts tests/e2e-local/gika-readonly.spec.ts tests/e2e-local/avatar-security.spec.ts`:52 PASS/1 timeout em13,2min. Repetição original isolada de gika-update `--grep 'later conventional edit conflicts'`:1 PASS/exit0 (7,3s de teste). Todas53 únicas observadas PASS, não declarar primeira suíte verde.
+- Evidência sanitizada do timeout: criação HTTP200 em10038,079ms; edição convencional HTTP200 em9804,088ms; respond fixture HTTP200 em9978,162ms; comando Gika HTTP409 em17,752ms. Asserção começou monotonic602744,872 e terminou612755,722;409 iniciou612680,311. Transporte consumiu quase todo deadline10000ms, sem aviso renderizado dentro da espera; conflito real preservado. Código/harness byte-idênticos ao hardening aprovado8300c2b e teste idêntico à entradaa922594; classe de intermitência temporal já comprovada contra02fe03e em M4_T2_EVIDENCE.md. Repetição sem ajustes PASS; nenhuma regressão funcional nova demonstrada, sem atribuir causa de rede mais específica nem alterar deadlines.
+- Logs locais sanitizados em /tmp/leve-post-hardening-{audit,lint,typecheck,build,unit,integration,check,e2e,conflict-retry}.log; medidas acima preservadas neste registro. Browser de /entrar verificou tela interativa sem erros. Screenshots gerados pelos gates restaurados/removidos, sem alterações visuais versionadas.
+- Processo local sem GEMINI_API_KEY; nenhuma chamada Gemini live, credencial persistida/logada, deploy/push/main merge ou tarefa M5-T2. Apenas este arquivo e GIKA_TASKS.yaml mudam no checkpoint documental posterior ao fast-forward.
 
 ## Contratos preservados
 
@@ -30,7 +42,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Limites e pendências
 
-- Hardening é isolado: 13 vulnerabilidades de produção antigas corrigidas nesta branch; feat/a922594 ainda não recebeu integração.14 restantes do audit completo são exclusivamente toolingdev preexistente, relatório antes/depois/advisories/cadeias/risco/motivo de adiamento explícitos. Ranges SDK~grpc1.9 e consumidoresuuid^9 foram ultrapassados conscientemente sob overrides exatos: testes comprovam APIs usadas/transportes emulados, não certificação de TLS/serviço Google live nem compatibilidade universal com usos futuros. Reavaliar overrides quando upstream corrigir ranges.
+- Hardening integrado em feat/gika-integration por fast-forward8300c2b: 13 vulnerabilidades de produção antigas corrigidas.14 restantes do audit completo são exclusivamente toolingdev preexistente, relatório antes/depois/advisories/cadeias/risco/motivo de adiamento explícitos. Ranges SDK~grpc1.9 e consumidoresuuid^9 foram ultrapassados conscientemente sob overrides exatos: testes comprovam APIs usadas/transportes emulados, não certificação de TLS/serviço Google live nem compatibilidade universal com usos futuros. Reavaliar overrides quando upstream corrigir ranges.
 
 - M5-T1 amplo50/1: Undo lost ack aguardou transporte além do deadline10000ms existente. Original PASS na entrada156fe77 e atual; sonda10200ms após commit em ambas reproduz expiração e depois replay applied/alreadyApplied sem segundo efeito. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, sem causa infra adicional inferida. Novos módulos não são invocados nesse caso simulado, UI/command/harness idênticos à entrada. Check final shell12/1 contraste3,66..4,17:1 e audit13 baseline; sem fix/timeouts alterados. Startup Auth recusado e preview IPv6 vs harnessIPv4 registrados como tentativas ambientais, repetidos após prontidão/resolução somente processo; sonda temporária TS6133 removida antes do check final.
 - M5-T1 só classifica: policies específicas continuam barreiras, decisões não são grants nem ack. Recorrência sem escopo esclarece; alto impacto/multi/bulk/destrutivo nega execução. Auditoria encontrou limitações históricas dos handlers de série (cap500/truncamento/receipt/auth), documentadas sem habilitar ou corrigir esse escopo. Preview reschedule em memória não é PendingAction server-side T2.
@@ -45,7 +57,7 @@ Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/
 
 ## Checkpoint
 
-Entrada a922594 limpa na feat/gika-integration; chore/security-hardening criada desse SHA e isolada. DiceBear commit atômico `73e750c866b620bb6a44147ecebf2b42d5e51b18`. Firebase/Google/testes/evidências/estado/tarefas commit atômico `e8c07be3218cb583fffb5af38e7a8beb10c95851`. Branch chore/security-hardening e worktree limpo confirmados depois do segundo commit. Este checkpoint documental registra SHAs reais e normaliza apenas trailing blank em árvores de texto, sem alteração funcional. feat permanece a922594, sem merge. M5-T2 todo; parar para revisão antes de integrar branch temporária.
+Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmada. Fast-forward aprovado executado; feat HEAD `8300c2b48408ba12664573ee92c1402b5aafd82f` confirmado antes do registro documental. Commits DiceBear73e750c e Googlee8c07be preservados sem squash. Checkpoint posterior contém somente GIKA_STATE.md/GIKA_TASKS.yaml com integração/gates; SHA final e worktree limpo devem ser confirmados após esse commit. M5-T2 todo, parar para revisão; main/visual/chore intactas.
 
 ## Histórico
 
