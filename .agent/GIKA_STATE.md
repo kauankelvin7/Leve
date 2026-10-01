@@ -28,7 +28,7 @@ Gika → Model Adapter → Tool Router → Validation → Policy → commandBrid
 
 ## Checkpoint
 
-M3-SMOKE e fechamento M3 no commit atômico desta sessão; SHA real registrado no checkpoint documental posterior após confirmar worktree limpo. PREabbd1e2/T3 atômico55b760ffa80a84070872e82a42a3d8f132f4141a preservados no histórico. M4 não iniciado.
+M3-SMOKE e fechamento M3 no commit atômico `723d444295fafb08e7706b92a283bf3d1f2b0d0b`, worktree limpo confirmado após o commit. Este checkpoint documental posterior registra o SHA real sem alteração funcional. PREabbd1e2/T3 atômico55b760ffa80a84070872e82a42a3d8f132f4141a preservados no histórico. M4 não iniciado.
 
 ## Histórico
 
@@ -73,4 +73,4 @@ M3-SMOKE e fechamento M3 no commit atômico desta sessão; SHA real registrado n
 
 | 2026-10-01 | M3 parcial | M3-T3 | done: undo pelo activity.trash/receipts existente, auth/revisão/createdAt/ABA,194 unit/76 integração e6 focal PASS; global50/13 baseline demonstrado; parar antes de M3-SMOKE/M4 | `55b760ffa80a84070872e82a42a3d8f132f4141a` |
 
-| 2026-10-01 | M3 | M3-SMOKE | PASS real HTTP200/create_task/receipt/persistência/UI/retry/undo; M3 done; parar antes de M4 | checkpoint após abbd1e2 |
+| 2026-10-01 | M3 | M3-SMOKE | PASS real HTTP200/create_task/receipt/persistência/UI/retry/undo; M3 done; parar antes de M4 | `723d444295fafb08e7706b92a283bf3d1f2b0d0b` |

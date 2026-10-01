@@ -164,3 +164,5 @@ Commit atômico M3-T3 verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`, wo
 ## Gika — M3-SMOKE e fechamento M3 em 01/10/2026
 
 T3 aprovado e smoke exclusivamente autorizado a partir de abbd1e2 limpo na feat/gika-integration. Gemini real HTTP200/create_task → validation/policy → command layer/receipt/persistência → UI, uma tarefa sintética, ack perdido/retry alreadyApplied sem duplicata nem segundo Gemini. Undo opcional real remove só alvo pela lixeira. M3_SMOKE_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais; M3 done.194 unit/76 integração/32 E2E Gika/lint/build/dois TS PASS;check12/1 contraste e audit13 baseline explícitos. Credencial somente memória e processo encerrado, sem segredo versionado. Proxy Codex Remote ambiente-only; produção/arquitetura/modelo intactos. Parar antes de M4-T1, exige autorização nova. SHA real no checkpoint documental posterior.
+
+Commit atômico M3-SMOKE/fechamento M3 verificado: `723d444295fafb08e7706b92a283bf3d1f2b0d0b`, worktree limpo confirmado. Este checkpoint posterior somente registra SHA/estado; M4-T1 não iniciado.

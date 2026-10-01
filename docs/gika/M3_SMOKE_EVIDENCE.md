@@ -45,3 +45,5 @@ Suíte global não declarada verde: comparação executável de12 falhas Planner
 
 ## Checkpoint e limites
 M3-SMOKE done, M3 done após prova live/gates/revisão. Commit atômico de harness/plano/evidência/estado/tarefas/evals; SHA real no checkpoint documental posterior, sem referência circular. M4 não iniciado e exige autorização nova. PASS deste cenário não é cobertura live de todas as ambiguidades/erros upstream nem certificado de release; evals determinísticos completam a regressão. Não repetir Gemini live nos gates.
+
+Commit atômico M3-SMOKE/fechamento M3: `723d444295fafb08e7706b92a283bf3d1f2b0d0b` (feat/gika-integration), git status vazio confirmado após commit. Checkpoint documental posterior registra SHA real, sem repetir gates funcionais por alteração exclusivamente documental. M3 done/M4 não iniciado.

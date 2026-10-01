@@ -32,4 +32,4 @@ Encerrar processo temporário remove credencial da memória; tarefa sintética p
 PASS real HTTP200/create_task; receipt/persistência/UI/retry e undo provados. M3_SMOKE_EVIDENCE.md/evidence/m3-smoke.json e screenshot sintético; gates194 unit/76 integração/32 E2E/lint/build/dois TS PASS, check12/1 e audit13 baseline explícitos.
 
 ## Estado de retomada
-M3-SMOKE done e M3 done; processo temporário encerrado/credencial ausente nos gates. Checkpoint atômico após revisão de escopo/diff/segredos; SHA real documentado depois do commit. M4 não iniciado: aguardar autorização.
+M3-SMOKE done e M3 done; processo temporário encerrado/credencial ausente nos gates. Checkpoint atômico após revisão de escopo/diff/segredos; Commit atômico `723d444295fafb08e7706b92a283bf3d1f2b0d0b`, worktree limpo confirmado; registro documental posterior sem alteração funcional. M4 não iniciado: aguardar autorização.
