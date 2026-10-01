@@ -1,3 +1,4 @@
+import { updateDescriptorSchema, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
 import { completionDescriptorSchema, completionResultSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
 import { z } from 'zod';
 import { Temporal } from '@js-temporal/polyfill';
@@ -14,7 +15,7 @@ export type ReadRange = { startDate: string; endDate: string; timeZone: string }
 export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
-  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | null>;
+  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
@@ -22,8 +23,14 @@ export const firestoreReads: ReadRepository = {
     const receipt = await db.doc(`commandReceipts/${entityIdSchema.parse(uid)}_${request.requestId}`).get();
     if (!receipt.exists) return null;
     const data = receipt.data()!;
-    const metadata = data.gikaCompletion ?? data.gika;
+    const metadata = data.gikaUpdate ?? data.gikaCompletion ?? data.gika;
     if (data.uid !== uid || !metadata || metadata.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    if (data.gikaUpdate) {
+      const response = completionResultSchema.safeParse(data.response);
+      const task = updateDescriptorSchema.safeParse(data.gikaUpdate.task);
+      if (!response.success || !task.success || response.data.operationId !== request.requestId || response.data.entityId !== task.data.id || response.data.revision !== task.data.revision + 1) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      return { kind: 'update', task: task.data };
+    }
     if (data.gikaCompletion) {
       const response = completionResultSchema.safeParse(data.response);
       const task = completionDescriptorSchema.safeParse(data.gikaCompletion.task);

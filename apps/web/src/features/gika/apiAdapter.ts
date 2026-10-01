@@ -1,3 +1,5 @@
+import { updateEnvelope, type UpdateDescriptor } from '../../../../../packages/domain/src/gikaUpdate';
+import { executeUpdate } from './updateBridge';
 import { completionEnvelope, type CompletionDescriptor } from '../../../../../packages/domain/src/gikaCompletion';
 import { executeCompletion } from './completionBridge';
 import { gikaInterpretationSchema } from '../../../../../packages/domain/src/gika';
@@ -8,7 +10,7 @@ import { gikaRequestSchema, gikaResponseSchema, type GikaAdapter } from './conve
 
 export function createApiAdapter(): GikaAdapter {
   // One pending envelope, like conventional UI. Definitive dedup remains the transactional receipt.
-  let pending: { uid: string; requestId: string; text: string; task: CompletionDescriptor } | null = null;
+  let pending: ({ uid: string; requestId: string; text: string } & ({ kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor })) | null = null;
   return async (request, signal) => {
     const uid = firebaseAuth?.currentUser?.uid;
     const input = gikaRequestSchema.parse(request);
@@ -16,10 +18,16 @@ export function createApiAdapter(): GikaAdapter {
     if (!uid || active.aborted) throw new ApiError(401, 'AUTH_REQUIRED', 'Entre na sua conta para continuar.');
     if (pending && (pending.uid !== uid || pending.requestId !== input.requestId || pending.text !== input.text)) pending = null;
     const complete = async (task: CompletionDescriptor) => {
-      pending = { uid, requestId: input.requestId, text: input.text, task };
+      pending = { uid, requestId: input.requestId, text: input.text, kind: 'complete', task };
       const completedTask = await executeCompletion(task, await completionEnvelope(task, input), uid, active);
       pending = null;
       return gikaResponseSchema.parse({ text: 'Tarefa concluída.', simulated: false, reads: [], completedTask });
+    };
+    const update = async (task: UpdateDescriptor) => {
+      pending = { uid, requestId: input.requestId, text: input.text, kind: 'update', task };
+      const updatedTask = await executeUpdate(task, await updateEnvelope(task, input), uid, active);
+      pending = null;
+      return gikaResponseSchema.parse({ text: 'Tarefa atualizada.', simulated: false, reads: [], updatedTask });
     };
     const interpret = async () => {
       const response = gikaInterpretationSchema.parse(await apiRequest('/gika/respond', { method: 'POST', body: JSON.stringify(input), signal: active }, uid));
@@ -39,8 +47,18 @@ export function createApiAdapter(): GikaAdapter {
         return complete(recovered.completeTask);
       }
     };
-    if (pending) return completeWithRecovery(pending.task);
+    const updateWithRecovery = async (task: UpdateDescriptor) => {
+      try { return await update(task); }
+      catch (error) {
+        if (!(error instanceof ApiError) || error.code !== 'OPERATION_MISMATCH') throw error;
+        const recovered = await interpret();
+        if (!recovered.updateTask) throw error;
+        return update(recovered.updateTask);
+      }
+    };
+    if (pending) return pending.kind === 'complete' ? completeWithRecovery(pending.task) : updateWithRecovery(pending.task);
     const response = await interpret();
+    if (response.updateTask) return updateWithRecovery(response.updateTask);
     if (response.completeTask) return completeWithRecovery(response.completeTask);
     if (!response.createTask) return gikaResponseSchema.parse(response);
     let createdTask;

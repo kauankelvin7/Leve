@@ -531,3 +531,125 @@ it.each(['canceled','event'])('M4 never mutates a unique %s target',async kind=>
   await seedTask(user.uid,'target',date,'Academia',extra);state.model={interpret:async()=>[{name:'complete_task',args:{title:'Academia',date:null}}]};
   const r=await ask(user.token,{requestId:id,text:'Terminei Academia'}).expect(200);expect(r.body.completionResolution.status).toBe('unsupported');expect((await db.collection('commandReceipts').get()).size).toBe(0);
 });
+
+describe('M4-T2 title patch reuses the existing activity.update transaction',()=>{
+ const text='Renomeia Academia para Treino',target='rename-target';
+ const today=()=>Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+ const call={name:'update_task',args:{title:'academia',date:null,patch:{title:'Treino'}}};
+ async function ready(extra:Record<string,unknown>={}){const user=await account();await seedTask(user.uid,target,today(),'Academia',extra);state.model={interpret:async()=>[call]};return user;}
+ const interpret=(user:{token:string},requestId=id,question=text)=>ask(user.token,{requestId,text:question}).expect(200);
+ async function envelope(body:unknown,requestId=id,question=text){const {updateEnvelope}=await import('../../packages/domain/src/gikaUpdate');const parsed=gikaInterpretationSchema.parse(body);if(!parsed.updateTask)throw Error('Missing descriptor');return updateEnvelope(parsed.updateTask,{requestId,text:question});}
+ const send=(user:{token:string},command:object)=>request(app).post('/api/commands').set('Authorization',`Bearer ${user.token}`).send(command);
+ it('valid title patch updates exact ID, preserves every hidden/temporal field, no extra entity',async()=>{
+  const user=await ready({descriptionPlain:'PRIVATE_DESCRIPTION',colorHex:'#123456',estimatedMinutes:45,schedule:{type:'task',dueDate:today(),dueTime:'10:00',timeZone:'Europe/Lisbon',disambiguation:'later'},reminderSpecs:[{id:'custom',minutesBefore:15}],createdAt:'2026-09-01T12:00:00.000Z',completedAt:null});
+  const ref=db.doc(`users/${user.uid}/activities/${target}`);const before=ref.get();
+  const r=await interpret(user);expect(r.body.updateTask).toMatchObject({id:target,title:'Academia',revision:1,patch:{title:'Treino'}});expect(r.body).not.toHaveProperty('updatedTask');expect(r.body.updateTask).not.toHaveProperty('descriptionPlain');
+  expect((await ref.get()).data()?.title).toBe('Academia');const command=await envelope(r.body);expect(command.payload).toEqual({title:'Treino'});await send(user,command).expect(200);
+  const old=(await before).data()!,after=(await ref.get()).data()!;
+  for(const field of ['descriptionPlain','colorHex','estimatedMinutes','schedule','reminderSpecs','createdAt','completedAt','status','seriesId','occurrenceKey','categoryId'])expect(after[field]).toEqual(old[field]);
+  expect(after).toMatchObject({title:'Treino',revision:2});expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(1);expect((await db.doc(`commandReceipts/${user.uid}_${id}`).get()).data()?.gikaUpdate.task).toEqual(r.body.updateTask);
+ });
+ it.each(['pending','completed','canceled'])('conventional rename preserves %s and optional fields absent',async status=>{
+  const user=await ready({status,completedAt:status==='completed'?'2026-09-30T10:00:00.000Z':null});const r=await interpret(user);await send(user,await envelope(r.body)).expect(200);
+  const data=(await db.doc(`users/${user.uid}/activities/${target}`).get()).data()!;expect(data.status).toBe(status);expect(data).not.toHaveProperty('colorHex');expect(data).not.toHaveProperty('estimatedMinutes');expect(data.completedAt).toBe(status==='completed'?'2026-09-30T10:00:00.000Z':null);
+ });
+ it.each(['ambiguous','not_found','partial','unsupported','unchanged'])('%s gives honest observation and no command/receipt/state change',async status=>{
+  const user=await ready();const ref=db.doc(`users/${user.uid}/activities/${target}`);
+  if(status==='ambiguous')await seedTask(user.uid,'second',today(),'academia',{status:'completed'});
+  if(status==='not_found')await ref.update({title:'Outra'});
+  if(status==='partial')await db.doc(`users/${user.uid}/series/unmaterialized`).set({state:'active'});
+  if(status==='unsupported')await ref.update({seriesId:'series'});
+  if(status==='unchanged')state.model={interpret:async()=>[{...call,args:{...call.args,patch:{title:'Academia'}}}]};
+  const before=(await ref.get()).data(),r=await interpret(user,id,status==='unchanged'?'Renomeia Academia para Academia':text);
+  expect(r.body).not.toHaveProperty('updateTask');expect(r.body.updateResolution.status).toBe(status);expect((await ref.get()).data()).toEqual(before);expect((await db.collection('commandReceipts').get()).size).toBe(0);
+ });
+ it('sequential/concurrent/lost ack retries use one atomic receipt even after old title disappears',async()=>{
+  const user=await ready(),r=await interpret(user),command=await envelope(r.body);
+  const acks=await Promise.all([send(user,command).expect(200),send(user,command).expect(200)]);expect(acks.map(a=>a.body.result).sort()).toEqual(['alreadyApplied','applied']);
+  state.model={interpret:async()=>{throw Error('Provider must not run after receipt');}};
+  const recovered=await interpret(user);expect(recovered.body.updateTask).toEqual(r.body.updateTask);const retry=await send(user,await envelope(recovered.body)).expect(200);expect(retry.body).toMatchObject({revision:2,entityId:target,result:'alreadyApplied'});expect((await db.collection('commandReceipts').get()).size).toBe(1);
+  expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({title:'Treino',revision:2});
+  await send(user,{...command,payload:{title:'Outra'}}).expect(409);await ask(user.token,{requestId:id,text:'Renomeia Academia para Outra'}).expect(409);
+ });
+ it('new intention gets new ID and may rename again; case-only update is real',async()=>{
+  const user=await ready(),r=await interpret(user);await send(user,await envelope(r.body)).expect(200);
+  const requestId=crypto.randomUUID(),question='Renomeia Treino para treino';state.model={interpret:async()=>[{name:'update_task',args:{title:'Treino',date:null,patch:{title:'treino'}}}]};
+  const next=await interpret(user,requestId,question);await send(user,await envelope(next.body,requestId,question)).expect(200);
+  expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({title:'treino',revision:3});expect((await db.collection('commandReceipts').get()).size).toBe(2);
+ });
+ it('other UID cannot edit or recover original; unauthenticated request never resolves',async()=>{
+  const user=await ready(),other=await account(),r=await interpret(user),command=await envelope(r.body);
+  await send(other,command).expect(409);await request(app).post('/api/gika/respond').send({requestId:id,text}).expect(401);
+  await send(user,command).expect(200);const foreign=await interpret(other);expect(foreign.body.updateResolution.status).toBe('not_found');expect(foreign.body).not.toHaveProperty('updateTask');expect((await db.collection(`users/${other.uid}/activities`).get()).size).toBe(0);
+ });
+ it('revision changed after resolution preserves subsequent content without a receipt or private current',async()=>{
+  const user=await ready(),r=await interpret(user),command=await envelope(r.body);const ref=db.doc(`users/${user.uid}/activities/${target}`);
+  await ref.update({revision:2,title:'Editada depois',descriptionPlain:'LATER_PRIVATE_CONTENT'});const failed=await send(user,command).expect(409);expect(failed.body.code).toBe('REVISION_CONFLICT');expect(failed.body.details?.current).toBeUndefined();expect((await ref.get()).data()).toMatchObject({title:'Editada depois',descriptionPlain:'LATER_PRIVATE_CONTENT',revision:2});expect((await db.collection('commandReceipts').get()).size).toBe(0);
+ });
+ it.each(['upstream','read','command'])('membership revoked at %s boundary denies mutation',async stage=>{
+  const user=await ready();let spy:ReturnType<typeof vi.spyOn>|undefined;
+  if(stage==='upstream')state.model={interpret:async()=>{await db.doc(`memberships/${user.uid}`).update({state:'suspended'});return [call];}};
+  if(stage==='read'){const {firestoreReads}=await import('../../server/gika/reads');const original=firestoreReads.read.bind(firestoreReads);spy=vi.spyOn(firestoreReads,'read').mockImplementationOnce(async(...args)=>{const result=await original(...args);await db.doc(`memberships/${user.uid}`).update({state:'suspended'});return result;});}
+  try{if(stage==='command'){const r=await interpret(user);await db.doc(`memberships/${user.uid}`).update({state:'suspended'});await send(user,await envelope(r.body)).expect(403);}else await ask(user.token,{requestId:id,text}).expect(403);}finally{spy?.mockRestore();}
+  expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.title).toBe('Academia');expect((await db.collection('commandReceipts').get()).size).toBe(0);
+ });
+ it('strict unknown/temporal patches, mixed/unknown tools and wrong create never mutate',async()=>{
+  for(const calls of [[{...call,args:{...call.args,patch:{title:'Treino',schedule:{}}}}],[{...call,args:{...call.args,entityId:target}}],[{name:'reschedule_task',args:{}}],[call,{name:'get_today',args:{}}]]){
+   const user=await ready();state.model={interpret:async()=>calls};await ask(user.token,{requestId:crypto.randomUUID(),text}).expect(422);expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.revision).toBe(1);
+  }
+  const user=await ready();state.model={interpret:async input=>[{name:'create_task',args:{title:'Por favor, renomeia Academia para Treino',dueDate:input.context.today,dueTime:null}}]};
+  const wrong=await interpret(user,id,'Por favor, renomeia Academia para Treino hoje');expect(wrong.body).not.toHaveProperty('createTask');expect((await db.collection('commandReceipts').get()).size).toBe(0);
+ });
+ it('function calls repeated identically collapse; malformed/temporal command never writes',async()=>{
+  const user=await ready();state.model={interpret:async()=>[call,call]};const r=await interpret(user),command=await envelope(r.body);
+  await send(user,{...command,payload:{title:'Treino',dueDate:'2026-10-02'}}).expect(422);await send(user,{...command,payload:{title:' Treino '}}).expect(422);await send(user,command).expect(200);expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()?.revision).toBe(2);
+ });
+ it.each(['before','after'])('failure %s commit uses safe retry without a second update',async when=>{
+  const user=await ready(),r=await interpret(user),command=await envelope(r.body);const original=db.runTransaction.bind(db);const spy=vi.spyOn(db,'runTransaction');
+  if(when==='before')spy.mockRejectedValueOnce(new Error('Fixture precommit failure'));
+  else spy.mockImplementationOnce(async(...args:Parameters<typeof db.runTransaction>)=>{await original(...args);throw Error('Fixture lost after commit');});
+  try{await send(user,command).expect(503);}finally{spy.mockRestore();}
+  const ack=await send(user,command).expect(200);expect(ack.body.result).toBe(when==='before'?'applied':'alreadyApplied');expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({title:'Treino',revision:2});expect((await db.collection('commandReceipts').get()).size).toBe(1);
+ });
+ it('existing category policy is preserved instead of dropping an archived category to rename',async()=>{
+  const user=await ready({categoryId:'archived'});await db.doc(`users/${user.uid}/categories/archived`).set({archivedAt:'2026-09-01T12:00:00Z',deletedAt:null});const r=await interpret(user);await send(user,await envelope(r.body)).expect(422);expect((await db.doc(`users/${user.uid}/activities/${target}`).get()).data()).toMatchObject({title:'Academia',categoryId:'archived',revision:1});
+ });
+});
+
+
+describe('M4-T2 additional resolution and private receipt regressions', () => {
+ const day = () => Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+ const call = { name: 'update_task', args: { title: 'Academia', date: null, patch: { title: 'Treino' } } };
+ it('explicit civil day resolves only that day and preserves time/date', async () => {
+  const user = await account(), tomorrow = Temporal.PlainDate.from(day()).add({ days: 1 }).toString();
+  await seedTask(user.uid, 'today', day(), 'Academia'); await seedTask(user.uid, 'tomorrow', tomorrow, 'Academia');
+  state.model = { interpret: async () => [{ ...call, args: { ...call.args, date: tomorrow } }] };
+  const text = 'Renomeia Academia amanhã para Treino'; const r = await ask(user.token, { requestId: id, text }).expect(200);
+  expect(r.body.updateTask).toMatchObject({ id: 'tomorrow', dueDate: tomorrow });
+  const { updateEnvelope } = await import('../../packages/domain/src/gikaUpdate');
+  await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(await updateEnvelope(r.body.updateTask, { requestId: id, text })).expect(200);
+  expect((await db.doc(`users/${user.uid}/activities/today`).get()).data()?.title).toBe('Academia');
+  expect((await db.doc(`users/${user.uid}/activities/tomorrow`).get()).data()).toMatchObject({ title: 'Treino', schedule: { dueDate: tomorrow }, revision: 2 });
+ });
+ it('same logical ID/entity in two UIDs has isolated snapshots and effects', async () => {
+  const a = await account(), b = await account(); await seedTask(a.uid, 'same', day(), 'Academia'); await seedTask(b.uid, 'same', day(), 'Academia', { descriptionPlain: 'PRIVATE_B' });
+  state.model = { interpret: async () => [call] }; const text = 'Renomeia Academia para Treino';
+  const { updateEnvelope } = await import('../../packages/domain/src/gikaUpdate');
+  for (const user of [a, b]) { const r = await ask(user.token, { requestId: id, text }).expect(200); await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(await updateEnvelope(r.body.updateTask, { requestId: id, text })).expect(200); }
+  expect((await db.collection('commandReceipts').get()).size).toBe(2);
+  expect((await db.doc(`users/${a.uid}/activities/same`).get()).data()?.descriptionPlain).not.toBe('PRIVATE_B');
+  expect((await db.doc(`users/${b.uid}/activities/same`).get()).data()).toMatchObject({ title: 'Treino', descriptionPlain: 'PRIVATE_B', revision: 2 });
+ });
+ it('event with exact title does not become a rename descriptor', async () => {
+  const user = await account(); await seedTask(user.uid, 'event', day(), 'Academia', { kind: 'event', schedule: { type: 'event', allDay: false, startDate: day(), startTime: '10:00', endDate: day(), endTime: '11:00', timeZone: zone, disambiguation: 'reject' } });
+  state.model = { interpret: async () => [call] }; const r = await ask(user.token, { requestId: id, text: 'Renomeia Academia para Treino' }).expect(200);
+  expect(r.body.updateResolution.status).toBe('unsupported'); expect(r.body).not.toHaveProperty('updateTask'); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+ });
+ it('narrative or mixed destructive request never authorizes update', async () => {
+  for (const compound of [false, true]) { const user = await account(); await seedTask(user.uid, 'target', day(), 'Academia');
+   state.model = { interpret: async () => compound ? [{ ...call, args: { ...call.args, patch: { title: 'Treino e apaga Java' } } }] : [] };
+   const r = await ask(user.token, { requestId: id, text: compound ? 'Renomeia Academia para Treino e apaga Java' : 'Renomeia Academia para Treino' }).expect(200);
+   expect(r.body).not.toHaveProperty('updateTask'); expect(r.body).not.toHaveProperty('updatedTask'); expect((await db.doc(`users/${user.uid}/activities/target`).get()).data()?.revision).toBe(1);
+  }
+ });
+});

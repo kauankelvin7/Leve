@@ -199,3 +199,20 @@ M3-E37/E10/E11: `Adiciona Teste Gika M3 amanhã` → Gemini real gemini-3.5-flas
 | M4-E10 | model/policy/router/bridge sem persistência; sem secrets/live | architecture unit, diff/escopo/gates; provider fixo/mocks determinísticos |
 
 Interpretação nesta tarefa é fixture; escrita/status/receipts/persistência/Auth/Firestore são reais emulados. Smoke real M4 só depois de T1/T2/T3 revisados; M4-T2/T3 não iniciados aqui. Baselines M3 preservados.
+
+## M4-T2 — update_task título, sem Gemini live
+
+| Eval | Cenário | Prova |
+|---|---|---|
+| M4-E11 | Muda “Estudar Java” para “Revisar Java” / Renomeia academia para Treino | intenção explícita, selector/patch strict, único ID/revisão autenticados; gika-update unit/integração |
+| M4-E12 | homônimos/none/partial/série/evento; matching case/trim sem fuzzy | nenhuma escrita em resolução insegura; unit/integração/UI |
+| M4-E13 | no-op exato; mudança de case intencional; pending/completed/canceled | nenhuma revisão no no-op; status preservado no rename; integração/unit/UI |
+| M4-E14 | unknown field/ID/UID/revision/temporal/description/status; pedidos compostos; título literal com data | schema/intent nega ampliação; quotes preservam literal, nunca reagendamento; unit/integração |
+| M4-E15 | patch somente title; campos privados/temporal/reminders e opcionais ausentes | projeção transacional ActivityInput atual, sem defaults indevidos; unit/integração, E2E payload |
+| M4-E16 | auth ausente; outro UID; membership revogada; logout/troca upstream/read/token/ack | nenhum resultado ou dispatch fora da conta; integração/adapter/command-auth/UI |
+| M4-E17 | revision mudou; categoria arquivada; falha pre/postcommit | sem refresh/overwrite/ack falso; edição posterior preservada, retry definido; integração/UI |
+| M4-E18 | retry sequencial/concurrent/lost ack; functionCall repetida; payload divergente mesmo ID | mesmo receipt atômico/alvo/revisão+1, apenas um efeito; nova intenção UUID distinto; integração/adapter/UI |
+| M4-E19 | ack retido depois do commit; double submit; desktop light/mobile dark/Axe | updatedTask/card só depois de ack real; sem Undo novo; gika-update.spec.ts |
+| M4-E20 | model/router/policy/bridge sem persistência, provider ausente/falhando | guard arquitetural/allowlist e regressões read/fallback; nenhum Gemini live/segredo |
+
+Interpretação fixture nesta tarefa; Auth/command/receipt/Firestore reais emulados. Não prova interpretação Gemini live. Smoke M4 aguarda T1/T2/T3 revisados e autorização; T3 não iniciado. M4-T2 expõe somente título, demais campos ficam no editor convencional.

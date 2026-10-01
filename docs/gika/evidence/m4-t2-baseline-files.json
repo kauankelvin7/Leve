@@ -1,0 +1,135 @@
+{
+  "checkpoint": "02fe03e0ddf09d8f589c11a6cccc1c9c2df5bad5",
+  "files": [
+    {
+      "file": "package.json",
+      "identicalToCheckpoint": true,
+      "sha256": "27d5133e74fa14d2286482399ce94c0065918e2fc69fbe4d2925c22e3aab1d0f"
+    },
+    {
+      "file": "package-lock.json",
+      "identicalToCheckpoint": true,
+      "sha256": "bb1b3dea1f401f695f37758c1fb11a43a28327b1f8aa15f7f78c40bcbf1473cd"
+    },
+    {
+      "file": "tests/e2e/shell.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94"
+    },
+    {
+      "file": "tests/e2e-local/calendar-planner.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "3fed7382b68f7d7c0b70be095ed947d70a5e67d5fa96be8c8bde6aa56abeb4b4"
+    },
+    {
+      "file": "tests/e2e-local/persistent.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "542b3239f97a31e0b1d4503e77c2d2b54f0eed00d9ae3d89b98353a4c8d1857d"
+    },
+    {
+      "file": "tests/e2e-local/design.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "d4b3fc48764684768c4c9b768c72e46ec1c57f8f746e80108070a5af5130a5de"
+    },
+    {
+      "file": "tests/e2e-local/refinements.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "cd75929eda84df938d64baf34b2408bca15a6ef7efe96a326caf653146618630"
+    },
+    {
+      "file": "tests/e2e-local/session.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "3d3a83762dc97d72b2e433e2f9e6819683feb24b3b2061014824c6e462a2abcb"
+    },
+    {
+      "file": "apps/web/src/components/seasonal/seasonal-experience.css",
+      "identicalToCheckpoint": true,
+      "sha256": "87ff6ac19081534555296edcafe39c0d0fcb38d6b4b330dd47aaa259cd5d8c4e"
+    },
+    {
+      "file": "apps/web/src/features/activities/calendar/calendar-time-grid.css",
+      "identicalToCheckpoint": true,
+      "sha256": "977373c609f98d3c23776f7e7fb7c780f0ca21ac4e8fc40783f6a62d6391d13c"
+    },
+    {
+      "file": "apps/web/src/features/gika/gika.css",
+      "identicalToCheckpoint": true,
+      "sha256": "ddeb117f939624a08ac7caa326a1ea0221b59da7647263938fb2d015794c2627"
+    },
+    {
+      "file": "apps/web/src/styles/app.css",
+      "identicalToCheckpoint": true,
+      "sha256": "d799851b95e46e647072ebbb97af8403cb05fd09561e47d52d0cb9658c6ab298"
+    },
+    {
+      "file": "apps/web/src/styles/editorial.css",
+      "identicalToCheckpoint": true,
+      "sha256": "f7a24a96cbc83b1a3ed42d03013669998a6e5996eb32b67a34c3d592bc352164"
+    },
+    {
+      "file": "apps/web/src/styles/glass.css",
+      "identicalToCheckpoint": true,
+      "sha256": "4b716a59e87c334b631cd26bbc10d693958d335db19f2a5769979a1e9620e33a"
+    },
+    {
+      "file": "apps/web/src/styles/refinements.css",
+      "identicalToCheckpoint": true,
+      "sha256": "ae4dbe86bea7ae2a8a9cabf251906a979fd49cf94be76e553b4718529892935c"
+    },
+    {
+      "file": "apps/web/src/styles/theme-runtime.css",
+      "identicalToCheckpoint": true,
+      "sha256": "8a874c5a404691a4f1d45e3658692a2d187e12e85b517db0d9c1fbf892b247b8"
+    },
+    {
+      "file": "apps/web/src/features/demo/Demo.tsx",
+      "identicalToCheckpoint": true,
+      "sha256": "de734980ae17850e811309a230a297d729492af70c2b89ddd1a0b8e5a139880a"
+    },
+    {
+      "file": "apps/web/src/platform/api.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41"
+    },
+    {
+      "file": "apps/web/src/platform/outbox.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "d900074496db4b9894267d896a0c8f5809ea92ad47bec85dbb2e90ae441a1340"
+    },
+    {
+      "file": "firestore.rules",
+      "identicalToCheckpoint": true,
+      "sha256": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b"
+    },
+    {
+      "file": "apps/web/src/features/gika/GikaLauncher.tsx",
+      "identicalToCheckpoint": true,
+      "sha256": "936b287093b324ed549d16383b7bdcb8af8d25e5d059d774195057d267b3f42c"
+    },
+    {
+      "file": "apps/web/src/features/activities/ActiveTimerBar.tsx",
+      "identicalToCheckpoint": true,
+      "sha256": "f97d1e3b3b55fcba11d6a25511aadbb1c6a263940d66588c86fc7934ed95134d"
+    },
+    {
+      "file": "tests/e2e-local/gika.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "fb6c30a4d1a38306d1bc52998239d0017add5489922c894e3922f8a0e4e7c98b"
+    },
+    {
+      "file": "tests/e2e-local/gika-create.spec.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "49c655e1700ba043bbadb718fa41ecc5c0d014844d30626bf5eabeb607b0f30b"
+    },
+    {
+      "file": "apps/web/src/features/activities/ActivityDetail.tsx",
+      "identicalToCheckpoint": true,
+      "sha256": "022bcb99d687ef07a7d75733ece1084e720d8ea8033da91c851b763006072ce9"
+    },
+    {
+      "file": "server/commands/time.ts",
+      "identicalToCheckpoint": true,
+      "sha256": "b2ad075b7b0317e074a0646aa0f081d2b46a46d587967a41e2893417eac496ed"
+    }
+  ]
+}

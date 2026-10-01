@@ -44,12 +44,12 @@ export function useGikaConversation(adapter: GikaAdapter) {
     try {
       const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
-      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { reads: response.reads, createdTask: response.createdTask, completedTask: response.completedTask, completionResolution: response.completionResolution, ...(response.createdTask && originatingUid && response.createdTask.id === request.requestId ? { creationUndo: { uid: originatingUid, creationOperationId: request.requestId, entityId: response.createdTask.id, revision: 1 as const } } : {}) }) }].slice(-GIKA_MAX_MESSAGES));
+      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { reads: response.reads, createdTask: response.createdTask, completedTask: response.completedTask, completionResolution: response.completionResolution, updatedTask: response.updatedTask, updateResolution: response.updateResolution, ...(response.createdTask && originatingUid && response.createdTask.id === request.requestId ? { creationUndo: { uid: originatingUid, creationOperationId: request.requestId, entityId: response.createdTask.id, revision: 1 as const } } : {}) }) }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);
       pending.current = null;
       setStatus('idle');
     } catch (error) {
-      if (!active.signal.aborted && controller.current === active) { if (error instanceof ApiError && error.code === 'REVISION_CONFLICT') pending.current = null; setErrorCode(error instanceof ApiError ? error.code : undefined); setStatus('error'); }
+      if (!active.signal.aborted && controller.current === active) { if (error instanceof ApiError && (error.code === 'REVISION_CONFLICT' || error.code === 'GIKA_UPDATE_CONFLICT')) pending.current = null; setErrorCode(error instanceof ApiError ? error.code : undefined); setStatus('error'); }
     } finally {
       if (controller.current === active) controller.current = null;
     }

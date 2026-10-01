@@ -38,8 +38,9 @@ export function GikaMessage({ message, active = true }: { message: Message; acti
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
     <p>{message.text}</p>
     {message.createdTask && <section className="gika-result" role="group" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p>{message.creationUndo && <GikaCreationUndo context={message.creationUndo} active={active} />}</section>}
+    {message.updatedTask && <section className="gika-result" role="group" aria-label="Tarefa atualizada"><div className="gika-card-title"><Icon name="check" /><strong>{message.updatedTask.title}</strong></div><p>{civilLabel(message.updatedTask.dueDate)}</p></section>}
     {message.completedTask && <section className="gika-result" role="group" aria-label="Tarefa concluída"><div className="gika-card-title"><Icon name="check" /><strong>{message.completedTask.title}</strong></div><p>{civilLabel(message.completedTask.dueDate)}</p></section>}
-    {message.completionResolution?.candidates.length ? <section className="gika-result" role="group" aria-label="Tarefas encontradas"><ul>{message.completionResolution.candidates.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {item.dueDate ? civilLabel(item.dueDate) : 'Sem data'} · {item.status === 'completed' ? 'Concluída' : item.status === 'canceled' ? 'Cancelada' : 'Pendente'}</span></li>)}</ul></section> : null}
+    {(message.updateResolution ?? message.completionResolution)?.candidates.length ? <section className="gika-result" role="group" aria-label="Tarefas encontradas"><ul>{(message.updateResolution ?? message.completionResolution)!.candidates.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {item.dueDate ? civilLabel(item.dueDate) : 'Sem data'} · {item.status === 'completed' ? 'Concluída' : item.status === 'canceled' ? 'Cancelada' : 'Pendente'}</span></li>)}</ul></section> : null}
     {message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
     {message.reads?.map((read, index) => <GikaToolResult key={index} title={read.startDate === read.endDate ? `Agenda de ${civilLabel(read.startDate)}` : `Agenda de ${civilLabel(read.startDate)} a ${civilLabel(read.endDate)}`}>
       <p>Horários em {read.timeZone}.</p>
@@ -63,6 +64,7 @@ export function GikaLoading({ demo = true }: { demo?: boolean }) {
 }
 
 export function GikaError({ online, onRetry, code }: { online: boolean; onRetry: () => void; code?: string }) {
+  if (code === 'GIKA_UPDATE_CONFLICT') return <div className="gika-feedback is-error"><p>Essa tarefa mudou enquanto você estava editando. Faça o pedido novamente.</p></div>;
   if (code === 'REVISION_CONFLICT') return <div className="gika-feedback is-error"><p>Essa tarefa foi alterada. Confira sua agenda e envie um novo pedido.</p></div>;
   return <div className="gika-feedback is-error"><p>{code === 'GIKA_QUOTA' ? 'O limite de consultas foi atingido por agora. Sua agenda continua disponível.' : 'Não consegui responder agora. Tente novamente em alguns instantes.'}</p><button type="button" disabled={!online} onClick={onRetry}>Tentar novamente</button></div>;
 }

@@ -239,7 +239,9 @@ milestones:
         dependencies: [M3-SMOKE]
       - id: M4-T2
         title: "update_task"
-        status: todo
+        status: done
+        evidence: ["M4_T2_EXECPLAN.md/M4_T2_EVIDENCE.md/evidence/m4-t2-gates.json: PRE02fe03e limpo; título patch-only no activity.update convencional/transaction/revision/receipts, ADR015.262 unit/123 integração/lint/dois TS/build PASS;75 locais62/13 causas classificadas (11 históricas+2 deadlines reproduzidos02fe);10 E2E finais PASS,44 cenários Gika únicos com passagem;check12/1 contraste/audit13 baseline e26 arquivos idênticos. Sem live/T3, parada para revisão."]
+        acceptance_criteria: ["Apenas title, patch strict, selector civil/exato/bounded autenticado; ambiguidade/none/partial/no-op sem command; campos não mencionados preservados na transação convencional, original revision sem refresh, UID/receipt/retry/concurrency/lost ack seguros, UI structured só após ack; testes/evals/gates/evidências/checkpoint e parar antes de T3."]
         dependencies: [M4-T1]
       - id: M4-T3
         title: "reschedule_task"

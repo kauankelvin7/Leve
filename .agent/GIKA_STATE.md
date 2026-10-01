@@ -2,30 +2,32 @@
 
 ## Estado atual
 
-- Status global: `M4_T1_DONE_AWAITING_REVIEW`.
-- M0/M1/M2/M3 concluídos. M4-T1 done, M4 parcial/in_progress; M4-T2/T3 todo, não iniciados.
-- PRE `56b9308f8311fbd3e7e97a08530a366ede2b06c7`, branch feat/gika-integration, worktree limpo confirmado antes de editar. Fontes e evidências M3 relidas; M4_T1_EXECPLAN.md persistido antes do código.
-- complete_task strict textual selector, resolução autenticada bounded, activity.setStatus convencional/revisão/receipts existentes, auth/policy/ack real. ADR014; nenhuma persistência paralela, undo/reopen/edição/lote/recorrência.
-- Gates: lint/build/dois TS/218 unit/98 integração/38 E2E Gika PASS. Local69:58 PASS/11 FAIL subset baseline; check shell12 PASS/1 FAIL contraste demo; audit13 baseline. Evidências M4_T1_EVIDENCE.md/evidence/m4-t1-gates.json e23 arquivos idênticos à entrada. Timer/reflow passaram, pendências históricas preservadas.
-- Dados/conta fictícios demo-leve, Auth/Firestore emulados. Nenhuma credencial/live nesta tarefa, produção/billing/push/deploy/merge não usados. Modelo estável gemini-3.5-flash-lite/medium preservado.
+- Status global: `M4_T2_DONE_STOP_BEFORE_M4_T3`.
+- M0/M1/M2/M3 concluídos. M4-T1/T2 done, M4 parcial/in_progress; M4-T3 todo e não iniciado.
+- PRE `02fe03e0ddf09d8f589c11a6cccc1c9c2df5bad5`, branch feat/gika-integration, worktree limpo confirmado antes de editar. Fontes/evidências M3+T1 relidas; M4_T2_EXECPLAN.md persistido antes do código.
+- update_task strict title/date/patch.title; resolução autenticada bounded/exata de T1. activity.update convencional recebe patch mínimo com tag gikaUpdate; hidrata/valida ActivityInput atual dentro de cada tentativa transacional, preservando campos. Receipt/revisão/auth/ack real e ADR015; sem persistência paralela ou reschedule/novo undo.
+- Gates: lint/build/dois TS/262 unit/123 integração PASS.75 locais62 PASS/13 FAIL classificadas:11 causas históricas+2 intermitências de transporte acima de deadline original, reproduzidas em02fe/atual via sondas;10 E2E finais PASS e44 cenários Gika com passagem observada. check12/1 contraste demo; audit13 baseline. Evidências M4_T2_EVIDENCE.md/m4-t2-gates.json/m4-t2-ack-baseline.json e26 arquivos idênticos à entrada.
+- Dados/contas fictícios demo-leve, Auth/Firestore emulados. Nenhuma credencial/Gemini live/produção/billing/push/deploy/merge. Modelo gemini-3.5-flash-lite/medium preservado.
 
 ## Autorização atual
 
-Pedido mais recente autoriza exclusivamente M4-T1 e supersede parada histórica antes de M4. Não reutilizar segredo nem executar Gemini live. Revisão manual equivalente e humanizer-br local oficial; auditor auxiliar somente leitura.
+Pedido mais recente autorizou exclusivamente M4-T2 a partir de02fe03e. Concluída a capacidade de título; parar para revisão antes de M4-T3. Não reutilizar segredo nem executar Gemini live. Humanizer-br local oficial, processo manual equivalente; auditor auxiliar somente leitura.
 
 ## Próxima ação
 
-Revisar M4-T1 concluído e parar antes de M4-T2. Não iniciar T2 automaticamente. Smoke real M4 apenas após T1/T2/T3 revisados e nova autorização.
+Aguardar revisão de M4-T2 e nova autorização antes de iniciar M4-T3. Smoke real M4 somente depois de T1/T2/T3 revisados e autorização específica.
 
 ## Contratos preservados
 
-Gika → Model Adapter → Tool Router → Validation → Policy → commandBridge/sendCommand → contentCommand existente. Modelo nunca acessa persistência nem escolhe UID/IDs. RequestId software por intenção/UID, receipt atômico/replay com snapshot privado; nova intenção igual continua permitida. UI só confirma ack validado. Undo software por UID/operation/entity/revision1/createdAt original→activity.trash convencional/revision2/soft-delete30dias; sem Gemini/purge/force-delete. ADR012/013 preservadas, nenhuma decisão arquitetural nova no smoke.
+Gika → Model Adapter → Tool Router → Validation → Policy → commandBridge/sendCommand → contentCommand existente. Modelo nunca acessa persistência nem escolhe UID/IDs. RequestId software por intenção/UID, receipt atômico/replay com snapshot privado; nova intenção igual continua permitida. UI só confirma ack validado. Undo software por UID/operation/entity/revision1/createdAt original→activity.trash convencional/revision2/soft-delete30dias; sem Gemini/purge/force-delete. ADR012/013 preservadas, nenhuma decisão arquitetural nova no smoke M3.
 
 Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia default hoje civil ou explícito até366dias, resolução exata conservadora de todos estados/kinds, partial/ambígua impede mutação. activity.setStatus/expectedRevision/receipt existente, snapshot original/retry/alreadyApplied com ack real; no-op não persiste receipt. Conflito preserva edição e exige novo pedido. Sem reopen/undo genérico/timeEntry.stop; ADR014.
 
+Update_task: apenas title como patch; data/horário/status/reminders/recorrência intactos. Completed/canceled editáveis conforme fluxo convencional. Receipt mínimo conserva descriptor antigo+patch, replay atômico após nome mudar, ID software por intenção/UID. No-op sem command; conflito sem refresh, exige novo pedido. ADR015.
+
 ## Limites e pendências
 
-- Gates globais não integralmente verdes:12 falhas históricas Planner/harness, shell contraste/timing e audit13(9 moderate/4 high) com prova executável isolada T1/T2/T3. check M4-T1 falhou no contraste demo2,86..3,30:1;11 falhas locais são subset das12 anteriores. Nenhuma mudança de estilos/harness/dependências; apenas guard opcional Gika no writer existente, fluxo convencional preservado. Não mascarar baseline.
+- Gates globais não integralmente verdes:12 falhas históricas Planner/harness, shell contraste/timing e audit13(9 moderate/4 high). M4-T2:11 causas históricas mais2 intermitências de transporte acima da asserção original10s, comparadas a02fe por sondas10200ms e originais PASS nas duas versões;10 E2E finais PASS. check12/1 contraste demo2,48..3,14:1; passagem inicial13/0 não corrige baseline. Nenhuma mudança de estilos/harness/dependências; apenas guard opcional Gika no writer existente, fluxo convencional preservado. Não mascarar baseline.
 - Timer PREEXISTING_UI_TRANSFORM_MEASUREMENT_RACE comprovadofc30bf9/T3 (gap-2,234px), passou nos38 Gika desta execução; passagem não corrige a pendência. Offline/dock M1 foi regressão corrigida M2-S0, distinta do timer atual; não chamar essa regressão de baseline.
 - NETWORK / ENV_PROXY_NOT_ENABLED histórico: limitação Codex Remote; chamada externa exigiu proxy/egress herdado e NODE_USE_ENV_PROXY=1 exclusivamente no processo de smoke. Nenhum workaround no produto/TLS desabilitado.
 - Smoke live prova um cenário create_task; erros/ambiguidades extensos seguem evals determinísticos, não provas live adicionais. Sem teste em aparelho físico/certificado de release.
@@ -34,7 +36,7 @@ Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia 
 
 ## Checkpoint
 
-Último checkpoint de entrada `56b9308`; M3-SMOKE/fechamento M3 atômico `723d444295fafb08e7706b92a283bf3d1f2b0d0b`. M4-T1 concluído no commit atômico `c0de781413f00a00eeb3e498215f1f55db625ba7`, worktree limpo confirmado depois do commit. Este checkpoint documental posterior somente registra o SHA real, sem alteração funcional. M4-T2/T3 não iniciados; preservar histórico abaixo.
+Entrada desta tarefa02fe03e (checkpoint documental de M4-T1; atômico T1 c0de781413f00a00eeb3e498215f1f55db625ba7). M4-T2 aceitação concluída; commit atômico e confirmação de worktree limpo nesta tarefa, SHA real registrado no checkpoint documental posterior. M4-T3 permanece todo, sem live.
 
 ## Histórico
 
@@ -82,3 +84,5 @@ Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia 
 | 2026-10-01 | M3 | M3-SMOKE | PASS real HTTP200/create_task/receipt/persistência/UI/retry/undo; M3 done; parar antes de M4 | `723d444295fafb08e7706b92a283bf3d1f2b0d0b` |
 
 | 2026-10-01 | M4 parcial | M4-T1 | done: conclusão única bounded via activity.setStatus/revisão/receipts existentes;218 unit/98 integração/38 E2E Gika PASS,global58/11 baseline;sem live;parar antes de T2 | `c0de781413f00a00eeb3e498215f1f55db625ba7` |
+
+| 2026-10-01 | M4 parcial | M4-T2 | done: patch title-only via activity.update/receipt/revision existentes;262 unit/123 integração/10 E2E finais PASS,global62/13 causas comparadas02fe;sem live,parar antes de T3 | commit atômico desta tarefa, SHA no checkpoint posterior |

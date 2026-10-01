@@ -175,3 +175,87 @@ it('M4 pending technical retry recovers receipt if concurrent execution committe
   await expect(adapter(input,new AbortController().signal)).resolves.toMatchObject({completedTask:{id:'target',revision:5,result:'alreadyApplied'}});
   expect(fixture.request).toHaveBeenCalledTimes(2);expect(fixture.command).toHaveBeenCalledTimes(3);
 });
+
+const updateTask = { ...completeTask, patch: { title: 'Treino' } };
+const update = { text: 'Preparando a alteração…', simulated: false, reads: [], updateTask };
+describe('M4-T2 patch bridge and structured acknowledgement', () => {
+  it('uses only title patch, original revision and software identity; awaits real ack', async () => {
+    fixture.request.mockResolvedValue(update);
+    let resume!: (ack: unknown) => void;
+    fixture.command.mockImplementation(() => new Promise(resolve => { resume = resolve; }));
+    let settled = false;
+    const result = createApiAdapter()(input, new AbortController().signal).then(value => { settled = true; return value; });
+    await vi.waitFor(() => expect(resume).toBeTypeOf('function'));
+    const [command, options] = fixture.command.mock.calls[0]!;
+    expect(command).toMatchObject({ command: 'activity.update', operationId: input.requestId, entityId: 'target', expectedRevision: 3, payload: { title: 'Treino' } });
+    expect(options).toMatchObject({ expectedUid: 'account-a', queueOnNetworkError: false });
+    expect(settled).toBe(false); resume(completeAck(command));
+    await expect(result).resolves.toMatchObject({ text: 'Tarefa atualizada.', updatedTask: { id: 'target', title: 'Treino', revision: 4, result: 'applied' } });
+  });
+  it.each(['unchanged', 'ambiguous', 'not_found', 'partial', 'clarify', 'unsupported'])('observation %s does not dispatch', async status => {
+    fixture.request.mockResolvedValue({ ...response, updateResolution: { status, candidates: [] } });
+    await expect(createApiAdapter()(input, new AbortController().signal)).resolves.not.toHaveProperty('updatedTask');
+    expect(fixture.command).not.toHaveBeenCalled();
+  });
+  it.each([{ ...updateTask, uid: 'other' }, { ...updateTask, patch: { title: 'Treino', dueDate: '2026-10-02' } }, { ...updateTask, patch: { title: '' } }])('strict descriptor rejects forged fields %j', async value => {
+    fixture.request.mockResolvedValue({ ...update, updateTask: value });
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow(); expect(fixture.command).not.toHaveBeenCalled();
+  });
+  it('narrative or forged updatedTask never confirms a mutation', async () => {
+    fixture.request.mockResolvedValue({ ...response, text: 'Renomeei Academia.' });
+    await expect(createApiAdapter()(input, new AbortController().signal)).resolves.not.toHaveProperty('updatedTask');
+    fixture.request.mockResolvedValue({ ...response, updatedTask: { ...completeTask, result: 'applied' } });
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow(); expect(fixture.command).not.toHaveBeenCalled();
+  });
+  it.each([null, { uid: 'account-b' }])('logout/switch during resolution and acknowledgement rejects old result %j', async user => {
+    fixture.request.mockImplementation(async () => { fixture.user = user; return update; });
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'AUTH_REQUIRED' }); expect(fixture.command).not.toHaveBeenCalled();
+    fixture.user = { uid: 'account-a' }; fixture.request.mockResolvedValue(update);
+    fixture.command.mockImplementation(async c => { fixture.user = user; return completeAck(c); });
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+  });
+  it('command failure and mismatched acknowledgement do not confirm', async () => {
+    fixture.request.mockResolvedValue(update); fixture.command.mockRejectedValueOnce(new Error('precommit'));
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toThrow('precommit');
+    fixture.command.mockImplementation(async c => ({ ...completeAck(c), entityId: 'wrong' }));
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'GIKA_INVALID_RESPONSE' });
+  });
+  it('lost acknowledgement preserves exact patch/revision and independent adapters replay receipt', async () => {
+    const adapter = createApiAdapter(); fixture.request.mockResolvedValue(update);
+    fixture.command.mockRejectedValueOnce(new Error('lost response')).mockImplementation(async c => ({ ...completeAck(c), result: 'alreadyApplied' }));
+    await expect(adapter(input, new AbortController().signal)).rejects.toThrow();
+    await expect(adapter(input, new AbortController().signal)).resolves.toMatchObject({ updatedTask: { id: 'target', title: 'Treino', revision: 4, result: 'alreadyApplied' } });
+    expect(fixture.request).toHaveBeenCalledTimes(1); expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);
+    await createApiAdapter()(input, new AbortController().signal);
+    expect(fixture.command.mock.calls[2]![0]).toEqual(fixture.command.mock.calls[0]![0]);
+  });
+  it('concurrent adapters derive same envelope while a fresh intent derives another ID', async () => {
+    fixture.request.mockResolvedValue(update); fixture.command.mockImplementation(async c => completeAck(c));
+    await Promise.all([createApiAdapter()(input, new AbortController().signal), createApiAdapter()(input, new AbortController().signal)]);
+    expect(fixture.command.mock.calls[0]![0]).toEqual(fixture.command.mock.calls[1]![0]);
+    await createApiAdapter()({ ...input, requestId: crypto.randomUUID() }, new AbortController().signal);
+    expect(fixture.command.mock.calls[2]![0].operationId).not.toBe(input.requestId);
+  });
+  it('receipt mismatch is recovered once and is never falsely acknowledged', async () => {
+    const { ApiError } = await import('../../apps/web/src/platform/api');
+    fixture.request.mockResolvedValueOnce({ ...update, updateTask: { ...updateTask, revision: 4 } }).mockResolvedValueOnce(update);
+    fixture.command.mockRejectedValueOnce(new ApiError(409, 'OPERATION_MISMATCH', 'Mismatch')).mockImplementationOnce(async c => ({ ...completeAck(c), result: 'alreadyApplied' }));
+    await expect(createApiAdapter()(input, new AbortController().signal)).resolves.toMatchObject({ updatedTask: { revision: 4, result: 'alreadyApplied' } });
+    expect(fixture.request).toHaveBeenCalledTimes(2); expect(fixture.command).toHaveBeenCalledTimes(2);
+  });
+  it('revision conflict retains its category and never refreshes revision automatically', async () => {
+    const { ApiError } = await import('../../apps/web/src/platform/api');
+    fixture.request.mockResolvedValue(update); fixture.command.mockRejectedValue(new ApiError(409, 'REVISION_CONFLICT', 'Conflict'));
+    await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'GIKA_UPDATE_CONFLICT', message: 'Essa tarefa mudou enquanto você estava editando. Faça o pedido novamente.' });
+    expect(fixture.request).toHaveBeenCalledTimes(1); expect(fixture.command).toHaveBeenCalledTimes(1);
+  });
+  it('bridge rejects different command/patch or missing tag before dispatch', async () => {
+    const { updateEnvelope } = await import('../../packages/domain/src/gikaUpdate');
+    const { executeUpdate } = await import('../../apps/web/src/features/gika/updateBridge');
+    const envelope = await updateEnvelope(updateTask, input);
+    for (const command of [{ ...envelope, gikaUpdate: undefined }, { ...envelope, command: 'activity.trash' }, { ...envelope, payload: { title: 'Outro' } }]) {
+      await expect(executeUpdate(updateTask, command, 'account-a', new AbortController().signal)).rejects.toThrow();
+    }
+    expect(fixture.command).not.toHaveBeenCalled();
+  });
+});

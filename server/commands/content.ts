@@ -1,3 +1,4 @@
+import { updateTaskPatchSchema, updateDescriptorSchema, applyTitlePatch, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
 import { completionDescriptorSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
 import { z } from 'zod';
 import type { DecodedIdToken } from 'firebase-admin/auth';
@@ -36,18 +37,19 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   if (type === 'shoppingList' && action === 'createCycle') return createShoppingCycle(identity, command);
   if (action === 'purge') return purgeContent(identity, command, type, collection);
   const writingContent = ['create', 'update', 'save'].includes(action);
-  let input: Record<string, unknown>;
-  if (writingContent) {
+  let validatedInput: Record<string, unknown>;
+  if (command.gikaUpdate) validatedInput = updateTaskPatchSchema.parse(command.payload);
+  else if (writingContent) {
     const schemas = { activity: activityInputSchema, category: categoryInputSchema, note: noteInputSchema, shoppingList: shoppingListInputSchema, shoppingItem: shoppingItemInputSchema };
-    input = schemas[type as keyof typeof schemas].parse(command.payload);
-  } else if (action === 'setStatus') input = z.object({ status: z.enum(['pending', 'completed', 'canceled']) }).strict().parse(command.payload);
-  else if (action === 'setChecked') input = z.object({ listId: entityIdSchema, checked: z.boolean() }).strict().parse(command.payload);
-  else input = (type === 'shoppingItem' ? itemLocatorSchema : emptySchema).parse(command.payload);
+    validatedInput = schemas[type as keyof typeof schemas].parse(command.payload);
+  } else if (action === 'setStatus') validatedInput = z.object({ status: z.enum(['pending', 'completed', 'canceled']) }).strict().parse(command.payload);
+  else if (action === 'setChecked') validatedInput = z.object({ listId: entityIdSchema, checked: z.boolean() }).strict().parse(command.payload);
+  else validatedInput = (type === 'shoppingItem' ? itemLocatorSchema : emptySchema).parse(command.payload);
 
   // Minimal reconciliation snapshot in the EXISTING atomic receipt, never a second writer/outbox.
   let gika: { requestTextHash: string; task: CreateTaskDescriptor } | undefined;
   if (command.gika) {
-    const activity = activityInputSchema.parse(input);
+    const activity = activityInputSchema.parse(validatedInput);
     if (command.command !== 'activity.create' || activity.schedule.type !== 'task') throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
     const task = createTaskDescriptorSchema.parse({ title: activity.title, dueDate: activity.schedule.dueDate, dueTime: activity.schedule.dueTime, timeZone: activity.schedule.timeZone });
     if (command.entityId !== command.operationId || command.expectedRevision !== 0 || command.clientCreatedAt !== undefined || command.dependsOn !== undefined
@@ -55,7 +57,10 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     gika = { ...command.gika, task };
   }
 
-  if (command.gikaCompletion && (command.command !== 'activity.setStatus' || input.status !== 'completed'
+  if (command.gikaUpdate && (command.command !== 'activity.update'
+    || commandHash(command) !== commandHash({ ...command, payload: updateTaskPatchSchema.parse(validatedInput) }))) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
+
+  if (command.gikaCompletion && (command.command !== 'activity.setStatus' || validatedInput.status !== 'completed'
     || command.clientCreatedAt !== undefined || command.dependsOn !== undefined
     || commandHash(command) !== commandHash({ ...command, payload: { status: 'completed' } }))) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
 
@@ -66,7 +71,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   }
 
   const root = db.doc(`users/${identity.uid}`);
-  const parent = type === 'shoppingItem' ? root.collection('shoppingLists').doc(String(input.listId)) : null;
+  const parent = type === 'shoppingItem' ? root.collection('shoppingLists').doc(String(validatedInput.listId)) : null;
   const target = parent ? parent.collection('items').doc(command.entityId) : root.collection(collection).doc(command.entityId);
   const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
   const countsRef = root.collection('internal').doc('counts');
@@ -76,6 +81,8 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   const digest = commandHash(command);
 
   return db.runTransaction(async transaction => {
+    // Hydrate afresh per transactional attempt; never retain an input from a retried callback.
+    let input = validatedInput;
     const [profile, membership, controls, receipt, counts, minute, day, entity, creationReceipt] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, countsRef, minuteRef, dayRef, target, ...(command.gikaUndo ? [db.doc(`commandReceipts/${identity.uid}_${command.gikaUndo.creationOperationId}`)] : []));
     if (membership?.data()?.state !== 'active' || profile?.data()?.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     let creationServerTime: string | undefined;
@@ -97,6 +104,15 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    let updateTask: UpdateDescriptor | undefined;
+    if (command.gikaUpdate) {
+      if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa mudou enquanto você estava editando. Faça o pedido novamente.');
+      if (old.kind !== 'task' || old.schedule?.type !== 'task' || old.seriesId || old.occurrenceKey) throw new AppError(422, 'GIKA_POLICY', 'Essa tarefa não está disponível para edição. Confira sua agenda.');
+      const patch = updateTaskPatchSchema.parse(validatedInput);
+      if (old.title === patch.title) throw new AppError(422, 'GIKA_NO_CHANGE', 'O título dessa tarefa já é esse. Confira sua agenda.');
+      input = applyTitlePatch(old, patch);
+      updateTask = updateDescriptorSchema.parse({ id: command.entityId, title: old.title, dueDate: old.schedule.dueDate, timeZone: profile!.data()!.timeZone, revision: old.revision, patch });
+    }
     let completionTask: CompletionDescriptor | undefined;
     if (command.gikaCompletion) {
       if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa foi alterada. Confira sua agenda e envie um novo pedido.');
@@ -159,7 +175,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

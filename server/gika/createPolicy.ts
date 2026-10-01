@@ -12,7 +12,7 @@ export function resolveCreationIntent(text: string, context: ModelContext): Crea
   const verb = plain.match(prefix);
   const dates = [...plain.matchAll(datePattern)];
   if ((!verb && (/\?/.test(plain) || /\b(o que|quais|consultar|mostra|mostrar|ver minha|ver meu|pendencias)\b/.test(plain) || /^(?:tenho|existe|preciso|ver)\b/.test(plain)))
-    || (!verb && /\b(?:terminei|conclui|conclua|concluir|marca|marque|complete)\b/.test(plain))
+    || (!verb && /\b(?:terminei|conclui|conclua|concluir|marca|marque|complete|renomeia|renomeie|renomear|muda|mude|altera|altere)\b/.test(plain))
     || /^(?:nao|terminei|marca|marque|conclu|complete|edit|move|mova|reagend|exclu|apag|remov)/.test(plain)
     || /\b(?:diariamente|semanalmente|recorrente|repetir|todo dia|toda semana|todos os dias|todo[sa]? (?:segunda|terca|quarta|quinta|sexta|sabado|domingo|mes)|duas tarefas|dois itens|\d+ tarefas)\b/.test(plain)
     || /\be (?:adiciona|adicione|cria|crie)\b/.test(plain)) return { clarification: 'Posso adicionar uma tarefa simples por vez. Qual tarefa e data você quer usar?' };
@@ -50,10 +50,10 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
     if (!parsed.success) throw new GikaFault('GIKA_MALFORMED_CALL');
     return parsed.data;
   });
-  if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task') && tools.length !== 1) {
+  if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task') && tools.length !== 1) {
     const first = tools[0];
     // Schemas above normalize property order and reject unknown fields before collapsing repetition.
-    if ((first?.name !== 'create_task' && first?.name !== 'complete_task') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) throw new GikaFault('GIKA_POLICY');
+    if ((first?.name !== 'create_task' && first?.name !== 'complete_task' && first?.name !== 'update_task') || tools.some(tool => JSON.stringify(tool) !== JSON.stringify(first))) throw new GikaFault('GIKA_POLICY');
     return [first];
   }
   return tools;
