@@ -191,7 +191,7 @@ milestones:
   M3:
     name: "Primeira mutação segura"
     status: in_progress
-    evidence: "M3-T1 e M3-T2 concluídos; M3_T2_EVIDENCE.md. Milestone parcial; M3-T3 todo, não iniciado e depende de revisão/autorização."
+    evidence: "M3-T1 e M3-T2 concluídos; M3_T2_EVIDENCE.md. Milestone parcial; M3-T3 concluído; M3-SMOKE bloqueado até revisão, sem live/M4."
     tasks:
       - id: M3-T1
         title: "create_task via command layer existente"
@@ -208,10 +208,25 @@ milestones:
         dependencies: [M3-T1]
         owner: domain
       - id: M3-T3
-        title: "Undo de criação quando suportado pelo domínio"
-        status: todo
+        title: "Undo seguro da criação Gika pelo comando existente"
+        status: done
         dependencies: [M3-T2]
         owner: domain
+        acceptance_criteria:
+          - "Ação UI determinística, UID original/operation/entity exatos/revisão1/createdAt original; nenhuma chamada Gemini nem target por conteúdo."
+          - "activity.trash soft-delete30dias existente; validação/auth/policy/receipt original transacionais, sem purge/revision refresh/writer paralelo."
+          - "Receipts existentes tornam replay/concurrency/lost response seguros; edições/remoção/reuso ID posteriores claros sem perda de dados."
+          - "UI pending/success/error/conflict somente após ack; auth/logout/conta/falhas/cancelamento cobertos, humanizer/a11y/mobile/dark."
+          - "Testes/evals/gates/evidências/checkpoint limpo; parar antes do smoke live/M4, M3 não done."
+        evidence: ["M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md; ADR013; lint/dois TS/build/194 unit/76 integração/6 E2E finais PASS;63 amplos50/13 baseline incluindo timer comprovadofc30bf9;check12/1 e audit13 baseline;checkpoint atômico/clean."]
+
+      - id: M3-SMOKE
+        title: "Smoke real da cadeia completa create_task após revisão T3"
+        status: blocked
+        dependencies: [M3-T3]
+        owner: qa
+        evidence: ["Aguardar revisão/autorização e credencial atual; Gemini live proibido nesta tarefa."]
+        acceptance_criteria: ["Após revisão T3, smoke real linguagem natural/create_task/persistência/resultado com credencial atual autorizada, Free Tier/R$0; gates e evidência sanitizada antes de fechar M3."]
 
   M4:
     name: "Edição controlada"
@@ -219,7 +234,7 @@ milestones:
       - id: M4-T1
         title: "complete_task"
         status: todo
-        dependencies: [M3-T3]
+        dependencies: [M3-SMOKE]
       - id: M4-T2
         title: "update_task"
         status: todo

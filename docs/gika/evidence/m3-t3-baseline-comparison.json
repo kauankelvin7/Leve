@@ -1,0 +1,46 @@
+{
+  "checkpoint": "fc30bf9c51a7978cf2cb22280ddaa67d59b48f6d",
+  "authenticatedSuite": {
+    "executed": 63,
+    "passed": 50,
+    "failed": 13,
+    "gikaPassed": 31,
+    "gikaFailed": 1,
+    "newUndoPassed": 5,
+    "conventionalBaselineFailures": [
+      "planner cria, move, redimensiona e preserva o fluxo de comando",
+      "planner pede escopo e cancelar mantém a ocorrência intacta",
+      "escopos recorrentes separam ocorrência e futuro corretamente",
+      "paletas acompanham navegação e calendário funciona em desktop e celular",
+      "cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+      "login, ativação e atividade sobrevivem ao reload",
+      "compromisso de dia inteiro salva tempo e pode ser concluído",
+      "conflito de nota entre abas preserva as duas versões",
+      "teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+      "exportação pessoal volta pela importação sem substituir os dados atuais",
+      "tutorial, cores persistentes, unidade condicional e lixeira móvel",
+      "cronômetro continua contando fora do detalhe da atividade"
+    ],
+    "additionalFailure": "gika.spec.ts botão respeita cronômetro real em desktop e mobile",
+    "additionalFailureClassification": "PREEXISTING_UI_TRANSFORM_MEASUREMENT_RACE; proved on original checkpoint/current, m3-t3-timer-baseline.json",
+    "finalFocalPassed": 6,
+    "noSkipped": true
+  },
+  "shell": {
+    "passed": 12,
+    "failed": 1,
+    "classification": "PREEXISTING demo contrast/timing; unchanged source/styles/harness; isolated baseline proof M3_T1/T2_EVIDENCE.md",
+    "finalRatios": [
+      3.25,
+      3.62
+    ]
+  },
+  "productionAudit": {
+    "vulnerabilities": 13,
+    "moderate": 9,
+    "high": 4,
+    "classification": "PREEXISTING dependency graph; identical package/lockfile to checkpoint, isolated identical report documented M3_T2_EVIDENCE.md"
+  },
+  "sourceProof": "m3-t3-baseline-files.json (23 unchanged files)",
+  "noSecretsRecorded": true
+}

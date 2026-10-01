@@ -3,44 +3,37 @@
 ## Estado atual
 
 - Status global: `PAUSED_FOR_REVIEW`
-- Milestones concluídos: `M0`, `M1`, `M2`; `M3` parcial, não done.
-- Tarefas M3: `M3-T1` e `M3-T2` done; `M3-T3` todo e não iniciado.
-- Tarefa ativa: nenhuma; parar após M3-T2, aguardando revisão/autorização para T3.
-- Branch: `feat/gika-integration`; repositório `/workspace/Leve`, clone HTTPS https://github.com/kauankelvin7/Leve.git.
-- Base M0: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`.
-- PRE M3-T2: `a9aff2f2009c36c23cc70ae380b642e12bc697a8`, SHA/branch/worktree limpo validados antes de qualquer alteração.
-- Último commit de tarefa Gika verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`, M3-T2 atômico; worktree limpo após commit, antes deste checkpoint documental.
-- Provas: docs/gika/M3_T2_EXECPLAN.md, M3_T2_EVIDENCE.md e evidence/m3-t2-baseline-*.json. ADR-GIKA-012 documenta extensão mínima dos receipts existentes; modelo não persiste, bridge único sendCommand/activity.create.
-- Gates finais: lint/dois typechecks/build/184 unit em35 arquivos e64 integração em4 arquivos PASS.27 E2E Gika PASS na suíte completa;13 criação+read/fallback novamente PASS após última alteração e reinício API.5 Planner visual/4 convencionais/offline/7 sazonal PASS.58 locais46 PASS/12 FAIL baseline;check shell12 PASS/1 FAIL baseline;production audit13 vulnerabilidades baseline. Nenhum caso Gika falhou na execução completa/final.
+- Milestones concluídos: M0/M1/M2; M3 parcial, não done.
+- M3-T1/T2/T3 done; nenhuma tarefa ativa, M3-SMOKE blocked até revisão/autorização e credencial atual. M4 não iniciado.
+- Branch feat/gika-integration; repositório /workspace/Leve, clone HTTPS https://github.com/kauankelvin7/Leve.git.
+- PRE M3-T3: fc30bf9c51a7978cf2cb22280ddaa67d59b48f6d, SHA/branch/worktree limpo validados antes de alterar. Última tarefa T3 concluída neste commit atômico; SHA real no checkpoint documental posterior. T2 histórico56800b2f933e6d6ee0043856698bd6473eb13e37; entradafc30bf9.
+- Provas T3: M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md, ADR013, evals e evidence/m3-t3-baseline-files.json. Lint/dois TS/build/194 unit e76 integração PASS. E2E completa63:50 PASS/13 FAIL (12 baseline anteriores + timer/dock preexistente demonstrado emfc30bf9);31 Gika PASS/1 FAIL timer. Focal final6/6 PASS (5 undo +timer).5 Planner visual/4 convencionais/offline/7 sazonal PASS. Check final build/dois TS/194 unit PASS, shell12/1 FAIL baseline; audit13 vuln baseline.
 
-## Próxima ação
+## Próxima ação autorizada
 
-1. Revisar M3-T2, evidências, ADR012 e checkpoint; conferir git status/SHA ao retomar.
-2. Não iniciar M3-T3 automaticamente: autorização atual termina em M3-T2. Sem undo completo/complete/update/reschedule/delete/batch/recorrência por IA/M4+.
-3. Próxima tarefa técnica é M3-T3, apenas depois de revisão/autorização explícita. Ler humanizer-br local oficial antes de textos de UI.
-4. Não reutilizar credencial temporária M2. Smoke Gemini live de criação não executado sem credencial atual autorizada; fixtures/emuladores comprovam comandos/persistência/idempotência, não interpretação live.
+1. Revisar M3-T3/ADR013/evidências e checkpoint; validar git status/SHA ao retomar.
+2. Parar após M3-T3 para revisão. Não executar Gemini live/M3-SMOKE nem iniciar M4. Smoke futuro deve cobrir linguagem natural → create_task → persistência → resultado e só então fechar M3.
+3. Não reutilizar chave temporária M2, segredo ausente/sem nova autorização. humanizer-br oficial local é fonte de UI.
 
-## Contrato de M3-T2
+## Contrato T3
 
-UUID requestId criado pela UI também é operationId/entityId dentro do UID autenticado. Retry mantém UUID; nova intenção com conteúdo igual recebe UUID novo. Modelo não recebe/escolhe IDs/hash/receipt. Sem Map definitivo/segunda infraestrutura. Transação contentCommand existente grava tarefa+receipt+contadores atomicamente, devolve resultado original/alreadyApplied ou rejeita hash diferente.
+Gika creation ack → contexto software UID/operation/entity real/revision1 → botão determinístico → creationUndoBridge/sendCommand/activity.trash existente. ID undo UUIDv8 SHA256(namespace/UID/creationOperationId) independente de conteúdo/modelo. gikaUndo metadado strict, canonicalização e receipt de criação Gika validado na MESMA transação contentCommand, auth/membership/perfil/UID repetidos inclusive replay. Soft-delete30dias, revision2 e receipt existente; nenhuma coleção/endpoint/writer/outbox nova, purge/Gemini/tool undo ausentes.
 
-Metadado opcional strict gika.requestTextHash vincula pedido ao ID, não dedup por conteúdo; receipt guarda apenas hash e snapshot task validado. Sem chat original. Envelope Gika canônico, expectedRevision0, sem timestamp volátil/dependsOn/outbox; comportamento convencional preservado. Retry recupera snapshot original sem modelo/memória e obtém ack real novamente. Auth/ownership mantidos; serviceControls restrito permite somente reconciliação concluída como command layer, novos pedidos bloqueados antes do modelo. Calls create_task iguais colapsadas após strict; diferentes/mistas continuam negadas.
+Nunca renovar revisão para vencer conflito. Edição posterior causa REVISION_CONFLICT; já removida sem receipt undo dá GIKA_UNDO_ALREADY_REMOVED; replay do undo retorna ack histórico/alreadyApplied sem outro efeito, inclusive depois de restore convencional. createdAt deve igualar serverTime da criação para proteger ID reutilizado depois de purge convencional (ABA). UI só confirma ack validado e descarta saída ao mudar UID/cancelar; foco/live region revisados. Guard local evita double tap, transação dá garantia definitiva concorrente.
 
-## Bloqueios e limites
+## Limites/bloqueios
 
-- Nenhum gate focal M3-T2 bloqueado; tarefa concluída. M3 permanece incompleto por T3/undo pendente. Sem credencial atual autorizada para smoke live M3.
-- Regressão global não verde: mesmos12 casos baseline T1 (contraste completed e2 frequência Planner;9 harness design/persistent/refinements/session reproduzidos em92cc9c7). Arquivos convencionais/estilos/harness idênticos ao PREa9aff2f; prova em M3_T1_EVIDENCE.md e m3-t2-baseline-files.json. Offline foi regressão do dock M1 corrigida em M2-S0; passou de novo, não rotular como baseline/intermitência atual.
-- Check shell:12 PASS/1 FAIL de contraste/timing demo, também FAIL no build/preview isoladoa9aff2f; rota que falha varia. Não apresentar como PASS.
-- npm audit produção:13 vulnerabilidades(9 moderate/4 high), mesmo relatório em a9aff2f, package/lockfile inalterados. Não corrigir dependências fora do escopo nem usar audit fix/force; requer revisão própria.
-- Receipts não têm TTL observado e são removidos ao excluir conta. Não apagar receipts para liberar retry. Snapshot é histórico, não estado atual de tarefa alterada depois; nenhuma execução de undo. Receipts T1 sem vínculo original não backfilled. Conversa/UI não é restaurada após reload; retransmissão técnica precisa conservar requestId, nunca inferi-lo do conteúdo. Downgrade T1 não é seguro para operações T2 em trânsito.
-- Cancelar depois de dispatch não garante rollback; perda de resposta exige replay com o mesmo ID. Se nada foi persistido, retry usa contexto civil vigente. Gika continua sem outbox, agenda convencional conserva offline/outbox.
-- NETWORK/ENV_PROXY_NOT_ENABLED histórico: configuração Codex Remote, não adapter/modelo. Chamadas externas exigiram proxy/egress no smoke M2; nenhum workaround de produção.
-- 05-capacidade-e-revisao.md ausente; bundles baseline >500kB; handlers de série divergem em controles; useUserCollection mascara partial; batch genérico não existe e microphone=() bloqueia voz. Nenhum destes pontos expandido nesta tarefa.
-- Superpowers indisponível, processo manual equivalente; humanizer-br oficial aplicada; nenhum subagente/dependência/coleção/Rules/chat persistido novo. Modelo gemini-3.5-flash-lite/medium e Free Tier/R$0 mantidos. Sem chave fictícia, segredo persistido, billing, fallback pago, push/deploy/merge.
+- M3-SMOKE bloqueado deliberadamente até revisão/autorização; não declarar interpretação live create_task comprovada. T3 usa fixtures de modelo e Auth/Firestore/API emuladas reais. M3 permanece aberto após T3.
+- Reload não restaura conversa/card/contexto; não persistir chat para oferecer undo após reload. Transporte com envelope original pode reconciliar receipt entre processos. Cancelar após dispatch não implica rollback. Não apagar receipts para liberar retry; conta removida apaga receipts segundo semântica existente, sem TTL novo.
+- Receipts antigos T1 não vinculados não recebem backfill/undo. Gika online/queuefalse; agenda convencional mantém offline/outbox. Modelo gemini-3.5-flash-lite/medium e Free Tier/R$0 preservados, sem billing/fallback pago.
+- Regressão global historicamente12 FAIL baseline locais (3 Planner:contraste completed e2 frequência;9 harness legados) e check shell12/1 contraste/timing demo, com prova executável isolada T1/T2 e23 arquivos byte-idênticos ao PRE T3. Não mascarar como PASS. Audit13 vuln(9 moderate/4 high) baseline, package/lockfile inalterados. Nesta sessão50/13 inclui adicionalmente a intermitência preexistente do timer: source e prova controlada emfc30bf9/T3 idênticas (gap-2,234px), documento m3-t3-timer-baseline.json. Não é regressão T3; é pendência de UI anterior, exige escopo próprio de correção. Não apresentar suíte integralmente verde.
+- Offline/dock M1 era regressão corrigida M2-S0; gate convencional offline passou novamente T3. Não chamar essa regressão de baseline ou intermitência atual. Novo undo sem intermitência observada; dock/timer preexistente teve intermitência confirmada, distinta do offline.
+- NETWORK/ENV_PROXY_NOT_ENABLED histórico é configuração Codex Remote; chamadas externas no M2 exigiram proxy/egress habilitado. Nenhum workaround no produto. Warning chunks>500kB preexistente/MetadataLookupWarning403 emuladores sem impedir testes.
+- 05-capacidade-e-revisao.md ausente; Superpowers indisponível/processo manual equivalente. Sem dependência/Rules/chat persistido/subagente/segredo/billing/push/deploy/merge. Alterações fora do escopo convencional não autorizadas.
 
-## Checkpoint de retomada
+## Checkpoint
 
-Checkpoint documental registra o commit atômico M3-T2 `56800b2f933e6d6ee0043856698bd6473eb13e37`, com worktree limpo verificado após o commit. Conferir git log/diff: checkpoint posterior só contém documentação. Não há SHA auto-referente possível em arquivo versionado. T2 autorizado/concluído a partir de a9aff2f; parar antes de T3.
+fc30bf9 é checkpoint de entrada T3. Tarefa T3 concluída e gates/evidências revisados para commit atômico. SHA real será registrado em checkpoint documental posterior após confirmar worktree limpo, sem SHA auto-referente em arquivo versionado.
 
 ## Histórico
 
@@ -82,3 +75,5 @@ Checkpoint documental registra o commit atômico M3-T2 `56800b2f933e6d6ee0043856
 | 2026-10-01 | M3 parcial | M3-T1 | done: create_task pelo comando existente,175 unit/53 integração/25 E2E Gika PASS; baseline global classificado; parada para revisão antes de T2/T3 | `3fa05f0d447724e2ad41ad95e1482e3941c3a8de` |
 
 | 2026-10-01 | M3 | M3-T2 | done: idempotência/recuperação via receipts atômicos; gates focais PASS, falhas baseline registradas; parar antes de T3 | `56800b2f933e6d6ee0043856698bd6473eb13e37` |
+
+| 2026-10-01 | M3 parcial | M3-T3 | done: undo pelo activity.trash/receipts existente, auth/revisão/createdAt/ABA,194 unit/76 integração e6 focal PASS; global50/13 baseline demonstrado; parar antes de M3-SMOKE/M4 | commit atômico T3 neste checkpoint |

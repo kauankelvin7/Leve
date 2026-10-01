@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { firebaseAuth } from '../../platform/firebase';
 import { ApiError } from '../../platform/api';
 import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, gikaResponseSchema, type GikaAdapter, type GikaMessage, type GikaRequest } from './conversation';
 
@@ -36,13 +37,14 @@ export function useGikaConversation(adapter: GikaAdapter) {
       setMessages(current => [...current, { id: request.requestId, role: 'user' as const, text: trimmed }].slice(-GIKA_MAX_MESSAGES));
     }
     const request = pending.current;
+    const originatingUid = firebaseAuth?.currentUser?.uid;
     const active = new AbortController();
     controller.current = active;
     setStatus('loading'); setErrorCode(undefined);
     try {
       const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
-      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { reads: response.reads, createdTask: response.createdTask }) }].slice(-GIKA_MAX_MESSAGES));
+      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { reads: response.reads, createdTask: response.createdTask, ...(response.createdTask && originatingUid && response.createdTask.id === request.requestId ? { creationUndo: { uid: originatingUid, creationOperationId: request.requestId, entityId: response.createdTask.id, revision: 1 as const } } : {}) }) }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);
       pending.current = null;
       setStatus('idle');

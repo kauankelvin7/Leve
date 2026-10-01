@@ -10,6 +10,7 @@ vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ in
 } }) }));
 import { app } from '../../server/app';
 import { gikaInterpretationSchema, taskActivityInput } from '../../packages/domain/src/gika';
+import { creationUndoEnvelope } from '../../packages/domain/src/gikaUndo';
 import { commandEnvelopeSchema } from '../../packages/domain/src/identity';
 const id = '3dad14e9-a25a-48a3-a5ab-d05d277c3991';
 const zone = 'America/Sao_Paulo';
@@ -69,7 +70,7 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
-  it.each([{ name: 'create_task', args: { dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null, owner: 'someone-else' } }, { name: 'complete_task', args: {} }])('malformed/unknown tool never writes %j', async call => {
+  it.each([{ name: 'create_task', args: { dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null, owner: 'someone-else' } }, { name: 'complete_task', args: {} }, { name: 'undo_create_task', args: { entityId: id } }])('malformed/unknown tool never writes %j', async call => {
     const user = await account(); state.model = { interpret: async () => [call] };
     await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(422);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
@@ -303,5 +304,115 @@ describe('M3-T2 E11 existing atomic command receipts across retries/processes', 
     const user = await account(); const command = await intent(user);
     for (const modified of [{ ...command, gika: { ...command.gika, owner: 'other' } }, { ...command, entityId: 'other' }, { ...command, command: 'activity.update' }, { ...command, clientCreatedAt: new Date().toISOString() }, { ...command, payload: { ...(command.payload as object), owner: 'other' } }, { ...command, payload: { ...(command.payload as object), title: ' Academia ' } }]) await dispatch(user, modified).expect(422);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+});
+
+describe('M3-T3 creation-specific undo through existing activity.trash/receipts', () => {
+  async function created(user: { uid: string; token: string }, operationId = crypto.randomUUID()) {
+    const task = { title: 'Academia duplicada', dueDate: '2026-10-02', dueTime: null, timeZone: zone };
+    const command = commandEnvelopeSchema.parse({ command: 'activity.create', operationId, entityId: operationId, expectedRevision: 0, payload: taskActivityInput(task), gika: { requestTextHash: 'a'.repeat(64) } });
+    await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command).expect(200);
+    return { uid: user.uid, creationOperationId: operationId, entityId: operationId, revision: 1 as const };
+  }
+  const dispatch = (token: string, command: object) => request(app).post('/api/commands').set('Authorization', `Bearer ${token}`).send(command);
+  it('exact ID only, identical title/date remain active; soft-delete is conventional and restorable', async () => {
+    const user = await account(); const original = await created(user); const other = await created(user);
+    const undo = await creationUndoEnvelope(original);
+    const ack = await dispatch(user.token, undo).expect(200);
+    expect(ack.body).toMatchObject({ entityId: original.entityId, revision: 2, result: 'applied' });
+    const deleted = (await db.doc(`users/${user.uid}/activities/${original.entityId}`).get()).data()!;
+    expect(deleted.deletedAt).toBeTruthy(); expect(Date.parse(deleted.purgeAfter) - Date.parse(deleted.deletedAt)).toBeCloseTo(30 * 86400_000, -3);
+    expect((await db.doc(`users/${user.uid}/activities/${other.entityId}`).get()).data()?.deletedAt).toBeNull();
+    expect((await db.doc(`users/${user.uid}/internal/counts`).get()).data()?.activities).toBe(2);
+    expect(state.inputs).toHaveLength(0);
+    await dispatch(user.token, { command: 'activity.restore', operationId: crypto.randomUUID(), entityId: original.entityId, expectedRevision: 2, payload: {} }).expect(200);
+    // A historical undo replay must never undo a subsequent conventional restoration.
+    await dispatch(user.token, undo).expect(200).then(result => expect(result.body.result).toBe('alreadyApplied'));
+    expect((await db.doc(`users/${user.uid}/activities/${original.entityId}`).get()).data()).toMatchObject({ deletedAt: null, revision: 3 });
+  });
+  it('double tap, concurrent commands and response lost after commit reuse one atomic receipt/effect', async () => {
+    const user = await account(); const context = await created(user); const undo = await creationUndoEnvelope(context);
+    const replies = await Promise.all([dispatch(user.token, undo), dispatch(user.token, undo)]);
+    expect(replies.map(reply => reply.status)).toEqual([200, 200]); expect(replies.map(reply => reply.body.result).sort()).toEqual(['alreadyApplied', 'applied']);
+    const lostAck = replies.find(reply => reply.body.result === 'applied')!.body;
+    const retry = await dispatch(user.token, await creationUndoEnvelope({ ...context })).expect(200);
+    expect(retry.body).toEqual({ ...lostAck, result: 'alreadyApplied' });
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(2);
+    expect((await db.collection('commandReceipts').get()).size).toBe(2);
+    expect((await db.doc(`users/${user.uid}`).get()).data()?.dataVersion).toBe(3);
+    expect(state.inputs).toHaveLength(0);
+  });
+  it('later edit conflicts instead of deleting user work; no undo receipt or additional write', async () => {
+    const user = await account(); const context = await created(user);
+    await dispatch(user.token, { command: 'activity.update', operationId: crypto.randomUUID(), entityId: context.entityId, expectedRevision: 1, payload: taskActivityInput({ title: 'Edição posterior', dueDate: '2026-10-03', dueTime: null, timeZone: zone }) }).expect(200);
+    const before = (await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data();
+    const undo = await creationUndoEnvelope(context); const failure = await dispatch(user.token, undo).expect(409);
+    expect(failure.body.code).toBe('REVISION_CONFLICT'); expect(failure.body).not.toHaveProperty('details');
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()).toEqual(before);
+    expect((await db.doc(`commandReceipts/${user.uid}_${undo.operationId}`).get()).exists).toBe(false);
+  });
+  it('old undo cannot remove a different creation after conventional purge/reuse of exact ID (ABA)', async () => {
+    const user = await account(); const context = await created(user); const oldUndo = await creationUndoEnvelope(context);
+    await dispatch(user.token, { command: 'activity.trash', operationId: crypto.randomUUID(), entityId: context.entityId, expectedRevision: 1, payload: {} }).expect(200);
+    await dispatch(user.token, { command: 'activity.purge', operationId: crypto.randomUUID(), entityId: context.entityId, expectedRevision: 2, payload: {} }).expect(200);
+    await dispatch(user.token, { command: 'activity.create', operationId: crypto.randomUUID(), entityId: context.entityId, expectedRevision: 0, payload: taskActivityInput({ title: 'Nova criação independente', dueDate: null, dueTime: null, timeZone: zone }) }).expect(200);
+    const before = (await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data();
+    const conflict = await dispatch(user.token, oldUndo).expect(409); expect(conflict.body.code).toBe('REVISION_CONFLICT');
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()).toEqual(before);
+    expect((await db.doc(`commandReceipts/${user.uid}_${oldUndo.operationId}`).get()).exists).toBe(false);
+  });
+  it('already removed by conventional action is explicit, without another removal', async () => {
+    const user = await account(); const context = await created(user);
+    await dispatch(user.token, { command: 'activity.trash', operationId: crypto.randomUUID(), entityId: context.entityId, expectedRevision: 1, payload: {} }).expect(200);
+    const response = await dispatch(user.token, await creationUndoEnvelope(context)).expect(409);
+    expect(response.body.code).toBe('GIKA_UNDO_ALREADY_REMOVED');
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(2);
+  });
+  it('foreign UID cannot undo even when both accounts have the same task ID; forged target or missing creation denied', async () => {
+    const user = await account(); const other = await account(); const context = await created(user); await created(other, context.entityId);
+    const undo = await creationUndoEnvelope(context); await dispatch(other.token, undo).expect(403);
+    const forged = { ...undo, entityId: crypto.randomUUID() }; await dispatch(user.token, forged).expect(422);
+    const absent = await creationUndoEnvelope({ ...context, creationOperationId: id, entityId: id }); await dispatch(user.token, absent).expect(403);
+    const canonicalOther = await creationUndoEnvelope({ ...context, uid: other.uid }); await dispatch(other.token, canonicalOther).expect(200);
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.deletedAt).toBeNull();
+  });
+  it('arbitrary undo ID, unknown metadata/payload, other command/revision and conventional source are rejected', async () => {
+    const user = await account(); const context = await created(user); const undo = await creationUndoEnvelope(context);
+    for (const invalid of [{ ...undo, operationId: crypto.randomUUID() }, { ...undo, payload: { title: 'changed' } }, { ...undo, expectedRevision: 2 }, { ...undo, command: 'activity.purge' }, { ...undo, gikaUndo: { ...undo.gikaUndo, extra: true } }]) await dispatch(user.token, invalid).expect(422);
+    const conventionalId = crypto.randomUUID();
+    await dispatch(user.token, { command: 'activity.create', operationId: conventionalId, entityId: conventionalId, expectedRevision: 0, payload: taskActivityInput({ title: 'Convencional', dueDate: null, dueTime: null, timeZone: zone }) }).expect(200);
+    await dispatch(user.token, await creationUndoEnvelope({ ...context, creationOperationId: conventionalId, entityId: conventionalId })).expect(403);
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(1);
+  });
+  it('unauthenticated/logout, revoked account/membership cannot apply or replay undo', async () => {
+    const user = await account(); const context = await created(user); const undo = await creationUndoEnvelope(context);
+    await request(app).post('/api/commands').send(undo).expect(401);
+    await dispatch(user.token, undo).expect(200);
+    await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' }); await dispatch(user.token, undo).expect(403);
+    await db.doc(`memberships/${user.uid}`).update({ state: 'active' }); await db.doc(`users/${user.uid}`).update({ accountState: 'deleting' }); await dispatch(user.token, undo).expect(403);
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(2);
+  });
+  it.each(['before', 'after'])('injected transaction fault %s commit: same-ID retry has exactly one undo effect', async phase => {
+    const user = await account(); const context = await created(user); const undo = await creationUndoEnvelope(context);
+    const native = db.runTransaction.bind(db);
+    const fault = vi.spyOn(db, 'runTransaction');
+    if (phase === 'before') fault.mockRejectedValueOnce(new Error('Injected precommit failure'));
+    else fault.mockImplementationOnce(async callback => { await native(callback); throw new Error('Injected postcommit lost acknowledgement'); });
+    try { await dispatch(user.token, undo).expect(503); } finally { fault.mockRestore(); }
+    expect((await db.doc(`commandReceipts/${user.uid}_${undo.operationId}`).get()).exists).toBe(phase === 'after');
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(phase === 'after' ? 2 : 1);
+    const retry = await dispatch(user.token, undo).expect(200);
+    expect(retry.body.result).toBe(phase === 'after' ? 'alreadyApplied' : 'applied');
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(2);
+    expect((await db.collection('commandReceipts').get()).size).toBe(2);
+  });
+  it('precommit failure permits same-ID retry; after commit restriction permits receipt recovery without second effect', async () => {
+    const user = await account(); const context = await created(user); const undo = await creationUndoEnvelope(context);
+    await db.doc('serviceControls/global').update({ mode: 'restricted' }); await dispatch(user.token, undo).expect(503);
+    expect((await db.doc(`commandReceipts/${user.uid}_${undo.operationId}`).get()).exists).toBe(false);
+    expect((await db.doc(`users/${user.uid}/activities/${context.entityId}`).get()).data()?.revision).toBe(1);
+    await db.doc('serviceControls/global').update({ mode: 'normal' }); const ack = await dispatch(user.token, undo).expect(200);
+    await db.doc('serviceControls/global').update({ mode: 'restricted' }); const retry = await dispatch(user.token, undo).expect(200);
+    expect(retry.body).toEqual({ ...ack.body, result: 'alreadyApplied' }); expect(state.inputs).toHaveLength(0);
   });
 });

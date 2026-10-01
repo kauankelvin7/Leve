@@ -162,3 +162,19 @@ Provider/transport/calls são fixtures sem segredo; API de comando/Auth/Firestor
 | M3-E26 | IDs/hash não são do modelo; schemas strict; nenhuma segunda infraestrutura ou acesso direto de interpretação à persistência | gika-architecture.test.ts, gika-idempotency.test.ts e integração |
 
 T2 autorizado após revisão do T1. Testes/evals usam modelos fixture e Auth/Firestore reais emulados; não comprovar interpretação live nova sem credencial autorizada. Nenhum undo completo implementado, M3-T3 continua todo.
+
+## M3-T3 — undo seguro sem modelo
+
+| Eval | Cenário | Prova |
+|---|---|---|
+| M3-E27 | create → undo remove só ID original da lista ativa, lixeira30dias/restauração convencional; dois títulos/datas iguais | gika.test.ts M3-T3, gika-create.spec.ts desktop/mobile |
+| M3-E28 | double tap/concurrent/lost ack/retry preservam operation/entity/receipt/revision, sem novo efeito; replay após restore não remove novamente | gika.test.ts, gika-create.spec.ts |
+| M3-E29 | edição posterior preservada/conflict; já removida explícita; nenhuma escrita/receipt ao negar | integração real e UI conflito |
+| M3-E32 | UID original obrigatório, mesmo ID nas duas contas isolado; logout/troca durante token/ack nega/discard; membership revogada nega replay | gika-undo, gika-command-auth, gika.test.ts |
+| M3-E33 | falha injetada antes/após commit, retry aplicado/alreadyApplied sem duplicação | gika.test.ts (spy transaction), UI abort depois de route.fetch real |
+| M3-E34 | nenhum Gemini no botão; narrativa/model IDs/undo tool não autorizam ação; bridge sem Firestore; ack só confirma sucesso real | architecture/unit/integration/UI |
+| M3-E35 | fechamento durante ack/reabertura reconcilia mesmo ID; reload não restaura card/conversa | gika-create.spec.ts |
+
+Sem live/segredo: interpretações fixture, Auth/commands/Firestore emulados reais. M3-SMOKE futuro após revisão, M3 não done.
+
+M3-E36 (baseline de UI, sem mudança de produto): pausar CSS timer-dock-in no primeiro frame, disparar resize, terminar animação sem resize de conteúdo e medir launcher/bar. Sobreposição-2,234px reproduzida emfc30bf9/T3; resize seguinte retorna12px. Procedimento/números em M3_T3_EVIDENCE.md e m3-t3-timer-baseline.json. Pendência preexistente, não undo/adapter/modelo, distinta do offline corrigido M2-S0.

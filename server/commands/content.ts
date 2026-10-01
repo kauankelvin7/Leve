@@ -8,7 +8,9 @@ import { AppError } from '../errors.ts';
 import { commandHash } from './identity.ts';
 import { hashValue } from '../hash.ts';
 import { createReminderJobs } from '../reminder-jobs.ts';
-import { createTaskDescriptorSchema, taskActivityInput, type CreateTaskDescriptor } from '../../packages/domain/src/gika.ts';
+import { commandCreationResultSchema, createTaskDescriptorSchema, taskActivityInput, type CreateTaskDescriptor } from '../../packages/domain/src/gika.ts';
+
+import { creationUndoEnvelope } from '../../packages/domain/src/gikaUndo.ts';
 
 const names: Record<string, string> = { activity: 'activities', category: 'categories', note: 'notes', shoppingList: 'shoppingLists', shoppingItem: 'items' };
 const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200 };
@@ -52,6 +54,12 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     gika = { ...command.gika, task };
   }
 
+  if (command.gikaUndo) {
+    if (command.gikaUndo.uid !== identity.uid) throw new AppError(403, 'FORBIDDEN', 'Entre na conta que adicionou essa tarefa para desfazer.');
+    const canonical = await creationUndoEnvelope({ uid: identity.uid, creationOperationId: command.gikaUndo.creationOperationId, entityId: command.entityId, revision: 1 });
+    if (commandHash(command) !== commandHash(canonical)) throw new AppError(422, 'VALIDATION_ERROR', 'Não foi possível validar essa ação.');
+  }
+
   const root = db.doc(`users/${identity.uid}`);
   const parent = type === 'shoppingItem' ? root.collection('shoppingLists').doc(String(input.listId)) : null;
   const target = parent ? parent.collection('items').doc(command.entityId) : root.collection(collection).doc(command.entityId);
@@ -63,8 +71,18 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   const digest = commandHash(command);
 
   return db.runTransaction(async transaction => {
-    const [profile, membership, controls, receipt, counts, minute, day, entity] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, countsRef, minuteRef, dayRef, target);
+    const [profile, membership, controls, receipt, counts, minute, day, entity, creationReceipt] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, countsRef, minuteRef, dayRef, target, ...(command.gikaUndo ? [db.doc(`commandReceipts/${identity.uid}_${command.gikaUndo.creationOperationId}`)] : []));
     if (membership?.data()?.state !== 'active' || profile?.data()?.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+    let creationServerTime: string | undefined;
+    if (command.gikaUndo) {
+      const source = creationReceipt?.data();
+      const original = commandCreationResultSchema.safeParse(source?.response);
+      if (source?.uid !== identity.uid || !createTaskDescriptorSchema.safeParse(source?.gika?.task).success
+        || !original.success || original.data.operationId !== command.gikaUndo.creationOperationId || original.data.entityId !== command.entityId) {
+        throw new AppError(403, 'FORBIDDEN', 'Não foi possível validar a criação original.');
+      }
+      creationServerTime = original.data.serverTime;
+    }
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
@@ -74,6 +92,8 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    if (command.gikaUndo && (!old || old.deletedAt)) throw new AppError(409, 'GIKA_UNDO_ALREADY_REMOVED', 'Essa tarefa já foi removida.');
+    if (command.gikaUndo && (old?.revision !== 1 || old?.seriesId || old?.createdAt !== creationServerTime)) throw new AppError(409, 'REVISION_CONFLICT', 'Não foi possível desfazer porque essa tarefa foi alterada.');
     const creating = action === 'create' || (type === 'note' && action === 'save' && command.expectedRevision === 0);
     if (creating && command.expectedRevision !== 0) throw new AppError(409, 'REVISION_CONFLICT', 'A criação precisa partir de uma versão vazia.');
     if (creating ? Boolean(old) : !old) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Não foi possível abrir ou criar este item.');

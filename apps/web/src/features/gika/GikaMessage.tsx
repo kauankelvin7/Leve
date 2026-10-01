@@ -1,6 +1,7 @@
 import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Icon } from '../../components/ui/Icon';
 import type { GikaMessage as Message } from './conversation';
+import { GikaCreationUndo } from './GikaCreationUndo';
 import { GikaMark } from './GikaMark';
 import type { ReadItem } from '../../../../../packages/domain/src/gika';
 
@@ -32,11 +33,11 @@ function GikaDemoPreview() {
   </div>;
 }
 
-export function GikaMessage({ message }: { message: Message }) {
+export function GikaMessage({ message, active = true }: { message: Message; active?: boolean }) {
   return <li className={`gika-message is-${message.role}`}>
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
     <p>{message.text}</p>
-    {message.createdTask && <section className="gika-result" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p></section>}
+    {message.createdTask && <section className="gika-result" role="group" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p>{message.creationUndo && <GikaCreationUndo context={message.creationUndo} active={active} />}</section>}
     {message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
     {message.reads?.map((read, index) => <GikaToolResult key={index} title={read.startDate === read.endDate ? `Agenda de ${civilLabel(read.startDate)}` : `Agenda de ${civilLabel(read.startDate)} a ${civilLabel(read.endDate)}`}>
       <p>Horários em {read.timeZone}.</p>

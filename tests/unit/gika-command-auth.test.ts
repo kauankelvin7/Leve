@@ -31,3 +31,17 @@ describe('fresh UID/cancellation check after asynchronous token refresh, actual 
     await expect(sendCommand(command)).rejects.toMatchObject({ code: 'SAVED_LOCALLY' }); expect(fixture.queue).toHaveBeenCalledWith('account-a', command);
   });
 });
+
+describe('M3-T3 actual undo bridge/token boundary', () => {
+  it.each([null, { uid: 'account-b', getIdToken: vi.fn() }])('undo cannot dispatch on logout/switch during token refresh %j', async changed => {
+    const { executeCreationUndo } = await import('../../apps/web/src/features/gika/creationUndoBridge');
+    let resume!: (token: string) => void;
+    fixture.user = { uid: 'account-a', getIdToken: vi.fn(() => new Promise(resolve => { resume = resolve; })) };
+    const id = '3dad14e9-a25a-48a3-a5ab-d05d277c3991';
+    const result = executeCreationUndo({ uid: 'account-a', creationOperationId: id, entityId: id, revision: 1 }, new AbortController().signal);
+    const rejected = expect(result).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+    await vi.waitFor(() => expect(resume).toBeTypeOf('function'));
+    fixture.user = changed; resume('local-fixture-token'); await rejected;
+    expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.queue).not.toHaveBeenCalled();
+  });
+});

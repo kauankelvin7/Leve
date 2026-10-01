@@ -172,7 +172,7 @@ Obrigatório:
 - resultado estruturado;
 - undo se compatível.
 
-Estado M3-T1: somente create_task simples concluída em M3_T1_EVIDENCE.md, bridge M0 preservado. Base mínima de envelope estável do comando existente documentada antes do código; proteção ampla/idempotência e undo são T2/T3 ainda todo. M3-T2 concluído após autorização explícita a partir de a9aff2f; plano/evidência M3_T2_EXECPLAN.md/M3_T2_EVIDENCE.md, receipts existentes e ADR012. Não marcar M3 done nem iniciar T3 automaticamente. Gates focais T1 PASS, falhas baseline da regressão ampliada reproduzidas e registradas.
+Estado M3: T1/T2/T3 concluídos; T3 executado exclusivamente a partir de fc30bf9. Planos/evidências específicos M3_T1/T2/T3_* e ADR012/013. T3 reutiliza activity.trash/receipts transacionais existentes, undo UI determinístico com UID/revisão/createdAt original; não adiciona delete tool ou purge. M3 permanece parcial mesmo após T3: M3-SMOKE bloqueado até revisão/autorização e credencial atual, cadeia real create_task/persistência/resultado obrigatória para fechamento. Não executar live nem iniciar M4 nesta tarefa. Gates focais PASS e baseline ampliado documentado nas evidências.
 
 ## M4 — Edit
 
@@ -290,3 +290,7 @@ M2-T1/T2 implementam provider/read tools/UI sem segredo; M2-T3 encerra evals det
 ### M3-T1 autorizado — 2026-10-01
 
 Pedido atual autoriza somente primeira criação simples. Plano concreto/auditoria em docs/gika/M3_T1_EXECPLAN.md. Bridge sendCommand/activity.create conforme M0, IDs/envelope pendente mínimos já exigidos pelo handler/Today; não iniciar revisão completa M3-T2 nem undo M3-T3. Guard de uid/signal opcional no client API; fresh command auth/transaction no servidor. Date/title intent determinísticos e resultados estruturados após ack. Não reutilizar segredo M2.
+
+### M3-T3 autorizado — 2026-10-01
+
+Plano factual M3_T3_EXECPLAN.md, PRE fc30bf9 limpo. Undo somente pelo botão sobre criação confirmada/receipt/UID/revisão1, activity.trash existente; nunca purge/Gemini. Não fechar M3 após T3: M3-SMOKE bloqueado até revisão/autorização explícita, M4 depende desse gate.
