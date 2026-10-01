@@ -5,7 +5,7 @@ import { z } from 'zod';
 export const gikaPolicyDecisionSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('allow') }).strict(),
   z.object({ kind: z.literal('clarify'), reason: z.enum(['MISSING_REQUIRED_DATA', 'AMBIGUOUS_TARGET', 'TARGET_NOT_FOUND', 'RECURRENCE_SCOPE_REQUIRED']) }).strict(),
-  z.object({ kind: z.literal('confirm'), risk: z.enum(['low', 'medium', 'high']), reason: z.enum(['RESCHEDULE_PREVIEW_REQUIRED']) }).strict(),
+  z.object({ kind: z.literal('confirm'), risk: z.enum(['low', 'medium', 'high']), reason: z.enum(['RESCHEDULE_PREVIEW_REQUIRED', 'RECURRENCE_PREVIEW_REQUIRED']) }).strict(),
   z.object({ kind: z.literal('deny'), reason: z.enum(['UNKNOWN_ACTION', 'INVALID_FACTS', 'INVALID_PAYLOAD', 'AUTH_REQUIRED', 'AUTH_CHANGED', 'INCOMPLETE_RESOLUTION', 'BULK_NOT_SUPPORTED', 'RECURRENCE_NOT_SUPPORTED', 'DESTRUCTIVE_NOT_SUPPORTED', 'FIELD_NOT_ALLOWED', 'UNSUPPORTED_TARGET', 'NO_CHANGE_REQUIRED']) }).strict(),
 ]);
 export type GikaPolicyDecision = z.infer<typeof gikaPolicyDecisionSchema>;
@@ -13,6 +13,7 @@ const factsSchema = z.object({
   action: z.string().min(1).max(80), effect: z.enum(['create', 'complete', 'rename', 'reschedule', 'destructive']),
   cardinality: z.enum(['new', 'one', 'none', 'ambiguous', 'multiple', 'series', 'bulk']),
   entity: z.enum(['task', 'event', 'none']), state: z.enum(['new', 'pending', 'completed', 'canceled', 'missing', 'historical']),
+  recurrenceInspected: z.boolean().default(false), futureAllowed: z.boolean().default(false),
   recurring: z.boolean(), recurrenceScope: z.enum(['none', 'unspecified', 'occurrence', 'future', 'series']),
   fields: z.array(z.string().min(1).max(40)).max(8), validation: z.enum(['valid', 'missing', 'invalid']),
   authorization: z.enum(['verified', 'missing', 'changed']), completeness: z.enum(['complete', 'partial', 'saturated']),
@@ -42,7 +43,10 @@ export function classifyGikaAction(input: unknown): GikaPolicyDecision {
   if (f.completeness !== 'complete') return { kind: 'deny', reason: 'INCOMPLETE_RESOLUTION' };
   if (['multiple', 'series', 'bulk'].includes(f.cardinality)) return { kind: 'deny', reason: 'BULK_NOT_SUPPORTED' };
   if (f.cardinality === 'ambiguous') return { kind: 'clarify', reason: 'AMBIGUOUS_TARGET' };
-  if (f.recurring) return f.recurrenceScope === 'unspecified' ? { kind: 'clarify', reason: 'RECURRENCE_SCOPE_REQUIRED' } : { kind: 'deny', reason: 'RECURRENCE_NOT_SUPPORTED' };
+  if (f.recurring) {
+    if (f.recurrenceScope === 'unspecified') return { kind: 'clarify', reason: 'RECURRENCE_SCOPE_REQUIRED' };
+    if (!f.recurrenceInspected || !['occurrence', 'future'].includes(f.recurrenceScope) || (f.recurrenceScope === 'future' && (!f.futureAllowed || f.action === 'complete_task'))) return { kind: 'deny', reason: 'RECURRENCE_NOT_SUPPORTED' };
+  }
   if (f.validation === 'missing') return { kind: 'clarify', reason: 'MISSING_REQUIRED_DATA' };
   if (f.cardinality === 'none') return f.entity === 'none' && f.state === 'missing' && f.action !== 'create_task' ? { kind: 'clarify', reason: 'TARGET_NOT_FOUND' } : { kind: 'deny', reason: 'INVALID_FACTS' };
   if (f.entity !== 'task') return { kind: 'deny', reason: 'UNSUPPORTED_TARGET' };
@@ -56,6 +60,7 @@ export function classifyGikaAction(input: unknown): GikaPolicyDecision {
     if (f.cardinality !== 'one' || !['pending', 'completed', 'canceled'].includes(f.state)) return { kind: 'deny', reason: 'INVALID_FACTS' };
     if (f.action === 'complete_task' && f.state !== 'pending') return { kind: 'deny', reason: f.state === 'completed' ? 'NO_CHANGE_REQUIRED' : 'UNSUPPORTED_TARGET' };
   }
+  if (f.recurring) return { kind: 'confirm', risk: f.recurrenceScope === 'future' ? 'high' : 'medium', reason: 'RECURRENCE_PREVIEW_REQUIRED' };
   return f.action === 'reschedule_task'
     ? { kind: 'confirm', risk: 'low', reason: 'RESCHEDULE_PREVIEW_REQUIRED' }
     : { kind: 'allow' };

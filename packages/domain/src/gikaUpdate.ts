@@ -3,7 +3,7 @@ import { activityInputSchema, civilDateSchema } from './content.ts';
 import { commandEnvelopeSchema, type CommandEnvelope } from './identity.ts';
 import { completionDescriptorSchema, completedTaskSchema, completionResolutionSchema } from './gikaCompletion.ts';
 export const updateTaskPatchSchema = z.object({ title: activityInputSchema.shape.title }).strict();
-export const updateTaskArgsSchema = z.object({ title: activityInputSchema.shape.title, date: civilDateSchema.nullable(), patch: updateTaskPatchSchema }).strict();
+export const updateTaskArgsSchema = z.object({ recurrenceScope: z.enum(['occurrence', 'future', 'all']).optional(),  title: activityInputSchema.shape.title, date: civilDateSchema.nullable(), patch: updateTaskPatchSchema }).strict();
 export const updateTaskCallSchema = z.object({ name: z.literal('update_task'), args: updateTaskArgsSchema }).strict();
 export const updateDescriptorSchema = completionDescriptorSchema.extend({ patch: updateTaskPatchSchema }).strict();
 export const updatedTaskSchema = completedTaskSchema;

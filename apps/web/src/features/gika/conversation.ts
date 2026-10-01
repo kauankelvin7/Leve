@@ -1,3 +1,4 @@
+import type { RecurrenceChoice, RecurrenceConfirmation } from '../../../../../packages/domain/src/gikaRecurrence';
 import type { GikaConfirmation } from '../../../../../packages/domain/src/gikaConfirmation';
 import type { RescheduleDescriptor,RescheduleResolution } from '../../../../../packages/domain/src/gikaReschedule';
 import type { UpdatedTask, UpdateResolution } from '../../../../../packages/domain/src/gikaUpdate';
@@ -7,4 +8,4 @@ import type { GikaRequest, GikaResponse, ReadResult, CreatedTask } from '../../.
 export { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, gikaRequestSchema, gikaResponseSchema } from '../../../../../packages/domain/src/gika';
 export type { GikaRequest, GikaResponse };
 export type GikaAdapter = (request: GikaRequest, signal: AbortSignal) => Promise<GikaResponse>;
-export type GikaMessage = { id: string; role: 'user' | 'assistant'; text: string; simulated?: boolean; preview?: 'organize-demo'; reads?: ReadResult[]; createdTask?: CreatedTask; completedTask?: CompletedTask; completionResolution?: CompletionResolution; updatedTask?: UpdatedTask; updateResolution?: UpdateResolution; rescheduleTask?: RescheduleDescriptor; confirmation?: GikaConfirmation; rescheduleResolution?: RescheduleResolution; rescheduleContext?: {uid:string;request:GikaRequest}; creationUndo?: CreationUndoContext };
+export type GikaMessage = { id: string; role: 'user' | 'assistant'; text: string; simulated?: boolean; preview?: 'organize-demo'; reads?: ReadResult[]; createdTask?: CreatedTask; completedTask?: CompletedTask; completionResolution?: CompletionResolution; updatedTask?: UpdatedTask; updateResolution?: UpdateResolution; rescheduleTask?: RescheduleDescriptor; confirmation?: GikaConfirmation; rescheduleResolution?: RescheduleResolution; recurrenceChoice?: RecurrenceChoice; recurrenceConfirmation?: RecurrenceConfirmation; rescheduleContext?: {uid:string;request:GikaRequest}; creationUndo?: CreationUndoContext };

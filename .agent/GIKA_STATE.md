@@ -2,9 +2,11 @@
 
 ## Estado atual
 
-- Status global: `M5_T2_DONE_STOP_BEFORE_M5_T3`.
-- Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem push/deploy.
-- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2 done exclusivamente; M5-T3/T4 e posteriores todo/não iniciados.
+- Status global: `M5_T3_DONE_STOP_BEFORE_M5_T4`.
+- Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
+- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 in_progress; M5-T2 done; M5-T3 done, M5-T4 e posteriores todo/não iniciados.
+## Hardening — resumo histórico
+
 - DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
 - Firebase12.19/Admin13.6/Firestore4.17.2/7.11.6/Gax4.6.1 preservados. Overrides limitados grpc1.14.5 e uuid11.1.1 nos consumidores auditados; clean install/tree válido,334 unit/166 integração/lint/build/doisTS PASS.53 E2E finais PASS (47+6), incluindo todas51 Gika e2avatar; nenhum FAIL novo.
 - Produção audit omitdev13(4high/9moderate)→0; audit-levelhigh exit0. Audit completo28→14(6high/8moderate), todos14 dev-only preexistentes/mesmas versões/advisories, relatório explícito docs/security/DEVELOPMENT_REMAINING.md. CI não alterado; não declarar audit completo verde.
@@ -12,11 +14,19 @@
 
 ## Autorização atual
 
-Pedido atual autoriza exclusivamente M5-T2 Confirmation Contract + Preview na entrada9c2c6fb limpa, conforme docs/gika/M5_T2_EXECPLAN.md. Sem batch/recorrência/M5-T3/Gemini live/deploy/push/merge/dependências.
+Pedido atual autoriza exclusivamente M5-T3 recorrência occurrence/future, conforme docs/gika/M5_T3_EXECPLAN.md. Entrada local/origin fc0b66972164e3cee73c6c9a65969ea2e61d3994 e worktree limpo/fetch verificados. Gates/checkpoint e push apenas feat autorizados; sem batch/M5-T4/Gemini live/deploy/main/visual/dependências.
 
 ## Próxima ação
 
-Parar para revisão do M5-T2 concluído. M5-T3/T4 todo/não iniciados; exigir nova autorização antes de qualquer implementação/live.
+Parar para revisão do M5-T3. M5-T4 todo/não iniciado; não executar sem nova autorização. Concluir apenas checkpoint/backup autorizado na feat/gika-integration e verificar local/origin/worktree.
+
+## M5-T3 — conclusão
+
+Entrada local/origin fc0b669 limpa/exata verificada antes de código. Auditoria M5_T3_EXECPLAN/EVIDENCE e ADR019: domínio real occurrence/future; all e complete future não suportados. Resolução exata/civil/bounded, scope ausente clarify, choice software-bound distinta de confirmation, snapshot de série/alvo/futuras e revisão selados. Choice→preview herda prazo15min original, nenhum retry renova. Mesmo command activity.update/setStatus/updateFuture, mesmos helpers/receipt atômico, guard transacional conservador/sentinel50+1/budget450/controles/quotas/refs, sem writer/engine/coleção nova. UI terminal/foco/Axe/mobile/temas, nenhuma chamada Gemini nos botões, sucesso apenas ack real. Reload não restaura/autoexecuta; future divide série convencional e recria IDs, nunca all/batch genérico.
+
+Auditprodução0critical/high/moderate; lint/doisTS/build/396unit PASS;212integração completas PASS;40integração/7E2E recorrência finais PASS. Amplo56PASS/7FAIL não verde: todos63 únicos tiveram passagem observada, originais8/8 e sondas5/5 em cada cópia fc0b669/atual. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE comprovado, sem inferir causa física ou alterar deadlines; logout antigo falhou na criação convencional antes de Gika. Check12/1 contraste header.eyebrow reproduzido na entrada; IPv4 só no processo. Tentativas de desenvolvimento/sandbox/fixture429 explícitas na evidência, corrigidas antes dos gates finais.25 referências de dependências/Rules/harness/CSS/API/bridge e testes antigos byte-idênticas. Sondas/raw traces somente /tmp, nenhum segredo real/.env/Gemini live/PR/deploy/main/visual/dependência/M5-T4.
+
+Evidências sanitizadas docs/gika/evidence/m5-t3-*.json e M5_T3_EVIDENCE.md; gates/estado/tasks juntos no commit funcional, checkpoint documental registra SHA real antes do backup autorizado desta mesma branch. Parar para revisão antes de M5-T4.
 
 ## M5-T2 — conclusão e retomada após queda
 

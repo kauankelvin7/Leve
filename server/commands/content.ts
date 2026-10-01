@@ -1,4 +1,6 @@
-import { verifyConfirmation } from '../gika/confirmation.ts';
+import { verifyConfirmation, verifyRecurrenceConfirmation } from '../gika/confirmation.ts';
+import { recurrenceEffectSchema, recurrenceConfirmationSchema, GIKA_RECURRENCE_FUTURE_LIMIT, type RecurrenceEffect } from '../../packages/domain/src/gikaRecurrence.ts';
+import { applyRecurrencePatch, assertRecurrenceSnapshot, type RecurrenceMember } from '../gika/recurrenceGuard.ts';
 import { rescheduleTaskPatchSchema,rescheduleDescriptorSchema,applyReschedulePatch,type RescheduleDescriptor } from '../../packages/domain/src/gikaReschedule.ts';
 import { updateTaskPatchSchema, updateDescriptorSchema, applyTitlePatch, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
 import { completionDescriptorSchema, type CompletionDescriptor } from '../../packages/domain/src/gikaCompletion.ts';
@@ -20,6 +22,9 @@ const names: Record<string, string> = { activity: 'activities', category: 'categ
 const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200 };
 const emptySchema = z.object({}).strict();
 const itemLocatorSchema = z.object({ listId: entityIdSchema }).strict();
+function recurrenceReceipt(command: CommandEnvelope, effect: RecurrenceEffect) {
+  return { ...command.gikaRecurrence!, effect, confirmation: recurrenceConfirmationSchema.parse({ effect, policy: { kind: 'confirm', risk: effect.scope === 'future' ? 'high' : 'medium', reason: 'RECURRENCE_PREVIEW_REQUIRED' }, token: command.gikaRecurrence!.confirmationToken }) };
+}
 const allowed: Record<string, string[]> = {
   activity: ['create', 'createSeries', 'update', 'updateFuture', 'setStatus', 'trash', 'trashSeries', 'restore', 'purge'],
   category: ['create', 'update', 'archive', 'trash', 'restore', 'purge'],
@@ -30,6 +35,7 @@ const allowed: Record<string, string[]> = {
 
 export async function contentCommand(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
   if (!identity.email_verified) throw new AppError(403, 'EMAIL_UNVERIFIED', 'Confirme seu e-mail para continuar.');
+  if (command.gikaRecurrence && !['activity.update', 'activity.setStatus', 'activity.updateFuture'].includes(command.command)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração não está disponível.');
   const [type = '', action = ''] = command.command.split('.');
   const collection = names[type];
   if (!collection || !allowed[type]?.includes(action)) throw new AppError(422, 'VALIDATION_ERROR', 'Comando desconhecido.');
@@ -40,7 +46,8 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
   if (action === 'purge') return purgeContent(identity, command, type, collection);
   const writingContent = ['create', 'update', 'save'].includes(action);
   let validatedInput: Record<string, unknown>;
-  if (command.gikaReschedule) validatedInput = rescheduleTaskPatchSchema.parse(command.payload);
+  if (command.gikaRecurrence) validatedInput = z.union([updateTaskPatchSchema, rescheduleTaskPatchSchema, z.object({ status: z.literal('completed') }).strict()]).parse(command.payload);
+  else if (command.gikaReschedule) validatedInput = rescheduleTaskPatchSchema.parse(command.payload);
   else if (command.gikaUpdate) validatedInput = updateTaskPatchSchema.parse(command.payload);
   else if (writingContent) {
     const schemas = { activity: activityInputSchema, category: categoryInputSchema, note: noteInputSchema, shoppingList: shoppingListInputSchema, shoppingItem: shoppingItemInputSchema };
@@ -106,11 +113,25 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
     const confirmation = command.gikaReschedule ? verifyConfirmation(identity.uid, command) : undefined;
+    const recurrenceEffect = command.gikaRecurrence ? recurrenceEffectSchema.parse(verifyRecurrenceConfirmation(identity.uid, command)) : undefined;
+    if (recurrenceEffect && controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
     if (controls?.data()?.mode === 'restricted') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Mantenha seu rascunho.');
     if ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
     if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
 
     const old = entity?.data();
+    if (recurrenceEffect) {
+      if (recurrenceEffect.scope !== 'occurrence' || !old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa rotina mudou. Faça o pedido novamente.');
+      const series = await transaction.get(root.collection('series').doc(recurrenceEffect.recurrence.seriesId));
+      assertRecurrenceSnapshot(recurrenceEffect, series.data() ?? {}, old);
+      if (recurrenceEffect.operation === 'complete') {
+        if (old.status !== 'pending') throw new AppError(422, 'GIKA_NO_CHANGE', 'Essa tarefa não está pendente. Confira sua agenda.');
+        input = { status: 'completed' };
+      } else {
+        if (recurrenceEffect.operation === 'update' ? old.title === recurrenceEffect.patch.title : old.schedule.dueDate === recurrenceEffect.patch.dueDate && old.schedule.dueTime === (recurrenceEffect.patch.dueTime ?? old.schedule.dueTime)) throw new AppError(422, 'GIKA_NO_CHANGE', 'Essa tarefa já está como você pediu.');
+        input = applyRecurrencePatch(old, recurrenceEffect);
+      }
+    }
     let rescheduleTask: RescheduleDescriptor | undefined;
     if (command.gikaReschedule) {
       if (!old || old.deletedAt || old.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Essa tarefa mudou antes do reagendamento. Faça o pedido novamente.');
@@ -192,7 +213,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(recurrenceEffect ? { gikaRecurrence: recurrenceReceipt(command, recurrenceEffect) } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 
@@ -202,37 +223,60 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
 }
 
 async function updateFutureActivities(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
-  const input = recurringFutureUpdateSchema.parse(command.payload);
+  const conventionalInput = command.gikaRecurrence ? undefined : recurringFutureUpdateSchema.parse(command.payload);
+  const proposed = command.gikaRecurrence ? z.object({ patch: z.union([updateTaskPatchSchema, rescheduleTaskPatchSchema]), newSeriesId: z.uuid() }).strict().parse(command.payload) : undefined;
+  const newSeriesId = (proposed?.newSeriesId ?? conventionalInput!.newSeriesId);
   const root = db.doc(`users/${identity.uid}`);
   const occurrenceRef = root.collection('activities').doc(command.entityId);
-  const nextSeriesRef = root.collection('series').doc(input.newSeriesId);
+  const nextSeriesRef = root.collection('series').doc(newSeriesId);
   const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
   const countsRef = root.collection('internal').doc('counts');
   const now = new Date().toISOString();
+  const minuteRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 16)}`);
+  const dayRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 10)}`);
   const digest = commandHash(command);
   return db.runTransaction(async transaction => {
-    const [profile, member, receipt, occurrence, nextSeries, counts] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef, nextSeriesRef, countsRef);
+    const [profile, member, receipt, occurrence, nextSeries, counts, controls, minute, day] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef, nextSeriesRef, countsRef, ...(command.gikaRecurrence ? [db.doc('serviceControls/global'), minuteRef, dayRef] : []));
     if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
+    const effect = command.gikaRecurrence ? recurrenceEffectSchema.parse(verifyRecurrenceConfirmation(identity.uid, command)) : undefined;
+    if (effect && (effect.scope !== 'future' || effect.newSeriesId !== newSeriesId)) throw new AppError(422, 'GIKA_POLICY', 'Esse escopo não está disponível.');
+    if (effect && controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
+    if (effect && ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000)) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
     const current = occurrence?.data();
     if (!current || current.deletedAt || current.revision !== command.expectedRevision || !current.seriesId || !current.occurrenceKey) throw new AppError(409, 'REVISION_CONFLICT', 'A série mudou em outra sessão. Seu rascunho foi preservado.');
     if (nextSeries?.exists) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Não foi possível separar esta série.');
     const seriesRef = root.collection('series').doc(current.seriesId);
     const series = await transaction.get(seriesRef);
     if (!series.exists || series.data()?.state !== 'active') throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Esta série não está mais ativa.');
-    const futureQuery = root.collection('activities').where('seriesId', '==', current.seriesId).where('occurrenceKey', '>=', current.occurrenceKey).limit(366);
+    const futureQuery = root.collection('activities').where('seriesId', '==', current.seriesId).where('occurrenceKey', '>=', current.occurrenceKey).limit(effect ? GIKA_RECURRENCE_FUTURE_LIMIT + 1 : 366);
     const future = await transaction.get(futureQuery);
+    let input = conventionalInput;
+    if (effect) {
+      const members: RecurrenceMember[] = future.docs.map(document => ({ id: document.id, data: document.data() }));
+      assertRecurrenceSnapshot(effect, series.data()!, current, members);
+      if (effect.operation === 'update' ? current.title === effect.patch.title : current.schedule.dueDate === effect.patch.dueDate && current.schedule.dueTime === (effect.patch.dueTime ?? current.schedule.dueTime)) throw new AppError(422, 'GIKA_NO_CHANGE', 'Essa tarefa já está como você pediu.');
+      input = { activity: applyRecurrencePatch(current, effect), newSeriesId };
+      if (input.activity.categoryId) {
+        const category = await transaction.get(root.collection('categories').doc(input.activity.categoryId));
+        if (!category.exists || category.data()?.deletedAt || category.data()?.archivedAt) throw new AppError(422, 'REFERENCE_UNAVAILABLE', 'A categoria não está disponível.');
+      }
+    }
+    if (!input) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da rotina.');
     const oldRule = series.data()!.recurrence;
     const pastCount = Math.max(0, (series.data()!.materializedCount ?? future.size) - future.size);
+    if (effect && oldRule.count && oldRule.count - pastCount < 2) throw new AppError(422, 'GIKA_POLICY', 'Restam menos de duas ocorrências. Altere somente esta tarefa.');
     const nextRule = { ...oldRule, count: oldRule.count ? Math.max(2, oldRule.count - pastCount) : null };
     const firstDate = input.activity.schedule.type === 'task' ? input.activity.schedule.dueDate : input.activity.schedule.startDate;
     if (!firstDate) throw new AppError(422, 'VALIDATION_ERROR', 'Uma atividade recorrente precisa de data.');
     if (recurrenceDates(firstDate, nextRule, 2).length < 2) throw new AppError(422, 'VALIDATION_ERROR', 'Restam menos de duas ocorrências; edite somente esta ocorrência.');
     const horizon = new Date(Date.now() + 45 * 86400_000).toISOString().slice(0, 10);
     const dates = recurrenceDatesThrough(firstDate, nextRule, horizon);
+    // Conservative bounded execution, including potential reminder writes; no partial split.
+    if (effect && (!dates.length || dates.length > GIKA_RECURRENCE_FUTURE_LIMIT || future.size + dates.length * (1 + input.activity.reminderSpecs.length) + 7 > 450)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração precisa ser feita pela sua agenda.');
     future.docs.forEach(document => transaction.delete(document.ref));
     transaction.update(seriesRef, { state: 'split', splitAt: current.occurrenceKey, updatedAt: now });
     transaction.create(nextSeriesRef, { activity: input.activity, recurrence: nextRule, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now, materializedThrough: dates.at(-1) ?? firstDate, materializedCount: dates.length, state: 'active', previousSeriesId: current.seriesId });
@@ -244,11 +288,15 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
       createReminderJobs(transaction, identity.uid, id, 1, occurrence, now);
     }
     const delta = dates.length - future.size;
-    if ((counts?.data()?.activities ?? 0) + delta > limits.activities!) throw new AppError(422, 'STOCK_LIMIT', 'Você atingiu o limite de atividades.');
+    if ((counts?.data()?.activities ?? 0) + delta + (effect ? counts?.data()?.reserved_activities ?? 0 : 0) > limits.activities!) throw new AppError(422, 'STOCK_LIMIT', 'Você atingiu o limite de atividades.');
     const response: CommandResult = { operationId: command.operationId, entityId: input.newSeriesId, revision: 1, serverTime: now, result: 'applied' };
-    transaction.set(countsRef, { activities: Math.max(0, (counts?.data()?.activities ?? 0) + delta) }, { merge: true });
+    transaction.set(countsRef, { activities: Math.max(0, (counts?.data()?.activities ?? 0) + delta), ...(effect ? { series: (counts?.data()?.series ?? 0) + 1 } : {}) }, { merge: true });
     transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(effect ? { gikaRecurrence: recurrenceReceipt(command, effect) } : {}) });
+    if (effect) {
+      transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
+      transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
+    }
     return response;
   });
 }

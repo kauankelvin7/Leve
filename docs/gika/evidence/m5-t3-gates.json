@@ -1,0 +1,118 @@
+{
+  "entry": {
+    "branch": "feat/gika-integration",
+    "local_and_origin": "fc0b66972164e3cee73c6c9a65969ea2e61d3994",
+    "worktree": "clean"
+  },
+  "scope": "M5-T3 only; occurrence/future; all unsupported; M5-T4 not started",
+  "production_audit": {
+    "critical": 0,
+    "high": 0,
+    "moderate": 0,
+    "exit": 0,
+    "dependencies_changed": false
+  },
+  "lint": "PASS",
+  "typecheck_client": "PASS",
+  "typecheck_server": "PASS",
+  "build": "PASS",
+  "unit": {
+    "pass": 396,
+    "files": 46,
+    "exit": 0
+  },
+  "integration_complete": {
+    "pass": 212,
+    "files": 7,
+    "seconds": 75.53,
+    "exit": 0
+  },
+  "final_recurrence_integration": {
+    "pass": 40,
+    "exit": 0
+  },
+  "final_recurrence_e2e": {
+    "pass": 7,
+    "minutes": 1.2,
+    "exit": 0
+  },
+  "broad_gika_first": {
+    "pass": 56,
+    "fail": 7,
+    "minutes": 18.1,
+    "exit": 1,
+    "new_recurrence_cases_pass": 7,
+    "unique_gika_cases_observed_pass_after_original_repeats": 63
+  },
+  "check": {
+    "pass": 12,
+    "fail": 1,
+    "exit": 1,
+    "reason": "color-contrast header > .eyebrow; original checkpoint reproduces",
+    "environment_only_ipv4": "NODE_OPTIONS=--dns-result-order=ipv4first"
+  },
+  "original_comparison": {
+    "entry": {
+      "pass": 8,
+      "minutes": 1.6,
+      "exit": 0
+    },
+    "current": {
+      "pass": 8,
+      "minutes": 1.6,
+      "exit": 0
+    },
+    "no_deadline_changes": true
+  },
+  "controlled_transport_probes": {
+    "entry_pass": 5,
+    "current_pass": 5,
+    "exit_both": 0,
+    "minutes_each": 1.7,
+    "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE"
+  },
+  "attempts": [
+    {
+      "stage": "policy unit development",
+      "result": "scope phrase collision fixed before final gates; not baseline"
+    },
+    {
+      "stage": "TypeScript development",
+      "result": "fixture/union guards and discriminant narrowing fixed before final gates; not baseline"
+    },
+    {
+      "stage": "initial focal integration",
+      "pass": 38,
+      "fail": 1,
+      "reason": "test fixture exceeded unchanged 3 requests/min limiter; separate synthetic accounts; repeat40PASS"
+    },
+    {
+      "stage": "temporary all runner preparation",
+      "result": "SyntaxError before tests; fixed only /tmp"
+    },
+    {
+      "stage": "restricted sandbox unit repeat",
+      "pass": 393,
+      "fail": 3,
+      "errors": 2,
+      "reason": "listen EPERM and subprocess stderr absent; authorized original repeat396PASS"
+    },
+    {
+      "stage": "check first",
+      "result": "webServer readiness timeout IPv4/localhost; process-only IPv4 repeat shell12/1 historical contrast"
+    },
+    {
+      "stage": "restricted sandbox final audit",
+      "result": "proxy connect EPERM; authorized retry production0"
+    }
+  ],
+  "review": {
+    "independent_readonly": "PASS no blocker",
+    "expiry_adjustment": "choice grant inherits original issuedAt/expiresAt; unit18PASS and integration timing assertion",
+    "browser": "startup and recurrence desktop light/mobile dark inspected; Axe/keyboard/focus/regression coverage"
+  },
+  "secrets_persisted": false,
+  "gemini_live": false,
+  "main_merge_pr_deploy": false,
+  "remote_backup": "authorized; publish final documentary checkpoint on same branch and verify local/remote SHA after push"
+}

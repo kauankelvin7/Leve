@@ -36,7 +36,7 @@ export function validateCompletion(args: unknown, text: string, context: ModelCo
   if (titleKey(call.title) !== titleKey(intent.title) || (call.date ?? context.today) !== intent.date) throw new GikaFault('GIKA_POLICY');
   return intent;
 }
-export function resolveCompletion(intent: { title: string; date: string }, read: ReadResult): { text: string; task: CompletionDescriptor; resolution?: never } | { text: string; task?: never; resolution: CompletionResolution } {
+export function resolveCompletion(intent: { title: string; date: string }, read: ReadResult, allowRecurring = false): { text: string; task: CompletionDescriptor; resolution?: never } | { text: string; task?: never; resolution: CompletionResolution } {
   if (read.startDate !== intent.date || read.endDate !== intent.date) throw new GikaFault('GIKA_INVALID_RESPONSE');
   const candidates = read.items.filter(item => titleKey(item.title) === titleKey(intent.title));
   const options = candidates.map(item => ({ id: item.id, title: item.title, dueDate: item.schedule.type === 'task' ? item.schedule.dueDate : item.schedule.startDate, status: item.status }));
@@ -45,7 +45,7 @@ export function resolveCompletion(intent: { title: string; date: string }, read:
   if (candidates.length === 0) return state('not_found', `Não encontrei uma tarefa chamada ${intent.title} nesse dia. Informe o título e o dia da tarefa.`);
   if (candidates.length > 1) return state('ambiguous', `Encontrei ${candidates.length} ${candidates.every(item => item.kind === 'task') ? 'tarefas chamadas' : 'itens chamados'} ${intent.title}. Qual você concluiu?`);
   const target = candidates[0]!;
-  if (target.kind !== 'task' || target.schedule.type !== 'task' || target.seriesId || target.occurrenceKey || target.status === 'canceled') return state('unsupported', 'Posso concluir uma tarefa simples por vez. Para este item, use sua agenda.');
+  if (target.kind !== 'task' || target.schedule.type !== 'task' || (!allowRecurring && (target.seriesId || target.occurrenceKey)) || target.status === 'canceled') return state('unsupported', 'Posso concluir uma tarefa simples por vez. Para este item, use sua agenda.');
   if (target.status === 'completed') return state('already_completed', `${target.title} já estava concluída.`);
   const task = completionDescriptorSchema.parse({ id: target.id, title: target.title, dueDate: target.schedule.dueDate, timeZone: read.timeZone, revision: target.revision });
   return { text: 'Preparando a conclusão…', task };

@@ -47,7 +47,7 @@ export function validateUpdate(args:unknown,text:string,context:ModelContext){
   if(key(call.title)!==key(intent.title)||(call.date??context.today)!==intent.date||call.patch.title!==intent.patch.title)throw new GikaFault('GIKA_POLICY');
   return intent;
 }
-export function resolveUpdate(intent:{title:string;date:string;patch:{title:string}},read:ReadResult):{text:string;task:UpdateDescriptor;resolution?:never}|{text:string;task?:never;resolution:UpdateResolution}{
+export function resolveUpdate(intent:{title:string;date:string;patch:{title:string}},read:ReadResult,allowRecurring=false):{text:string;task:UpdateDescriptor;resolution?:never}|{text:string;task?:never;resolution:UpdateResolution}{
   if(read.startDate!==intent.date||read.endDate!==intent.date)throw new GikaFault('GIKA_INVALID_RESPONSE');
   const candidates=read.items.filter(item=>key(item.title)===key(intent.title));
   const options=candidates.map(item=>({id:item.id,title:item.title,dueDate:item.schedule.type==='task'?item.schedule.dueDate:item.schedule.startDate,status:item.status}));
@@ -56,7 +56,7 @@ export function resolveUpdate(intent:{title:string;date:string;patch:{title:stri
   if(!candidates.length)return state('not_found',`Não encontrei uma tarefa chamada ${intent.title} nesse dia. Informe o título e o dia da tarefa.`);
   if(candidates.length>1)return state('ambiguous',`Encontrei ${candidates.length} itens chamados ${intent.title}. Qual você quer renomear?`);
   const target=candidates[0]!;
-  if(target.kind!=='task'||target.schedule.type!=='task'||target.seriesId||target.occurrenceKey)return state('unsupported','Posso renomear uma tarefa simples por vez. Para este item, use sua agenda.');
+  if(target.kind!=='task'||target.schedule.type!=='task'||(!allowRecurring&&(target.seriesId||target.occurrenceKey)))return state('unsupported','Posso renomear uma tarefa simples por vez. Para este item, use sua agenda.');
   if(target.title===intent.patch.title)return state('unchanged',`Essa tarefa já se chama “${target.title}”.`);
   return {text:'Preparando a alteração…',task:updateDescriptorSchema.parse({id:target.id,title:target.title,dueDate:target.schedule.dueDate,timeZone:read.timeZone,revision:target.revision,patch:intent.patch})};
 }

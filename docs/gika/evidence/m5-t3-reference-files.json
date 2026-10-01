@@ -1,0 +1,155 @@
+{
+  "checkpoint": "fc0b66972164e3cee73c6c9a65969ea2e61d3994",
+  "files": [
+    {
+      "path": "package.json",
+      "sha256_entry": "506e624377862250223c73d8eb049ec00a5588a1534f65aa1692e686bce34c36",
+      "sha256_current": "506e624377862250223c73d8eb049ec00a5588a1534f65aa1692e686bce34c36",
+      "identical": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256_entry": "8742f983da607c6f38a0c67571590a31d74a2fa3222f7b433280e6306142ed13",
+      "sha256_current": "8742f983da607c6f38a0c67571590a31d74a2fa3222f7b433280e6306142ed13",
+      "identical": true
+    },
+    {
+      "path": "firestore.rules",
+      "sha256_entry": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b",
+      "sha256_current": "6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b",
+      "identical": true
+    },
+    {
+      "path": "firestore.indexes.json",
+      "sha256_entry": "3c143549f03663107532ddfcd65fad2dca4f580a4a2d4e93f5ed2e7fb1f9f64b",
+      "sha256_current": "3c143549f03663107532ddfcd65fad2dca4f580a4a2d4e93f5ed2e7fb1f9f64b",
+      "identical": true
+    },
+    {
+      "path": "playwright.local.config.ts",
+      "sha256_entry": "9e62e6f9f265c790543a3cab44fc0380cec2cade06602c4291ac18dd46df0be6",
+      "sha256_current": "9e62e6f9f265c790543a3cab44fc0380cec2cade06602c4291ac18dd46df0be6",
+      "identical": true
+    },
+    {
+      "path": "playwright.config.ts",
+      "sha256_entry": "4351a58763648ba0f9a9244f64959e7ab4d62e20d0608cb1353cd7c47ce77d61",
+      "sha256_current": "4351a58763648ba0f9a9244f64959e7ab4d62e20d0608cb1353cd7c47ce77d61",
+      "identical": true
+    },
+    {
+      "path": "scripts/dev-local.mjs",
+      "sha256_entry": "8e5151a1682c71df4960107da32ac0eb6936aaeceafbbc6fd9588297135ea969",
+      "sha256_current": "8e5151a1682c71df4960107da32ac0eb6936aaeceafbbc6fd9588297135ea969",
+      "identical": true
+    },
+    {
+      "path": "scripts/gika-smoke.mjs",
+      "sha256_entry": "070fc76e53548a16939bcecc8668a95a47a774cbccd2e20dae77f38fb12d7eae",
+      "sha256_current": "070fc76e53548a16939bcecc8668a95a47a774cbccd2e20dae77f38fb12d7eae",
+      "identical": true
+    },
+    {
+      "path": "tests/e2e-local/gika-update.spec.ts",
+      "sha256_entry": "c5dd307dbbd5d2955fcae3778c2f842e34f1cc448078c6d5e10e4b358098e9f7",
+      "sha256_current": "c5dd307dbbd5d2955fcae3778c2f842e34f1cc448078c6d5e10e4b358098e9f7",
+      "identical": true
+    },
+    {
+      "path": "tests/e2e-local/gika-reschedule.spec.ts",
+      "sha256_entry": "6be3dd90890264dbc04901ca66e486cd17bc82070bc7c9eb615a8c31768a9c69",
+      "sha256_current": "6be3dd90890264dbc04901ca66e486cd17bc82070bc7c9eb615a8c31768a9c69",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/features/gika/confirmationBridge.ts",
+      "sha256_entry": "25d6f2ce95c0db8cb7c2314defc47c8846a2801f557645a62e647e227cd30420",
+      "sha256_current": "25d6f2ce95c0db8cb7c2314defc47c8846a2801f557645a62e647e227cd30420",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/features/gika/GikaConfirmation.tsx",
+      "sha256_entry": "1e0d1612292b2fa336565c473cfe36c63b5abab112dedac19d546726cd3716a0",
+      "sha256_current": "1e0d1612292b2fa336565c473cfe36c63b5abab112dedac19d546726cd3716a0",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/platform/api.ts",
+      "sha256_entry": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41",
+      "sha256_current": "48c2d301222c1285d586a8242ae2a916e5c3821f3ac610cf38646a51c7112a41",
+      "identical": true
+    },
+    {
+      "path": "tests/unit/gika-native-smoke.test.ts",
+      "sha256_entry": "3b5f43f5b8fb97e9f50cf84545e88e342a7fab1333cbdde3a16e7754ee73cca0",
+      "sha256_current": "3b5f43f5b8fb97e9f50cf84545e88e342a7fab1333cbdde3a16e7754ee73cca0",
+      "identical": true
+    },
+    {
+      "path": "tests/unit/google-dependency-compat.test.ts",
+      "sha256_entry": "0a299d1334a38f1984396f1facdb651e8837e0f17e602483da26cd83618d1e1e",
+      "sha256_current": "0a299d1334a38f1984396f1facdb651e8837e0f17e602483da26cd83618d1e1e",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/features/gika/updateBridge.ts",
+      "sha256_entry": "d08a19a8da75acf8a5f35e5101ad76033514edf69e6a5e47345905c23b915655",
+      "sha256_current": "d08a19a8da75acf8a5f35e5101ad76033514edf69e6a5e47345905c23b915655",
+      "identical": true
+    },
+    {
+      "path": "tests/e2e/shell.spec.ts",
+      "sha256_entry": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94",
+      "sha256_current": "285ca171bb7cf276a6fb0f5a020b5d78318d57ca4a07310bef36b65fc664ac94",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/features/gika/gika.css",
+      "sha256_entry": "ae686f4b31b5a47eacd2213f47ad287cccd91a8975ee054a929308b9db747e32",
+      "sha256_current": "ae686f4b31b5a47eacd2213f47ad287cccd91a8975ee054a929308b9db747e32",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/features/activities/calendar/calendar-time-grid.css",
+      "sha256_entry": "977373c609f98d3c23776f7e7fb7c780f0ca21ac4e8fc40783f6a62d6391d13c",
+      "sha256_current": "977373c609f98d3c23776f7e7fb7c780f0ca21ac4e8fc40783f6a62d6391d13c",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/components/seasonal/seasonal-experience.css",
+      "sha256_entry": "87ff6ac19081534555296edcafe39c0d0fcb38d6b4b330dd47aaa259cd5d8c4e",
+      "sha256_current": "87ff6ac19081534555296edcafe39c0d0fcb38d6b4b330dd47aaa259cd5d8c4e",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/styles/editorial.css",
+      "sha256_entry": "f7a24a96cbc83b1a3ed42d03013669998a6e5996eb32b67a34c3d592bc352164",
+      "sha256_current": "f7a24a96cbc83b1a3ed42d03013669998a6e5996eb32b67a34c3d592bc352164",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/styles/app.css",
+      "sha256_entry": "d799851b95e46e647072ebbb97af8403cb05fd09561e47d52d0cb9658c6ab298",
+      "sha256_current": "d799851b95e46e647072ebbb97af8403cb05fd09561e47d52d0cb9658c6ab298",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/styles/theme-runtime.css",
+      "sha256_entry": "8a874c5a404691a4f1d45e3658692a2d187e12e85b517db0d9c1fbf892b247b8",
+      "sha256_current": "8a874c5a404691a4f1d45e3658692a2d187e12e85b517db0d9c1fbf892b247b8",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/styles/refinements.css",
+      "sha256_entry": "ae4dbe86bea7ae2a8a9cabf251906a979fd49cf94be76e553b4718529892935c",
+      "sha256_current": "ae4dbe86bea7ae2a8a9cabf251906a979fd49cf94be76e553b4718529892935c",
+      "identical": true
+    },
+    {
+      "path": "apps/web/src/styles/glass.css",
+      "sha256_entry": "4b716a59e87c334b631cd26bbc10d693958d335db19f2a5769979a1e9620e33a",
+      "sha256_current": "4b716a59e87c334b631cd26bbc10d693958d335db19f2a5769979a1e9620e33a",
+      "identical": true
+    }
+  ]
+}

@@ -1,0 +1,362 @@
+{
+  "original_expect_timeout_ms": 10000,
+  "api_default_timeout_ms": 20000,
+  "first_broad": {
+    "pass": 56,
+    "fail": 7,
+    "minutes": 18.1
+  },
+  "observations": [
+    {
+      "case": "gika-update-M4-T2-logout-d-efdec-update-or-expose-stale-card",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": 20023.96100000001,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-update-M4-T2-later-co-b543d-erwrite-or-misleading-retry",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 11960.411,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 11959.252,
+            "receive": 1.159
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-update-M4-T2-lost-rea-86222-on-without-another-revision",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 11494.951,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 11494.076,
+            "receive": 0.875
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": 200,
+          "duration_ms": 13.224,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 9.856,
+            "receive": 3.368
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-update-M4-T2-mobile-d-25fda--double-submit-and-real-ack",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 11465.603,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 11463.658,
+            "receive": 1.945
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 11135.124,
+          "timings": {
+            "dns": 0.033,
+            "connect": 0.062,
+            "ssl": 1.32,
+            "send": 0,
+            "wait": 11132.847,
+            "receive": 0.862
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": 200,
+          "duration_ms": 5.9559999999999995,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 5.319,
+            "receive": 0.637
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-update-M4-T2-desktop--9067d--double-submit-and-real-ack",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 11368.608,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 11364.06,
+            "receive": 4.548
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 10733.065,
+          "timings": {
+            "dns": 0.034,
+            "connect": 0.088,
+            "ssl": 1.363,
+            "send": 0,
+            "wait": 10730.149,
+            "receive": 1.431
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": 200,
+          "duration_ms": 7.835,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 6.973,
+            "receive": 0.862
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-reschedule-M5-T2-fail-ae8ac-led-operation-without-model",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 10556.256,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 10555.376,
+            "receive": 0.88
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": 200,
+          "duration_ms": 47.019,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 45.233,
+            "receive": 1.786
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": 41.332000000053085,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": -1,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        }
+      ]
+    },
+    {
+      "case": "gika-reschedule-M4-T3-lost-81d62-hout-new-Gemini-or-revision",
+      "resources": [
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 8765.185,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 8763.756,
+            "receive": 1.429
+          }
+        },
+        {
+          "path": "/api/gika/respond",
+          "http": 200,
+          "duration_ms": 24.083,
+          "timings": {
+            "dns": -1,
+            "connect": -1,
+            "ssl": -1,
+            "send": 0,
+            "wait": 23.093,
+            "receive": 0.99
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": -1,
+          "duration_ms": 9909.552000000025,
+          "timings": {
+            "send": -1,
+            "wait": -1,
+            "receive": -1
+          }
+        },
+        {
+          "path": "/api/commands",
+          "http": 200,
+          "duration_ms": 9759.675000000163,
+          "timings": {
+            "send": 3.9070000000065193,
+            "wait": 9751.608000000007,
+            "receive": 0.9030000000493601,
+            "dns": 3.363000000012107,
+            "connect": 3.8010000000940636,
+            "ssl": -1,
+            "blocked": -1
+          }
+        }
+      ]
+    }
+  ],
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "contains_headers_bodies_credentials": false,
+  "specific_infrastructure_cause": "not inferred"
+}

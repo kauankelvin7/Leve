@@ -264,3 +264,23 @@ Modelo somente fixture; sem Gemini live/credencial. Confirmation existente de um
 | M5-E41 | teclado/foco/status/loading disabled/terminal/a11y/light/dark/mobile; model/router/bridge sem writer direto | gika-reschedule E2E+Axe; architecture unit |
 
 Provider fixture apenas, Auth/Firestore/command/receipts reais emulados. Sem Gemini live; somente reschedule_task habilitada no registro de confirmação. Selo/token e segredos não entram em logs/evidências. Limites operacionais e compatibilidade legacy em ADR018/M5_T2_EVIDENCE.md.
+
+## M5-T3 — recurrence scope sem Gemini live
+
+| Eval | Comportamento exigido | Prova executável |
+|---|---|---|
+| E40/M5-E42 | recorrente sem escopo → choice, nunca ocorrência/série silenciosa; simples preserva M4 | gika-recurrence-policy/command unit; gika-recurrence integração e regressões M4 |
+| M5-E43..E45 | explicit occurrence/future estruturados + texto original; all não vira future; complete future negado | scopeIntent/policy strict, unit/integração |
+| M5-E46..E48 | escolha UI não chama Gemini; choice distinta de confirmação; cancel/preview sem command/receipt | bridge unit; integração; recurrence E2E keyboard/cancel |
+| M5-E49..E51 | occurrence só ID exato/irmãs/template preservados; future usa split/IDs/helpers convencionais e preserva passado | integração e E2E occurrence/future |
+| M5-E52..E55 | adulteração scope/entity/UID/op/patch/proposito; stale revision/series/sibling/materialização/remoção/gap | signer/guard unit e integração; E2E tamper |
+| M5-E56..E59 | conta trocada/logout/auth revogada; retry/lost ack/doubleclick/concurrency/prepostcommit | bridge unit; integrações/emuladores e E2E loss/auth |
+| M5-E60..E63 | future unsafe/partial/saturado/member edited/completed/canceled/deleted/purged nega, sem fallback | guard unit e integração sentinel/keys/digests |
+| M5-E64..E67 | controls/quotas/categoria/reservedstock; scope selado no effect; receipt retorna ID real | integração existente commands/receipts + recurrence |
+| M5-E68..E70 | date-only time/null preservados; horário explícito20h mantémdata; datas/DST/contexto civil do domínio | unit e integrações temporal/recurrence, regressão reschedule |
+| M5-E71..E74 | structured realack apenas, keyboard/foco/Axe/light/dark/mobile, reload semautoexec | recurrence bridge/unit e7 E2E focais |
+| M5-E75 | nenhum Firestore direto em modelo/router/bridge/guard puro; nenhuma engine/writer/coleção paralela | architecture unit e auditoria diff |
+
+Fixtures interpretam tools; Auth/commands/receipts/Firestore são reais emulados. Nenhuma interpretação Gemini live é demonstrada nesta tarefa. 'Esta e as próximas' é capacidade convencional real; all/passado, complete futura, lote/M5-T4 e Undo recorrente permanecem fora de escopo. Detalhes/primeiras tentativas/gates em M5_T3_EVIDENCE.md.
+
+M5-E76: escolha/retry herda issuedAt/expiresAt da proposta; confirmação não estende o prazo original de15min. Unit signer expiry/replay e integração comparing timing claims sem logar token/corpo.

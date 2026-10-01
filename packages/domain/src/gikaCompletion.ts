@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { activityInputSchema, civilDateSchema } from './content.ts';
 import { commandEnvelopeSchema, entityIdSchema, timeZoneSchema, type CommandEnvelope } from './identity.ts';
-export const completeTaskArgsSchema = z.object({ title: activityInputSchema.shape.title, date: civilDateSchema.nullable() }).strict();
+export const completeTaskArgsSchema = z.object({ recurrenceScope: z.enum(['occurrence', 'future', 'all']).optional(),  title: activityInputSchema.shape.title, date: civilDateSchema.nullable() }).strict();
 export const completeTaskCallSchema = z.object({ name: z.literal('complete_task'), args: completeTaskArgsSchema }).strict();
 export const completionDescriptorSchema = z.object({ id: entityIdSchema, title: activityInputSchema.shape.title,
   dueDate: civilDateSchema, timeZone: timeZoneSchema, revision: z.number().int().positive() }).strict();

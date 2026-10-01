@@ -1,3 +1,6 @@
+import { recurrenceConfirmationSchema, recurrenceCommandFields, type RecurrenceConfirmation, type RecurrenceSnapshot, type RecurrenceTask } from '../../packages/domain/src/gikaRecurrence.ts';
+import { inspectRecurrence } from './recurrenceGuard.ts';
+import { hashCanonicalValue } from '../hash.ts';
 import { gikaConfirmationSchema, type GikaConfirmation } from '../../packages/domain/src/gikaConfirmation.ts';
 import { rescheduleDescriptorSchema,type RescheduleDescriptor } from '../../packages/domain/src/gikaReschedule.ts';
 import { updateDescriptorSchema, type UpdateDescriptor } from '../../packages/domain/src/gikaUpdate.ts';
@@ -17,16 +20,38 @@ export type ReadRange = { startDate: string; endDate: string; timeZone: string }
 export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
-  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | null>;
+  inspectRecurrence?(uid: string, task: RecurrenceTask): Promise<RecurrenceSnapshot | null>;
+  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | { kind: 'recurrence'; confirmation: RecurrenceConfirmation } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
+  async inspectRecurrence(uid, task) {
+    const root = db.collection(`users/${entityIdSchema.parse(uid)}/activities`);
+    const target = await root.doc(entityIdSchema.parse(task.id)).get();
+    const data = target.data();
+    if (!data || !entityIdSchema.safeParse(data.seriesId).success || !data.occurrenceKey || data.deletedAt || data.revision !== task.revision || data.title !== task.title || data.schedule?.type !== 'task' || data.schedule?.dueDate !== task.dueDate || data.schedule?.dueTime !== task.dueTime || data.schedule?.timeZone !== task.timeZone) return null;
+    const [series, future] = await Promise.all([
+      db.doc(`users/${uid}/series/${data.seriesId}`).get(),
+      root.where('seriesId', '==', data.seriesId).where('occurrenceKey', '>=', data.occurrenceKey).limit(51).get(),
+    ]);
+    if (!series.exists) return null;
+    return inspectRecurrence(data.seriesId, task.id, series.data()!, data, future.docs.map(document => ({ id: document.id, data: document.data() })));
+  },
   async recoverMutation(uid, request) {
     const receipt = await db.doc(`commandReceipts/${entityIdSchema.parse(uid)}_${request.requestId}`).get();
     if (!receipt.exists) return null;
     const data = receipt.data()!;
-    const metadata = data.gikaReschedule ?? data.gikaUpdate ?? data.gikaCompletion ?? data.gika;
+    const metadata = data.gikaRecurrence ?? data.gikaReschedule ?? data.gikaUpdate ?? data.gikaCompletion ?? data.gika;
     if (data.uid !== uid || !metadata || metadata.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    if (data.gikaRecurrence) {
+      const confirmation = recurrenceConfirmationSchema.parse(data.gikaRecurrence.confirmation);
+      const effect = confirmation.effect;
+      const response = completionResultSchema.safeParse(data.response);
+      if (!response.success || response.data.operationId !== request.requestId || response.data.entityId !== (effect.scope === 'future' ? effect.newSeriesId : effect.task.id) || response.data.revision !== (effect.scope === 'future' ? 1 : effect.task.revision + 1) || confirmation.token !== data.gikaRecurrence.confirmationToken || hashCanonicalValue(effect) !== hashCanonicalValue(data.gikaRecurrence.effect)) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      const fields = recurrenceCommandFields(effect);
+      if (data.response.entityId === undefined || fields.entityId !== effect.task.id) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      return { kind: 'recurrence', confirmation };
+    }
     if (data.gikaReschedule) {
       const response = completionResultSchema.safeParse(data.response);
       const task = rescheduleDescriptorSchema.safeParse(data.gikaReschedule.task);

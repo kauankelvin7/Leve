@@ -312,3 +312,7 @@ Autorização mais recente d233971; plano/auditoria M4_T3_EXECPLAN.md antes do c
 ### M4-SMOKE autorizado e verificado após revisão — 2026-10-01
 
 PREcfd96c3 limpo. M4_SMOKE_EXECPLAN/EVIDENCE: quatro chamadas Gemini reais HTTP200 complete/update/reschedule timed+untimed, comandos/revisão/receipt/persistência real emulada/ack/UI/retry sem efeitos extras, preview sem write até confirmar, conta vizinha intacta e fallback missing-env.295 unit/150 integração/25 E2E/lint/build/dois TS PASS;check12/1/audit13 baseline,26 arquivos idênticos. Segredo somente memória/processo encerrado; proxy Codex Remote ambiente-only. Sem mudança de produção/arquitetura/ADR. M4-SMOKE e M4 done; M5-T1 todo, parar até nova autorização.
+
+### M5-T3 autorizado após revisão M5-T2
+
+Entrada local/origin fc0b66972164e3cee73c6c9a65969ea2e61d3994 limpa/exata e fetch verificados. Plano factual docs/gika/M5_T3_EXECPLAN.md; ADR019 distingue occurrence/future reais de all não suportado, choice separada de confirmation, contexto/revisões/hashes no selo e guards na transação convencional. Complete somente occurrence; update/reschedule future apenas conjunto íntegro/prístino/bounded, sem nova engine/writer/coleção. Gates/checkpoint e backup remoto da feat autorizados nesta tarefa; sem M5-T4/Gemini live/deploy/main/visual/dependências. Estado de conclusão e provas atuais em GIKA_STATE/TASKS/evidência M5_T3.

@@ -48,12 +48,13 @@ export const commandEnvelopeSchema = z.object({
   payload: z.unknown(),
   clientCreatedAt: z.iso.datetime().optional(),
   dependsOn: z.array(z.uuid()).max(20).optional(),
+  gikaRecurrence: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), confirmationToken: z.string().regex(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/).max(8192) }).strict().optional(),
   gikaReschedule: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), confirmationToken: z.string().regex(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/).max(8192).optional() }).strict().optional(),
   gikaUpdate: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaCompletion: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaUndo: z.object({ uid: z.string().min(1).max(128), creationOperationId: z.uuid() }).strict().optional(),
   gika: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
-}).strict().refine(command => !command.gikaReschedule || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate
+}).strict().refine(command => !command.gikaRecurrence || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate && !command.gikaReschedule && ['activity.update', 'activity.updateFuture', 'activity.setStatus'].includes(command.command) && Number.isInteger(command.expectedRevision) && (command.expectedRevision ?? 0) > 0 && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação recorrente inválida.').refine(command => !command.gikaReschedule || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate
   && command.command === 'activity.update' && (command.expectedRevision ?? 0) > 0
   && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de reagendamento inválida.').refine(command => !command.gikaUpdate || (!command.gika && !command.gikaUndo && !command.gikaCompletion
   && command.command === 'activity.update' && (command.expectedRevision ?? 0) > 0

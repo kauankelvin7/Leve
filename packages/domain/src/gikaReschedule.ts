@@ -4,7 +4,7 @@ import { commandEnvelopeSchema,type CommandEnvelope } from './identity.ts';
 import { completionDescriptorSchema,completedTaskSchema } from './gikaCompletion.ts';
 import { updateResolutionSchema } from './gikaUpdate.ts';
 export const rescheduleTaskPatchSchema=z.object({dueDate:civilDateSchema,dueTime:civilTimeSchema.optional()}).strict();
-export const rescheduleTaskArgsSchema=z.object({title:activityInputSchema.shape.title,date:civilDateSchema.nullable(),patch:rescheduleTaskPatchSchema}).strict();
+export const rescheduleTaskArgsSchema=z.object({ recurrenceScope: z.enum(['occurrence', 'future', 'all']).optional(), title:activityInputSchema.shape.title,date:civilDateSchema.nullable(),patch:rescheduleTaskPatchSchema}).strict();
 export const rescheduleTaskCallSchema=z.object({name:z.literal('reschedule_task'),args:rescheduleTaskArgsSchema}).strict();
 export const rescheduleDescriptorSchema=completionDescriptorSchema.extend({dueTime:civilTimeSchema.nullable(),patch:rescheduleTaskPatchSchema}).strict();
 export const rescheduledTaskSchema=completedTaskSchema.extend({dueTime:civilTimeSchema.nullable()}).strict();
