@@ -9,16 +9,16 @@
 - Branch: `feat/gika-integration`
 - Repositório: `/workspace/Leve`, clone HTTPS de https://github.com/kauankelvin7/Leve.git
 - Base auditada: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`
-- Último SHA verificado / último commit de tarefa Gika: `ac27289` (M2-T2, worktree limpo antes de M2-T3)
-- Worktree limpo no PRE M2-T3; gates finais read-only PASS; checkpoint registra o commit anterior à tarefa atual
+- Último SHA verificado / último commit de tarefa Gika: `fd0682de06c1c824cdfa72a4c39acad48a836e6a` (M2-T3, verificado após commit; worktree limpo)
+- Worktree limpo verificado após M2-T3; gates finais read-only PASS; checkpoint posterior altera apenas documentação/estado
 - Últimos gates: M2-T3 lint/build/typechecks, 134 unit, 42 integração, 8 E2E finais (6 API Gika + 2 Planner) PASS; mock14 PASS em T2. Planner: contraste e dois harness de recorrência baseline; regressão offline dock corrigida e sequência original PASS. Nenhuma intermitência sem classificação pendente.
-- Commit atual de tarefa: `test(gika): M2-T3 verify read-only evals and isolate real smoke` (contém este estado)
+- Último commit de tarefa: `test(gika): M2-T3 verify read-only evals and isolate real smoke` (estado atualizado atomicamente na tarefa; este checkpoint é posterior)
 
 ## Próxima ação
 
 1. Ler .agent/skills/humanizer-br/SKILL.md antes de criar/revisar qualquer texto Gika; fonte oficial local autorizada pelo usuário (ADR-008).
 2. Conferir AGENTS.md, estado, tarefas, ExecPlan, ADRs, git status e HEAD.
-3. Pedido atual aprova M1 e autoriza M2 após classificação explícita de baseline/intermitência em M2-S0. Depois executar M2-T1/T2/T3 estritamente read-only, preservando contrato de UI dos mocks. Nenhuma mutação M3 é autorizada neste M2.
+3. Pedido atual aprova M1 e autoriza M2 após classificação explícita de baseline/intermitência em M2-S0. M2-T1/T2/T3 concluídas estritamente read-only, com contrato de UI dos mocks preservado. Executar somente M2-SMOKE quando a credencial servidor estiver disponível. Nenhuma mutação M3 é autorizada neste M2.
 4. M2 autorizado: Gemini Developer API, gemini-3.5-flash-lite, thinking_level medium, exclusivamente Free Tier, sem billing/fallback pago. Implementar sem segredo; somente smoke real depende de GEMINI_API_KEY ausente.
 
 ## Bloqueios
@@ -64,8 +64,10 @@ O SHA acima identifica o último commit de tarefa, anterior ao commit que grava 
 
 | 2026-09-30 | M2 | M2-S0 | done: baseline contraste/recorrência confirmados; regressão dock offline corrigida, gates PASS | commit M2-S0 após d8ee3f0 |
 
-| 2026-09-30 | M2 | M2-T1 | done: adapter Gemini sem segredo; lint/build e 116 unit PASS | commit M2-T1 após 7a3c343 |
+| 2026-09-30 | M2 | M2-T1 | done: adapter Gemini sem segredo; lint/build e 116 unit PASS | `a1334eb` |
 
-| 2026-09-30 | M2 | M2-T2 | done: consultas autenticadas e contrato UI; gates offline PASS | commit M2-T2 após a1334eb |
+| 2026-09-30 | M2 | M2-T2 | done: consultas autenticadas e contrato UI; gates offline PASS | `ac27289` |
 
-| 2026-10-01 | M2 | M2-T3 | done: evals offline, autorização após espera, gates PASS e somente smoke real blocked | commit M2-T3 após ac27289 |
+| 2026-10-01 | M2 | M2-T3 | done: evals offline, autorização após espera, gates PASS e somente smoke real blocked | `fd0682d` |
+
+| 2026-10-01 | M2 | M2-SMOKE | blocked: chave ausente; script executado exit2 sem rede, único bloqueio de M2 | `fd0682d` |
