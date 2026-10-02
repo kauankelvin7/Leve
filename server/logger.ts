@@ -37,18 +37,28 @@ function sanitize(value: unknown, key = '', depth = 0): unknown {
   return redactLogText(String(value));
 }
 
+// Error messages/stacks can contain JSON fragments, document contents or upstream URLs.
+// Only technical classes/codes survive, including nested causes.
 export function serializeBackendError(error: unknown, depth = 0): LogContext {
-  if (!(error instanceof Error)) return { name: typeof error, message: redactLogText(String(error)) };
+  if (!(error instanceof Error)) return { name: typeof error };
   const technical = error as Error & { code?: unknown; status?: unknown; cause?: unknown };
+  const code = technical.code;
   const serialized: LogContext = {
-    name: technical.name,
-    message: redactLogText(technical.message),
-    ...(technical.code !== undefined ? { code: sanitize(technical.code, 'errorCode') } : {}),
-    ...(technical.status !== undefined ? { status: sanitize(technical.status, 'errorStatus') } : {}),
-    ...(technical.stack ? { stack: redactLogText(technical.stack).split('\n').slice(0, 16).join('\n') } : {}),
+    name: error instanceof SyntaxError ? 'SyntaxError' : error instanceof TypeError ? 'TypeError' : 'Error',
+    ...(typeof code === 'number' || (typeof code === 'string' && /^(?:[A-Z][A-Z0-9_]{0,63}|(?:auth|firestore)\/[a-z-]{1,64}|[a-z]+(?:-[a-z]+)+)$/.test(code)) ? { code } : {}),
+    ...(typeof technical.status === 'number' ? { status: technical.status } : {}),
   };
   if (technical.cause !== undefined && depth < 2) serialized.cause = serializeBackendError(technical.cause, depth + 1);
   return serialized;
+}
+
+export function technicalRoute(path: string) {
+  if (/^\/api\/commands\/[^/]+$/.test(path)) return '/api/commands/:operationId';
+  return ['/api/health', '/api/version', '/api/session', '/api/commands', '/api/account/export', '/api/internal/tick',
+    '/api/gika/respond', '/api/gika/recover-confirmation', '/api/gika/recover-batch', '/api/gika/choose-recurrence'].includes(path) ? path : 'unknown';
+}
+export function latencyBucket(duration: number) {
+  return duration < 100 ? 'lt_100ms' : duration < 1000 ? '100_999ms' : duration < 5000 ? '1_4s' : 'gte_5s';
 }
 
 export function backendLog(level: LogLevel, event: string, context: LogContext = {}, error?: unknown) {

@@ -357,11 +357,12 @@ milestones:
         dependencies: [M8-T2]
       - id: M9-T2
         title: "Observabilidade e métricas"
-        status: in_progress
+        status: done
+        evidence: ["M9_EVIDENCE T2; erro privado reproduzido/fix técnico-only, rota genérica/correlation/latencybucket; sem IDs/conteúdo, 537unit/252integração/lint/doisTS/build PASS."]
         dependencies: [M9-T1]
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
-        status: todo
+        status: in_progress
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
