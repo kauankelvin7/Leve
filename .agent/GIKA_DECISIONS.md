@@ -208,3 +208,10 @@ Complemento ADR019: ao consumir uma escolha, a confirmação herda issuedAt/expi
 ## ADR-GIKA-020 — Batch bounded por composição itemizada
 
 Decisão em docs/gika/ADR_020_BATCH_COMPOSITION.md: complete/reschedule até5pending de um dia explícito, matching/exclusões exatos e subset integral; occurrence explícito permitido, future/all recusados no lote sem alterar T3individual. Novo propósito no signer M5-T2 e guard no writer convencional vinculam UID/parent/childIDs/targets/revs/patches/scopes/count/expiry. Todos pendentes revalidados transacionalmente antes de cada novo efeito; stale inicial0writes, corrida posteriorpartialhonesta. Recibos existentes conservam plano+índice para recovery5knownIDs antes provider, replay original e irmãos pendentes sujeitos ao prazo original. Sem atomicidade global/rollback, writer/coleção/engine/outbox novos. Limite16KiB do tokenbatch medido, parser requests/legacy inalterados. UI confirma só acknowledgements reais, distingue unknown/partial e botões não chamam Gemini. M6/live fora de escopo.
+
+## ADR-GIKA-021 — proposta mínima sobre a composição existente
+
+- Data:2026-10-02; accepted, M6 autorizado sequencialmente.
+- Decisão: uma leitura bounded precede uma única chamada ao mesmo ModelAdapter. Modelo recebe título/status/data/horário/indicador recorrente e slot temporário, nunca IDs reais/UID/revisões/descriptions/notas. Retorna sugestão strict por slot; software resolve alvo e revalida snapshot após upstream. Dados separados das instruções, allowlist exclusiva da proposta.
+- Executor: reutilizar BatchPlan/signer/guard/bridge/receipts/activity.update; execução itemizada cap5, partial explícito, sem transação global fictícia. Extensão bounded para semana no mesmo contrato, sem planner/executor paralelo. Slots não são autoridade de persistência.
+- Limites: somente reagendamento por data, preserva horários/ausência; rotinas requerem occurrence explícito, future/all de lote permanecem proibidos. Sem novo writer/collection/outbox/Rule/Undo, sem persistência de proposta/conversa.

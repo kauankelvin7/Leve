@@ -304,3 +304,7 @@ E31 refinado pela regra de seleção explícita: `Move tudo menos academia para 
 | M5-E107..E109 | teclado/foco/Axe/lightdesktop/darkmobile360/390/cap5 inteiro/scrollindependente/composerfixo; reload0autoexec | 13 E2E batch, regressões shell/confirmation/recurrence |
 
 Fixture de interpretação sem credencial; command/Auth/Firestore/receipt/acks reais em emuladores com dados sintéticos. Cada item tem transação convencional própria, guard integral nos pendentes e resultados recuperáveis; composição não promete atomicidade global/rollback. Sem sucesso derivado da narrativa. Recorrência future continua suportada individualmente conforme T3; lote future/all recusado. Limites/primeiras tentativas/gates em M5_T4_EXECPLAN/EVIDENCE e ADR020.
+
+## M6 — proposta de organização
+
+M6-E01..E06: proposta diária strict, cada slot resolvido por software; minimização sem identidade/notas; referência inventada/unknown/duplicada/missing, horário inventado, data fora do horizonte, partial/cap/stale e conta revogada bloqueiam. gika-organization.test.ts usa provider/read fixtures, sem alegar interpretação Gemini live. T1 emite apenas sugestão; confirmação/execução e semana são T2/T3.

@@ -292,7 +292,7 @@ milestones:
     tasks:
       - id: M6-T1
         title: "Structured proposal para organizar dia"
-        status: todo
+        status: done
         dependencies: [M5-T4]
       - id: M6-T2
         title: "Preview + confirmação + execução transacional"

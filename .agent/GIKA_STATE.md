@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M5_READY_FOR_NEXT_PHASE_STOP_BEFORE_M6`.
+- Status global: `M6_T1_DONE`.
 - Branch de trabalho da integração responsiva: `feat/gika-responsive-integration`, baseada em `696e0e5`. Linha Gika aprovada: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -178,3 +178,9 @@ Commit funcional atômico verificado: `8fe12469d9b5d3751109d79d5beafe4449f07aa6`
 ## Checkpoint M5-T4
 
 Commit funcional atômico verificado: `dd2a6e88f9c25e87241187886d6264f4c13375fe` na feat/gika-integration, parent1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4. Implementação/testes/evals/ADR020/evidências e STATE/TASKS done juntos; worktree limpo confirmado após commit. Este checkpoint documental registra o SHA real, sem mudança de produto ou gates. Backup remoto autorizado somente desta branch depois deste checkpoint; igualdade HEAD local/origin e worktree limpo devem ser conferidos após o push e reportados no encerramento. M5-T4 done/M5 done; M6-T1/T2/T3 todo/não iniciados. Parar para revisão, sem PR/main/deploy/Gemini live.
+
+## M6 — autorização e retomada atual
+
+Integração responsiva aprovada consolidada por fast-forward696e0e5→c840492, publicada e local/origin iguais/worktree limpo. Pedido atual autoriza T1→T2→T3 sequenciais, sem aprovação intermediária. T1 em implementação; M7/Character/TQA fora de escopo.
+
+M6-T1 concluído: contexto diário mínimo/cap5/slots sem identidade, schema strict, releitura/revisões após upstream e sugestão estruturada sem comando. Lint/doisTS/build/501unit PASS. Provas HTTP fixture e minimização em gika-organization.test.ts; UI usa card existente. Próxima ação autorizada: M6-T2 sem pausa entre tarefas. Gates completos de UI/emuladores ao consolidar fluxo executável; nenhum live.
