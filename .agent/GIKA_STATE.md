@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M5_CLOSURE_R1_DONE_CLOSURE_BLOCKED_STOP_BEFORE_R2_M6`.
+- Status global: `M5_CLOSURE_R2_DONE_STOP_BEFORE_FINAL_CLOSURE_M6`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -14,11 +14,15 @@
 
 ## Autorização atual
 
-Pedido atual autoriza exclusivamente M5-CLOSURE-R1 targeted Firebase Admin/node-forge. Entrada/fetch local=origin `5ca793e17f23f671833bdf7cebd793cc96107af3`, feat/gika-integration e worktree limpo verificados. Upgrade mínimo Admin13.6→13.10, sem Firebase client/overrideforge/crypto manual; gates/evidência, commit funcional isolado, checkpoint documental e push feat. Não iniciar R2/M6/live/PR/main/deploy/shell/Character Foundation.
+R1 revisado/aprovado. Pedido atual autoriza exclusivamente M5-CLOSURE-R2 — E2E stability/root-cause. Entrada/fetch local=origin `6849f1fe3094e2296ea41f6c2277fad9d7524c5c`, feat/gika-integration e worktree limpo verificados. Duas suítes amplas e duas rodadas dos sete originais fresh, gates/evidência/checkpoint/push somente feat. Nenhuma correção especulativa; não closure final/M6/live/PR/main/deploy/shell/Character Foundation.
 
 ## Próxima ação
 
-Parar para revisão de M5-CLOSURE-R1 após commit funcional/checkpoint/push. R1_PASS: Admin13.10 e forge removido, produção0critical/0high/0moderate. Closure global permanece blocked; R2/M6 não autorizados/iniciados. Evidência docs/gika/M5_CLOSURE_R1_SECURITY_EVIDENCE.md e árvore sanitizada; não declarar gate amplo de closure reexecutado/aprovado por causa de R1.
+Parar para revisão de R2 após checkpoint documental/backup. R2_PASS: ampla inicial76/0 e final76/0; sete isolados7/0 nas duas rodadas; auditprodução0/0/0/lint/doisTS/build/480unit/243integração PASS. Nenhum produto/harness/dependência alterado, falhas históricas não reproduzidas e causa física não atribuída. Não reexecutar closure final ainda nem declarar M5_READY; M6 todo/não iniciado. Evidência docs/gika/M5_CLOSURE_R2_EVIDENCE.md e JSON sanitizado.
+
+## M5-CLOSURE-R2 — estabilidade medida
+
+Entrada6849f1fe3094e2296ea41f6c2277fad9d7524c5c local/origin limpa/exata após fetch. Primeira ampla76PASS/0FAIL preservada antes dos sete focais7PASS/0FAIL; depois gates padrão0audit/lint/doisTS/build/480unit/243integração PASS, ampla final76PASS/0FAIL e sete fresh finais7PASS/0FAIL. Sem rerun oculto/deadline/fixture/selector/assertion/retry alterado; cada focal com API/dev/emuladores demo novos, sem GEMINI_API_KEY. Backend HTTP máximo732ms inicial/832ms final, não duração do teste nem causa dos atrasos antigos. NOT_REPRODUCED_IN_R2 para os sete históricos; hipóteses membership-cache/tutorial-refresh não convertidas em fix, nenhum Auth enfraquecido.248arquivos fonte/config/manifest/lock byte-idênticos, screenshots gerados restaurados aos bytes de entrada. Somente evidência/JSON/STATE/TASKS no checkpoint documental, nenhuma ADR/feature/test-harness funcional. R2_PASS específico; closure final não reexecutado e histórico blocked preservado, aguardar revisão antes da etapa seguinte/M6. Push somente feat, confirmar HEAD local=origin e worktree limpo no encerramento.
 
 ## M5-CLOSURE-R1 — segurança direcionada concluída
 

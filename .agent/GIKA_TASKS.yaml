@@ -372,8 +372,8 @@ m5_closure:
   entry_checkpoint: "8a892504753d7624f50cf54f534ce7c38fde195a"
   evidence: "docs/gika/M5_CLOSURE_EVIDENCE.md"
   gates: "Lint/doisTS/build/480unit/243integração PASS. Primeira Gika56PASS/20FAIL; entrada exata somente20 originais13PASS/7FAIL; nenhum deadline relaxado.284arquivos não documentais idênticos."
-  blocker: "Audit histórico2high corrigido em R1: produção atual0/0/0 e forge removido. Closure segue blocked por regressão ampla não reexecutada/aprovada; falhas anteriores preservadas em M5_CLOSURE_EVIDENCE.md. R2/M6 não iniciados."
-  next_action: "Parar para revisão após checkpoint/push documental; M6 todo/não autorizado."
+  blocker: "Histórico M5_BLOCKED preservado; R1_PASS audit0/0/0 e R2_PASS ampla inicial/final76/0 e sete fresh7/0 duas rodadas. Closure final não reexecutado nesta etapa, aguardar revisão R2; não declarar READY nem iniciar M6."
+  next_action: "Aguardar revisão de R2/checkpoint/push; closure final em etapa autorizada separada, M6 todo/não iniciado."
 
 m5_closure_r1:
   status: done
@@ -384,3 +384,13 @@ m5_closure_r1:
   gates: "Clean install/auditprodução0/lint/doisTS/build/480unit/243integração PASS;56GikaE2E originais PASS; Auth suplemento PASS nas duas versões. Unit inicial479/1 por runnerloglevel e Authoriginal1FAIL por selector reproduzidos na entrada; cópia Auth13.10 comfont403fsdeny corrigida somente no /tmp, primeira tentativa preservada. Nenhum deadline relaxado."
   checkpoint: "12c36521eeea7aa39fa1a7ccc7381c70a1b8dbe2 — commit funcional isolado manifest/lock, seguido de checkpoint documental e backup feat."
   next_action: "Parar para revisão após checkpoint/push feat; closure global blocked; não iniciar R2/M6."
+
+m5_closure_r2:
+  status: done
+  decision: R2_PASS
+  entry_checkpoint: "6849f1fe3094e2296ea41f6c2277fad9d7524c5c"
+  evidence: "docs/gika/M5_CLOSURE_R2_EVIDENCE.md; docs/gika/evidence/m5-closure-r2-gates.json"
+  code_changes: false
+  gates: "Primeira ampla76PASS/0FAIL preservada; sete originais isolados fresh7PASS/0FAIL. Auditprodução0critical/high/moderate/lint/doisTS/build/480unit/243integração PASS. Ampla final76PASS/0FAIL e sete originais fresh finais7PASS/0FAIL, sem deadlines/asserções/fixtures/seletores/retries alterados, nenhum rerun oculto.248arquivos fonte/config idênticos. Somente documentação, sem Gemini live/dependência/closure final/M6."
+  diagnosis: "Sete históricos NOT_REPRODUCED_IN_R2, causa física não atribuída; nenhuma correção especulativa de Auth/produto/harness. Histórico anterior reprovado permanece na evidência original."
+  next_action: "Parar para revisão após checkpoint/push feat e igualdade HEAD local/origin/worktree limpo; não reexecutar closure final ainda, M6 todo."
