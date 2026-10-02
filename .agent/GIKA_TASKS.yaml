@@ -313,15 +313,20 @@ milestones:
 
   M7:
     name: "Voz"
+    status: done
+    evidence: "docs/gika/M7_EVIDENCE.md; T1/T2 done; audit0/lint/doisTS/build/522unit/252integração/37E2Eselecionados/17shell/Axe PASS; sem live/hardware/produção, parar antes M8."
     tasks:
       - id: M7-T1
         title: "Input de voz com fallback"
         status: done
         evidence: ["docs/gika/M7_EVIDENCE.md T1; reconhecimento nativo pt-BR, somente draft/finais, cancel/cleanup/fallback; header self; lint/doisTS/build/522unit/252integração/5E2E focal/Axe/audit0 PASS."]
+        acceptance_criteria: ["Voz nativa por gesto preenche somente draft final/revisável, nunca envia; cancel/erro/denied/unsupported/offline/UID preservam texto/invalidam eventos; header microphone self, privacidade remota explícita, sem áudio persistido/Gemini."]
         dependencies: [M6-T3]
       - id: M7-T2
         title: "Evals de linguagem natural falada"
-        status: todo
+        status: done
+        evidence: ["docs/gika/M7_EVIDENCE.md T2; EVALS M7-E01..E18; controlador14unit/casos7E2Evoz simulada, envio manual pipeline existente; regressãozoom corrigida, gates finais522unit/252integração/37E2E/17shell/Axe/audit0 PASS."]
+        acceptance_criteria: ["PT-BR final/partial/cancel/denied/unsupported/start/unmount/draft/UID/offline/doubleclick, sem autoenvio; manualsend normal; status/privacy mobile/reflow200/keyboard/Axe; primeiras falhas registradas, sem relaxar prazo/retry/assertion; M8 todo."]
         dependencies: [M7-T1]
 
   M8:

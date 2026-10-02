@@ -322,3 +322,15 @@ M6-E07..E13: confirmação mesma infraestrutura, antes/depois/preservados no sel
 | M6-E32..E34 | light/dark/mobile/foco/teclado/Axe; mesmo renderer/batch/command layer, sem acesso direto model→Firestore | E2E organização + shell e guard arquitetural existente ampliado |
 
 Fixtures provam interpretação contratual; Auth/Firestore/commands/receipts/acks são reais emulados com dados sintéticos. E2E cria previews assinados controlados para observar UI/execução; integração prova o caminho router→leitura→ModelAdapter fixture→validação→preview. Não declarar interpretação Gemini live. Nenhum planner paralelo/undo universal/atomicidade global/persistência de conversa.
+
+## M7 — fronteira voz → texto
+
+| Eval | Comportamento | Prova executável |
+|---|---|---|
+| M7-E01..E03 | “o que eu tenho hoje”, “academia amanhã”, “organiza meu dia” chegam como texto final; nenhuma interpretação/parser de voz paralelo | unit gika-voice, resultados nativos simulados |
+| M7-E04..E08 | gesto explícito/uma captura; parcial ignorado; final editável anexado ao draft; sem autoenvio; erro/denied/unsupported preservam texto | unit controlador e E2E gika-voice |
+| M7-E09..E13 | cancel/unmount/logout/troca UID/offline invalidam callbacks; reconectar não reinicia nem envia; overflow/mudança concorrente não sobrescrevem draft | unit controlador e E2E conta/offline/cancel |
+| M7-E14..E17 | status e aviso de privacidade visíveis no mobile, teclado/aria/Axe/light/dark/reduced motion; Enter bloqueado durante captura; envio manual usa request textual normal | E2E voice, Gika M1/read-only/organization e shell |
+| M7-E18 | header permite microfone somente self; camada de voz sem API/commands/storage/áudio persistido; secure context/API/policy exigidos | unit configuração/fronteira e revisão read-only |
+
+CI simula a API nativa, não hardware/permissão real. O navegador pode usar serviço remoto; nenhum áudio enviado ao Gemini pelo Leve. Não replicar as jornadas de mutação existentes: depois do envio consciente, o pipeline textual original permanece autoridade. Sem Gemini live.

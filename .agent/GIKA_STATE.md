@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M7_T1_DONE`.
+- Status global: `M7_DONE_STOP_BEFORE_M8`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 done; M7-T2 todo, avanço sequencial autorizado. M8 e posteriores todo/não iniciados.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8 e posteriores todo/não iniciados.
 
 ## Hardening — resumo histórico
 
@@ -19,7 +19,7 @@ M6 aprovado; pedido atual autoriza M7-T1→T2 sequenciais sobre25eecb063afa06d0d
 
 ## Próxima ação
 
-Executar M7-T2, evals e E2E da fronteira voz→texto; T1 aprovado pelos gates executados. Backup final somente feat/gika-integration, confirmar HEAD local=origin/worktree limpo e parar após M7 para revisão.
+Parar após M7 para revisão. Não iniciar M8/Character/TQA. Backup final somente feat/gika-integration; igualdade HEAD local=origin/worktree limpo verificada no encerramento.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 
@@ -208,3 +208,11 @@ Commit funcional T3 `430b892917317e0b73563631f527dde01e73588d`, parent85e3ec95b6
 SpeechRecognition/webkit nativas, pt-BR/final-only/uma captação por gesto. Somente onDraft; envio textual manual já existente é único caminho da Gika. Não captura blobs/getUserMedia/MediaRecorder, áudio não vai ao Gemini e não tem storage/log/histórico novo. Cancel/unmount/conta keyed/offline fecham captação e ignoram eventos atrasados; draft anterior preservado, texto reconhecido anexado sem truncar/autoenviar. UI acessível no composer, disponível/ouvindo/processando/denied/unsupported; header microphone=(self), câmera/geolocalização negadas. Reconhecimento pode ser remoto pelo navegador, sem promessa on-device/offline/produção/dispositivo real.
 
 Lint/doisTS/build/522unit/252integração/5E2E focal/Axe/auditprodução0 PASS. Primeiro typecheck falhou por override de mock no fixture; corrigida tipagem sem mudar asserção/produto, primeira tentativa preservada em M7_EVIDENCE. GikaM1 teste atualiza apenas navegação de foco para botão agora disponível e label de voz; sem timeout/assertion de domínio relaxados. T2 autorizado automaticamente.
+
+Checkpoint T1 funcional3724aef27b86c2c40ca43e3d7557bcf67f9a6e23 verificado com worktree limpo após commit; T2 iniciado sem autorização intermediária conforme pedido.
+
+## M7 — conclusão
+
+Entrada25eecb0 local/origin/fetch limpa, avanço sequencial T1→T2 autorizado. T1 funcional3724aef27b86c2c40ca43e3d7557bcf67f9a6e23; reconhecimento nativo pt-BR somente draft revisável, gesture/cancel/fallback/cleanup/UID/offline, microfone self sem origins terceiros. T2 evals/unit14novos/E2E7novos de fronteira, sem parser/router/writer/persistência adicional ou autoenvio. Native browser pode usar serviço remoto; sem alegação local/offline, áudio não enviado ao Gemini/logado/armazenado pelo Leve.
+
+Gates finais0audit/lint/doisTS/build/522unit/252integração/37E2Eselecionados/17shellresponsive/Axe PASS. Primeiros TS2416fixture, ampla36/1selector, segunda36/1zoom e focal8/1zoom preservados em M7_EVIDENCE; corrigidos sem prazo/retry/assertion enfraquecido. Focalzoom1PASS antes da ampla final37PASS. Copy curta/status inicial sem redundância preservam privacidade visível e reflow200%; screenshots sintéticos inspecionados, históricos restaurados. Backend/domain/Auth/Rules/dependências byte-idênticos à entrada. T2 não repete integração T1 nem todas as mutações como versões faladas: nova fronteira apenas UI/texto. Hardware/permissão/serviço real/Safari/Firefox/Edge físicos/header remoto não comprovados; presença APIChrome151 e configuração self apenas. Sem Gemini live/deploy/PR/main/M8. Commits semânticos e checkpoint documental, push somente feat; conferir igualdade local/origin/clean no fechamento.

@@ -11,7 +11,7 @@ type Props = {
 export function GikaComposer({ textareaRef, draft, open, loading, online, onDraft, onSend }: Props) {
   const composing = useRef(false);
   const voice = useVoiceInput(open && online && !loading, draft, onDraft);
-  const voiceText = voice.state.message ?? ({ idle: 'Você pode usar voz ou digitar.', starting: 'Preparando o microfone…', listening: 'Ouvindo…', processing: 'Preparando o texto…', ready: 'Texto pronto. Revise e envie quando quiser.', denied: 'O microfone não foi autorizado. Você pode digitar.', unsupported: 'Voz não disponível neste navegador. Digite sua pergunta.', error: 'Não consegui reconhecer sua fala. Você pode digitar.' }[voice.state.status]);
+  const voiceText = voice.state.message ?? ({ idle: '', starting: 'Preparando o microfone…', listening: 'Ouvindo…', processing: 'Preparando o texto…', ready: 'Texto pronto. Revise e envie quando quiser.', denied: 'O microfone não foi autorizado. Você pode digitar.', unsupported: 'Voz não disponível neste navegador. Digite sua pergunta.', error: 'Não consegui reconhecer sua fala. Você pode digitar.' }[voice.state.status]);
   function submit() { if (!voice.busy) onSend(); }
   useLayoutEffect(() => {
     const element = textareaRef.current;
@@ -39,7 +39,7 @@ export function GikaComposer({ textareaRef, draft, open, loading, online, onDraf
           if (event.key === 'Enter' && !event.shiftKey && !composing.current && !event.nativeEvent.isComposing) { event.preventDefault(); submit(); }
         }} />
       <div className="gika-composer-actions">
-        <button className="gika-voice" type="button" disabled={!online || loading || voice.state.status === 'unsupported'} aria-label={voice.busy ? 'Cancelar voz' : 'Usar voz'} title={voice.busy ? 'Cancelar voz' : 'Usar voz'} aria-pressed={voice.busy} aria-describedby="gika-voice-status gika-composer-hint" onClick={() => voice.busy ? voice.cancel() : voice.start()}>
+        <button className="gika-voice" type="button" disabled={!online || loading || voice.state.status === 'unsupported'} aria-label={voice.busy ? 'Cancelar voz' : 'Usar voz'} title={voice.busy ? 'Cancelar voz' : 'Usar voz'} aria-pressed={voice.busy} aria-describedby="gika-voice-status gika-voice-privacy" onClick={() => voice.busy ? voice.cancel() : voice.start()}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" /><path d="M6 11v1a6 6 0 0 0 12 0v-1M12 18v3m-3 0h6" /></svg>
         </button>
         <button className="gika-send" type="submit" aria-label="Enviar pergunta" title="Enviar pergunta" disabled={!online || loading || voice.busy || !draft.trim()}>
@@ -47,7 +47,8 @@ export function GikaComposer({ textareaRef, draft, open, loading, online, onDraf
         </button>
       </div>
     </div>
-    <p id="gika-voice-status" className="gika-composer-hint" role="status" aria-live="polite">{voiceText}</p>
-    <small id="gika-composer-hint" className="gika-composer-hint">Enter envia · Shift + Enter pula uma linha{voice.state.status !== 'unsupported' && <><br />O navegador pode enviar o áudio ao serviço de voz. Revise o texto antes de enviar.</>}</small>
+    <p id="gika-voice-status" className="gika-voice-hint" role="status" aria-live="polite">{voiceText}</p>
+    <small id="gika-composer-hint" className="gika-composer-hint">Enter envia · Shift + Enter pula uma linha</small>
+    {voice.state.status !== 'unsupported' && <small id="gika-voice-privacy" className="gika-voice-hint">Áudio pode ser enviado online.</small>}
   </form>;
 }
