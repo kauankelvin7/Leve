@@ -27,3 +27,7 @@ Integração server completa não repetida: nenhum server/domain/command/Rules/h
 Após a correção: lint PASS; typecheck web/server e build PASS; 533/533 unit em53arquivos PASS; audit omitdev high e JSON PASS0 critical/0 high/0 moderate/0 total. Focal proatividade7/7 PASS1min; regressão crítica Gika37/37 PASS5,7min; shell/responsive17/17 PASS50,2s, incluindo viewports390/853/1024/1366/1920/2560, teclado/zoom/lightdark e Axe das superfícies. Gates finais todos verdes, primeira reprodução negativa preservada acima. Nenhum timeout/retry/asserção relaxado; sem live, mudança server/commands/Auth/Rules/dependências/harness. Artefatos históricos M1/auth gerados restaurados/removidos seletivamente, screenshots novos apenas /tmp. Revisão React e segunda revisão read-only confirmaram cancel/sequence/draft/UID/cleanup e nenhuma mutação automática.
 
 M8-T1 e M8-T2 concluídos. M9 todo, Character/TTS/TQA/PR/main/deploy não iniciados. Commit funcional T2 inclui UI/testes/evidências/estado; checkpoint documental seguinte registra SHA funcional e backup somente feat/gika-integration. Confirmar igualdade HEAD local/origin e worktree limpo após push.
+
+## Checkpoint M8
+
+T1: `571b6bfe9b3d685ca8295de14b66d0e24b99f14f`. T2 funcional: `4799b833daeb37a4c2af4b1f810c9976434c5d81`; worktree limpo após commit, critérios/gates documentados. Este checkpoint é somente documental; publicar feat/gika-integration e verificar HEAD local/origin/ls-remote iguais/worktree limpo no encerramento. M8 done, M9 todo; aguardar revisão.

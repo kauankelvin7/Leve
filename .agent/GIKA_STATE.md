@@ -224,3 +224,7 @@ Gates finais0audit/lint/doisTS/build/522unit/252integração/37E2Eselecionados/1
 ## Checkpoint M7
 
 T1 funcional3724aef27b86c2c40ca43e3d7557bcf67f9a6e23; T2 funcional `9da054e79839e1970aaea0665bb0cdf92f8192ff`, gates aprovados e worktree limpo verificado após commit. Checkpoint documental seguinte registra conclusão sem alteração de produto/testes. Origin ainda25eecb0 após fetch antes do backup; push somente feat/gika-integration e igualdade HEAD local/remoto/clean verificados no encerramento. M7 done; parar para revisão, M8 todo.
+
+## Checkpoint M8
+
+T1: `571b6bfe9b3d685ca8295de14b66d0e24b99f14f`. T2 funcional: `4799b833daeb37a4c2af4b1f810c9976434c5d81`; worktree limpo após commit, critérios/gates documentados. Este checkpoint é somente documental; publicar feat/gika-integration e verificar HEAD local/origin/ls-remote iguais/worktree limpo no encerramento. M8 done, M9 todo; aguardar revisão.
