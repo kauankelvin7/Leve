@@ -347,3 +347,11 @@ CI simula a API nativa, não hardware/permissão real. O navegador pode usar ser
 | M8-E06 | UID estranho/logout rejeitam abertura; draft existente preservado | E2E auth/composer |
 | M8-E07 | Cancelar carregamento invalida handoff; novas intenções distintas não reutilizam contador consumido | E2E regressão reproduzida antes da correção |
 | M8-E08 | Superfície atual Leve, teclado/foco/light/dark/mobile/200%/Axe, sem TTS/mic | E2E + inspeção visual |
+
+## M9 — hardening factual e regressão de release
+
+- Envguard rejeita APIkey privada em VITE_ e preserva configuração pública Firebase: client-env unit.
+- SyntaxError/cause/rota privada não deixam mensagem/stack/texto/identidade em diagnóstico; classe/code/status técnico e latencybucket preservados: backend-logging unit.
+- Completed calendar AA, controles avatar dentro do painel tablet, datas inteiras a200%,42combinações viewport/rota e solid persistente: Planner/design existentes, sem aumento de deadlines.
+- Guard AST bloqueia imports runtime de persistência/commands internos em Gika, model/API em proatividade/voz/character; exceções read-only explícitas. CI crítico seleciona oito jornadas existentes de auth/idempotência/tamper/confirmation/recurrence/batch/organization; full Gika100 na regressão RC.
+- Character visual/rig real **não avaliado/não concluído**: CHARACTER_ASSET_REQUIRED. Fallback estático, medições headless ou documentação não provam personagem final. Hardware de microfone, Gemini live, produção/AppCheck e WebVitals de campo dependem de validação própria; nenhuma chamada live nesta execução.

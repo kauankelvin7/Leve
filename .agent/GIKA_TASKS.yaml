@@ -367,7 +367,7 @@ milestones:
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
-        status: todo
+        status: in_progress
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.

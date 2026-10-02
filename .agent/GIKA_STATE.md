@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M9_T3_BLOCKED_CHARACTER_ASSET_REQUIRED_CONTINUE_T4`.
+- Status global: `M9_T4_IN_PROGRESS_CHARACTER_ASSET_REQUIRED`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 em andamento; T1/T2 done, T3 blocked somente pelo asset real, T4 autorizado a continuar.
 

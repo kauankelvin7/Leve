@@ -25,7 +25,7 @@ jobs:
           java -version
       - run: npm ci --include=dev
       - name: Production dependency security audit
-        run: npm audit --omit=dev --audit-level=high
+        run: npm audit --omit=dev --audit-level=moderate
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -33,3 +33,7 @@ jobs:
         run: npm run build
       - name: Auth and Firestore integration tests
         run: npm run test:integration
+      - name: Chromium for critical browser journeys
+        run: npx playwright install --with-deps chromium
+      - name: Critical Gika commands, confirmation and recovery
+        run: npm run test:e2e:critical
