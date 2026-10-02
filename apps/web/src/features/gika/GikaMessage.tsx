@@ -36,13 +36,13 @@ function GikaDemoPreview() {
   </div>;
 }
 
-export function GikaMessage({ message, active = true }: { message: Message; active?: boolean }) {
+export function GikaMessage({ message, active = true, superseded = false }: { message: Message; active?: boolean; superseded?: boolean }) {
   return <li className={`gika-message is-${message.role}`}>
     <div className="gika-message-author">{message.role === 'assistant' && <GikaMark />}<span>{message.role === 'user' ? 'Você' : message.simulated ? 'Resposta de demonstração' : 'Gika'}</span></div>
     <p>{message.text}</p>
     {message.organizationPreview && <GikaToolResult title="Sugestão de organização"><ul>{message.organizationPreview.items.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {civilLabel(item.before.dueDate)}{item.before.dueTime ? ` às ${item.before.dueTime}` : ' sem horário'}{item.action === 'keep' ? ' · Permanece' : ` → ${civilLabel(item.after.dueDate)}`}</span></li>)}</ul><p>Nenhuma tarefa foi alterada.</p></GikaToolResult>}
     {message.createdTask && <section className="gika-result" role="group" aria-label="Tarefa adicionada"><div className="gika-card-title"><Icon name="check" /><strong>{message.createdTask.title}</strong></div><p>{message.createdTask.dueDate ? civilLabel(message.createdTask.dueDate) : 'Sem data'}{message.createdTask.dueTime ? ` às ${message.createdTask.dueTime}` : ''}</p>{message.creationUndo && <GikaCreationUndo context={message.creationUndo} active={active} />}</section>}
-    {message.batchConfirmation && message.rescheduleContext && <GikaBatch confirmation={message.batchConfirmation} context={message.rescheduleContext} active={active} />}
+    {message.batchConfirmation && message.rescheduleContext && <GikaBatch confirmation={message.batchConfirmation} context={message.rescheduleContext} active={active} superseded={superseded} />}
     {message.confirmation && message.rescheduleContext && <GikaConfirmation confirmation={message.confirmation} context={message.rescheduleContext} active={active} />}
     {(message.recurrenceChoice || message.recurrenceConfirmation) && message.rescheduleContext && <GikaRecurrence choice={message.recurrenceChoice} confirmation={message.recurrenceConfirmation} context={message.rescheduleContext} active={active} />}
     {message.updatedTask && <section className="gika-result" role="group" aria-label="Tarefa atualizada"><div className="gika-card-title"><Icon name="check" /><strong>{message.updatedTask.title}</strong></div><p>{civilLabel(message.updatedTask.dueDate)}</p></section>}

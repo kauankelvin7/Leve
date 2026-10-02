@@ -296,7 +296,7 @@ milestones:
         dependencies: [M5-T4]
       - id: M6-T2
         title: "Preview + confirmação + execução transacional"
-        status: todo
+        status: done
         dependencies: [M6-T1]
       - id: M6-T3
         title: "Organizar semana"

@@ -3,6 +3,7 @@ import { planningContext, validateOrganization, organizationPeriod } from '../..
 import { organizationCallSchema } from '../../packages/domain/src/gikaOrganization';
 import { geminiPayload } from '../../server/gika/gemini';
 import type { ReadResult } from '../../packages/domain/src/gika';
+process.env.FIREBASE_PROJECT_ID='demo-leve';process.env.FIRESTORE_EMULATOR_HOST='localhost:8080';process.env.FIREBASE_AUTH_EMULATOR_HOST='localhost:9099';
 const context = {today:'2026-10-02',timeZone:'America/Sao_Paulo',weekStartsOn:1 as const};
 const read = (): ReadResult => ({startDate:context.today,endDate:'2026-10-04',timeZone:context.timeZone,partial:false,cached:false,items:[{id:'real-task',revision:1,title:'Java',kind:'task',status:'pending',seriesId:null,occurrenceKey:null,schedule:{type:'task',dueDate:context.today,dueTime:null,timeZone:context.timeZone,disambiguation:'reject'}}]});
 const call = () => ({name:'propose_organization',args:{items:[{ref:0,action:'move',dueDate:'2026-10-03',dueTime:null}]}});
@@ -26,7 +27,7 @@ describe('M6 proposal is bounded data, never mutation authority', () => {
     if(variant==='invented')proposal.args.items[0]!.ref=4;
     if(variant==='past')proposal.args.items[0]!.dueDate='2026-10-01';
     if(variant==='outside')proposal.args.items[0]!.dueDate='2026-10-05';
-    if(variant==='time')Object.assign(proposal.args.items[0]!,{dueTime:'19:00'});
+    if(variant==='time'){data.items[0]!.schedule={type:'task',dueDate:context.today,dueTime:'19:00',timeZone:context.timeZone,disambiguation:'reject'};fresh.items[0]!.schedule=data.items[0]!.schedule;}
     if(variant==='noop')proposal.args.items[0]!.dueDate=context.today;
     if(variant==='stale')fresh.items[0]!.revision++;
     if(variant==='partial')fresh.partial=true;
@@ -57,9 +58,9 @@ function fixture() {
   return {model,repository,http:request(app)};
 }
 describe('M6-T1 HTTP software resolution before and after model',()=>{
-  it('reads today twice, strips private identity and emits only non-executable suggestion',async()=>{
+  it('reads today twice, strips private identity and emits sealed preview, without command execution',async()=>{
     const f=fixture();const response=await f.http.post('/gika/respond').send({requestId:crypto.randomUUID(),text:'Organiza meu dia'});
-    expect(response.status).toBe(200);expect(response.body.organizationPreview.items[0].id).toBe('real-task');expect(response.body.batchConfirmation).toBeUndefined();
+    expect(response.status).toBe(200);expect(response.body.batchConfirmation.plan.organization.items[0].id).toBe('real-task');expect(response.body.batchConfirmation.plan.items[0].patch).toEqual({dueDate:'2026-10-03'});
     expect(f.repository.read).toHaveBeenCalledTimes(2);expect(f.model.interpret.mock.calls[0]?.[0]).toMatchObject({planning:{tasks:[{ref:0,title:'Java'}]}});
     expect(JSON.stringify(f.model.interpret.mock.calls)).not.toContain('real-task');
   });
@@ -82,4 +83,9 @@ describe('M6-T1 HTTP software resolution before and after model',()=>{
       expect((await f.http.post('/gika/respond').send({requestId:crypto.randomUUID(),text:'Organiza meu dia'})).status).toBe(422);
     }
   });
+});
+
+it('M6-T2 suggested time is an explicit validated change, not an inferred command default',()=>{
+  const proposal=call();Object.assign(proposal.args.items[0]!,{dueTime:'19:00'});
+  expect(validateOrganization(proposal,read(),read(),context,'day').items[0]?.after).toEqual({dueDate:'2026-10-03',dueTime:'19:00'});
 });

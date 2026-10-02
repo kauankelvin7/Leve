@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M6_T1_DONE`.
+- Status global: `M6_T2_DONE`.
 - Branch de trabalho da integração responsiva: `feat/gika-responsive-integration`, baseada em `696e0e5`. Linha Gika aprovada: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -184,3 +184,5 @@ Commit funcional atômico verificado: `dd2a6e88f9c25e87241187886d6264f4c13375fe`
 Integração responsiva aprovada consolidada por fast-forward696e0e5→c840492, publicada e local/origin iguais/worktree limpo. Pedido atual autoriza T1→T2→T3 sequenciais, sem aprovação intermediária. T1 em implementação; M7/Character/TQA fora de escopo.
 
 M6-T1 concluído: contexto diário mínimo/cap5/slots sem identidade, schema strict, releitura/revisões após upstream e sugestão estruturada sem comando. Lint/doisTS/build/501unit PASS. Provas HTTP fixture e minimização em gika-organization.test.ts; UI usa card existente. Próxima ação autorizada: M6-T2 sem pausa entre tarefas. Gates completos de UI/emuladores ao consolidar fluxo executável; nenhum live.
+
+M6-T2 concluído sobre e39cd6a: mesma confirmação batch selando proposta/preservados/diff, writer/receipts convencionais, executor sequencial e resultados parciais existentes. Horário sugerido é alteração explícita no preview; remoção de horário não suportada pelo patch atual. Editar novo pedido cancela prévia antiga. Lint/doisTS/build/502unit/250integração/8E2E organização + Axe mobile-dark PASS; primeira focal6/1 por seletor novo documentada. Próxima tarefa autorizada M6-T3.

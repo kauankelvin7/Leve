@@ -188,3 +188,64 @@ describe('M5-T4 sealed itemized batch through existing conventional command writ
     expect((await task(context, 1).get()).data()?.status).toBe('pending'); expect((await receipt(context, 1).get()).exists).toBe(false);
   });
 });
+
+describe('M6-T2 daily proposal composes the proven command/confirmation/receipt path',()=>{
+  async function proposal(keepFirst=false){
+    const context=await ready('reschedule');context.input.text='Organiza meu dia';
+    modelState.model={interpret:async input=>{
+      expect(input.planning?.tasks).toHaveLength(2);
+      expect(JSON.stringify(input.planning)).not.toContain(context.ids[0]!);
+      expect(JSON.stringify(input.planning)).not.toContain('Nota sintética');
+      return [{name:'propose_organization',args:{items:input.planning!.tasks.map(item=>({ref:item.ref,action:keepFirst&&item.ref===0?'keep':'move',dueDate:keepFirst&&item.ref===0?today():tomorrow(),dueTime:item.dueTime}))}}];
+    }};
+    const response=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(context.input).expect(200);
+    expect(response.body.batchConfirmation).toBeTruthy();
+    return {...context,confirmation:response.body.batchConfirmation};
+  }
+  it('preview writes nothing, heterogeneous suggestions confirm exact effects and receipt replay needs no model',async()=>{
+    const context=await proposal(true),original=await snapshot(context);
+    expect(modelState.calls).toBe(1);expect(context.confirmation.plan.items).toHaveLength(1);
+    const envelope=await batchEnvelope(context.confirmation,context.input,0);
+    expect((await db.doc(`commandReceipts/${context.user.uid}_${envelope.operationId}`).get()).exists).toBe(false);
+    expect(await snapshot(context)).toEqual(original);
+    await send(context.user,envelope).expect(200);
+    await send(context.user,envelope).expect(200).expect(response=>expect(response.body.result).toBe('alreadyApplied'));
+    const after=await snapshot(context);expect(after[0]).toEqual(original[0]);
+    expect(after[1]).toMatchObject({revision:2,schedule:{dueDate:tomorrow(),dueTime:'19:00'},descriptionPlain:'Nota sintética preservada',colorHex:'#123456',estimatedMinutes:35});
+    const recovered=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(context.input).expect(200);
+    expect(recovered.body.batchConfirmation).toEqual(context.confirmation);expect(modelState.calls).toBe(1);
+  });
+  it('a preserved task edited after preview blocks the first mutation without refreshing revisions',async()=>{
+    const context=await proposal(true),original=await snapshot(context);
+    // Controlled concurrent fixture edit verifies the preserved precondition.
+    await task(context,0).update({revision:2,title:'Edição posterior'});
+    await send(context.user,await batchEnvelope(context.confirmation,context.input,0)).expect(409);
+    expect((await task(context,1).get()).data()).toEqual(original[1]);
+  });
+  it('lost acknowledgement and concurrent confirmations each apply one logical effect per target',async()=>{
+    const context=await proposal(),envelopes=await Promise.all(context.confirmation.plan.items.map((_:unknown,index:number)=>batchEnvelope(context.confirmation,context.input,index)));
+    for(const envelope of envelopes){
+      const responses=await Promise.all([send(context.user,envelope),send(context.user,envelope)]);
+      expect(responses.map(response=>response.status)).toEqual([200,200]);
+      expect(responses.map(response=>response.body.result).sort()).toEqual(['alreadyApplied','applied']);
+    }
+    const recovered=await request(app).post('/api/gika/recover-batch').set('Authorization',`Bearer ${context.user.token}`).send(context.input).expect(200);
+    expect(recovered.body.result).toMatchObject({alreadyApplied:2,applied:0,pending:0});expect(modelState.calls).toBe(1);
+    for(const document of await snapshot(context))expect(document?.revision).toBe(2);
+  });
+  it.each(['invented','stale','revoked','partial'] as const)('%s cannot seal or apply a proposal',async variant=>{
+    const context=await ready('reschedule'),original=await snapshot(context);context.input.text='Organiza meu dia';
+    const spy=variant==='partial'?vi.spyOn(firestoreReads,'read').mockImplementation(async()=>({startDate:today(),endDate:today(),timeZone:zone,partial:true,cached:false,items:[]})):undefined;
+    modelState.model={interpret:async input=>{
+      if(variant==='stale')await task(context,0).update({revision:2});
+      if(variant==='revoked')await db.doc(`memberships/${context.user.uid}`).update({state:'suspended'});
+      return [{name:'propose_organization',args:{items:input.planning!.tasks.map(item=>({ref:variant==='invented'?4:item.ref,action:'move',dueDate:tomorrow(),dueTime:item.dueTime}))}}];
+    }};
+    try{
+      const response=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(context.input);
+      expect(response.status).toBe(variant==='partial'?200:variant==='revoked'?403:422);expect(response.body.batchConfirmation).toBeUndefined();
+      for(const [index,document]of (await snapshot(context)).entries())expect(document).toEqual({...original[index],...(variant==='stale'&&index===0?{revision:2}:{})});
+      if(variant==='partial')expect(modelState.calls).toBe(0);
+    }finally{spy?.mockRestore();}
+  });
+});

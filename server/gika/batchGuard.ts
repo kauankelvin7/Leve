@@ -17,6 +17,14 @@ export async function assertBatchPending(transaction: Transaction, uid: string, 
   }));
   const refs = confirmation.plan.items.flatMap(item => [db.doc(`commandReceipts/${uid}_${item.operationId}`),db.doc(`users/${uid}/activities/${item.id}`),...(item.recurrence ? [db.doc(`users/${uid}/series/${item.recurrence.seriesId}`)] : [])]);
   const documents = await transaction.getAll(...refs);
+  const preserved = confirmation.plan.organization?.items.filter(item => item.action === 'keep') ?? [];
+  if(preserved.length){
+    const snapshots = await transaction.getAll(...preserved.map(item=>db.doc(`users/${uid}/activities/${item.id}`)));
+    for(const [index,item] of preserved.entries()){
+      const data=snapshots[index]?.data();
+      if(!data || data.deletedAt || data.revision!==item.revision || data.title!==item.title || data.kind!=='task' || data.status!=='pending' || data.schedule?.dueDate!==item.before.dueDate || data.schedule?.dueTime!==item.before.dueTime || data.schedule?.timeZone!==item.timeZone || Boolean(data.seriesId||data.occurrenceKey)!==item.recurring)throw conflict();
+    }
+  }
   let offset = 0;
   for (const [index,item] of confirmation.plan.items.entries()) {
     const receipt = documents[offset++]!, target = documents[offset++]!, series = item.recurrence ? documents[offset++]! : undefined;

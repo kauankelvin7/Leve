@@ -1,4 +1,5 @@
-import { organizationPeriod, planningContext, validateOrganization } from './organizationPolicy.ts';
+import { Temporal } from '@js-temporal/polyfill';
+import { organizationBatch, organizationPeriod, planningContext, validateOrganization } from './organizationPolicy.ts';
 import { validateBatch, resolveBatch } from './batchPolicy.ts';
 import { issueBatchConfirmation } from './confirmation.ts';
 import { z } from 'zod';
@@ -98,11 +99,11 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const period = organizationPeriod(input.text);
         if (period) {
           if (period !== 'day') return gikaInterpretationSchema.parse({text:'A organização da semana ainda não está disponível. Peça uma sugestão para hoje.',simulated:false,reads:[]});
-          const range = readRange({name:'get_week',args:{date:context.today}},context);
+          const range = {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
           // Read only today's tasks; proposal may distribute them over the current bounded week.
           const source = {...range,startDate:context.today,endDate:context.today};
           const read = readResultSchema.parse(await repository.read(identity.uid,source));
-          if(read.timeZone!==context.timeZone)throw new GikaFault('GIKA_POLICY');
+          if(read.timeZone!==context.timeZone || read.startDate!==source.startDate || read.endDate!==source.endDate)throw new GikaFault('GIKA_POLICY');
           if(read.partial || read.items.length>=50)return gikaInterpretationSchema.parse({text:'Esta consulta está incompleta. Não posso propor uma organização completa.',simulated:false,reads:[]});
           if(read.items.filter(item=>item.kind==='task'&&item.status==='pending').length>5)return gikaInterpretationSchema.parse({text:'Posso organizar até 5 tarefas por vez. Escolha um dia com um conjunto menor.',simulated:false,reads:[]});
           const planning = planningContext(read,context);
@@ -113,9 +114,13 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
           const fresh = readResultSchema.parse(await repository.read(identity.uid,source));
           await repository.authorize(identity);
+          if(fresh.startDate!==source.startDate || fresh.endDate!==source.endDate)throw new GikaFault('GIKA_POLICY');
           const preview = validateOrganization(calls[0],{...read,endDate:range.endDate},{...fresh,endDate:range.endDate},context,period,input.text);
           if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
-          return gikaInterpretationSchema.parse({text:'Sugestão para o seu dia. Nenhuma tarefa foi alterada.',simulated:false,reads:[],organizationPreview:preview});
+          const plan = await organizationBatch(preview,repository,identity.uid,input);
+          await repository.authorize(identity);
+          if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
+          return gikaInterpretationSchema.parse({text:plan?'Sugestão para o seu dia. Confira as mudanças antes de confirmar.':'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
         const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
         // Recheck account/policy after the upstream wait, before exposing data.

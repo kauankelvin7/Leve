@@ -308,3 +308,5 @@ Fixture de interpretação sem credencial; command/Auth/Firestore/receipt/acks r
 ## M6 — proposta de organização
 
 M6-E01..E06: proposta diária strict, cada slot resolvido por software; minimização sem identidade/notas; referência inventada/unknown/duplicada/missing, horário inventado, data fora do horizonte, partial/cap/stale e conta revogada bloqueiam. gika-organization.test.ts usa provider/read fixtures, sem alegar interpretação Gemini live. T1 emite apenas sugestão; confirmação/execução e semana são T2/T3.
+
+M6-E07..E13: confirmação mesma infraestrutura, antes/depois/preservados no selo; cancel/editar não escreve; stale preservado bloqueia primeiro commit; ack real/replay/concorrência/lostack não refaz efeito; partial/auth/unknown refs bloqueiam; mobile-dark Axe e offline draft sem autoenvio. Provas integração gika-batch e E2E gika-organization; primeira falha de seletor preservada em M6_EVIDENCE.

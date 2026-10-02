@@ -1,3 +1,7 @@
+import { batchPlanSchema, batchOperationId, type BatchPlan } from '../../packages/domain/src/gikaBatch.ts';
+import { classifyBatchAction } from './batchPolicy.ts';
+import type { ReadRepository } from './reads.ts';
+import type { GikaRequest } from '../../packages/domain/src/gika.ts';
 import { scopedIntent } from './scopeIntent.ts';
 import { hashCanonicalValue } from '../hash.ts';
 import { scheduleInstants } from '../../packages/domain/src/content.ts';
@@ -38,10 +42,24 @@ export function validateOrganization(call: unknown, read: ReadResult, fresh: Rea
     if (proposal.dueDate < context.today || proposal.dueDate > read.endDate) throw new GikaFault('GIKA_POLICY');
     if ((target.seriesId || target.occurrenceKey) && proposal.action === 'move' && scopedIntent(text,{}).scope !== 'occurrence') throw new GikaFault('GIKA_POLICY');
     const before = {dueDate:target.schedule.dueDate,dueTime:target.schedule.dueTime}, after = {dueDate:proposal.dueDate,dueTime:proposal.dueTime};
-    // The planner cannot invent a time for an untimed task. Explicit suggestions preserve time in this bounded first contract.
-    if (after.dueTime !== before.dueTime || (proposal.action === 'keep') !== (JSON.stringify(before) === JSON.stringify(after))) throw new GikaFault('GIKA_POLICY');
+    // A suggested time is visible and sealed; clearing time is not supported by the existing patch.
+    if ((after.dueTime === null && before.dueTime !== null) || (proposal.action === 'keep') !== (JSON.stringify(before) === JSON.stringify(after))) throw new GikaFault('GIKA_POLICY');
     try { scheduleInstants({...target.schedule,...after}); } catch { throw new GikaFault('GIKA_POLICY'); }
     return {id:target.id,title:target.title,revision:target.revision,timeZone:target.schedule.timeZone,before,after,action:proposal.action,recurring:Boolean(target.seriesId || target.occurrenceKey)};
   }).sort((a,b)=>a.id.localeCompare(b.id));
   return organizationPreviewSchema.parse({period,startDate:read.startDate,endDate:read.endDate,items});
+}
+
+/** Convert validated suggestions into the existing sealed, sequential batch contract. */
+export async function organizationBatch(preview: OrganizationPreview, repository: ReadRepository, uid: string, request: GikaRequest): Promise<BatchPlan | null> {
+  const changes=preview.items.filter(item=>item.action==='move');
+  if(!changes.length)return null;
+  const items: BatchPlan['items']=[];
+  for(const target of changes){
+    const recurrence=target.recurring ? await repository.inspectRecurrence?.(uid,{id:target.id,title:target.title,revision:target.revision,dueDate:target.before.dueDate,dueTime:target.before.dueTime,timeZone:target.timeZone}) : undefined;
+    if(target.recurring && !recurrence)throw new GikaFault('GIKA_POLICY');
+    items.push({operationId:await batchOperationId(uid,request.requestId,items.length),id:target.id,title:target.title,revision:target.revision,timeZone:target.timeZone,before:target.before,patch:{dueDate:target.after.dueDate,...(target.after.dueTime!==target.before.dueTime&&target.after.dueTime!==null?{dueTime:target.after.dueTime}:{})},scope:target.recurring?'occurrence':'none',...(recurrence?{recurrence}:{})});
+  }
+  if(classifyBatchAction({action:'reschedule',count:items.length,complete:true,recurrenceVerified:items.every(item=>item.scope==='none'||Boolean(item.recurrence))})!=='confirm')throw new GikaFault('GIKA_POLICY');
+  return batchPlanSchema.parse({action:'reschedule',sourceDate:preview.startDate,organization:preview,items});
 }
