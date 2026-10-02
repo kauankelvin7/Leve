@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M8_DONE_STOP_BEFORE_M9`.
+- Status global: `M9_T2_IN_PROGRESS`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 e posteriores todo/não iniciados.
 
@@ -15,11 +15,11 @@
 
 ## Autorização atual
 
-M7 aprovado; pedido atual autoriza M8-T1→T2 sequenciais sobre44b8928e26b0a01385efd6b2b5138f93fe5fdae6 local/origin/fetch exatos/worktree limpo. Ponytail/full/Caveman/full/humanizer local. Sem M9/Character/TTS/TQA/PR/main/deploy/live ou nova fase.
+M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32c77, local/origin/fetch limpos/exatos. Ponytail/full/Caveman/full/humanizer local. Character somente conforme asset real e fallback; nenhum TTS/live/serviço pago/PR/main/deploy/TQA/nova fase.
 
 ## Próxima ação
 
-Aguardar revisão de M8; M9 todo/não iniciado. Nenhuma próxima tarefa executada automaticamente.
+M8 aprovado. Executar M9-T1→T2→T3→T4 sequenciais, gates e RC; somente feat/gika-integration.
 
 ## M8 — conclusão
 

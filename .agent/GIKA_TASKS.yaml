@@ -352,11 +352,12 @@ milestones:
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
-        status: todo
+        status: done
+        evidence: ["M9_EVIDENCE T1; risco VITE_APIkey reproduzido/fix, whitelistFirebase preservada; 535unit/lint/doisTS/build/audit0 PASS; AppCheck adiado factualmente, limites existentes preservados."]
         dependencies: [M8-T2]
       - id: M9-T2
         title: "Observabilidade e métricas"
-        status: todo
+        status: in_progress
         dependencies: [M9-T1]
       - id: M9-T3
         title: "Acessibilidade, performance e offline"

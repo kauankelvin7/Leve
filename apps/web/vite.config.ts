@@ -11,7 +11,7 @@ const publicFirebaseKeys = new Set([
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectRoot, '');
-  const leaked = Object.keys(env).filter(key => key.startsWith('VITE_') && !publicFirebaseKeys.has(key) && /private|secret|token|password|credential|client.?email|service.?account/i.test(key));
+  const leaked = Object.keys(env).filter(key => key.startsWith('VITE_') && !publicFirebaseKeys.has(key) && /private|secret|token|password|credential|api.?key|client.?email|service.?account/i.test(key));
   if (leaked.length) throw new Error(`Variáveis sensíveis não podem usar o prefixo VITE_: ${leaked.join(', ')}`);
   return {
     root: fileURLToPath(new URL('.', import.meta.url)),

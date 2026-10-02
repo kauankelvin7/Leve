@@ -222,3 +222,7 @@ Complemento T2/T3 da ADR021: o patch convencional aceita horário explícito. A 
 ## ADR-GIKA-022 — voz como entrada nativa do composer
 
 M7 usa SpeechRecognition/webkitSpeechRecognition por gesto explícito, sem dependência ou transcritor remoto próprio. Reconhecimento pode ocorrer em serviço do navegador; não prometer local/on-device nem offline. Permissão só no start do usuário, microphone=(self) no header, camera/geolocation negados. Final vira texto visível/editável, anexado ao draft; somente envio manual textual existente alcança Gika. Abort/cleanup/late-event guards e isolamento por session.uid existentes, nenhuma persistência/log de áudio/transcrição nova. Unsupported/denied/erro deixam texto funcional; produção/hardware não validados por fixtures CI.
+
+## ADR-GIKA-023 — App Check depende de validação operacional
+
+M9 não ativa AppCheck sem sitekey/domínios/provider web/PWA/Firestore/APIAdmin e teste de usuários legítimos/offline/emuladores. Ativar enforcement parcial ou fallback bypass não oferece proteção correta; reCAPTCHAEnterprise/CloudBilling não autorizado. Proteções Auth/Rules/commands/quotas/signer permanecem. Ausência não classificada como vulnerabilidade por si só. Reavaliar cadastro gratuito/operacional com UAT, sem serviço pago automático.
