@@ -44,9 +44,9 @@ test('M7-T1 explicit gesture, accessible listening, editable final and conscious
   expect(await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.starts)).toBe(0);
   const input = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
   await page.getByRole('button', { name: 'Usar voz', exact: true }).focus(); await page.keyboard.press('Enter');
-  await expect(page.locator('#gika-voice-status')).toHaveText('Ouvindo…'); await expect(page.getByRole('button', { name: 'Enviar pergunta', exact: true })).toBeDisabled();
+  await expect(page.locator('#gika-voice-status')).toHaveText('Ouvindo…'); await expect(page.locator('.gika-character')).toHaveAttribute('data-character-state', 'listening'); await expect(page.getByRole('button', { name: 'Enviar pergunta', exact: true })).toBeDisabled();
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
-  await finish(page, 'o que eu tenho hoje'); await expect(input).toHaveValue('o que eu tenho hoje'); await expect(input).toBeEditable();
+  await finish(page, 'o que eu tenho hoje'); await expect(page.locator('.gika-character')).toHaveAttribute('data-character-state', 'idle'); await expect(input).toHaveValue('o que eu tenho hoje'); await expect(input).toBeEditable();
   expect(requests).toBe(0); expect(commands).toBe(0); await input.fill('O que eu tenho hoje?'); await page.getByRole('button', { name: 'Enviar pergunta', exact: true }).click();
   await expect(page.locator('.gika-message.is-assistant')).toContainText('Veja sua agenda'); expect(requests).toBe(1); expect(commands).toBe(0);
 });

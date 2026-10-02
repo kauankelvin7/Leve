@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { Icon } from '../../components/ui/Icon';
-import type { GikaAdapter } from './conversation';
 import { GikaMark } from './GikaMark';
+import type { GikaAdapter } from './conversation';
+import { GikaCharacter, useCharacterPresentation } from './character/GikaCharacter';
+import { CharacterEvents } from './character/CharacterEvents';
+import { characterActivity, characterState } from './character/controller';
+import { useAuth } from '../identity/AuthProvider';
 import { GikaComposer } from './GikaComposer';
 import { GikaError, GikaLoading, GikaMessage } from './GikaMessage';
 import { gikaAdapter, simulated } from './adapter';
@@ -14,6 +18,10 @@ const demoSuggestions = [
 ] as const;
 
 export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulated, dayDraftRequest = 0 }: GikaPanelProps) {
+  const { session } = useAuth();
+  const presentation = useCharacterPresentation(session?.profile?.reduceMotion ?? false);
+  const [activity, notifyCharacter] = useReducer(characterActivity, 'idle');
+  const [voiceListening, setVoiceListening] = useState(false);
   const handledDayDraft = useRef(0);
   const [organizationNotice, setOrganizationNotice] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -21,6 +29,23 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
   const transcript = useRef<HTMLDivElement>(null);
   const conversation = useGikaConversation(adapter);
   const { draft, setDraft, messages, status, errorCode, online, send, cancel, retry } = conversation;
+
+  const latest = messages.at(-1);
+  useEffect(() => {
+    if (status === 'loading') { notifyCharacter('working'); return; }
+    if (status === 'error') { notifyCharacter('error'); return; }
+    const acknowledged = latest?.role === 'assistant' && !latest.simulated && Boolean(latest.createdTask || latest.completedTask || latest.updatedTask);
+    const needsChoice = latest?.role === 'assistant' && !latest.simulated && Boolean(latest.confirmation || latest.recurrenceChoice || latest.recurrenceConfirmation || latest.batchConfirmation || [latest.completionResolution, latest.updateResolution, latest.rescheduleResolution].some(item => item?.status === 'clarify' || item?.status === 'ambiguous'));
+    notifyCharacter(acknowledged ? 'ack' : needsChoice ? 'clarify' : 'idle');
+  }, [status, latest]);
+  useEffect(() => {
+    if (!open) { notifyCharacter('idle'); setVoiceListening(false); }
+    if (activity !== 'success' || !open) return;
+    const timer = window.setTimeout(() => notifyCharacter('idle'), 1_200);
+    return () => window.clearTimeout(timer);
+  }, [activity, open]);
+  const visualState = characterState({ open, online, ...presentation, voiceListening, requestPending: status === 'loading', activity });
+  const character = <GikaCharacter state={visualState} animate={open && presentation.visible && !presentation.reducedMotion && online} />;
 
   useEffect(() => {
     if (!open || !dayDraftRequest || handledDayDraft.current === dayDraftRequest) return;
@@ -66,7 +91,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
     return () => { viewport?.removeEventListener('resize', update); viewport?.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, []);
 
-  return <dialog ref={dialog} id="gika-dialog" className="gika-panel" aria-labelledby="gika-title" aria-describedby="gika-demo-notice"
+  return <CharacterEvents.Provider value={notifyCharacter}><dialog ref={dialog} id="gika-dialog" className="gika-panel" aria-labelledby="gika-title" aria-describedby="gika-demo-notice"
     onCancel={event => { event.preventDefault(); close(); }}
     onKeyDown={event => {
       if (event.key !== 'Tab') return;
@@ -77,13 +102,13 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     }}>
     <header className="gika-heading">
-      <div className="gika-identity"><span className="gika-identity-mark"><GikaMark /></span><div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
+      <div className="gika-identity">{messages.length ? character : <span className="gika-identity-mark"><GikaMark /></span>}<div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
     <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : organizationNotice ?? 'Consulte sua agenda ou adicione uma tarefa.'}</p>
     <div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0}>
       {messages.length === 0 && <div className="gika-welcome">
-        <span className="gika-welcome-mark"><GikaMark /></span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre seu dia ou peça para adicionar uma tarefa.</p>
+        <span className="gika-welcome-mark" aria-hidden="true">{character}</span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre seu dia ou peça para adicionar uma tarefa.</p>
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}
@@ -92,6 +117,6 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
       {status === 'error' && <GikaError code={errorCode} online={online} onRetry={() => void retry()} />}
       <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Consultando sua agenda…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
     </div>
-    <GikaComposer textareaRef={composer} draft={draft} open={open} loading={status === 'loading'} online={online} onDraft={setDraft} onSend={() => { setOrganizationNotice(null); void send(); }} />
-  </dialog>;
+    <GikaComposer textareaRef={composer} draft={draft} open={open} loading={status === 'loading'} online={online} onDraft={setDraft} onVoiceListening={setVoiceListening} onSend={() => { setOrganizationNotice(null); void send(); }} />
+  </dialog></CharacterEvents.Provider>;
 }

@@ -350,7 +350,7 @@ milestones:
   M9:
     name: "Hardening e release"
     status: in_progress
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: pipeline híbrido comprovado. V2 sobre PNG original:14camadas/build95307, backing/lids/underlap/matte, autoria QA rest/idle/blink/stress PASS light/dark52frames+48pequenos; mecha415/415 isolada e permanente conforme autoridade visual corrigida. Sem integração/aceite RC ou aprovação integral final."
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: pipeline híbrido comprovado. V2 direção aprovada e integração essencial autorizada:14camadas preservadas/noveestados/rig51586/Controller visual-only/lazy Canvas/fallback/reduced motion. Autoria QA252capturas PASS; gates técnicos executados, primeiras falhas/classificação preservadas em M9_EVIDENCE. Composição atual não aprovada; presença adaptativa/enquadramento/duplicação/halo são QA obrigatório. Sem aceite RC/export final ou expansão."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -365,12 +365,12 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: in_progress
-        evidence: ["M9_EVIDENCE T3; Hybrid Bust v2 com PNG original/hash2aea8b31: backing localizado1202pixels/lids de Carinhosa registrados/underlap oculto/matte, verify/inspect0problemas e autoria QA PASS52frames+48pequenos light/dark. Visual Lock define autoridade e mecha permanente;415/415canônicos em master, nenhuma cópia de cabelo/ausência do donor. Primeiras falhas preservadas, fonte PNG resolvida. Não integrado/Controller/React/aceite final/RC; próximos listening/thinking sobre mesmo rig."]
+        evidence: ["M9_EVIDENCE Character essencial; mesmas14PNGs/master, noveestados/umViewModel.mode/10bones/build51586. CLI/QA252frames PASS, Controller facts-only sem autoridade de execução, lazy/runtime/fallback/reduced/offline. Audit0/lint/doisTS/build/545unit/252integração PASS; Ampla95/9 não integralmente verde (fixtures cap e launcher baseline reproduzidos; reconnectvoz NOT_REPRODUCED); focais13/13+pós-presença9/9+scroll1/1+shell17/17/Axe0/12viewportthemes+200% PASS. Feedback do usuário: composição atual não aprovada; presença adaptativa, escala, duplicação header/centro e halo/cortes pendentes, sem upscale do raster. T3 permanece in_progress e não RC_READY."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: blocked
-        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada referência/docs/QA/estado, sem mudança de produto. Decisão financeira resolvida (ADR024); aceite RC depende de busto híbrido/rig visualmente aprovados e gates após integração, não M9_DONE_RC_READY."]
+        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomadas anteriores de referência/docs/QA/estado sem produto preservadas. Integração essencial atual entregue tecnicamente; gates/falhas qualificadas em M9_EVIDENCE, composição explicitamente não aprovada e presença adaptativa/halo/cortes pendentes. Decisão financeira resolvida (ADR024); aceite RC depende de busto híbrido/rig visualmente aprovados e gates após integração, não M9_DONE_RC_READY."]
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.

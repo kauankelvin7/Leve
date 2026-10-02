@@ -1,3 +1,4 @@
+import { useCharacterEvent } from './character/CharacterEvents';
 import { useEffect, useRef, useState } from 'react';
 import type { BatchConfirmation, BatchResult } from '../../../../../packages/domain/src/gikaBatch';
 import type { GikaRequest } from './conversation';
@@ -12,6 +13,7 @@ const itemStatus = { applied: 'Aplicada', alreadyApplied: 'Já aplicada', confli
 
 /** Presentation of the sealed list. Labels never select targets or determine executable effects. */
 export function GikaBatch({ confirmation, context, active, online = true, superseded = false }: { confirmation: BatchConfirmation; context: { uid: string; request: GikaRequest }; active: boolean; online?: boolean; superseded?: boolean }) {
+  const notifyCharacter = useCharacterEvent();
   const [state, setState] = useState<State>('awaiting_confirmation');
   const [result, setResult] = useState<BatchResult | null>(null), [errorText, setErrorText] = useState<string>();
   const [retryAllowed, setRetryAllowed] = useState(true);
@@ -28,19 +30,21 @@ export function GikaBatch({ confirmation, context, active, online = true, supers
   }, [executable]);
   useEffect(() => { if(superseded) { setState(current => current === 'awaiting_confirmation' ? 'cancelled' : current); setRetryAllowed(false); } }, [superseded]);
   function focusFeedback() { requestAnimationFrame(() => { if (feedback.current?.closest('dialog')?.open) feedback.current.focus({ preventScroll: true }); }); }
-  function cancel() { if (!active || superseded || controller.current || state !== 'awaiting_confirmation') return; setState('cancelled'); focusFeedback(); }
+  function cancel() { if (!active || superseded || controller.current || state !== 'awaiting_confirmation') return; setState('cancelled'); notifyCharacter('idle'); focusFeedback(); }
   async function confirm() {
     if (!executable || superseded || controller.current || !retryAllowed || !['awaiting_confirmation', 'partial', 'failed'].includes(state)) return;
-    const pending = new AbortController(); controller.current = pending; setState('confirming'); setErrorText(undefined);
+    const pending = new AbortController(); controller.current = pending; setState('confirming'); notifyCharacter('working'); setErrorText(undefined);
     try {
       const ack = await confirmGikaBatch(confirmation, context.request, context.uid, AbortSignal.any([pending.signal, AbortSignal.timeout(30_000)]));
       if (pending.signal.aborted || controller.current !== pending) return;
       setResult(ack);
       const committed = ack.applied + ack.alreadyApplied;
+      notifyCharacter(committed === ack.requested ? 'ack' : 'error');
       setRetryAllowed(ack.conflicts === 0);
       setState(committed === ack.requested ? 'confirmed' : committed > 0 ? 'partial' : ack.conflicts ? 'conflict' : 'failed');
     } catch (error) {
       if (pending.signal.aborted || controller.current !== pending) return;
+      notifyCharacter('error');
       const code = error instanceof ApiError ? error.code : '';
       const terminal = ['AUTH_REQUIRED', 'FORBIDDEN', 'EMAIL_UNVERIFIED', 'GIKA_CONFIRMATION_INVALID', 'GIKA_CONFIRMATION_EXPIRED', 'OPERATION_MISMATCH'].includes(code);
       setRetryAllowed(!terminal);

@@ -1,16 +1,18 @@
-import { useLayoutEffect, useRef, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { GIKA_MAX_INPUT } from './conversation';
 import { useVoiceInput } from './useVoiceInput';
 
 type Props = {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   draft: string; open: boolean; loading: boolean; online: boolean;
+  onVoiceListening?: (listening: boolean) => void;
   onDraft: (text: string) => void; onSend: () => void;
 };
 
-export function GikaComposer({ textareaRef, draft, open, loading, online, onDraft, onSend }: Props) {
+export function GikaComposer({ textareaRef, draft, open, loading, online, onDraft, onSend, onVoiceListening }: Props) {
   const composing = useRef(false);
   const voice = useVoiceInput(open && online && !loading, draft, onDraft);
+  useEffect(() => { onVoiceListening?.(voice.state.status === 'listening'); }, [voice.state.status, onVoiceListening]);
   const voiceText = voice.state.message ?? ({ idle: '', starting: 'Preparando o microfone…', listening: 'Ouvindo…', processing: 'Preparando o texto…', ready: 'Texto pronto. Revise e envie quando quiser.', denied: 'O microfone não foi autorizado. Você pode digitar.', unsupported: 'Voz não disponível neste navegador. Digite sua pergunta.', error: 'Não consegui reconhecer sua fala. Você pode digitar.' }[voice.state.status]);
   function submit() { if (!voice.busy) onSend(); }
   useLayoutEffect(() => {

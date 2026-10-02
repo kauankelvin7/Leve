@@ -276,3 +276,78 @@ QA mede regiões semânticas: espaços negativos naturais entre os cachos não s
 **HYBRID_BUST_V2_AUTHORING_QA_PASS.** Resolução suficiente para as superfícies pequenas testadas; nenhuma camada demonstrou necessidade de redesenho manual nesse escopo. Não declarar HD240/fullbody, todos os estados semânticos ou aceite humano integral do rig. Listening/thinking e estados restantes ainda pendentes; nenhum Controller/React/SDK/runtime/public/UI integrado neste pedido. M9-T3 continua in_progress e M9/RC não concluídos.
 
 Somente autoria/QA/referências/docs/STATE/TASKS/EVALS alterados. Produto/Auth/commands/policy/Rules/receipts/persistência/manifest/lock/spikev1 intactos. Guard arquitetural existente, links/YAML/whitespace/mesh/weights/hashes validados; regressões técnicas históricas537/252/100 não reexecutadas nem chamadas de PASS de personagem. Gates completos de produto continuam exigidos após integração autorizada. Sem generativeimage/Gemini/live/login/Rivepublish/Cadet/billing/PR/main/deploy. Free/Cadet condicionado à aprovação integral/export final conforme ADR024.
+
+
+## Character essencial — rig aprovado como direção e integração progressiva
+
+Entrada `aa7690ffdb8eb81c5aa5ececcb65d6e1fecae125`, feat/gika-integration, fetch/local/origin iguais e worktree limpo. O pedido atual autoriza nove estados e integração, sem celebrações/gestos adicionais. [Rig reproduzível](../../assets/gika/rive/essential-bust/README.md), [estados](character/qa/essential-states.png), [movimento de frames reais](character/qa/essential-motion.png), [painel desktop](character/qa/essential-product-desktop.png), [mobile dark](character/qa/essential-product-mobile.png) e [200%](character/qa/essential-product-zoom200.png).
+
+### Entrega e limites
+
+Uma artboard transparente `GikaEssential`, state machine homônima e ViewModel numérico `GikaVisual.mode`: rest0, idle1, blink2, listening3, thinking4, clarify5, success6, error7, offline8. Reset explícito de propriedades impede poses/pálpebras residuais. Idle inclui blink; success é aceno discreto, sem comemoração. CLI oficial1.3.0, 14meshes/10bones, sem scripts/listeners/URLs externos. RIV51586bytes/SHA256 `18295a0cc8a4b9095d235209ae20ca4c35cb796605aa48828fe9c28c0668dc0e`.
+
+As14PNGs aprovadas permanecem byte-idênticas; fonte original hash2aea8b31 e crop119×117 preservados. Nenhum novo rosto/cacho/mecha, pintura generativa ou vetorização. QA144frames nativos+108pequenos, nove estados/light/dark24–72px, rest erroRGB máximo2/255, zero exposição no interior do rosto/seam do pescoço; mecha na direita visual do busto frontal em todos os frames. Asset pequeno, sem alegação HD240 ou rig corporal.
+
+Controller recebe apenas fatos técnicos, sem texto/draft/IDs/áudio ou autoridade de mutação. Listening vem de captação real; thinking de request/execução pendente; clarify de resultado estruturado; success somente de ACK validado existente. Narrativa de criação não gera success, resultado parcial não gera comemoração. Context visual local notifica a mesma UI de confirmação/recorrência/batch depois dos checks existentes, sem mudar qualquer efeito executável.
+
+SDK oficial Canvas2.44.0 pinado, único pacote novo e sem transitivas. Consumidor real lazy, WASM/RIV same-origin; nenhum CDN/fallback remoto. PNG fiel inline no chunk já lazy da Gika, geometria fixa; falha de asset/runtime conserva composer. Perfil e sistema reduced-motion usam estático; offline estático, hidden/close limpam renderer/RAF/ResizeObserver. Reabertura não envia nem executa nada.
+
+CSP anterior foi testada no browser com o renderer real: WASM exige `wasm-unsafe-eval`; decoder das imagens embutidas exige `img-src blob:`. Bloqueio real `CSP_IMG_BLOB_BLOCKED` reproduzido antes da correção mínima. Depois, teste sob a CSP exata de vercel.json pinta todos os nove modos e verifica diferenças entre poses. Não foi adicionado JS unsafe-eval, origin externo, header privado ou nova permissão de microfone.
+
+### Responsividade, a11y e performance observadas
+
+[Dados sanitizados](evidence/character-essential-integration.json): seis viewports390×844/853×1280/1024×768/1366×768/1920×1080/2560×1440 em light/dark, 200%, reduced motion, página oculta, falha/offline e close/reopen. Sem overflow horizontal; composer, navegação e timer preservados. Personagem decorativa aria-hidden; estados funcionais continuam no texto/live region existente, sem narração redundante. Axe nas superfícies Gika/voz/preview e shell conforme gates abaixo.
+
+Zero downloads RIV/WASM antes de abrir painel; fallback/renderer ocupam exatamente56×56desktop,48mobile. Primeiro frame504–931ms local; sem promessa em rede/dispositivo real. Bootstrap estático completo:1219739→1220097bytes (+358); gzip363995→363409. Runtime210823bytes/gzip60270,WASM1992302 e RIV51586 ficam fora do bootstrap. Redistribuição automática dos chunks não deve ser confundida com aumento integral do JS inicial; warning500KB já existente nas duas bases.
+
+20reaberturas observadas mais60ciclos com GC: heap32,89→33,04→32,84MB aos20/40/60, backing23,498MB estável; RAFzero depois de close/hidden. Evidência de ausência de crescimento monotônico nessa amostra, não garantia universal contra leaks/dispositivos. Sem áudio/Gemini/log de transcrição/persistência privada/telemetria de personagem.
+
+### Primeiras execuções preservadas
+
+- Primeira integração concorrente ao focal: conflito de porta de emulador, falha operacional; retry com emuladores novos252/252PASS.
+- Primeiro Character focal2PASS/1FAIL: teste exigia canvas retido após import abortado; ErrorBoundary corretamente mantinha PNG e composer. Corrigida apenas observação do fallback real. Segunda Character+voz10/10PASS.
+- Pattern inicial `gika*.spec.ts` selecionou apenas14casos:13PASS/1FAIL seletor antigo do ícone de header removido intencionalmente. Atualizado para personagem, mantendo cardinalidade.
+- Amplas Gika e shell iniciadas simultaneamente compartilharam test-results: arquivos trace desapareceram no browserContext.close. Shell16/1ENOENT; Gika36PASS/2ENOENT/1interrompido/65não executados. Interrupção deliberada preservada, causas técnicas de artefato comprovadas. Nenhuma deadline/retry alterada; gates seguintes serializados.
+- Primeira ampla serial contém falhas M8 antes de abrir painel: fixture deixa duas pendentes de hoje de outros cenários e adiciona quatro, superando cap5. Comparação com entrada e execução focal fresh registradas abaixo quando concluídas. Não chamar essa ampla verde nem modificar policy para fazer o fixture passar.
+
+### Licença e revisão
+
+Rive local unsigned/scriptless é artefato de desenvolvimento/revisão. Não é prova de export final de produção licenciado sem splash, nem bypass de plano comercial. Free no desenvolvimento e Cadet somente após aprovação integral do asset/rig conforme ADR024. Esta entrega para na revisão dos nove estados; M9/RC continuam não concluídos até esse aceite/export final. Sem gestos extras, novo milestone/closure, Rivepublish/Cadet/login/live/deploy/PR/main.
+
+### Feedback visual intermediário do usuário
+
+Após integração técnica em andamento, a composição foi explicitamente **não aprovada como design final**: busto central pequeno/recorte colado/espaço vazio e duplicação do header. Gate registrado no Visual Lock: presença adaptativa, busto expressivo idle, meia-altura quando semanticamente pertinente, escala/hierarquia, enquadramento natural e limpeza de halo/corte. Não compensar por upscale de raster pequeno nem redesenhar painel/identidade. Capturas de produto documentam a implementação técnica em revisão, não aceite final. Testes face/neck/purple-curl não substituem QA humano de cabelo/ombros/camiseta/enquadramento. M9-T3/Character seguem in_progress por esse acabamento e T4/RC blocked; estados essenciais/Controller preservados.
+
+### Diagnóstico de regressão e ajuste mínimo após feedback
+
+Primeira ampla serial104:95PASS/9FAIL em21,3min, nunca declarada verde. Sete M8 falham em fixture/antes de abrir Gika: dois cenários de complete deixam duas tarefas de hoje, fixture M8 cria quatro e o hint corretamente rejeita seis acima de cap5. Entrada aa7690ff em cópia byte-idêntica, processos/emuladores novos, sequência conventional-edit + logout-complete + M8 reproduziu o mesmo count6/hint ausente. Comparação5casos:4PASS/1FAIL esperado na fixture M8; update-logout/voice-reconnect passaram nessa comparação.
+
+Logout amplo falhou por pointer intercept do launcher sobre Sair no footer com26pendentes. Diagnóstico na entrada, sem Character/SDK, usando26criações convencionais sintéticas e o mesmo open/pending/close: hit-test real do centro de Sair encontrou o launcher, bboxY637–684. Confirma defeito preexistente do launcher/footer sob agenda longa; não foi corrigido fora do escopo nem classificado como funcionamento correto. Primeira tentativa desse diagnóstico foi interrompida por cwd direcionando edição à cópia temporária; restaurada byte a byte antes da prova válida. Não houve alteração da base de produto por essa tentativa.
+
+Voz ampla51,6s falhou em reabilitar o botão após reconnect, sem command/request extra observado no cenário. Focal nova e entrada nova passaram; **NOT_REPRODUCED**, causa física não atribuída a latência/baseline. Sem correção especulativa em offline/Auth/voz. Focal clean posterior Character4+M8sete+update-logout+voice-offline:13/13PASS em2min. Todos os guards de domínio/segurança e deadlines/retries mantidos.
+
+Feedback visual acionou correção local de duplicação: uma única instância/presença da personagem, no centro enquanto conversa vazia, depois no header. Centro agora usa o mesmo idle/blink reais; header vazio usa o ícone Leve existente. Mesmas dimensões já usadas64/52centro e56/48header, sem upscale ou desenho novo; não é solução da escala/enquadramento final. Regressão focal existente exige um único ator e localização correta antes/depois de enviar. Busto expressivo grande/meia-altura, silhueta inferior natural/halo/cortes e aprovação da composição permanecem QA visual obrigatório; não declarar M9/Character concluídos.
+
+### Gates finais desta integração técnica
+
+| Gate | Resultado atual |
+| --- | --- |
+| Production audit omitdev/high e JSON |0critical/0high/0moderate, PASS |
+| Lint + guard AST existente | PASS,47fontes; nenhum model/router/character → persistência/command |
+| Typechecks web/server | ambos PASS |
+| Build | PASS; warning de chunk já existente, métricas completas acima |
+| Unit completo, após presença única |545/545PASS |
+| Integração completa Auth/Rules/domain/commands/receipts |252/252PASS; backend/domain/Rules não modificados desde essa execução |
+| Rive verify/once/inspect + captures |0errors/warnings/problems;252capturasPASS |
+| Ampla Gika serial primeira |95PASS/9FAIL,21,3min; classificação/comparações acima, NÃO integralmente verde |
+| Focal clean de diagnóstico |13/13PASS,2min; Character/M8/logout/voz |
+| Depois de presença única |9/9PASS,1,4min; Character4, M8opt-in+Axe, reschedulepreview/ack desktop/mobile, voz → texto → envio consciente |
+| Scroll/composer/uma personagem |1/1PASS,22,2s |
+| Shell/responsive completo |17/17PASS,40s; Axe0 e seis larguras |
+| Browser final manual |12combinações viewport/theme +200%; sem overflow/pageerror/overlay; reduced-motion estático; RAF0 fechado/hidden |
+
+Última medição com uma presença: fallback e ready64×64desktop/52mobile, idênticos; primeira abertura1411ms local. Heap pósGC20/40/60ciclos32,88/33,34/33,42MB; crescimento0,54MB entre20e60, backing23,4995MB praticamente constante. A primeira amostra anterior foi estável; esta variação está registrada e não autoriza garantia de ausência universal de leaks. Zero RAF depois de close/hidden demonstrado tanto pelo teste quanto pela medição. Agent-browser CLI ausente: verificação equivalente usou Playwright já instalado, navegador real, conteúdo/elementos/overlay/pageerror/screenshot; nenhuma dependência adicional para tooling.
+
+Arquivos protegidos server/packages/platform/identity/Rules sem diff; mesmas14camadas/fonte hash-pinned. Única dependência runtime oficial necessária, nenhuma nova coleção/writer/outbox/signer/policy/receipt engine. Screenshots históricos gerados restaurados e capturas descartáveis removidas. Testes novos cobrem risco novo real (apresentação/ACK/fallback/cleanup/CSP), não reimplementam a matriz funcional M0–M8. Não aumentados deadlines/retries nem removidas asserções de segurança.
+
+**Integração técnica essencial entregue para revisão; COMPOSITION_NOT_APPROVED_ADAPTIVE_PRESENCE_QA_REQUIRED.** M9-T3 permanece in_progress pelo acabamento visual; T4/RC blocked. Uma presença corrigida não resolve nem aprova escala/busto grande/meia-altura/halo/ombros/enquadramento. Sem export final/licença sem splash neste checkpoint. Resultado anterior blocked e as falhas atuais/primeiras execuções permanecem explícitos; não declarar todos os gates E2E verdes.

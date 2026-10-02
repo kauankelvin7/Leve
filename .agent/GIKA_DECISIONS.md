@@ -242,3 +242,16 @@ M9 não ativa AppCheck sem sitekey/domínios/provider web/PWA/Firestore/APIAdmin
 - Fonte editável pode ser híbrida. Priorizar busto/microgestos nas superfícies atuais; vetores apenas onde necessários. Gestos amplos usam poses adicionais aprovadas, não rig corporal universal. Preservar rosto/cachos/mecha anatômica esquerda e visual lock.
 - Os dois traces continuam FAIL; não demonstraram necessidade de SVG integral/refinamento humano definitivo. Lacunas atuais são específicas: face limpa sob olhos/sobrancelhas/boca, registro de pálpebras/expressões, underlap cabelo/queixo e matte. Reconstrução artística localizada precisa de fidelidade revisada, sem assumir que todo trabalho dependa de autoria humana externa.
 - Rest/idle do ensaio são fiéis, blink diagnóstico FAIL por backing ausente. Não integrar player/controller nem declarar Character/RC concluídos antes do gate visual idle+blink. ADR024, pipeline UI técnico/ack, privacidade, domínio e persistência intactos.
+
+
+## ADR-GIKA-026 — personagem essencial, somente apresentação local
+
+Direção Hybrid Bust v2 aprovada e integração autorizada sobre aa7690ff. Um artboard transparente, nove timelines, uma state machine e um ViewModel numérico mode0–8, conforme mecanismo oficial atual do Rive; inputs legados não necessários. Reutiliza as14texturas v2 sem novos pixels; duas bones de sobrancelha adicionadas, microgestos e aceno discreto de ack, sem celebração/gestos extras.
+
+Controller recebe apenas flags e eventos técnicos locais. A UI reduz respostas estruturadas já validadas a ack/choice/error; cards notificam somente depois dos acks convencionais existentes. Nunca interpreta narrativa livre, não recebe conteúdo/UID/IDs/receipt e não altera commands/policy/confirmation/recurrence/batch/Auth/Rules/persistência. Listening apenas captura real de voz; request/execução thinking; partial batch nunca success global.
+
+Runtime oficial @rive-app/canvas2.44.0/MIT/sem transitivas, necessário para o consumidor real; suporte Canvas2D a raster+mesh confirmado. Sem wrapper React, script ou analytics. Chunk lazy somente aberto/visível/online e sem reduced motion (sistema ou perfil); fallback PNG v2 inline no chunk já lazy do painel, sem nova persistência/asset genérico. Cleanup em close/unmount/hidden; tamanho fixo e canvas decorativo. Após feedback, uma única instância ocupa welcome vazio ou header com mensagens, sem duplicação ou upscale; composição final segue não aprovada. RIV/WASM same-origin, fallback CDN desativado.
+
+CSP adiciona somente wasm-unsafe-eval para compilação WASM e blob: em img-src para o decoder oficial das texturas embutidas. JavaScript unsafe-eval não liberado. Bloqueio IMG_BLOB_BLOCKED reproduzido sob CSP exata antes da correção; nove estados renderizam depois, com regressão E2E real. Nenhuma Rule/provider/engine/writer novo.
+
+ADR024 permanece: artifact unsigned/scriptless local serve ao desenvolvimento/revisão, não prova export final licenciado sem splash. Cadet somente após aprovação integral asset/rig; não assinado agora. Busto pequeno119×117nativos, não rig corporal/HD240 ou novos gestos.

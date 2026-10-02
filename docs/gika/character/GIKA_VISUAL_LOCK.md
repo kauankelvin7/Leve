@@ -27,7 +27,7 @@ Paleta nomeada na prancha: roxo `#5B2A86`, lilás `#A46CCE`, creme `#FFF4E8`, pe
 
 Reprovar: outra fisionomia, mudança de anatomia/proporções/volume do cabelo entre estados, mecha espelhada ou extra, mãos deformadas, infantilização/chibi, sexualização, anime genérico, robô, pele plástica, 3D brilhante, sombras fotográficas, expressão exagerada constante ou motion frenético.
 
-## Master e rig: critérios, ainda não entregues
+## Master e rig: critérios e histórico
 
 Fonte editável em camadas semânticas; o pedido posterior autoriza busto híbrido: PNGs transparentes fiéis + meshes/bones Rive, com vetores somente onde necessários. Separar face/olhos/pálpebras/sobrancelhas/bocas, hair back/front/clusters e signature_purple_curl, pescoço/ombros e braços mínimos quando disponíveis. Definir pivôs/pesos e reconstruir somente regiões ocultas necessárias. Não exigir SVG integral nem rig corporal universal. Imagem achatada sem rig, auto-trace não revisado e personagem genérica continuam insuficientes.
 
@@ -69,3 +69,23 @@ Naquele checkpoint, autoria v2 aguardava o arquivo original descrito; não há c
 Busto neutro119×117nativos;14camadas, backing localizado/pálpebras da Carinhosa registradas/underlap apenas oculto/matte. Master da mecha completo isolado antes de olhos/rosto:415pixels canônicos de roxo do cabelo pertencem à camada própria, sem recolorir ou gerar pixels. Donor transmite somente lashes, nunca cabelo ou ausência acidental de mecha. Inspeção do ensaio rest/idle/blink/stress em light/dark e24–72px,52frames de transição/motion+48capturas pequenas; mecha sempre à direita frontal, sem exposure holes no interior do rosto/pescoço.
 
 QA de autoria v2 PASS, distinto de aprovação integral humana do asset/rig/estados e QA no produto. Fontes em assets/gika/source/hybrid-bust-v2 e rig em assets/gika/rive/hybrid-bust-v2. Não integrado; demais motions/Controller/React não concluídos. Detalhes/primeiras falhas em M9_EVIDENCE. Resolução suficiente para o busto pequeno testado; não presumir masterHD240/corpo universal.
+
+
+## Escopo essencial aprovado e integração para revisão
+
+O pedido posterior aprovou a direção v2 e autorizou concluir e integrar **somente rest, idle, blink, listening, thinking, clarify, success, error, offline**. A lista ampla anterior é histórica; hello/celebrate/attention/gestos extras não foram implementados. Rig essential-bust reutiliza as14PNGs v2 sem alteração;10bones, uma state machine/um mode numérico. Blink incorporado ao idle e também disponível como timeline; success é aceno discreto, somente após ack real; offline/rest estáticos.
+
+QA renderizado de todos os modos/transições:144frames nativos+108pequenos24–72px, light/dark, mecha permanentemente à direita frontal/lado anatômico esquerdo; interior rosto/pescoço sem lacunas. Rest vs PNG aprovado erro máximo2RGB por rasterização. Fonte/volume/rosto/mecha permanecem iguais. [Estados](qa/essential-states.png) e [sequência animada](qa/essential-motion.png).
+
+Integração progressiva no painel existente: um único ator Rive no welcome vazio ou no header com mensagens, nunca duas personagens simultâneas. Welcome idle/blink expressivos reutilizam a mesma state machine; nenhuma ampliação do raster para resolver a composição. Fallback e reduced motion derivam do mesmo master. GikaMark continua como ícone leve de navegação/autor de mensagens, não como substituto da personagem integrada. Escopo efetivo48–64pxCSS, native119×117; não considerar 120/240pxHD ou turnaround universal como entregues. Aprovação integral dos novos motions/rig e export final de produção são pendentes da revisão solicitada; direção aprovada não equivale a assinatura/Cadet ou RC_READY.
+
+
+## QA de composição — feedback obrigatório nesta integração
+
+A direção híbrida e o funcionamento técnico foram aprovados; **a composição atual no produto não foi aprovada como design final**. Busto central pequeno, aparência de recorte colado, espaço vazio e duplicação header/centro foram apontados pelo usuário. Capturas essential-product-* são evidência técnica da composição em revisão, não referência aprovada de design final.
+
+Gate visual pendente: presença adaptativa (busto expressivo no idle; meia-altura apenas quando semanticamente apropriada), escala/hierarquia coerentes e uma presença principal, sem duplicação desnecessária. Enquadramento natural, sem retângulo/corte duro em cabelo/camiseta/ombros nem matte/halo perceptível. Não aumentar/esticar raster119×117 para compensar; não redesenhar painel, rosto/cabelo/mecha ou reinterpretar a personagem. A atual prova de face/neck underlap não prova aprovação da silhueta inferior/enquadramento de ombros no produto.
+
+Esse requisito permanece obrigatório antes de Character/M9 visualmente concluídos. A integração técnica/estados continuam preservados; não declarar QA visual final PASS ou RC_READY. Asset de meia-altura não foi entregue por este bust rig e não pode ser fingido ampliando-o. Nenhum gesto/celebração adicional autorizado.
+
+A duplicação header/centro foi corrigida localmente após o feedback: uma única instância, centro idle/blink antes de mensagens e header depois. Dimensões atuais preservadas, sem upscale. Isso não aprova escala/enquadramento/presença adaptativa finais nem entrega meia-altura.

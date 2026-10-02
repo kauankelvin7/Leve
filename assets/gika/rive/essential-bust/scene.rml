@@ -1,0 +1,1559 @@
+<Rive version="1" kind="fragment">
+  <Artboard width="135" height="133" name="GikaEssential" id="0:10" defaultStateMachineId="0:11" x="0" y="0" styleId="0:14" viewModelId="0:900" viewModelInstanceId="0:901">
+    <LayoutComponentStyle id="0:14" name="ArtboardStyle" />
+    <RootBone x="8" y="8" length="0" name="body" id="0:15">
+      <RootBone x="65" y="104" length="0" name="neck" id="0:16">
+        <RootBone x="0" y="-21" length="0" name="head" id="0:17">
+          <RootBone x="30" y="-46" length="0" name="curl" id="0:18" />
+          <RootBone x="16" y="-28" length="0" name="eye_L" id="0:19" />
+          <RootBone x="-13" y="-23" length="0" name="eye_R" id="0:20" />
+          <RootBone x="44" y="-6" length="0" name="side_curls_L" id="0:21" />
+          <RootBone x="-45" y="-6" length="0" name="side_curls_R" id="0:22" />
+          <RootBone x="16" y="-38" length="0" name="brow_L" id="0:800" />
+          <RootBone x="-13" y="-32" length="0" name="brow_R" id="0:801" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:11012" name="lid_L_closed" id="0:30000" opacity="0">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="lid_L_closed_mesh" id="0:40012">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="eye_L_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11001" name="eye_L" id="0:23">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:40001">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:19" tx="89" ty="63" name="eye_L_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11013" name="lid_R_closed" id="0:30001" opacity="0">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="lid_R_closed_mesh" id="0:40013">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="eye_R_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11002" name="eye_R" id="0:25">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:40002">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:20" tx="60" ty="68" name="eye_R_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11003" name="brow_L" id="0:27">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:40003">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:800" tx="89" ty="53" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11004" name="brow_R" id="0:29">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:40004">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:801" tx="60" ty="59" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11005" name="mouth_neutral" id="0:31">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:40005">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11000" name="signature_purple_curl" id="0:33">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:40000">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:18" tx="103" ty="45" name="curl_bind" />
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11011" name="face_base_clean" id="0:35">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_base_clean_mesh" id="0:40011">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11006" name="neck_shoulders_visible" id="0:37">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:40006">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:16" tx="73" ty="112" name="neck_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11007" name="hair_front_visible" id="0:39">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:40007">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11008" name="side_curls_L_visible" id="0:41">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:40008">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:21" tx="117" ty="85" name="side_curls_L_bind" />
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11009" name="side_curls_R_visible" id="0:43">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:40009">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:22" tx="28" ty="85" name="side_curls_R_bind" />
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:11010" name="hair_back_visible" id="0:45">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:40010">
+        <ContourMeshVertex x="0.0" y="0.0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="0.0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="135.0" y="133.0" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0.0" y="133.0" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="67.5" y="0.0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="135.0" y="66.5" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="133.0" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0.0" y="66.5" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="67.5" y="66.5" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:17" tx="73" ty="91" name="head_bind" />
+          <Tendon boneId="0:15" tx="8" ty="8" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaEssential" id="0:11">
+      <StateMachineLayer name="Essential">
+        <AnyState x="200" y="-200">
+          <StateTransition stateToId="0:200" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="0" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:201" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="1" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:202" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="2" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:203" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="3" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:204" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="4" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:205" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="5" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:206" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="6" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:207" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="7" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:208" duration="120">
+            <TransitionViewModelCondition opValue="equal">
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:900-0:902" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="8" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+        </AnyState>
+        <ExitState x="500" y="-200" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:200" />
+        </EntryState>
+        <AnimationState animationId="0:100" id="0:200" x="200" y="0" reset="true" />
+        <AnimationState animationId="0:101" id="0:201" x="430" y="0" reset="true" />
+        <AnimationState animationId="0:102" id="0:202" x="660" y="0" reset="true" />
+        <AnimationState animationId="0:103" id="0:203" x="200" y="150" reset="true" />
+        <AnimationState animationId="0:104" id="0:204" x="430" y="150" reset="true" />
+        <AnimationState animationId="0:105" id="0:205" x="660" y="150" reset="true" />
+        <AnimationState animationId="0:106" id="0:206" x="200" y="300" reset="true" />
+        <AnimationState animationId="0:107" id="0:207" x="430" y="300" reset="true" />
+        <AnimationState animationId="0:108" id="0:208" x="660" y="300" reset="true" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="60" loopValue="loop" name="rest" id="0:100">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="240" loopValue="loop" name="idle" id="0:101">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.006" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.006" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="103.7" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.01" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="60" loopValue="oneShot" name="blink" id="0:102">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="24" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="24" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="240" loopValue="loop" name="listening" id="0:103">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="-0.018" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-0.011999999999999999" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.024" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-0.018" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="103.7" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.01" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38.4" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-38.4" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32.4" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-32.4" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="240" loopValue="loop" name="thinking" id="0:104">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0.018" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.024" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="0.011999999999999999" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0.018" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="103.7" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.01" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38.5" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-38.5" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="240" loopValue="loop" name="clarify" id="0:105">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0.032" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.038" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="0.026000000000000002" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0.032" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="103.7" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.01" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="54" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="44" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="52" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38.5" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-38.5" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="60" loopValue="oneShot" name="success" id="0:106">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0.015" interpolationType="linear" />
+          <KeyFrameDouble frame="32" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="-20.3" interpolationType="linear" />
+          <KeyFrameDouble frame="32" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="24" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="24" value="0.65" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="16" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="240" loopValue="loop" name="error" id="0:107">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="-0.026" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-0.019999999999999997" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.032" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-0.026" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-20.5" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-20.5" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="103.7" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.01" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.004" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation duration="60" loopValue="loop" name="offline" id="0:108">
+      <KeyedObject objectId="0:17">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-21" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-21" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:16">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="104" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="104" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:18">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:21">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:22">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:23">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:25">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30000">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:30001">
+        <KeyedProperty propertyKey="18">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:27">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-38" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-38" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:29">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="-32" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="-32" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <ViewModel name="GikaVisual" id="0:900" defaultInstanceId="0:901">
+    <ViewModelPropertyNumber name="mode" id="0:902" />
+    <ViewModelInstance name="Default" id="0:901" exports="true">
+      <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="0:902" />
+    </ViewModelInstance>
+  </ViewModel>
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/signature_purple_curl.png" name="signature_purple_curl" id="0:11000" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/eye_L.png" name="eye_L" id="0:11001" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/eye_R.png" name="eye_R" id="0:11002" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/brow_L.png" name="brow_L" id="0:11003" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/brow_R.png" name="brow_R" id="0:11004" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/mouth_neutral.png" name="mouth_neutral" id="0:11005" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/neck_shoulders_visible.png" name="neck_shoulders_visible" id="0:11006" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/hair_front_visible.png" name="hair_front_visible" id="0:11007" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/side_curls_L_visible.png" name="side_curls_L_visible" id="0:11008" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/side_curls_R_visible.png" name="side_curls_R_visible" id="0:11009" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/hair_back_visible.png" name="hair_back_visible" id="0:11010" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/face_base_clean.png" name="face_base_clean" id="0:11011" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/lid_L_closed.png" name="lid_L_closed" id="0:11012" />
+  <ImageAsset file="../../source/hybrid-bust-v2/layers/lid_R_closed.png" name="lid_R_closed" id="0:11013" />
+</Rive>

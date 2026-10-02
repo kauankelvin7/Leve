@@ -336,7 +336,7 @@ test('conversa tem scroll independente, composer expansível e cards apenas simu
   if (await voice.isEnabled()) await expect(page.locator('#gika-voice-privacy')).toContainText('Áudio pode ser enviado online.');
   else await expect(page.locator('#gika-voice-status')).toContainText('Voz não disponível');
   await expect(page.locator('.gika-suggestions button svg')).toHaveCount(4);
-  await expect(page.locator('.gika-identity .gika-mark')).toHaveCount(1);
+  await expect(page.locator('.gika-character')).toHaveCount(1);
   const initialHeight = (await question.boundingBox())!.height;
   await question.fill('Linha um\nLinha dois\nLinha três');
   await expect.poll(async () => (await question.boundingBox())!.height).toBeGreaterThan(initialHeight);

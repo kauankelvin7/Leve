@@ -359,3 +359,8 @@ CI simula a API nativa, não hardware/permissão real. O navegador pode usar ser
 
 
 Character — gate visual obrigatório da mecha: autoridade pose principal grande→Detalhes→busto neutro→turnaround geometria→secundárias só expressão/gesto. signature_purple_curl permanente anatômica esquerda quando exposta; oclusão natural não exige forçar visibilidade. Expressões doadoras não podem remover/copiar ausência nem substituir cabelo. Normalizar com a mesma camada master quando compatível, sem geração/recoloração/outros cachos. No busto frontal v2,415/415pixels canônicos isolados e presença/lado verificados em52frames e48capturas pequenas; QA autoral não substitui aprovação artística/QA do produto. Guard reproduzível em assets/gika/rive/hybrid-bust-v2/qa.py.
+
+
+### Character — estados essenciais, fronteira exclusivamente visual
+
+Um rig/nove estados/mesmas14camadas. Controller sem conteúdo/IDs/domain: typing/request thinking, apenas captura real listening, escolha/preview clarify, ack validado success transitório, erro/partial não sucesso global, offline/reduced/hidden estáticos. Testes unitários de prioridades/escopo/CSP; quatro E2E focais: lazy+frames reais+20close/reopen+RAF cleanup, ack convencional bloqueado/liberado+narrativa sem sucesso, offline/reduced/falha do import+draft, nove modos realmente rasterizados sob CSP de produção. Voz e preview/confirm existentes ganharam asserções visuais sem remover asserções de domínio. Guard AST já existente cobre imports de character; regressão Gika preserva autenticação/receipts/revisões/scopes/batch/M6–M8. QA252capturas/curl/restfidelity e seis viewports×light/dark/200%; usuário ainda revisa os novos motions/rig antes do export final ADR024.

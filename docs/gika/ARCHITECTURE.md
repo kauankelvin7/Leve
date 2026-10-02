@@ -246,3 +246,10 @@ Correção posterior ADR025: raster PNG em camadas + meshes/bones Rive é caminh
 
 
 Hybrid Bust v2 resolve no ensaio o backing/closed lids/underlap/matte com o PNG original e14camadas; RML/Rive permanecem fora de public/UI/React. Authoring/QA determinísticos, sem modelo/inpainting generativo/novo parser. Mecha master permanente conforme ordem de autoridade corrigida, donor só fornece pálpebras. Idle inclui blink; restante dos estados e lifecycle/performance de produto pendentes. Gate autoral PASS não declara Character/M9 final nem altera arquitetura funcional/licença final.
+
+
+## Character — consumidor visual essencial (ADR026)
+
+UI reduz fatos já conhecidos a flags/eventos sem payload; controller local determina rest/idle/blink/listening/thinking/clarify/success/error/offline e escreve somente GikaVisual.mode no rig. Nenhum conteúdo, UID/entityId/receipt/command chega ao renderer, nem a personagem pode executar ações. Listening apenas voz real; sucesso somente após ack validado, batch parcial continua explícito e não dispara success global. Commands, model adapters, signer/policy, Auth/Rules e persistência intactos.
+
+Um RiveCanvas lazy, header do painel; welcome/fallback são PNG v2 fiel inline no chunk do painel. Reduced motion (sistema ou perfil), closed/hidden/offline removem runtime; effect cleanup libera renderer/VM/file/observer/timer. Assets embutidos no RIV, WASM same-origin/CDN fallback desligado; CSP mínima wasm-unsafe-eval + img-src blob: para decode oficial. Rig unsigned/scriptless é artefato de desenvolvimento/revisão, não export final sem splash aprovado; ADR024 permanece. Não há voice/router/command/policy paralelo ou persistência de personagem/conversa.
