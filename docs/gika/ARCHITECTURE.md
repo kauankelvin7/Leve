@@ -243,3 +243,6 @@ Retomada sobre e28da58: Rive CLI oficial1.3.0 instalado fora do projeto, autoria
 
 
 Correção posterior ADR025: raster PNG em camadas + meshes/bones Rive é caminho oficialmente suportado e comprovado num busto fiel da própria referência. A necessidade inferida de vetor integral/humano definitivo foi superada; os auto-traces continuam reprovados. Fonte/RML/.riv de diagnóstico em assets/gika, sem importação no produto. Backing de pele/pálpebras, expressões registradas, underlap e matte ainda impedem aprovação visual final. Sem runtime/controller novo ou mudança no pipeline funcional; idle+blink aprovados precedem integração e QA completa. Não confundir oito artboards diagnósticos (quatro ensaios×duas cores) com estados semânticos concluídos.
+
+
+Hybrid Bust v2 resolve no ensaio o backing/closed lids/underlap/matte com o PNG original e14camadas; RML/Rive permanecem fora de public/UI/React. Authoring/QA determinísticos, sem modelo/inpainting generativo/novo parser. Mecha master permanente conforme ordem de autoridade corrigida, donor só fornece pálpebras. Idle inclui blink; restante dos estados e lifecycle/performance de produto pendentes. Gate autoral PASS não declara Character/M9 final nem altera arquitetura funcional/licença final.

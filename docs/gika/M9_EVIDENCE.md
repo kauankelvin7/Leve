@@ -231,3 +231,48 @@ Inspeção real do crop neutro `(365,319)–(456,409)`91×90px, ampliado4×neare
 Próxima ação: receber PNG original (preferencialmente dentro de ZIP para preservar formato/bytes), verificar hash/resolução e repetir a autoria/QA. Não continuar com uma fonte comprimida fingindo que a substituição por alta qualidade ocorreu. Não integrar produto, listening/thinking, Controller ou React neste checkpoint. Sem inpainting generativo, novo personagem, nova decisão arquitetural/fase, dependência, login/publish/Cadet/Gemini.
 
 Gates desta verificação: formato/dimensões/hash/binário da fonte e cópia idêntica, comparação visual do crop, YAML/links/diff. Não executar ou declarar QA v2 rest/idle/blink/stress nem gates de produto sem autoria/integração. M9-T3 continua in_progress na mesma tarefa, aguardando fonte; T4/RC permanecem não aprovados.
+
+
+## Hybrid Bust v2 — fonte correta, backing/lids e QA da mecha permanente
+
+Entrada `6f88e0fcd44e275f235804a1556b2771e8a1d18b`, feat/gika-integration/worktree limpo, local/origin iguais antes da autoria. ZIP fornecido pelo usuário contém PNG RGB1672×941,2183940bytes. [Original primário para autoria](character/reference/gika-authoring-v2-original.png) preservado byte a byte, SHA256 `2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba`. JPEG histórico `f2fd8858…`, JPEG recebido `5d91424e…` e spikev1 permanecem intactos. **SOURCE_ORIGINAL_PNG_REQUIRED resolvido**, sem confundir conversão JPEG→PNG com este arquivo original.
+
+Pedido proíbe integração no produto e inpainting generativo. Reutilizado source RML v1/CLI1.3.0, ferramentas de autoria existentes Pillow/NumPy/SciPy, nenhuma dependência do Leve adicionada. [Fonte/metadata](../../assets/gika/source/hybrid-bust-v2/extraction.json), [author.py](../../assets/gika/source/hybrid-bust-v2/author.py), [RML](../../assets/gika/rive/hybrid-bust-v2/scene.rml) e [Rive real](../../assets/gika/rive/hybrid-bust-v2/gika-hybrid-bust-v2.riv) reproduzíveis. Crop neutro `(477,417)–(596,534)`,119×117nativos; canvas135×133 inclui8px transparentes para movimentos não cortarem cabelo. Não houve upscale na autoria.
+
+### Reconstrução localizada
+
+- `face_base_clean`:1202pixels ocultos sob olhos/brows/boca; inicializados pelas cores de pele adjacente **da mesma face** e relaxação harmônica somente nessas máscaras. Nenhuma outra fisionomia/pintura integral/ML. As features originais opacas cobrem o backing no rest; RGB visível preservado, à exceção do tratamento de matte na silhueta.
+- `lid_L_closed`/`lid_R_closed`: lashes da expressão aprovada **Carinhosa**, cropdoador1413,417–1532,534. Máscaras fechadas e affine registrada nos olhos neutros, parâmetros em metadata. Decontaminação local de borda usa a pele da doadora, sem copiar cabelo/mãos/rosto completo. Olhos abertos contraem durante fechamento e lashes aparecem sobre backing; idle também contém blink de4sloop.
+- Underlap oculto de até3px em hairback (1471pixels),2px front/side (114/32/26),4px pescoço (69). Apenas regiões já cobertas por camada superior opaca no rest; não pinta ombro/camisa expostos. Nenhum novo cacho/mecha ou expansão da silhueta para esconder falha.
+- Matte:623pixels de borda de1px têm contribuição do fundo removida com cor interna adjacente/alfa; espaços claros neutros fora de rosto/camisa ficam transparentes. Preservados espaços negativos naturais entre contornos dos cachos; não chamar todos de buracos de rig.
+
+### Visual Lock corrigido e QA da assinatura
+
+Ordem atual: pose principal grande→Detalhes da mecha→busto neutro→turnaround geometria→secundárias somente expressão/gesto. Ausência em pose secundária é artefato, não design. Mecha permanente anatômica esquerda quando exposta; oclusão natural respeitada. Master não é substituído pela pose doadora. Neste busto frontal o lado está exposto; [guard QA](../../assets/gika/rive/hybrid-bust-v2/qa.py) verifica assinatura durante transições e pequenos tamanhos, além de rosto/pescoço.
+
+A nova revisão encontrou118pixels canônicos do roxo do cabelo fora da camada própria. Normalizada a máscara da **mecha já existente**, isolando-a antes de olhos/rosto.415/415pixels canônicos agora pertencem a `signature_purple_curl`;0fora,0gerados, sem recolorir outros cachos. Pálpebras transplantadas não importam cabelo nem ausência da mecha. Centroides na ROI roxa X102,23–107,12, à direita do eixo facialX73 em todos52frames;48capturas pequenas também preservam sua presença. Não representa QA de vistas não autoradas nem obrigação de forçar mecha naturalmente oculta.
+
+### Primeiras inspeções e correções preservadas
+
+1. Primeiro render compilou mas **FAIL visual**: padding de pele vazou no ombro no rest. [Captura rejeitada](character/qa/hybrid-bust-v2-rejected-underlap.png) retida; underlap limitado ao que outra camada realmente cobre.
+2. Stress mostrou fragmentos da camisa seguindo cabeça por classificação residual como cabelo. Pixels claros existentes foram atribuídos à camada de corpo/pescoço do asset, sem redesenhar roupa.
+3. Padding por trás de alfa parcial alterou rest até79níveisRGB em light. Restringido a cobertura opaca; finalerro máximo2 de arredondamento na renderização antialias, não esconder diferença com repaint/threshold de produto.
+4. Gate novo da mecha revelou ownership parcial conforme descrito acima; corrigido por máscara/ordem de extração, sem nova mecha. Todas as capturas finais foram refeitas após a correção.
+
+### Gates do ensaio final
+
+| Gate efetivamente executado | Resultado |
+| --- | --- |
+| PNG fonte/hash/proveniência e regeneração de14camadas/RML | PASS, byte-idênticos; script usa fonte hash-pinned e RML v1 |
+| CLI verify/once/inspect no source final | PASS;0erros/0warnings/0problems; oito artboards diagnósticos, sem ScriptAsset |
+| Build |95307bytes; SHA256 `cfe4161700a368875464389471e731253c7f17b3e183aa6c6d5b00af8dab672b`; idêntico ao renderizado, unsigned/local |
+| Rest vs PNG matte tratado | MAElight0,03897/255,dark0,03035; max2; somente1/2pixels acima de1nível. Fonte não foi substituída por outra face |
+| Faces/neck sob transforms de rest/idle/blink/stress |52frames light/dark,0pixels de fundo no interior erodido do rosto transformado/seam do pescoço; transições de blink incluídas |
+| Pequenos tamanhos |48capturas24/32/36/48/64/72px, quatro ensaios×duas cores; assinatura presente em todas |
+| Inspeção visual real | [Comparação](character/qa/hybrid-bust-v2-comparison.png), [tamanhos reais](character/qa/hybrid-bust-v2-small-sizes.png), [sequência](character/qa/hybrid-bust-v2-blink-sequence.png), [APNG de frames Rive reais](character/qa/hybrid-bust-v2-blink-motion.png); rest/idle/blink PASS como QA autoral, stress sem exposure no rosto/pescoço |
+
+QA mede regiões semânticas: espaços negativos naturais entre os cachos não são classificados automaticamente como falhas. Não promete rig corporal universal. Artefatos/primeiras tentativas em [proof.json](../../assets/gika/rive/hybrid-bust-v2/proof.json), medições/casos em [qa-results.json](../../assets/gika/rive/hybrid-bust-v2/qa-results.json), comandos de reprodução em [README](../../assets/gika/rive/hybrid-bust-v2/README.md). Rodada final100capturas após normalização da mecha PASS; reprodução completa adicional100capturas em diretório temporário novo PASS, exercício do guard autoral versionado, não repetição para ocultar falha.
+
+**HYBRID_BUST_V2_AUTHORING_QA_PASS.** Resolução suficiente para as superfícies pequenas testadas; nenhuma camada demonstrou necessidade de redesenho manual nesse escopo. Não declarar HD240/fullbody, todos os estados semânticos ou aceite humano integral do rig. Listening/thinking e estados restantes ainda pendentes; nenhum Controller/React/SDK/runtime/public/UI integrado neste pedido. M9-T3 continua in_progress e M9/RC não concluídos.
+
+Somente autoria/QA/referências/docs/STATE/TASKS/EVALS alterados. Produto/Auth/commands/policy/Rules/receipts/persistência/manifest/lock/spikev1 intactos. Guard arquitetural existente, links/YAML/whitespace/mesh/weights/hashes validados; regressões técnicas históricas537/252/100 não reexecutadas nem chamadas de PASS de personagem. Gates completos de produto continuam exigidos após integração autorizada. Sem generativeimage/Gemini/live/login/Rivepublish/Cadet/billing/PR/main/deploy. Free/Cadet condicionado à aprovação integral/export final conforme ADR024.

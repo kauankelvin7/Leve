@@ -350,7 +350,7 @@ milestones:
   M9:
     name: "Hardening e release"
     status: in_progress
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: raster+mesh+bone comprovado em busto fiel, 12camadas/build71651/verify/inspect PASS; blink FAIL por face limpa ausente. CHARACTER_ASSET_REQUIRED para aceite visual final; inferência de SVG integral/humano definitivo superada, nenhuma integração final."
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: pipeline híbrido comprovado. V2 sobre PNG original:14camadas/build95307, backing/lids/underlap/matte, autoria QA rest/idle/blink/stress PASS light/dark52frames+48pequenos; mecha415/415 isolada e permanente conforme autoridade visual corrigida. Sem integração/aceite RC ou aprovação integral final."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -365,7 +365,7 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: in_progress
-        evidence: ["M9_EVIDENCE T3; ADR025/busto híbrido raster mesh bones real: rest/idle fiéis, skinning causal, verify/inspect0problemas. Blink reprovado por backing ausente, reconstrução localizada/expressões/underlap/matte pendentes; auto-traces históricos continuam rejeitados. Sem runtime/controller/fallback final, não RC_READY. V2: anexo recebido JPEG1280x720/hash5d91424e, fonte PNG original descrita ausente; SOURCE_ORIGINAL_PNG_REQUIRED antes de autoria v2, nenhuma conclusão de redesenho manual."]
+        evidence: ["M9_EVIDENCE T3; Hybrid Bust v2 com PNG original/hash2aea8b31: backing localizado1202pixels/lids de Carinhosa registrados/underlap oculto/matte, verify/inspect0problemas e autoria QA PASS52frames+48pequenos light/dark. Visual Lock define autoridade e mecha permanente;415/415canônicos em master, nenhuma cópia de cabelo/ausência do donor. Primeiras falhas preservadas, fonte PNG resolvida. Não integrado/Controller/React/aceite final/RC; próximos listening/thinking sobre mesmo rig."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"

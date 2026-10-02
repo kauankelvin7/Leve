@@ -1,0 +1,33 @@
+{
+  "entryCheckpoint": "6f88e0fcd44e275f235804a1556b2771e8a1d18b",
+  "sourceSha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+  "riveCli": "1.3.0",
+  "artifactBytes": 95307,
+  "artifactSha256": "cfe4161700a368875464389471e731253c7f17b3e183aa6c6d5b00af8dab672b",
+  "layerRegenerationByteIdentical": true,
+  "finalSourceRmlRegenerationIdentical": true,
+  "productIntegration": false,
+  "faceBackingPixels": 1202,
+  "underlapAddedPixels": {
+    "hair_back_visible": 1471,
+    "hair_front_visible": 114,
+    "side_curls_L_visible": 32,
+    "side_curls_R_visible": 26,
+    "neck_shoulders_visible": 69
+  },
+  "matteBoundaryPixels": 623,
+  "firstVisualFailures": [
+    "Initial underlap leaked adjacent skin onto exposed shoulder at rest; rejected capture retained. Padding restricted to higher opaque covering layers.",
+    "Stress revealed shirt fragments belonging to head/hair residual; assigned existing light shirt pixels to neck/body layer.",
+    "Semi-transparent edge overlap initially changed rest up to79RGB levels in light; pads restricted to opaque covering pixels, final maximum2 due renderer rounding.",
+    "New Visual Lock QA found118 canonical purple hair pixels outside master curl layer; widened the existing-source mask and isolated curl before eye/face, without recoloring or generating pixels. Final415/415 canonical pixels owned by signature_purple_curl."
+  ],
+  "qaResult": "HYBRID_BUST_V2_AUTHORING_QA_PASS",
+  "notEquivalentTo": "Final human asset/rig approval, Character runtime integration, M9_RC_READY or production export.",
+  "inspectProblems": [],
+  "reproductionCaptureGuardPass": {
+    "nativeFrames": 52,
+    "smallCaptures": 48,
+    "freshTemporaryDirectory": true
+  }
+}

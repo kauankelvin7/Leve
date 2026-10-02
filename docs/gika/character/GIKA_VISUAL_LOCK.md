@@ -4,6 +4,16 @@ Fonte: **user-approved visual reference**, imagem `46737.jpg` anexada pelo usuá
 
 [Referência original](reference/gika-approved-reference.jpg): JPEG, 1280×960, 223.809 bytes. SHA-256: `f2fd8858087f663c473586e79445af8d837fc00296b88215e6975941828b8b05`. Cópia byte a byte: preservamos `.jpg`, em vez do `.png` sugerido, para não re-renderizar nem identificar incorretamente o formato. Não é um master vetorial ou asset de runtime.
 
+## Autoridade visual e mecha permanente
+
+Ordem de autoridade: **pose principal grande → painel Detalhes da mecha → busto neutro aprovado → turnaround para geometria → expressões/poses secundárias somente para expressão e gesto**.
+
+A ausência da mecha em algumas poses secundárias é inconsistência da prancha, não decisão de design. `signature_purple_curl` é permanente no lado anatômico esquerdo. Quando esse lado estiver exposto, normalizar a camada conforme a referência principal; quando a perspectiva/cabelo o ocultar naturalmente, não forçar visibilidade.
+
+Ao derivar expressões/gestos, reutilizar a camada do master quando geometricamente compatível, preservando forma, volume e lado anatômico. Não copiar ausência acidental, gerar outra mecha por IA ou recolorir outros cachos. Extração de pálpebras/bocas não pode substituir o cabelo/mecha do master pela pose doadora.
+
+**Gate de QA:** avaliar exposição/oclusão real em cada pose/estado; verificar mecha permanente no lado correto quando exposto, coerência com pose principal/Detalhes e ausência de mechas extras/recoloração. Gate obrigatório também nos frames de transição, não apenas no rest. Turnaround orienta geometria sem sobrepor inconsistências à identidade.
+
 ## Identidade congelada
 
 - Mulher jovem parda/morena; cartoon 2D limpo, caloroso, humano e autoral, equilibrando delicadeza e maturidade. Brasileira sem caricatura cultural.
@@ -45,8 +55,17 @@ Autorização posterior do usuário (ADR024): Rive Free durante criação/rig/an
 Os [ensaios 01](qa/rejected-vectorization-01.png) e [02](qa/rejected-vectorization-02.png) são QA **reprovado**, não master/avatar/fallback. Auto-trace auxiliar deixou lacunas/fragmentação e componentes de outra vista, sem anatomia editável adequada ao rig. A reprovação permanece; a conclusão histórica `VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED` não é impedimento definitivo: o pipeline raster+mesh+bone foi comprovado depois (ADR025). Ensaio em assets/gika/rive/hybrid-bust-spike; rest/idle mantêm a referência, blink evidencia falta de backing de pele. Reconstrução localizada, registro de expressões e matte/underlap ainda necessários; não aceitar ensaio como personagem final.
 
 
-## Fonte recebida para Hybrid Bust v2
+## Histórico — primeira fonte recebida para Hybrid Bust v2
 
 O usuário aprovou o spike como direção técnica, **não a integração**, e forneceu nova prancha como fonte visual primária para autoria. [Arquivo recebido v2](reference/gika-authoring-v2-received.jpg) preservado byte a byte: JPEG real1280×720,186821bytes, SHA256 `5d91424e00842b2df08515caeba4bb9426bb377fad7bc6520890d865f16efb22`. Não é o PNG original de alta qualidade descrito no pedido. JPEG anterior permanece intacto para proveniência do spike v1; não renomear/converter JPEG como se fosse fonte PNG original. Nenhuma identidade/mecha/contrato muda.
 
-Autoria v2 aguarda o arquivo original descrito; não há conclusão de redesenho manual obrigatório nem tentativa generativa. Recorte de inspeção da pose neutra `(365,319)–(456,409)`,91×90px, não demonstra ganho de resolução sobre89×104px anteriores. Somente depois da fonte correta: backing localizado/closed lids registrados/underlap/matte, QA rest+idle+blink+stress light/dark e pequenos tamanhos. Integração proibida neste pedido; listening/thinking condicionados ao gate visual idle/blink, sem Controller/React antecipado.
+Naquele checkpoint, autoria v2 aguardava o arquivo original descrito; não há conclusão de redesenho manual obrigatório nem tentativa generativa. Recorte de inspeção da pose neutra `(365,319)–(456,409)`,91×90px, não demonstra ganho de resolução sobre89×104px anteriores. Somente depois da fonte correta: backing localizado/closed lids registrados/underlap/matte, QA rest+idle+blink+stress light/dark e pequenos tamanhos. Integração proibida neste pedido; listening/thinking condicionados ao gate visual idle/blink, sem Controller/React antecipado.
+
+
+## Hybrid Bust v2 — PNG original recebido e autoria validada
+
+[Fonte PNG primária para autoria](reference/gika-authoring-v2-original.png), recebida dentro de ZIP: RGB1672×941,2183940bytes, SHA256 `2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba`. JPEGs e spikev1 intactos para proveniência. A pendência SOURCE_ORIGINAL_PNG_REQUIRED acima é histórica/resolvida, não um bloqueio atual.
+
+Busto neutro119×117nativos;14camadas, backing localizado/pálpebras da Carinhosa registradas/underlap apenas oculto/matte. Master da mecha completo isolado antes de olhos/rosto:415pixels canônicos de roxo do cabelo pertencem à camada própria, sem recolorir ou gerar pixels. Donor transmite somente lashes, nunca cabelo ou ausência acidental de mecha. Inspeção do ensaio rest/idle/blink/stress em light/dark e24–72px,52frames de transição/motion+48capturas pequenas; mecha sempre à direita frontal, sem exposure holes no interior do rosto/pescoço.
+
+QA de autoria v2 PASS, distinto de aprovação integral humana do asset/rig/estados e QA no produto. Fontes em assets/gika/source/hybrid-bust-v2 e rig em assets/gika/rive/hybrid-bust-v2. Não integrado; demais motions/Controller/React não concluídos. Detalhes/primeiras falhas em M9_EVIDENCE. Resolução suficiente para o busto pequeno testado; não presumir masterHD240/corpo universal.
