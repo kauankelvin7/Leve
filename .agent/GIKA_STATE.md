@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M5_T4_DONE_STOP_BEFORE_M6`.
+- Status global: `M5_CLOSURE_BLOCKED_STOP_BEFORE_M6`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -14,11 +14,17 @@
 
 ## Autorização atual
 
-Pedido atual autoriza exclusivamente M5-T4 batch seguro, conforme docs/gika/M5_T4_EXECPLAN.md. Entrada local/origin 1b09f5fb0d07388f8bf5d2ef8c5bf9eba0e089c4 e worktree limpo/fetch verificados. Gates/checkpoints e push somente feat autorizados; sem M6/Gemini live/deploy/main/visual/dependências.
+Pedido atual autoriza exclusivamente M5-CLOSURE — Security & Regression Gate depois de M5-T4 revisado/aprovado. Entrada/fetch local=origin `8a892504753d7624f50cf54f534ce7c38fde195a`, feat/gika-integration e worktree limpo verificados. Somente auditoria cruzada, gates, evidência/estado e backup remoto feat; corrigir produto apenas se houver defeito concreto demonstrado. Sem dependências/M6/live/PR/main/deploy/shell/Character Foundation.
 
 ## Próxima ação
 
-Parar para revisão depois do checkpoint/backup remoto M5-T4. Não iniciar M6, Gemini live, PR, merge ou deploy. Nenhuma ação nova está autorizada automaticamente.
+Parar para revisão após gate documental M5-CLOSURE e backup remoto feat. Audit produção atual 0 critical/2 high/0 moderate, GHSA-86w9-cpqp-85rv em firebase-admin13.6.0→node-forge1.4.0; não atualizar dependências nesta etapa. Não declarar READY nem iniciar M6. Evidência em docs/gika/M5_CLOSURE_EVIDENCE.md; M5 histórico done não significa closure de segurança aprovado.
+
+## M5-CLOSURE — gate executado, bloqueado
+
+Entrada local/origin/fetch `8a892504753d7624f50cf54f534ce7c38fde195a`, feat limpa, M5 done/M6 todo. Auditoria cruzada e duas revisões somente leitura: nenhum novo defeito de mutação demonstrado;284arquivos não documentais byte-idênticos, nenhum writer/collection/Rules/outbox/receipt engine/chat novo. Policy central de individuais/recorrência e gate batch estreito separado ADR020; não certificar classificador global único. Signer/purpose/snapshot/auth/revision/receipts/cap5/partial/recovery/ack preservados.
+
+Lint/doisTS/build/480unit/243integração PASS. Primeira Gika76=56PASS/20FAIL, não verde. Comparação somente20 originais em cópia exata8a89250=13PASS/7FAIL; sete reproduzidas (confirmation precommit, cinco update, composer offline), nenhuma deadline/fixture relaxada.69únicas tiveram PASS observado, não76. Falhas restantes preexistentes à entrada mas não dispensadas; offline mostrou retorno à finalização de conta, causa raiz não fechada. Audit inicial/final FAIL0critical/2high/0moderate: firebase-admin13.6.0→node-forge1.4.0/GHSA-86w9-cpqp-85rv, registry atual com árvore intacta, sem upgrade/auditfix. Decisão M5_BLOCKED por segurança e gate E2E não aprovado, evidência docs/gika/M5_CLOSURE_EVIDENCE.md. Token fictício de emulador apareceu em inspeção parcial de log; coleta corrigida, nenhum segredo real/Gemini/header versionado. Screenshots históricos restaurados. Somente evidência/STATE/TASKS no commit documental; push feat e igualdade local/origin/worktree no encerramento. Sem M6/live/PR/main/deploy/shell/Character Foundation/dependência.
 
 ## M5-T4 — conclusão
 

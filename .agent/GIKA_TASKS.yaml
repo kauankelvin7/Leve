@@ -364,3 +364,13 @@ security_hardening:
     source_checkpoint: 8300c2b48408ba12664573ee92c1402b5aafd82f
     method: fast_forward_only
     evidence: ".agent/GIKA_STATE.md: pré-condições exatas/ancestralidade/worktree limpo; ff-only e HEAD8300c2b confirmados. Audit produção0; lint/doisTS/build/334unit/166integração PASS; check12/1 somente contraste histórico; E2E52/1 timeout temporal e original isolado1PASS, todas53 únicas observadas PASS, sem esconder tentativa inicial. Sem alteração funcional/dependências/main/visual, sem Gemini live. M5-T2 todo/não iniciado; parar para revisão."
+
+# Gate documental de encerramento; preserva o histórico de M5 e M6.
+m5_closure:
+  status: blocked
+  decision: M5_BLOCKED
+  entry_checkpoint: "8a892504753d7624f50cf54f534ce7c38fde195a"
+  evidence: "docs/gika/M5_CLOSURE_EVIDENCE.md"
+  gates: "Lint/doisTS/build/480unit/243integração PASS. Primeira Gika56PASS/20FAIL; entrada exata somente20 originais13PASS/7FAIL; nenhum deadline relaxado.284arquivos não documentais idênticos."
+  blocker: "Audit produção 0 critical / 2 high / 0 moderate, GHSA-86w9-cpqp-85rv; upgrades fora do escopo. E2E ainda reprovado: sete falhas reproduzidas na entrada, sem regressão de código introduzida pelo closure."
+  next_action: "Parar para revisão após checkpoint/push documental; M6 todo/não autorizado."
