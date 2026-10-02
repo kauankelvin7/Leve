@@ -232,3 +232,8 @@ T1: `571b6bfe9b3d685ca8295de14b66d0e24b99f14f`. T2 funcional: `4799b833daeb37a4c
 ## M9-T3 — acabamento técnico e bloqueio visual
 
 Contraste de tarefas concluídas/controles avatar tablet/datas inteiras a200% corrigidos no CSS dono. Baselines de fixture frequência/tutorial/view inicial/calendário e serialização de cor documentados, sem alterar produto para seletores; navegação semântica evita saturação do dev browser. Design focal final1PASS, lint/doisTS/build/537unit PASS; inspeção60superfícies/20Axe0, GC/memória warm20+20 sem aumento DOM/listeners, chunks lazy preservados. docs/gika/M9_EVIDENCE.md preserva todas as primeiras falhas/comparações/métricas e limites. Sem editor/CLI authoring Rive/rig/avatar reais: CHARACTER_ASSET_REQUIRED; nenhum desenho improvisado/runtime/controller sem consumidor. T3 blocked, continuar T4 independente por autorização explícita; M9 não concluído visualmente.
+
+
+## M9 — correção focal do guia
+
+O cenário refinements atualizado reproduziu o target ausente no calendário Semana, também na entrada2e73b3a com fixtures atuais. Tutorial agora destaca o painel ativo Mês/Semana/Dia, sem alterar calendário/domínio. Regressão existente mantém destaque real, cor escolhida/reload/mobile/lixeira/Axe; focal5/5 e convencional final20/20 PASS. T3 continua blocked pelo asset real; T4 segue no checkpoint final dos gates, sem RC_READY.

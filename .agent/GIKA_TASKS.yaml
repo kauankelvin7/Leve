@@ -363,7 +363,7 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: blocked
-        evidence: ["M9_EVIDENCE T3; CSS AA/avatar/zoom e design/inspeção/performance verificados; CHARACTER_ASSET_REQUIRED impede acabamento visual/RC. Demais itens T4 autorizados a continuar."]
+        evidence: ["M9_EVIDENCE T3; CSS AA/avatar/zoom, destaque real do guia e design/inspeção/performance verificados; CHARACTER_ASSET_REQUIRED impede acabamento visual/RC. Demais itens T4 autorizados a continuar."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
