@@ -37,7 +37,7 @@
     "@js-temporal/polyfill": "0.5.1",
     "express": "5.2.1",
     "firebase": "12.19.0",
-    "firebase-admin": "13.6.0",
+    "firebase-admin": "13.10.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-router-dom": "7.18.3",
