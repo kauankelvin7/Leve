@@ -237,3 +237,8 @@ Contraste de tarefas concluídas/controles avatar tablet/datas inteiras a200% co
 ## M9 — correção focal do guia
 
 O cenário refinements atualizado reproduziu o target ausente no calendário Semana, também na entrada2e73b3a com fixtures atuais. Tutorial agora destaca o painel ativo Mês/Semana/Dia, sem alterar calendário/domínio. Regressão existente mantém destaque real, cor escolhida/reload/mobile/lixeira/Axe; focal5/5 e convencional final20/20 PASS. T3 continua blocked pelo asset real; T4 segue no checkpoint final dos gates, sem RC_READY.
+
+
+## M9-T4 — regressão técnica verificada
+
+Verify canônico primeira execução PASS: audit0/lint/AST/doisTS/build/537unit/252integração/8critical. Regresso Gika100/100 fresh, Planner/design13/13, convencional20/20 e shell17/17 PASS; primeiras falhas/baselines e ajustes semânticos/Date-only em M9_EVIDENCE. Nenhum timer/command/policy/Rules/modelo/persistência/dependência alterado para fixtures.98arquivos protegidos byte-idênticos à entrada; screenshots gerados restaurados/removidos. Funcional guia546ec5f; commit de test/harness separado, depois checkpoint documental do bloqueio visual.

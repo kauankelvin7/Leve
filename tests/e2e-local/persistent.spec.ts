@@ -15,10 +15,10 @@ test('cadastro, verificação, ativação, recuperação, saída e nova entrada 
   await page.getByLabel('E-mail').fill('cadastro.local@example.test');
   await page.getByLabel('Senha', { exact: true }).fill('cadastro-local-123');
   await page.getByLabel('Confirmar senha', { exact: true }).fill('senhas-diferentes');
-  await page.getByRole('button', { name: 'Criar conta' }).click();
+  await page.getByRole('button', { name: 'Criar conta', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('As senhas não coincidem.');
   await page.getByLabel('Confirmar senha', { exact: true }).fill('cadastro-local-123');
-  await page.getByRole('button', { name: 'Criar conta' }).click();
+  await page.getByRole('button', { name: 'Criar conta', exact: true }).click();
   await expect(page.getByText(/O ambiente local não envia e-mails reais/)).toContainText('cadastro.local@example.test');
   await expect(page.getByText(/Serviço indisponível/)).toHaveCount(0);
   await expect(page.getByText(/Não foi possível concluir o acesso/)).toHaveCount(0);
@@ -28,7 +28,7 @@ test('cadastro, verificação, ativação, recuperação, saída e nova entrada 
   await expect(page.getByLabel('Seu nome')).toHaveValue('Cadastro local');
   await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
-  await page.getByRole('button', { name: 'Pular tutorial' }).click();
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
   await page.getByRole('button', { name: 'Sair', exact: true }).click();
   await expect(page).toHaveURL(/\/entrar$/);
   await page.getByRole('link', { name: 'Esqueci minha senha' }).click();
@@ -84,9 +84,10 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await checkbox.click();
   await expect(checkbox).toBeChecked();
 
-  await page.getByRole('navigation').getByRole('link', { name: 'Calendário' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário' }).click();
+  await page.getByRole('button', { name: 'Mês', exact: true }).click();
   await expect(page.locator('.calendar-agenda').getByText(activityTitle, { exact: true })).toBeVisible();
-  await page.getByRole('navigation').getByRole('link', { name: 'Notas' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Notas' }).click();
   await page.getByLabel('Título').fill(noteTitle);
   await page.getByLabel('Texto').fill(noteText);
   await page.locator('.note-composer .optional-fields > summary').click();
@@ -101,7 +102,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('button', { name: 'Concluir edição' }).click();
   await expect(page.getByText(`${noteText} Editado.`)).toBeVisible();
 
-  await page.getByRole('navigation').getByRole('link', { name: 'Compras' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Compras' }).click();
   await page.getByLabel('Nome da lista').fill(listTitle);
   await page.getByRole('button', { name: 'Criar lista' }).click();
   await expect(page.getByRole('heading', { name: listTitle, exact: true })).toBeVisible();
@@ -109,22 +110,26 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('button', { name: 'Adicionar item' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toBeVisible();
   await page.getByRole('checkbox', { name: 'Arroz' }).click();
-  await page.getByText('Concluídos (1)', { exact: true }).click();
+  const completedItems = page.locator('.completed-shopping');
+  await expect(completedItems.locator('summary small')).toHaveText('1');
+  await completedItems.locator('summary').click();
   await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeChecked();
   await page.reload();
-  await page.getByText('Concluídos (1)', { exact: true }).click();
+  await expect(completedItems.locator('summary small')).toHaveText('1');
+  await completedItems.locator('summary').click();
   await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeChecked();
   const shoppingListUrl = page.url();
   await page.getByRole('button', { name: 'Excluir' }).click();
-  await page.getByRole('navigation').getByRole('link', { name: 'Lixeira' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: 'Arroz' }).getByRole('button', { name: 'Restaurar' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toHaveCount(0);
   await page.goto(shoppingListUrl);
-  await page.getByText('Concluídos (1)', { exact: true }).click();
+  await expect(completedItems.locator('summary small')).toHaveText('1');
+  await completedItems.locator('summary').click();
   await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeVisible();
 
-  await page.getByRole('link', { name: /Preferências/ }).click();
+  await page.getByRole('link', { name: 'Perfil e preferências', exact: true }).click();
   await page.getByLabel('Nome', { exact: true }).first().fill('Conta local atualizada');
   await page.getByLabel('Reduzir transparência').check();
   await page.getByRole('button', { name: 'Salvar preferências' }).click();
@@ -133,7 +138,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await page.getByRole('button', { name: 'Criar categoria' }).click();
   await expect(page.getByText(categoryName, { exact: true })).toBeVisible();
 
-  await page.getByRole('navigation').getByRole('link', { name: 'Meu dia' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia' }).click();
   await expect(page.getByText(noteTitle, { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Tipo').selectOption('event');
@@ -174,7 +179,7 @@ test('compromisso de dia inteiro salva tempo e pode ser concluído', async ({ pa
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) {
     await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   }
-  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
+  if (await page.getByRole('button', { name: 'Pular guia', exact: true }).isVisible()) await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
 
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Tipo').selectOption('event');
@@ -200,7 +205,7 @@ test('compromisso de dia inteiro salva tempo e pode ser concluído', async ({ pa
   await page.reload();
   await expect(page.getByText(/Concluída/)).toBeVisible();
 
-  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
   const completedRow = page.getByRole('listitem').filter({ hasText: title });
   await expect(completedRow).toHaveClass(/is-completed/);
   await expect(completedRow.getByText('Concluído', { exact: true })).toBeVisible();
@@ -230,7 +235,7 @@ test('lixeira global restaura item de compras', async ({ page }) => {
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
   const shoppingListUrl = page.url();
   await page.getByRole('button', { name: 'Excluir' }).click();
-  await page.getByRole('navigation').getByRole('link', { name: 'Lixeira' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira' }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: 'Item para restaurar' }).getByRole('button', { name: 'Restaurar Item para restaurar', exact: true }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toHaveCount(0);
@@ -298,7 +303,7 @@ test('conflito de nota entre abas preserva as duas versões', async ({ context, 
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) {
     await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   }
-  await page.getByRole('navigation').getByRole('link', { name: 'Notas' }).click();
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Notas' }).click();
   await page.getByLabel('Título').fill(title);
   await page.getByLabel('Texto').fill('Texto inicial.');
   await page.getByRole('button', { name: 'Salvar nota' }).click();
@@ -364,7 +369,7 @@ test('exportação pessoal volta pela importação sem substituir os dados atuai
   await page.goto('/configuracoes');
 
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Baixar uma cópia' }).click();
+  await page.getByRole('button', { name: 'Baixar backup', exact: true }).click();
   const download = await downloadPromise;
   const archivePath = await download.path();
   expect(archivePath).not.toBeNull();
@@ -373,7 +378,7 @@ test('exportação pessoal volta pela importação sem substituir os dados atuai
   expect(archive.data.categories.length).toBeGreaterThan(0);
   await expect(page.getByText(/Exportação concluída/)).toBeVisible();
 
-  await page.getByLabel('Arquivo para importar').setInputFiles(archivePath!);
+  await page.getByLabel('Importar backup do Leve').setInputFiles(archivePath!);
   await expect(page.getByText(/Arquivo válido/)).toBeVisible();
   await expect(page.getByText(/Resumo:/)).toBeVisible();
   await page.getByRole('button', { name: 'Importar como cópia' }).click();

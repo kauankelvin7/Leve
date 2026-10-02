@@ -45,12 +45,15 @@ test('cronômetro continua contando fora do detalhe da atividade', async ({ page
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true })).toBeVisible({ timeout: 25_000 });
   await page.locator('.activity-list').getByRole('link', { name: title, exact: true }).click();
+  const startAck = page.waitForResponse(response => response.url().endsWith('/api/commands') && response.request().postDataJSON()?.command === 'timeEntry.start');
   await page.getByRole('button', { name: 'Iniciar cronômetro' }).click();
-  await page.clock.install();
-  await page.clock.fastForward(35_000);
+  const startedAt = Date.parse((await (await startAck).json()).serverTime);
+  // Fix Date only: Firestore subscriptions and navigation timers must keep running.
+  await page.clock.setFixedTime(new Date(startedAt + 35_000));
+  await expect(page.locator('.timer-display')).toHaveText('00:00:35');
   await page.getByRole('link', { name: 'Notas', exact: true }).click();
-  await page.clock.fastForward(5_000);
-  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  await page.clock.setFixedTime(new Date(startedAt + 40_000));
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
   await page.locator('.activity-list').getByRole('link', { name: title, exact: true }).click();
   await expect(page.locator('.timer-display')).toHaveText('00:00:40');
   await page.getByRole('button', { name: 'Finalizar' }).click();

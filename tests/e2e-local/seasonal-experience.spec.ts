@@ -194,11 +194,11 @@ test('Meu dia e Calendário preservam reflow e marcador sazonal nas larguras ofi
 
   for (const viewport of VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await page.goto('/hoje');
+    await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
     await expect(page.locator('.seasonal-surface-today')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `overflow em Meu dia a ${viewport.width}px`).toBe(true);
 
-    await page.goto('/calendario');
+    await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
     await expect(page.locator('.seasonal-surface-calendar')).toBeVisible();
     const currentDay = page.locator('.calendar-time-date[aria-current="date"], .calendar-day[aria-current="date"]');
     await expect(currentDay.first()).toBeVisible();

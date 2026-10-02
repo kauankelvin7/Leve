@@ -45,3 +45,45 @@ Verify único reusa audit/lint(do AST)/build(doisTS)/unit/integration/E2E críti
 Shell primeira tentativa npm run test:e2e não iniciou casos: webServer esperava127.0.0.1 mas Vite configurado localhost/IPv6, timeout60000ms original preservado. Configs de teste alinham localhost existente, sem workaround de produção/timeout aumentado; primeira shell seguinte17PASS56,0s, Axe/light/dark/viewports/entrada real mais referências históricas. Config local auto-start usa emuladores efêmeros/HMAC em memória e GEMINI_API_KEY vazia (ausente funcionalmente, sem chave fictícia); provider fixtures, sem live.
 
 Primeira regressão Gika em grupos fresh serializados (emuladores/API/dev novos; sem segredo): proatividade7PASS1,1min; interface/leitura/voz/organization37PASS5,7min; create/complete/update/reschedule/confirmation/recurrence/batch56PASS8,9min. Total100/100, nenhum rerun/deadline/assertion/retry alterado. Suite convencional/Planner e execução canônica ainda pendentes. Audit produção high+JSON atuais0total/0critical/high/moderate.
+
+
+### T4 — primeira regressão convencional e comparação
+
+Quality final13/13PASS3,3min (Planner/revisões/recorrência/offline/design/Axe). Primeira convencional20:12PASS/8FAIL4,6min; avatar2, persistência8, timer2, refinements1 e sazonal7. Falhas preservadas: cadastro strict Criarconta/Google2,9s; persistência calendário mensal inexistente16,3s; all-day Meu dia colide breadcrumb7,1s; nota navigation colide atalho3,4s; export labels antigos90s; tutorial accessible name antigo15,1s; sazonal última largura360 tela vazia com módulo de fonte ERR_INSUFFICIENT_RESOURCES; timer2 link Meu dia colide breadcrumb. Em cópia exata2e73b3a, oito casos +avatar2:3PASS/7FAIL3,1min, mesmos sete seletores/vista/labels. Sazonal NÃO reproduziu na entrada: não classificar como baseline demonstrado. Evidência atual aponta recurso do loader Vite/Chromium após fullnavigations; navegar pelos links SPA reais preserva todas as provas de seis larguras/estado sazonal, sem mudar produto.
+
+Fixtures adaptadas à UI atual sem remover asserções/deadlines: exact Criarconta/Pularguia; navigation Principal; selecionar Mês antes de asserções mensais; labels Baixarbackup/Importarbackup; tutorial identificado pelo próprio heading acessível; SPA na matriz sazonal. Primeira pós-adaptação20:17PASS/3FAIL4,0min. Novos pontos alcançados: summary Concluídos não contém mais texto literal `(1)` (count atual em small); destaque do guia ausente na vista Semana; relógio de teste continua avançando durante navegação (UI observou41..50 em vez de40).
+
+Guia: defeito concreto no produto, Tutorial target `.calendar-panel` só alcança Mês, calendário adaptativo também usa `.calendar-time-panel`. Correção mínima de uma linha inclui os dois painéis; nenhuma regra temporal/domínio muda. Teste existente exige destaque real, não força Mês para ocultar o defeito. Primeiro focal pósfix4:2PASS/2FAIL55,1s; destaque passou, refinements alcançou outra premissa mensal e timer congelado por pauseAt deixou subscription aguardando. Tentativa pauseAt descartada: pausa global impede timers do Firestore durante navegação. Fixture passa a fixar somente Date, ancorada no serverTime do ack real timeEntry.start; timers/rede continuam ativos, asserções35/40s mantidas. Nenhum código de cronômetro alterado. Summary de compras mantém prova count1 antes de abrir em cada reload/restore; refinements seleciona Mês somente na prova mensal posterior ao guia.
+
+Segundo focal pósfix5:3PASS/2FAIL1,7min. Fix Date-only provou timer40s sem congelar subscriptions; restante falhou por link Preferências maiúsculo antigo e cor literal Rosa legacy #CE92A5 (paleta atual #B76F88). Correções somente de teste: nome acessível Perfil e preferências; cor observada no radio escolhido comparada ao marcador persistido, mantendo texto Rosa/reload. Terceiro focal5/5PASS1,1min (avatar2, persistência, guia/mobile/Axe, timer). Lint/doisTS/build após target fix PASS, sem alterar timer/paleta/command/domain.
+
+Comparação focal da causa do guia: código de produto na entrada2e73b3a, somente fixtures atuais copiadas para comparação, emuladores/API/dev novos.4casos:3PASS/1FAIL42,0s; guia reproduziu falta de tutorial-highlight no calendar-time-panel, timer Date-only passou na entrada sem mudar produto. Defeito do guia preexistente confirmado; não introduzido por M9. Comparação registra fixtures adaptadas, não declara suíte original verde.
+
+Suíte convencional final20/20PASS3,1min em ambiente fresh após correções demonstradas: cadastro/Auth, persistência, all-day, compras/lixeira, multitab/offline, conflito de notas, teclado/reflow, export/import, guia/cores/unidades/mobile/Axe, sazonal/reduced/lightdark/seis larguras, timers/reload. Não alterar produto para seletores: somente target real do guia foi corrigido; fixtures atualizadas preservam domínio e deadlines.
+
+### Gates técnicos finais
+
+Primeira execução canônica `npm run verify`: exit0, sem rerun. Inicia e encerra seus próprios emuladores/API/dev, sem GEMINI_API_KEY funcional; oito casos críticos em1,3min. Manifest/lock/versões de dependências não mudaram: clean install local adicional desnecessário; CI mantém npm ci. Nenhuma deadline/retry/threshold alterada para obter verde.
+
+| Gate | Resultado observado |
+| --- | --- |
+| Audit produção high+JSON e verify moderate | PASS;0critical/high/moderate/low,0total |
+| Lint + AST boundaries | PASS;43 fontes, probes negativos rejeitados |
+| Ambos typechecks + build | PASS;warning de chunks investigado/preservado |
+| Unitários completos |537/537PASS;54 arquivos |
+| Integração completa Auth/Rules/commands/revisions/receipts/scopes/organization |252/252PASS;8 arquivos |
+| Gika ampla, três grupos fresh serializados |100/100PASS (7proatividade+37UI/leitura/voz/organization+56mutações) |
+| Planner/design/Axe/zoom/seis larguras |13/13PASS;3,3min |
+| Convencional/Auth/PWAoffline/guia/sazonal/timer |20/20PASS;3,1min após causas documentadas |
+| Shell/produção/Axe |17/17PASS;56,0s após correção da URL de readiness |
+| E2E crítico canônico com auto-start |8/8PASS;1,3min, primeira execução |
+
+As100Gika passaram antes da correção de uma linha no target do guia; fontes Gika/model/domain não mudaram depois. A bateria convencional20 e critical8 passaram no estado final do produto. Primeiras falhas/comparações acima permanecem: os resultados finais não apagam as tentativas anteriores.
+
+Comparação byte a byte com entrada2e73b3a:98arquivos protegidos (server exceto app/logger de diagnóstico, domain, Gika/UI/bridges, Auth/identity, platform/outbox, Rules/indexes/configFirebase e lock) inalterados. Dependencies/devDependencies/overrides/engines iguais. Nenhum writer/collection/outbox/receipt/policy/Rules/persistência paralelo; nenhuma identidade originada do modelo ou autoridade a partir de narrativa. Guard AST é enforcement de imports limitado, não prova adversarial universal. Fotografias geradas pelos testes restauradas/removidas somente nos caminhos desta execução; não versionar traces/logs privados.
+
+### Limites e decisão
+
+**M9_BLOCKED_CHARACTER_ASSET_REQUIRED.** Segurança, observabilidade, acabamento técnico e regressão independente verificados; T3 visual e aceite RC de T4 continuam bloqueados pelo asset vetorial/rig Rive reais. Nenhuma personagem improvisada/controller/fallback foi declarada final. Não produzir M9_DONE_RC_READY enquanto isso faltar. Retomada dentro do M9 existente: receber/autorar asset+rig legítimos com ferramenta apropriada, integrar conforme Character Bible, medir runtime/lazy/cleanup/reduced motion e validar o acabamento real; então concluir o aceite de T3/T4.
+
+Limites operacionais preservados: AppCheck depende de configuração/UAT gratuitos; limiter por instância; warning de chunks sem benefício seguro de split demonstrado; métricas lab não são LCP/INP/CLS de campo. Microfone/permissões/browser em aparelho real, rig Rive, Gemini live, produção e UAT humanos não foram comprovados nesta execução. Sem áudio/TTS/live/billing/deploy/main/PR; push autorizado somente feat/gika-integration.

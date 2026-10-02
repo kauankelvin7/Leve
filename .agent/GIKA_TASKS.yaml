@@ -368,6 +368,7 @@ milestones:
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: in_progress
+        evidence: ["M9_EVIDENCE T4: primeira verify PASS, audit0/lint/AST/doisTS/build/537unit/252integração/8critical; Gika100/Plannerdesign13/convencional20/shell17 PASS. Aceite RC depende do asset real de T3."]
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.
