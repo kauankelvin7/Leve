@@ -331,6 +331,8 @@ milestones:
 
   M8:
     name: "Proatividade controlada"
+    status: done
+    evidence: "docs/gika/M8_EVIDENCE.md; audit0/lint/doisTS/build/533unit/7focal/37regressão/17shell/Axe PASS; client-only sem integração redundante, parar antes M9."
     tasks:
       - id: M8-T1
         title: "Rules engine de sugestões locais"
@@ -340,7 +342,9 @@ milestones:
         dependencies: [M7-T2]
       - id: M8-T2
         title: "Geração de proposta somente sob interação"
-        status: todo
+        status: done
+        evidence: ["M8_EVIDENCE.md T2; panel/daily-brief/composer existentes, opt-in sem request/manualsend/M6 preview/confirm real; offline/draft/auth/dismiss/meaningful change/mobile/dark/zoom/Axe; cancel-lazy reproduzido e corrigido, 7focal/37regressão/17shell/533unit/audit0 PASS."]
+        acceptance_criteria: ["Sem IA automática/command antes da confirmação; interação apenas prepara draft revisável, UID atual/offline/cancel/reload seguros, nenhum writer/query/persistência/CSS/dependência nova; M9 todo."]
         dependencies: [M8-T1]
 
   M9:

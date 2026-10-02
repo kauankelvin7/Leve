@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M8_T1_DONE_NEXT_M8_T2`.
+- Status global: `M8_DONE_STOP_BEFORE_M9`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 done; M8-T2 todo, avanço automático autorizado. M9 e posteriores todo/não iniciados.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 e posteriores todo/não iniciados.
 
 ## Hardening — resumo histórico
 
@@ -19,7 +19,11 @@ M7 aprovado; pedido atual autoriza M8-T1→T2 sequenciais sobre44b8928e26b0a0138
 
 ## Próxima ação
 
-Concluir T1 com gates locais, avançar T2 explicit interaction/UI/gates e backup somente feat; parar após M8 para revisão.
+Aguardar revisão de M8; M9 todo/não iniciado. Nenhuma próxima tarefa executada automaticamente.
+
+## M8 — conclusão
+
+Entrada44b8928 local/origin/fetch limpa/exata; T1 commit571b6bfe9b3d685ca8295de14b66d0e24b99f14f. Regra local4–5 pending hoje sobre leitura existente completa, sem IA/IO/write; fingerprint/8dismissals em memória/currentToday/UID. UI panel/daily-brief nativa; opt-in somente draft, manualsend/M6/preview/confirmation/commands/receipts existentes. Offline hint sem fila/lazy/reconnectexec, rascunho/UID preservados. Cancel-lazy novo defeito reproduzido1FAIL e corrigido com invalidation/sequence; primeira pósfix1PASS. Gates finais audit0/lint/doisTS/build/533unit/7focal/37regressão/17shell/Axe PASS; primeira focal6PASS/primeira regressão37PASS preservadas. Integração server redundante não repetida (camada intocada), E2E real emuladores/fixtures sem live/credencial. UI desktoplight/mobiledark/200% revisada; sem CSS/dependência/query/persistência/Character/TTS novo. M8_EVIDENCE detalha limites e tentativas; parar para revisão, M9 todo.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 

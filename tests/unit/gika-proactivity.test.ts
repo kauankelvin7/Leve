@@ -27,6 +27,8 @@ describe('M8 local facts', () => {
   });
   it('detector has no IO/model/commands/logging/storage/timers', () => {
     const source = readFileSync('apps/web/src/features/gika/proactivity.ts', 'utf8');
+    const surface = readFileSync('apps/web/src/features/gika/GikaSuggestion.tsx', 'utf8');
+    expect(surface).not.toMatch(/firebase|fetch\(|apiRequest|sendCommand|adapter|console\.|Storage|setInterval|setTimeout|speechSynthesis|SpeechRecognition/u);
     expect(source).not.toMatch(/firebase|fetch\(|apiRequest|sendCommand|adapter|console\.|Storage|setInterval|setTimeout|speechSynthesis|SpeechRecognition/u);
   });
 });

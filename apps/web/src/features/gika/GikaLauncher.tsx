@@ -1,7 +1,14 @@
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GikaMark } from './GikaMark';
+import { useAuth } from '../identity/AuthProvider';
+import { firebaseAuth } from '../../platform/firebase';
 import './gika.css';
+
+const DAY_DRAFT_EVENT = 'leve:prepare-gika-day';
+export function requestDayOrganization(uid: string) {
+  window.dispatchEvent(new CustomEvent(DAY_DRAFT_EVENT, { detail: uid }));
+}
 
 const loadPanel = () => import('./GikaPanel').then(module => ({ default: module.GikaPanel }));
 
@@ -19,11 +26,24 @@ class GikaBoundary extends Component<{ children: ReactNode; onClose: () => void 
 
 export function GikaLauncher() {
   const { pathname } = useLocation();
+  const { session } = useAuth();
+  const [dayDraftRequest, setDayDraftRequest] = useState(0);
+  const dayDraftSequence = useRef(0);
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const GikaPanel = useMemo(() => lazy(loadPanel), [attempt]);
   const launcher = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const prepare = (event: Event) => {
+      if (!navigator.onLine) return;
+      if ((event as CustomEvent<unknown>).detail !== session?.uid || !session?.uid || firebaseAuth?.currentUser?.uid !== session.uid) return;
+      setDayDraftRequest(++dayDraftSequence.current); setLoaded(true); setOpen(true);
+    };
+    window.addEventListener(DAY_DRAFT_EVENT, prepare);
+    return () => window.removeEventListener(DAY_DRAFT_EVENT, prepare);
+  }, [session?.uid]);
 
   // The timer is portaled to body and can grow when it displays an error.
   // Measure actual dock heights rather than assuming a fixed timer size.
@@ -53,7 +73,7 @@ export function GikaLauncher() {
     return () => { resize.disconnect(); mutations.disconnect(); window.removeEventListener('resize', update); };
   }, [pathname]);
 
-  function close() { setOpen(false); launcher.current?.focus({ preventScroll: true }); }
+  function close() { setOpen(false); setDayDraftRequest(0); launcher.current?.focus({ preventScroll: true }); }
 
   return <>
     <button ref={launcher} type="button" className="gika-launcher" data-calendar={pathname === '/calendario' ? 'true' : undefined} aria-label="Pergunte à Gika" aria-haspopup="dialog"
@@ -63,7 +83,7 @@ export function GikaLauncher() {
     </button>
     {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setLoaded(false); setAttempt(value => value + 1); }}>
       <Suspense fallback={open ? <div className="gika-load-error" role="status"><p>Abrindo a conversa…</p><button type="button" onClick={close}>Cancelar</button></div> : null}>
-        <GikaPanel open={open} onClose={close} />
+        <GikaPanel open={open} onClose={close} dayDraftRequest={dayDraftRequest} />
       </Suspense>
     </GikaBoundary>}
   </>;

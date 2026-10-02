@@ -334,3 +334,16 @@ Fixtures provam interpretação contratual; Auth/Firestore/commands/receipts/ack
 | M7-E18 | header permite microfone somente self; camada de voz sem API/commands/storage/áudio persistido; secure context/API/policy exigidos | unit configuração/fronteira e revisão read-only |
 
 CI simula a API nativa, não hardware/permissão real. O navegador pode usar serviço remoto; nenhum áudio enviado ao Gemini pelo Leve. Não replicar as jornadas de mutação existentes: depois do envio consciente, o pipeline textual original permanece autoridade. Sem Gemini live.
+
+## M8 — sugestões locais, somente interação consciente
+
+| Caso | Invariante | Prova |
+|---|---|---|
+| M8-E01 | 4–5 tarefas pendentes hoje; normal/loading/error/partial/outro dia/cap não sugerem | 11 unit locais |
+| M8-E02 | Dismiss atual em memória; ordem/renomeação não insistem, tarefa/horário mudados reavaliam | unit fingerprint + E2E |
+| M8-E03 | Detecção/opt-in não chamam modelo nem command; rascunho revisável, envio manual normal | E2E rede/composer |
+| M8-E04 | Preview/cancel sem escrita; confirmação existente aplica somente efeitos selados/acks/receipts | E2E real emuladores |
+| M8-E05 | Offline informa conexão, sem lazy request/fila/autoexecução após reconnect | E2E offline |
+| M8-E06 | UID estranho/logout rejeitam abertura; draft existente preservado | E2E auth/composer |
+| M8-E07 | Cancelar carregamento invalida handoff; novas intenções distintas não reutilizam contador consumido | E2E regressão reproduzida antes da correção |
+| M8-E08 | Superfície atual Leve, teclado/foco/light/dark/mobile/200%/Axe, sem TTS/mic | E2E + inspeção visual |
