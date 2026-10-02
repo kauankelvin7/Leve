@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M6_DONE_STOP_BEFORE_M7`.
+- Status global: `M7_T1_DONE`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7 e posteriores todo/não iniciados.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 done; M7-T2 todo, avanço sequencial autorizado. M8 e posteriores todo/não iniciados.
 
 ## Hardening — resumo histórico
 
@@ -15,11 +15,11 @@
 
 ## Autorização atual
 
-Pedido atual autoriza M6-T1→T2→T3 sequenciais, com commits atômicos e backup final somente da feat/gika-integration. Ponytail/full, Caveman/full e humanizer local aplicados. Integração responsiva aprovada é baseline. Sem M7/Character/TQA/PR/main/deploy/Gemini live ou novas fases.
+M6 aprovado; pedido atual autoriza M7-T1→T2 sequenciais sobre25eecb063afa06d0d1dd98273baee354f42b7752 local/origin/fetch exatos e worktree limpo. Ponytail/full, Caveman/full e humanizer local aplicados. Sem M8/Character/TQA/PR/main/deploy/Gemini live ou novas fases.
 
 ## Próxima ação
 
-Revisar M6 concluído. Gates finais: audit produção0/0/0, lint/doisTS/build,508unit/252integração/86Gika/17shell/Axe PASS. Checkpoint e backup somente feat/gika-integration; igualdade local/origin e worktree limpo devem ser confirmados após push. Não iniciar M7.
+Executar M7-T2, evals e E2E da fronteira voz→texto; T1 aprovado pelos gates executados. Backup final somente feat/gika-integration, confirmar HEAD local=origin/worktree limpo e parar após M7 para revisão.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 
@@ -201,3 +201,10 @@ Base responsiva c840492 preservada, sem CSS/shell/Today/Auth/membership/Rules/co
 ## Checkpoint M6
 
 Commit funcional T3 `430b892917317e0b73563631f527dde01e73588d`, parent85e3ec95b6c1ce7925edfe28eecab29945fb1d2a, feat/gika-integration; worktree limpo confirmado após commit. T1/T2/T3 atômicos concluídos sobre c840492, todos os gates atuais aprovados. Este checkpoint documental registra o SHA real sem mudar produto/testes. Backup autorizado somente feat, verificar HEAD local=origin e worktree limpo após push. M7 todo; parar para revisão.
+
+
+## M7-T1 — input de voz
+
+SpeechRecognition/webkit nativas, pt-BR/final-only/uma captação por gesto. Somente onDraft; envio textual manual já existente é único caminho da Gika. Não captura blobs/getUserMedia/MediaRecorder, áudio não vai ao Gemini e não tem storage/log/histórico novo. Cancel/unmount/conta keyed/offline fecham captação e ignoram eventos atrasados; draft anterior preservado, texto reconhecido anexado sem truncar/autoenviar. UI acessível no composer, disponível/ouvindo/processando/denied/unsupported; header microphone=(self), câmera/geolocalização negadas. Reconhecimento pode ser remoto pelo navegador, sem promessa on-device/offline/produção/dispositivo real.
+
+Lint/doisTS/build/522unit/252integração/5E2E focal/Axe/auditprodução0 PASS. Primeiro typecheck falhou por override de mock no fixture; corrigida tipagem sem mudar asserção/produto, primeira tentativa preservada em M7_EVIDENCE. GikaM1 teste atualiza apenas navegação de foco para botão agora disponível e label de voz; sem timeout/assertion de domínio relaxados. T2 autorizado automaticamente.

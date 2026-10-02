@@ -217,3 +217,8 @@ Decisão em docs/gika/ADR_020_BATCH_COMPOSITION.md: complete/reschedule até5pen
 - Limites: somente reagendamento por data, preserva horários/ausência; rotinas requerem occurrence explícito, future/all de lote permanecem proibidos. Sem novo writer/collection/outbox/Rule/Undo, sem persistência de proposta/conversa.
 
 Complemento T2/T3 da ADR021: o patch convencional aceita horário explícito. A proposta pode sugeri-lo, inclusive para tarefa sem horário, desde que apareça no diff e no mesmo selo; não pode remover horário existente. Semana reutiliza get_week/fuso/weekStartsOn e o mesmo batch cap5, com conjunto integral e sem mudar a regra dos batches antigos. Preservados também são revalidados no guard transacional existente. Offline impede novo envio da organização, sem fila/autoexecução ao reconectar; recibos já aplicados e resultado parcial permanecem honestos. Não surgiu novo executor, signer ou persistência.
+
+
+## ADR-GIKA-022 — voz como entrada nativa do composer
+
+M7 usa SpeechRecognition/webkitSpeechRecognition por gesto explícito, sem dependência ou transcritor remoto próprio. Reconhecimento pode ocorrer em serviço do navegador; não prometer local/on-device nem offline. Permissão só no start do usuário, microphone=(self) no header, camera/geolocation negados. Final vira texto visível/editável, anexado ao draft; somente envio manual textual existente alcança Gika. Abort/cleanup/late-event guards e isolamento por session.uid existentes, nenhuma persistência/log de áudio/transcrição nova. Unsupported/denied/erro deixam texto funcional; produção/hardware não validados por fixtures CI.

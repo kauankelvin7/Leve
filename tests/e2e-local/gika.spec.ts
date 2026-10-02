@@ -36,8 +36,11 @@ test('painel acessível abre e fecha sem perder rascunho nem navegação', async
   await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeFocused();
   await page.getByRole('button', { name: 'Fechar Gika' }).focus();
   await page.keyboard.press('Shift+Tab');
+  const voice = page.getByRole('button', { name: 'Usar voz', exact: true });
+  if (await voice.isEnabled()) { await expect(voice).toBeFocused(); await page.keyboard.press('Shift+Tab'); }
   await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
+  if (await voice.isEnabled()) { await expect(voice).toBeFocused(); await page.keyboard.press('Tab'); }
   await expect(page.getByRole('button', { name: 'Fechar Gika' })).toBeFocused();
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
   await page.keyboard.press('Escape');
@@ -328,7 +331,10 @@ test('conversa tem scroll independente, composer expansível e cards apenas simu
   const viewport = page.getByRole('region', { name: 'Conversa com Gika', exact: true });
   const composer = page.locator('.gika-composer');
   const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
-  await expect(page.getByRole('button', { name: 'Voz em breve' })).toBeDisabled();
+  const voice = page.getByRole('button', { name: 'Usar voz', exact: true });
+  await expect(voice).toBeVisible();
+  if (await voice.isEnabled()) await expect(page.locator('#gika-composer-hint')).toContainText('O navegador pode enviar o áudio');
+  else await expect(page.locator('#gika-voice-status')).toContainText('Voz não disponível');
   await expect(page.locator('.gika-suggestions button svg')).toHaveCount(4);
   await expect(page.locator('.gika-identity .gika-mark')).toHaveCount(1);
   const initialHeight = (await question.boundingBox())!.height;

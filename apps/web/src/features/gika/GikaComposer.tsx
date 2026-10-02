@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { GIKA_MAX_INPUT } from './conversation';
+import { useVoiceInput } from './useVoiceInput';
 
 type Props = {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
@@ -9,6 +10,9 @@ type Props = {
 
 export function GikaComposer({ textareaRef, draft, open, loading, online, onDraft, onSend }: Props) {
   const composing = useRef(false);
+  const voice = useVoiceInput(open && online && !loading, draft, onDraft);
+  const voiceText = voice.state.message ?? ({ idle: 'Você pode usar voz ou digitar.', starting: 'Preparando o microfone…', listening: 'Ouvindo…', processing: 'Preparando o texto…', ready: 'Texto pronto. Revise e envie quando quiser.', denied: 'O microfone não foi autorizado. Você pode digitar.', unsupported: 'Voz não disponível neste navegador. Digite sua pergunta.', error: 'Não consegui reconhecer sua fala. Você pode digitar.' }[voice.state.status]);
+  function submit() { if (!voice.busy) onSend(); }
   useLayoutEffect(() => {
     const element = textareaRef.current;
     if (!open || !element) return;
@@ -24,25 +28,26 @@ export function GikaComposer({ textareaRef, draft, open, loading, online, onDraf
     return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
   }, [draft, open, textareaRef]);
 
-  return <form className="gika-composer" onSubmit={event => { event.preventDefault(); onSend(); }}>
+  return <form className="gika-composer" onSubmit={event => { event.preventDefault(); submit(); }}>
     {!online && <p className="gika-feedback" role="status">A Gika precisa de conexão para responder. Sua agenda continua funcionando normalmente.</p>}
     <div className="gika-composer-field">
       <label className="visually-hidden" htmlFor="gika-question">Pergunte à Gika</label>
-      <textarea id="gika-question" ref={textareaRef} rows={1} maxLength={GIKA_MAX_INPUT} value={draft} onChange={event => onDraft(event.target.value)}
-        placeholder="Pergunte à Gika" aria-describedby="gika-composer-hint"
+      <textarea id="gika-question" ref={textareaRef} rows={1} maxLength={GIKA_MAX_INPUT} value={draft} onChange={event => onDraft(event.target.value)} readOnly={voice.busy}
+        placeholder="Pergunte à Gika" aria-describedby="gika-composer-hint gika-voice-status"
         onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }}
         onKeyDown={event => {
-          if (event.key === 'Enter' && !event.shiftKey && !composing.current && !event.nativeEvent.isComposing) { event.preventDefault(); onSend(); }
+          if (event.key === 'Enter' && !event.shiftKey && !composing.current && !event.nativeEvent.isComposing) { event.preventDefault(); submit(); }
         }} />
       <div className="gika-composer-actions">
-        <button className="gika-voice" type="button" disabled aria-label="Voz em breve" title="Voz em breve">
+        <button className="gika-voice" type="button" disabled={!online || loading || voice.state.status === 'unsupported'} aria-label={voice.busy ? 'Cancelar voz' : 'Usar voz'} title={voice.busy ? 'Cancelar voz' : 'Usar voz'} aria-pressed={voice.busy} aria-describedby="gika-voice-status gika-composer-hint" onClick={() => voice.busy ? voice.cancel() : voice.start()}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" /><path d="M6 11v1a6 6 0 0 0 12 0v-1M12 18v3m-3 0h6" /></svg>
         </button>
-        <button className="gika-send" type="submit" aria-label="Enviar pergunta" title="Enviar pergunta" disabled={!online || loading || !draft.trim()}>
+        <button className="gika-send" type="submit" aria-label="Enviar pergunta" title="Enviar pergunta" disabled={!online || loading || voice.busy || !draft.trim()}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" /></svg>
         </button>
       </div>
     </div>
-    <small id="gika-composer-hint" className="gika-composer-hint">Enter envia · Shift + Enter pula uma linha · Voz em breve</small>
+    <p id="gika-voice-status" className="gika-composer-hint" role="status" aria-live="polite">{voiceText}</p>
+    <small id="gika-composer-hint" className="gika-composer-hint">Enter envia · Shift + Enter pula uma linha{voice.state.status !== 'unsupported' && <><br />O navegador pode enviar o áudio ao serviço de voz. Revise o texto antes de enviar.</>}</small>
   </form>;
 }

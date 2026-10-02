@@ -99,7 +99,7 @@ Mobile: refinements.css muda app-shell para bloco em <= breakpoint mobile e side
 
 M1 exige foco inicial no composer, Tab contido quando modal, Escape fecha, foco retorna ao acionador; labels, live region de mensagens sem repetir todo histórico, loading/error/offline com retry preservando texto; IME não envia Enter antes de compositionend. reduced motion e preferência reduceMotion prevalecem. Fechar não executa comando. Estados e quick actions serão claramente simulados enquanto mock; não alegar consulta/salvamento real.
 
-PWA: apps/web/public/sw.js cache leve-shell-v7, assets imutáveis e navegação network-first; /api excluído. main.tsx detecta update-ready e release-ready; não modificar política de cache por chat. vercel.json bloqueia microphone em Permissions-Policy: M7 depende de revisão específica desse header e consentimento/fallback. Publicação não é autorizada por criação de branch.
+PWA: apps/web/public/sw.js cache leve-shell-v7, assets imutáveis e navegação network-first; /api excluído. main.tsx detecta update-ready e release-ready; não modificar política de cache por chat. Na entrada M0, vercel.json bloqueava microphone. M7 altera somente para microphone=(self), com gesto/permissão/fallback; ver seção M7. Publicação não é autorizada por criação de branch.
 
 Evidência visual existente: tests/e2e-local/design, calendar-planner-visual, seasonal-experience e docs/screenshots. Nenhum screenshot novo necessário para mapa documental sem UI nova; M1 exigirá E2E autenticado/axe + screenshots focais e não poderá alegar validação em aparelho real com base em emulação desktop.
 
@@ -142,7 +142,7 @@ PendingAction planejada: {id, ownerUid, tool, createdAt, expiresAt, summary, pay
 
 Registro M0: naquele checkpoint não havia provedor escolhido nem credencial. Escolha posterior autorizada em ADR-009 e implementação M2 abaixo; credencial ainda ausente. M1 permanece testável com mock. Não selecionar plano pago, ativar billing ou adivinhar chave. Timeouts, request size cap, limite por uid e orçamento de tool calls serão necessários já no endpoint M2; M9 revisa/hardens, não adia a proteção inicial. Sem App Check factual hoje; avaliar no M9.
 
-Domínio não oferece batch transacional genérico nem undo universal. M6 não poderá declarar atomicidade via Promise.all de comandos: gate para contrato composto validado/transacional ou proposta explicitamente sequencial com resultados parciais e recuperação. Recorrência inteira não suportada por updateFuture; não inventar scope series. Voz M7 precisa resolver Permissions-Policy microphone=() antes de afirmar funcionamento em produção. Proatividade M8 será opt-in/regra local, sem monitoramento LLM contínuo.
+Domínio não oferece batch transacional genérico nem undo universal. M6 não poderá declarar atomicidade via Promise.all de comandos: gate para contrato composto validado/transacional ou proposta explicitamente sequencial com resultados parciais e recuperação. Recorrência inteira não suportada por updateFuture; não inventar scope series. Voz M7 revisa Permissions-Policy para microphone=(self); não afirmar funcionamento em produção sem deploy/dispositivo reais. Proatividade M8 será opt-in/regra local, sem monitoramento LLM contínuo.
 
 ## Implementação M2 — 2026-09-30
 
@@ -221,3 +221,10 @@ Uma leitura bounded de hoje ou get_week precede ModelAdapter. Somente até5 tare
 O mesmo BatchPlan incorpora antes/depois e preservados; signer/propósito batch selam todo efeito. Semana amplia somente essa variante para o intervalo civil existente. M5 sem organization conserva seleção de um dia e invariantes anteriores. Mesmo guard na transação activity.update revalida pendentes e preservados, sem renovar revisão; mesmo bridge sequencial/receipts/acks apresenta aplicado/já aplicado/conflito/falhou/pendente/desconhecido. Não há atomicidade global prometida.
 
 Novo pedido invalida preview anterior; confirmar/cancelar não chamam Gemini. Offline bloqueia envio e confirmação, preserva draft/cancelamento e não executa ao reconectar; nenhuma fila nova. Conversa/preview não restauram reload. Sem writer/coleção/outbox/Rule/dependência/Undo novo; layout responsivo aprovado preservado. ADR021 e M6_EVIDENCE.md detalham limites e provas.
+
+
+## M7 — voz preenche o mesmo composer
+
+useVoiceInput encapsula somente SpeechRecognition/webkitSpeechRecognition nativas; estados, finais, limite do composer, preservação de draft e lifecycle/abort. GikaComposer oferece gesto, cancelamento e revisão/edit; não existe autoenvio/voice endpoint/parser/command/policy/confirmation/persistence. GikaLauncher keyed por session.uid descarta captura no logout/troca. Offline/loading/close abortam e não retomam ao reconectar. Header permite microfone somente self; API ausente/contexto inseguro/policy bloqueada deixam fallback textual.
+
+Browser pode enviar áudio ao seu serviço de reconhecimento (MDN documenta Chrome server-based); não se escolhe nem se garante serviço/localidade/retention do fornecedor. UI informa isso antes do gesto. Leve não cria blobs, armazena áudio, loga transcrição ou envia áudio ao Gemini; apenas texto enviado conscientemente percorre pipeline textual normal. Fontes/suporte/gates/limites em M7_EVIDENCE.md; nenhum deploy ou hardware real em CI.

@@ -316,7 +316,8 @@ milestones:
     tasks:
       - id: M7-T1
         title: "Input de voz com fallback"
-        status: todo
+        status: done
+        evidence: ["docs/gika/M7_EVIDENCE.md T1; reconhecimento nativo pt-BR, somente draft/finais, cancel/cleanup/fallback; header self; lint/doisTS/build/522unit/252integração/5E2E focal/Axe/audit0 PASS."]
         dependencies: [M6-T3]
       - id: M7-T2
         title: "Evals de linguagem natural falada"
