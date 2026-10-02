@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M9_T4_IN_PROGRESS_CHARACTER_ASSET_REQUIRED`.
+- Status global: `M9_BLOCKED_CHARACTER_ASSET_REQUIRED`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 em andamento; T1/T2 done, T3 blocked somente pelo asset real, T4 autorizado a continuar.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 blocked pelo asset real; T1/T2 done, T3 blocked visualmente, T4 regressão técnica aprovada e aceite RC blocked pelo mesmo requisito.
 
 ## Hardening — resumo histórico
 
@@ -19,7 +19,7 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-Continuar M9-T4: harness/CI/regressão final, preservando CHARACTER_ASSET_REQUIRED. Não declarar RC pronto nem Character concluída sem asset/rig reais; somente feat/gika-integration.
+Retomar M9-T3 somente com asset vetorial e rig Rive reais conforme Character Bible. Integrar e verificar estados visuais/animados reais, runtime/lazy/cleanup/reduced motion; então completar o aceite RC de M9-T4. Os demais gates técnicos já passaram. Não substituir por CSS/SVG improvisado nem declarar Character/RC concluídos por fallback; nenhum novo milestone.
 
 ## M8 — conclusão
 
@@ -242,3 +242,8 @@ O cenário refinements atualizado reproduziu o target ausente no calendário Sem
 ## M9-T4 — regressão técnica verificada
 
 Verify canônico primeira execução PASS: audit0/lint/AST/doisTS/build/537unit/252integração/8critical. Regresso Gika100/100 fresh, Planner/design13/13, convencional20/20 e shell17/17 PASS; primeiras falhas/baselines e ajustes semânticos/Date-only em M9_EVIDENCE. Nenhum timer/command/policy/Rules/modelo/persistência/dependência alterado para fixtures.98arquivos protegidos byte-idênticos à entrada; screenshots gerados restaurados/removidos. Funcional guia546ec5f; commit de test/harness separado, depois checkpoint documental do bloqueio visual.
+
+
+## Checkpoint M9 — gates técnicos e bloqueio visual
+
+T1 d63ce2e; T2 146bb4a; T3 técnico98c7497; harness a0cf7d4; guia546ec5f; fixtures f617340. Este checkpoint é documental: M9_BLOCKED_CHARACTER_ASSET_REQUIRED; T3/T4 blocked somente pelo asset/rig e aceite visual correspondente, com regressão independente PASS. Não declarar M9_DONE_RC_READY. Publicar somente feat/gika-integration e conferir HEAD local=origin/worktree limpo no encerramento. Nenhum novo milestone/closure/TQA/main/PR/deploy/live/TTS.

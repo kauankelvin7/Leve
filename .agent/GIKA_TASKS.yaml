@@ -349,6 +349,8 @@ milestones:
 
   M9:
     name: "Hardening e release"
+    status: blocked
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos PASS, CHARACTER_ASSET_REQUIRED impede conclusão visual e RC."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -367,7 +369,7 @@ milestones:
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
-        status: in_progress
+        status: blocked
         evidence: ["M9_EVIDENCE T4: primeira verify PASS, audit0/lint/AST/doisTS/build/537unit/252integração/8critical; Gika100/Plannerdesign13/convencional20/shell17 PASS. Aceite RC depende do asset real de T3."]
         dependencies: [M9-T3]
 
