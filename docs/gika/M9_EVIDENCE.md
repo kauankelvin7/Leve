@@ -211,3 +211,23 @@ Sem ampliar escopo corporal: gestures/artboards aprovados só se realmente neces
 **M9_IN_PROGRESS_CHARACTER_HYBRID_BUST**, não M9_DONE_RC_READY. M9-T3 in_progress; T4 blocked para aceite RC. CHARACTER_ASSET_REQUIRED permanece apenas para acabamento/QA final; inferência VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED como condição definitiva é retirada. Próximo trabalho localizado descrito acima; repetir idle+blink antes de runtime/controller/estados e gates completos.
 
 Só assets autorais não consumidos, QA e documentação/estado mudaram. Produto/UI/Auth/commands/policy/Rules/receipts/manifest/lock byte-idênticos à entrada. Gates atuais: verify/once/inspect, prova RGB/partição/hashes/skinning, capturas reais light/dark/64px, links/YAML/whitespace e guard arquitetural existente.537unit/252integration/100Gika anteriores continuam históricos, **não reexecutados nem usados como PASS de personagem**. A bateria completa permanece exigida após integração real. Sem login/Rive publish/assinatura/Cadet/live/Gemini/credencial/PR/main/deploy. Backup somente feat/gika-integration.
+
+
+## Hybrid Bust v2 — verificação da nova fonte, autoria ainda não iniciada
+
+Entrada `cca1a01508f949589e70d3bc412635a35ab2e52e`; branch feat/gika-integration, worktree limpo e fetch/local/origin iguais. Spike aprovado apenas como direção técnica. Pedido exige PNG original de alta qualidade, reconstrução localizada não generativa e nenhuma integração antes do QA.
+
+| Arquivo | Formato efetivo / resolução / bytes | SHA256 |
+| --- | --- | --- |
+| Referência histórica/spike v1 | JPEG1280×960 /223809 | `f2fd8858087f663c473586e79445af8d837fc00296b88215e6975941828b8b05` |
+| [Nova prancha recebida](character/reference/gika-authoring-v2-received.jpg) | **JPEG1280×720** /186821 | `5d91424e00842b2df08515caeba4bb9426bb377fad7bc6520890d865f16efb22` |
+
+Identificação por Pillow e assinatura binária `FF D8 FF E0`, não apenas extensão. Novo anexo preservado byte a byte; original histórico, fontes PNG extraídas v1 e RML/.riv v1 intactos. Os arquivos são diferentes; não tratar como a mesma imagem reencodificada. Nova prancha é referência visual fornecida pelo usuário para v2, sem alterar identidade/Visual Lock. Porém o **arquivo PNG original descrito não foi recebido**. Converter esta JPEG para PNG não recuperaria pixels/perda de compressão.
+
+Inspeção real do crop neutro `(365,319)–(456,409)`91×90px, ampliado4×nearest apenas em/tmp, confirma raster pequeno; crop v1 era89×104. Não houve ganho demonstrado de resolução nativa. Não declarar insuficiência definitiva de toda a tecnologia ou necessidade de redesenho a partir disso; a fonte de alta qualidade solicitada ainda falta para essa avaliação.
+
+**SOURCE_ORIGINAL_PNG_REQUIRED** para executar v2 conforme pedido. Isto é pendência de arquivo de entrada, não VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED. Ainda não se pode determinar qual camada exige redesenho manual mesmo com o PNG original. As lacunas já demonstradas no v1 permanecem localizadas: face_base_clean sob olhos/brows/boca, closed lids registrados, underlap cabelo/mecha/queixo/pescoço e matte. Nenhuma camada v2 foi inventada ou declarada pronta.
+
+Próxima ação: receber PNG original (preferencialmente dentro de ZIP para preservar formato/bytes), verificar hash/resolução e repetir a autoria/QA. Não continuar com uma fonte comprimida fingindo que a substituição por alta qualidade ocorreu. Não integrar produto, listening/thinking, Controller ou React neste checkpoint. Sem inpainting generativo, novo personagem, nova decisão arquitetural/fase, dependência, login/publish/Cadet/Gemini.
+
+Gates desta verificação: formato/dimensões/hash/binário da fonte e cópia idêntica, comparação visual do crop, YAML/links/diff. Não executar ou declarar QA v2 rest/idle/blink/stress nem gates de produto sem autoria/integração. M9-T3 continua in_progress na mesma tarefa, aguardando fonte; T4/RC permanecem não aprovados.

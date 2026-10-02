@@ -365,7 +365,7 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: in_progress
-        evidence: ["M9_EVIDENCE T3; ADR025/busto híbrido raster mesh bones real: rest/idle fiéis, skinning causal, verify/inspect0problemas. Blink reprovado por backing ausente, reconstrução localizada/expressões/underlap/matte pendentes; auto-traces históricos continuam rejeitados. Sem runtime/controller/fallback final, não RC_READY."]
+        evidence: ["M9_EVIDENCE T3; ADR025/busto híbrido raster mesh bones real: rest/idle fiéis, skinning causal, verify/inspect0problemas. Blink reprovado por backing ausente, reconstrução localizada/expressões/underlap/matte pendentes; auto-traces históricos continuam rejeitados. Sem runtime/controller/fallback final, não RC_READY. V2: anexo recebido JPEG1280x720/hash5d91424e, fonte PNG original descrita ausente; SOURCE_ORIGINAL_PNG_REQUIRED antes de autoria v2, nenhuma conclusão de redesenho manual."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
