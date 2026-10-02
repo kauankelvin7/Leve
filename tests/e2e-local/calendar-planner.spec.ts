@@ -102,6 +102,7 @@ async function createTimedEvent(page: Page, title: string, startTime: string, en
   await page.getByLabel('Fim', { exact: true }).fill(TEST_DAY);
   await page.getByLabel('Horário final', { exact: true }).fill(endTime);
   if (weekly) {
+    await page.locator('.optional-fields > summary').click();
     await page.getByLabel('Frequência').selectOption('weekly');
     await page.getByLabel(/Até/).fill('2026-10-08');
   }
@@ -165,6 +166,7 @@ test('compromisso de dia inteiro registra tempo, conclui e reaparece concluído 
   const chip = page.locator('.calendar-time-chip.completed').filter({ hasText: title });
   await expect(chip).toBeVisible();
   await expect(chip).toHaveCSS('text-decoration-line', 'line-through');
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
 });
 
 test('planner cria, move, redimensiona e preserva o fluxo de comando', async ({ page }) => {

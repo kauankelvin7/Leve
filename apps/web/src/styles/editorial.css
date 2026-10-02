@@ -29,10 +29,10 @@
 .day-shortcuts a:hover { background: #ffffff20; }
 .day-shortcuts a:focus-visible { outline: 2px solid #fffdf8; outline-offset: 3px; }
 .day-shortcuts svg { width: 17px; height: 17px; }
-.app-shell .day-picker:not(.month-picker) { gap: 5px; }
+.app-shell .day-picker:not(.month-picker) { grid-template-columns: repeat(7, minmax(max-content, 1fr)); gap: 5px; overflow-x: auto; }
 .app-shell .day-picker:not(.month-picker) button { border: 0; border-radius: 10px; box-shadow: none; background: transparent; }
 .app-shell .day-picker:not(.month-picker) button.selected { background: var(--color-action-primary); color: var(--color-action-foreground, white); }
-.app-shell .day-picker:not(.month-picker) strong { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 1.55rem; font-weight: 800; }
+.app-shell .day-picker:not(.month-picker) strong { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 1.55rem; font-weight: 800; white-space: nowrap; }
 .app-shell .agenda-aside .panel { background: var(--color-accent-soft); box-shadow: none; }
 .app-shell .today-month-panel {
   background: color-mix(in srgb, var(--color-solid) 88%, var(--color-canvas-accent)) !important;

@@ -178,7 +178,7 @@
 }
 
 .calendar-time-chip.completed {
-  opacity: .62;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -305,7 +305,7 @@
 }
 
 .calendar-time-event.completed {
-  opacity: .64;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 

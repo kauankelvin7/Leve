@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M9_T3_IN_PROGRESS_CHARACTER_ASSET_REQUIRED`.
+- Status global: `M9_T3_BLOCKED_CHARACTER_ASSET_REQUIRED_CONTINUE_T4`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 e posteriores todo/não iniciados.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 em andamento; T1/T2 done, T3 blocked somente pelo asset real, T4 autorizado a continuar.
 
 ## Hardening — resumo histórico
 
@@ -19,7 +19,7 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-M8 aprovado. Executar M9-T1→T2→T3→T4 sequenciais, gates e RC; somente feat/gika-integration.
+Continuar M9-T4: harness/CI/regressão final, preservando CHARACTER_ASSET_REQUIRED. Não declarar RC pronto nem Character concluída sem asset/rig reais; somente feat/gika-integration.
 
 ## M8 — conclusão
 
@@ -228,3 +228,7 @@ T1 funcional3724aef27b86c2c40ca43e3d7557bcf67f9a6e23; T2 funcional `9da054e79839
 ## Checkpoint M8
 
 T1: `571b6bfe9b3d685ca8295de14b66d0e24b99f14f`. T2 funcional: `4799b833daeb37a4c2af4b1f810c9976434c5d81`; worktree limpo após commit, critérios/gates documentados. Este checkpoint é somente documental; publicar feat/gika-integration e verificar HEAD local/origin/ls-remote iguais/worktree limpo no encerramento. M8 done, M9 todo; aguardar revisão.
+
+## M9-T3 — acabamento técnico e bloqueio visual
+
+Contraste de tarefas concluídas/controles avatar tablet/datas inteiras a200% corrigidos no CSS dono. Baselines de fixture frequência/tutorial/view inicial/calendário e serialização de cor documentados, sem alterar produto para seletores; navegação semântica evita saturação do dev browser. Design focal final1PASS, lint/doisTS/build/537unit PASS; inspeção60superfícies/20Axe0, GC/memória warm20+20 sem aumento DOM/listeners, chunks lazy preservados. docs/gika/M9_EVIDENCE.md preserva todas as primeiras falhas/comparações/métricas e limites. Sem editor/CLI authoring Rive/rig/avatar reais: CHARACTER_ASSET_REQUIRED; nenhum desenho improvisado/runtime/controller sem consumidor. T3 blocked, continuar T4 independente por autorização explícita; M9 não concluído visualmente.
