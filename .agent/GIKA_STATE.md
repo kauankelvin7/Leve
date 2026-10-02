@@ -2,10 +2,10 @@
 
 ## Estado atual
 
-- Status global: `M9_BLOCKED_CHARACTER_ASSET_REQUIRED`.
+- Status global: `M9_IN_PROGRESS_CHARACTER_HYBRID_BUST`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 blocked pelo asset real; T1/T2 done, T3 blocked visualmente, T4 regressão técnica aprovada e aceite RC blocked pelo mesmo requisito.
-- Retomada Character sobre `e28da58`: referência aprovada versionada intacta e visual lock concluído. Rive CLI oficial `1.3.0` instalado fora do projeto; compilação/renderização RML local comprovadas. A ausência histórica da ferramenta não é mais o impedimento atual. `CHARACTER_ASSET_REQUIRED` permanece (master/rig da Gika não produzidos); agora `VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED` após dois ensaios de reconstrução rejeitados visualmente. Splash Free autorizado somente durante desenvolvimento; custo não bloqueia autoria/rig/validação. Cadet autorizado apenas após aprovação integral do asset/rig, na exportação final sem splash (ADR024); assinatura ainda não iniciada.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress na autoria híbrida do busto, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
+- Retomada Character: referência/visual lock preservados; CLI Rive1.3.0 funcional. Dois auto-traces continuam reprovados, mas a inferência de master integralmente vetorial/refinamento humano definitivo foi superada por prova raster+mesh+bone (ADR025). Ensaio real em assets/gika/rive/hybrid-bust-spike: 12 camadas, build71651bytes, verify/inspect sem erros, rest/idle fiéis à fonte e skinning causal comprovado. Blink ainda FAIL: falta pele sob olhos; faltam pálpebras registradas, underlap cabelo/pescoço e matte limpo. CHARACTER_ASSET_REQUIRED permanece para aprovação visual final, não bloqueia continuidade do pipeline híbrido. Free/Cadet conforme ADR024, sem assinatura antecipada.
 
 ## Hardening — resumo histórico
 
@@ -20,7 +20,7 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-Retomar M9-T3 com refinamento manual do master fiel, conforme `docs/gika/character/GIKA_VISUAL_LOCK.md` e referência original. Os dois ensaios auxiliares de auto-trace falharam no gate visual e não são master/asset de produto: lacunas/fragmentação, contaminação pela vista vizinha e ausência de camadas anatômicas/pivôs úteis. Previews rejeitados em character/qa e prova em M9_EVIDENCE. Ferramenta Rive funcional e autorização Free/Cadet resolvida, sem nova decisão de tecnologia pendente. Após master fiel/editável, criar rig/idle+blink, motions, integrar e verificar estados/runtime/lazy/cleanup/reduced motion e gates finais T3/T4. Gates técnicos anteriores são históricos; não substituir por CSS/SVG improvisado nem declarar Character/RC concluídos por fallback.
+Continuar M9-T3 pelo busto híbrido, sem nova personagem/auto-trace completo. Reconstruir somente face_base_clean sob olhos/sobrancelhas/boca, registrar pálpebras/bocas da própria referência, limpar matte e preparar underlap cabelo/queixo. Braços/gestos amplos usam poses aprovadas adicionais somente se necessários. Fonte nativa89×104 atende investigação das superfícies atuais36–64px; não prometer resolução240px. Revalidar idle+blink/microgestos/identidade/mecha anatômica esquerda antes de runtime/controller e estados finais. Evidência e `.riv` diagnóstico são reproduzíveis, não integração/fallback final. Após integração legítima, executar QA de estados/React/lazy/cleanup/reduced motion e gates T3/T4. M9 não RC_READY; os bloqueios históricos permanecem registrados na evidência, sem impor SVG integral como única solução.
 
 ## M8 — conclusão
 

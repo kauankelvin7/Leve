@@ -19,9 +19,9 @@ Reprovar: outra fisionomia, mudança de anatomia/proporções/volume do cabelo e
 
 ## Master e rig: critérios, ainda não entregues
 
-Master SVG editável com camadas semânticas: HEAD (face/orelhas/sobrancelhas/olhos/pálpebras/nariz/bocas), HAIR (massas/clusters/mecha própria), BODY (pescoço/torso/braços/antebraços/mãos), CLOTHING, ACCESSORIES e SHADOWS. Definir pivôs coerentes. Raster encapsulado, auto-trace não revisado e vetor genérico não atendem ao requisito.
+Fonte editável em camadas semânticas; o pedido posterior autoriza busto híbrido: PNGs transparentes fiéis + meshes/bones Rive, com vetores somente onde necessários. Separar face/olhos/pálpebras/sobrancelhas/bocas, hair back/front/clusters e signature_purple_curl, pescoço/ombros e braços mínimos quando disponíveis. Definir pivôs/pesos e reconstruir somente regiões ocultas necessárias. Não exigir SVG integral nem rig corporal universal. Imagem achatada sem rig, auto-trace não revisado e personagem genérica continuam insuficientes.
 
-Fallbacks avatar/busto/estático devem derivar desse mesmo master. Validar 24/32/48/72/120/240 px e turnaround frente/3⁄4/perfil/3⁄4 costas/costas; preservar mecha anatômica e proporções em cada vista. Antes de demais motions, comparar idle+blink renderizados com a referência, incluindo rosto/cabelo/mecha/olhos e observação prolongada. A revisão deve detectar espelhamento; ainda não há asset executável para testar essa regressão.
+Fallbacks avatar/busto/estático devem derivar desse mesmo master. Validar 24/32/48/72/120/240 px e turnaround frente/3⁄4/perfil/3⁄4 costas/costas; preservar mecha anatômica e proporções em cada vista. Antes de demais motions, comparar idle+blink renderizados com a referência, incluindo rosto/cabelo/mecha/olhos e observação prolongada. A revisão deve detectar espelhamento; o ensaio híbrido executável já preserva o lado da mecha, mas não é rig final aprovado.
 
 ## Contrato de movimento preservado
 
@@ -42,4 +42,4 @@ Visual lock é concluído; master, fallbacks oficiais, rig da Gika, motions e QA
 
 Autorização posterior do usuário (ADR024): Rive Free durante criação/rig/animação/validação, splash permitido somente no desenvolvimento. Produção sem splash obrigatória; Cadet autorizado na exportação final **após** asset/rig integralmente aprovados. Sem assinatura antecipada nem troca de tecnologia. A decisão financeira não bloqueia desenvolvimento.
 
-Os [ensaios 01](qa/rejected-vectorization-01.png) e [02](qa/rejected-vectorization-02.png) são QA **reprovado**, não master/avatar/fallback. Auto-trace auxiliar deixou lacunas/fragmentação e componentes de outra vista, sem anatomia editável adequada ao rig. `VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED`: preservar a referência e refinar manualmente o master, sem aceitar os ensaios como personagem final.
+Os [ensaios 01](qa/rejected-vectorization-01.png) e [02](qa/rejected-vectorization-02.png) são QA **reprovado**, não master/avatar/fallback. Auto-trace auxiliar deixou lacunas/fragmentação e componentes de outra vista, sem anatomia editável adequada ao rig. A reprovação permanece; a conclusão histórica `VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED` não é impedimento definitivo: o pipeline raster+mesh+bone foi comprovado depois (ADR025). Ensaio em assets/gika/rive/hybrid-bust-spike; rest/idle mantêm a referência, blink evidencia falta de backing de pele. Reconstrução localizada, registro de expressões e matte/underlap ainda necessários; não aceitar ensaio como personagem final.

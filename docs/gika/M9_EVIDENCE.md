@@ -151,3 +151,63 @@ Semântica por cor não é semântica anatômica. Converter um desses traces em 
 Inkscape emitiu warnings ambientais PangoFT2FontMap/GtkRecentManager, exit0 e dois PNGs efetivamente produzidos; reprovação acima é visual/estrutural, não atribuída a esses warnings. Nenhuma chamada Gemini/Rive publish/login/assinatura, script desconhecido ou identidade reinterpretada. Mantidos Rive e layout funcional do Leve.
 
 Verificações focais nesta execução: referência byte a byte/hash original, PNGs válidos, links locais, YAML/estados, whitespace e diff somente docs/QA/estado. Produto/manifest/lock/domínio/Rules/API/commands/UI intactos; não repetir537unit/252integration/100Gika nem chamá-los de novos PASS. Estado **M9_BLOCKED_CHARACTER_ASSET_REQUIRED**, detalhado por VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED; T3/T4 continuam blocked. Próximo passo é refinamento manual fiel do master a partir da referência, seguido de idle+blink real e gates previstos. A decisão Free/Cadet já está resolvida, não requer nova autorização entre etapas gratuitas.
+
+
+## Reavaliação híbrida — raster em camadas, meshes e bones
+
+Entrada `1ec660b91da296bd15b021207de78815fe6c7bbb`; feat/gika-integration, fetch/local/origin iguais/worktree limpo. Pedido posterior manda investigar busto fiel e não vetorização integral automática. Nenhum trace novo, nova personagem, geração de pixels ou assinatura realizada. **A reprovação dos dois traces permanece; a inferência de bloqueio humano definitivo/obrigatoriedade de SVG integral é superada (ADR025).**
+
+### Suporte oficial e prova executável
+
+Documentação oficial [meshes](https://rive.app/docs/editor/manipulating-shapes/meshes) descreve deformação de imagens raster por malha/bones; [bones](https://rive.app/docs/editor/manipulating-shapes/bones) inclui deformação de mesh raster. Documentação instalada do CLI1.3.0 (`assets.md`, `rigging.md`, `drawing.md`, `transforms.md`) confirma ImageAsset PNG embutido, Image/Mesh/Skin/Tendon/Weight. Não depende do fluxo SVGAsset editor-only ou de converter milhares de paths.
+
+Fonte: [JPEG intacto](character/reference/gika-approved-reference.jpg), mesmo SHA256 registrado acima. Busto neutro da prancha, crop `(365,377)–(454,481)`, **89×104** nativos. Máscaras manuais dos pixels visíveis partitionam o retrato em12PNGs transparentes; RGB visível preservado, nenhuma pintura/inpainting/upscale/auto-trace. Alfa é extraído do JPEG achatado, não alfa original do ilustrador. RGB de pixels totalmente transparentes zerado para comprimir, sem mudar pixels visíveis. Fonte/hashes em [extraction.json](../../assets/gika/source/hybrid-bust/extraction.json).
+
+Artefato real: [scene.rml](../../assets/gika/rive/hybrid-bust-spike/scene.rml), [build .riv](../../assets/gika/rive/hybrid-bust-spike/gika-hybrid-bust-spike.riv) e [comandos de reprodução](../../assets/gika/rive/hybrid-bust-spike/README.md). **Sem scripts, player, controller ou importação no produto.** Oito artboards são Rest/Idle/BlinkProbe/OcclusionStress × light/dark, não oito estados semânticos prontos. Cada busto:12imagens/12meshes/8bones/108vértices/96triângulos; dois tendons por mesh, pesos somam255. Doze assets PNG compartilhados, sem milhares de paths. Build local unsigned71651bytes, SHA256 `ca9bba7320cb6bce8f0aba041be68a3178061a178d308726fb2222e17a580bbc`. Não representa licença/export final sem splash; ADR024 preservada.
+
+| Prova executada | Resultado/limite |
+| --- | --- |
+| CLI verify/once; inspect final | PASS,0erros/0warnings/0problems; build versionado byte-idêntico ao renderizado em investigação |
+| Rest vs PNG fonte, light/dark | RGB MAE no foreground0,034218/255; erro máximo1nível de arredondamento, preservação fiel da fonte recortada |
+| Controle causal sem Skin/Weight, mesmas animações | Sem skinning vs Rest:0pixels diferentes >1nível; com skinning vs controle:4649. Bones/meshes realmente movem o raster |
+| Idle4s loop/microgestos | Captura real frame60, light/dark; rosto/mecha/silhueta preservados na inspeção. Não é observação humana prolongada nem aprovação final |
+| Blink frame48 | **FAIL**:176pixels do olhoL+152doR expõem fundo por ausência de pele. Não é blink final aceitável |
+| Stress frame60, movimento acima do idle | **FAIL diagnóstico**:77pixels interiores expostos, bboxlocal13,10–77,96. Demonstra underlap necessário, não atribuir todos a uma única região ou ao movimento final |
+| Mecha no lado anatômico esquerdo | ROI de matiz roxa permanece viewer direita; centroidesX70,30/70,28/70,31/69,36 nos quatro ensaios, eixo facialX50. Nenhum espelhamento |
+| Captura em largura64px, dark | Identidade legível; halo claro de matte JPEG ainda requer limpeza. Fonte89×104 não prova acabamento HD240px |
+| Bench600frames, nativeCLI89×104 | Advance mean0,012ms/p950,022; render mean1,997ms/p952,354/max18,319. Não mede heap/browser/React/lifecycle/player final |
+
+[Comparação visual real](character/qa/hybrid-bust-comparison.png) amplia3× por nearest para revelar defeitos; [captura64px](character/qa/hybrid-bust-rest-64-dark.png) mostra escala pequena. Fundos light `#fff9f3`/dark `#24212d` são QA, não mudanças de tokens do Leve. Resultados/primeiras tentativas em [proof.json](../../assets/gika/rive/hybrid-bust-spike/proof.json).
+
+Primeiras tentativas preservadas: inspect inicial14warnings editor-only (overlap de artboards/estados e styles ausentes); corrigidos posicionamento/styles, inspect final0problemas. Ao portar o source ao repositório, primeiro verify falhou12arquivos ausentes porque ImageAsset usa atributo `file`, não `path`; paths relativos corrigidos, verify/build PASS. Não são defeitos do adapter/domínio nem motivo para omitir execução inicial.
+
+### Camadas disponíveis versus pixels ocultos
+
+Todas as12camadas visíveis existem no ensaio: eyeL/R, browL/R, mouth_neutral, signature_purple_curl, face_visible, neck_shoulders_visible, hair_front/back_visible e side_curlsL/R_visible. Nomes LEFT/RIGHT seguem anatomia. São recortes da pose neutra, não camadas originais plenamente sobrepostas.
+
+| Camada/ajuste necessário | Lacuna factual e trabalho localizado |
+| --- | --- |
+| `face_base_clean` | Pele por trás de olhos/sobrancelhas/boca não aparece nesta pose achatada. Partições removem641pixels somados (328olhos/172brows/141boca); reconstruir somente backing compatível, não outro rosto |
+| `lid_L_closed`, `lid_R_closed` | A prancha tem olhos fechados em outras expressões; faltam texturas separadas/registradas na perspectiva neutra. Derivar esses detalhes da referência e validar sobre backing limpo; escalaY do olho isolado não resolve |
+| Mouth variants / brow motion | Sorrisos/bocas/expressões existem na prancha, mas não são sprites intercambiáveis registrados. Máscaras/registro podem reutilizar os pixels; movimentos que revelem skin exigem backing local. Não segundo parser nem face genérica |
+| Hair back/front, side clusters, purple curl | Visíveis já separados, skinning real; faltam estreitas bordas sob as partes sobrepostas ao deslocá-las. Reconstruir/pad apenas underlap necessário, preservar volume e lado da mecha |
+| Neck/shoulders | Pescoço oculto pelo queixo e ombro/cabelo não tem pixels completos. Criar overlap mínimo compatível para inclinação, sem rig corporal universal |
+| Upper arms / gestures | Não estão visíveis no crop neutro abaixo dos ombros. Outras poses aprovadas fornecem referências para artboards adicionais; não afirmar braços independentes prontos nesta perspectiva. Sem gesto amplo obrigatório no primeiro busto |
+| Matte/resolução | JPEG claro produz halos; limpar alfa de borda sem recolorir identidade. Superfícies atuais usam marcas36–64px; não extrapolar crop89×104 como master240px/fullbody. Avaliar referência maior/pose adicional se ampliação for necessária |
+
+Reconstrução de pixels ocultos é trabalho artístico localizado; seleção de máscaras, registro e mesh são trabalho de authoring já factível. Não demonstramos que tudo exige ilustrador externo, nem aprovamos preenchimento automático. O pipeline tecnológico **é suficiente para rig híbrido de busto**; a imagem achatada, sem essas camadas, **não basta para todos os motions finais**. Não emitir bloqueio humano definitivo a partir da ausência de SVG integral.
+
+### Escopo real dos estados
+
+- Idle: microgestos e raster skinning comprovados; matte/QA prolongado ainda necessários.
+- Blink/listening: blink requer backing/lids; listening pode usar atenção/microtilt no mesmo rig, mas estado semântico/controller ainda não implementado.
+- Thinking/clarify/success/error: usar brow/mouth variantes da própria identidade e backing; não declarados produzidos. Success continua dependente de ack real, nunca narrativa do modelo.
+- Offline: pausa/fallback fiel do mesmo busto é compatível; reduced motion/cleanup/integração não provados neste ensaio.
+
+Sem ampliar escopo corporal: gestures/artboards aprovados só se realmente necessários. Sem personagem improvisada CSS/SVG, player sem consumidor, dados privados no rig ou mudança de tecnologia.
+
+### Decisão atual e gates proporcionais
+
+**M9_IN_PROGRESS_CHARACTER_HYBRID_BUST**, não M9_DONE_RC_READY. M9-T3 in_progress; T4 blocked para aceite RC. CHARACTER_ASSET_REQUIRED permanece apenas para acabamento/QA final; inferência VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED como condição definitiva é retirada. Próximo trabalho localizado descrito acima; repetir idle+blink antes de runtime/controller/estados e gates completos.
+
+Só assets autorais não consumidos, QA e documentação/estado mudaram. Produto/UI/Auth/commands/policy/Rules/receipts/manifest/lock byte-idênticos à entrada. Gates atuais: verify/once/inspect, prova RGB/partição/hashes/skinning, capturas reais light/dark/64px, links/YAML/whitespace e guard arquitetural existente.537unit/252integration/100Gika anteriores continuam históricos, **não reexecutados nem usados como PASS de personagem**. A bateria completa permanece exigida após integração real. Sem login/Rive publish/assinatura/Cadet/live/Gemini/credencial/PR/main/deploy. Backup somente feat/gika-integration.

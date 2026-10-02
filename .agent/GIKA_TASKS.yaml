@@ -349,8 +349,8 @@ milestones:
 
   M9:
     name: "Hardening e release"
-    status: blocked
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; referência/visual lock e CLI1.3.0 comprovados. Free/splash autorizados no desenvolvimento e Cadet condicional na export final (ADR024); custo não bloqueia autoria. CHARACTER_ASSET_REQUIRED/VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED: dois ensaios vetoriais rejeitados visualmente, master/rig ausentes."
+    status: in_progress
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: raster+mesh+bone comprovado em busto fiel, 12camadas/build71651/verify/inspect PASS; blink FAIL por face limpa ausente. CHARACTER_ASSET_REQUIRED para aceite visual final; inferência de SVG integral/humano definitivo superada, nenhuma integração final."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -364,13 +364,13 @@ milestones:
         dependencies: [M9-T1]
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
-        status: blocked
-        evidence: ["M9_EVIDENCE T3; acabamento técnico histórico verificado; referência/visual lock/CLI1.3.0 comprovados. Free/Cadet autorizados conforme ADR024, sem assinatura antecipada. Dois ensaios de reconstrução não passaram QA; VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED, master/rig ausentes. Previews rejeitados em character/qa, nenhum runtime/controller substituto."]
+        status: in_progress
+        evidence: ["M9_EVIDENCE T3; ADR025/busto híbrido raster mesh bones real: rest/idle fiéis, skinning causal, verify/inspect0problemas. Blink reprovado por backing ausente, reconstrução localizada/expressões/underlap/matte pendentes; auto-traces históricos continuam rejeitados. Sem runtime/controller/fallback final, não RC_READY."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: blocked
-        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada referência/docs/QA/estado, sem mudança de produto. Decisão financeira resolvida (ADR024); aceite RC depende de master/rig reais e gates após integração, não M9_DONE_RC_READY."]
+        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada referência/docs/QA/estado, sem mudança de produto. Decisão financeira resolvida (ADR024); aceite RC depende de busto híbrido/rig visualmente aprovados e gates após integração, não M9_DONE_RC_READY."]
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.

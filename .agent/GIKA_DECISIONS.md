@@ -233,3 +233,12 @@ M9 não ativa AppCheck sem sitekey/domínios/provider web/PWA/Firestore/APIAdmin
 - Decisão do usuário: Rive Free durante criação, rig, animação e validação. Splash tolerado nesse período, nunca como solução final. Após asset e rig integralmente aprovados, Cadet autorizado para exportar `.riv` final sem splash. Não trocar tecnologia por custo.
 - Consequências: RIVE_ZERO_COST_PRODUCT_BLOCKER deixa de bloquear desenvolvimento. Nenhuma assinatura/billing/trial antecipada; aprovação integral é precondição da ação paga, não presumida por build/headless/controller. Exceção específica de licença autoral/export final, sem alterar custo da infraestrutura/Gemini Free Tier ou demais contratos. Não ocultar/remover splash nem tratar unsigned local como bypass.
 - Escopo preservado: M9 existente, sem runtime/controller sobre master reprovado, novo milestone, writer, Rules, policy ou persistência. Gate visual continua obrigatório; VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED não é resolvido pela licença.
+
+
+## ADR-GIKA-025 — busto híbrido fiel, não vetorização integral obrigatória
+
+- Status: accepted; pedido explícito do usuário após os dois auto-traces reprovados.
+- Rive suporta oficialmente ImageAsset PNG + meshes + skinning/bones. Ensaio autoral compilado/renderizado em assets/gika/rive/hybrid-bust-spike comprova esse caminho com pixels da própria referência; não é nova personagem nem imagem plana declarada rig.
+- Fonte editável pode ser híbrida. Priorizar busto/microgestos nas superfícies atuais; vetores apenas onde necessários. Gestos amplos usam poses adicionais aprovadas, não rig corporal universal. Preservar rosto/cachos/mecha anatômica esquerda e visual lock.
+- Os dois traces continuam FAIL; não demonstraram necessidade de SVG integral/refinamento humano definitivo. Lacunas atuais são específicas: face limpa sob olhos/sobrancelhas/boca, registro de pálpebras/expressões, underlap cabelo/queixo e matte. Reconstrução artística localizada precisa de fidelidade revisada, sem assumir que todo trabalho dependa de autoria humana externa.
+- Rest/idle do ensaio são fiéis, blink diagnóstico FAIL por backing ausente. Não integrar player/controller nem declarar Character/RC concluídos antes do gate visual idle+blink. ADR024, pipeline UI técnico/ack, privacidade, domínio e persistência intactos.
