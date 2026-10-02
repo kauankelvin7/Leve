@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M5_CLOSURE_R2_DONE_STOP_BEFORE_FINAL_CLOSURE_M6`.
+- Status global: `M5_READY_FOR_NEXT_PHASE_STOP_BEFORE_M6`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -14,11 +14,15 @@
 
 ## Autorização atual
 
-R1 revisado/aprovado. Pedido atual autoriza exclusivamente M5-CLOSURE-R2 — E2E stability/root-cause. Entrada/fetch local=origin `6849f1fe3094e2296ea41f6c2277fad9d7524c5c`, feat/gika-integration e worktree limpo verificados. Duas suítes amplas e duas rodadas dos sete originais fresh, gates/evidência/checkpoint/push somente feat. Nenhuma correção especulativa; não closure final/M6/live/PR/main/deploy/shell/Character Foundation.
+R1/R2 revisados/aprovados. Pedido atual autoriza exclusivamente M5-CLOSURE-FINAL, entrada/fetch local=origin f5b969d1c134afe51496ee90773a401719c53ac7, feat e worktree limpo verificados. Gates atuais e revisão somente leitura, nenhuma implementação/correção/refatoração/dependência/TQA. Checkpoint documental/push feat; não iniciar M6/live/PR/main/deploy/shell/Character Foundation.
 
 ## Próxima ação
 
-Parar para revisão de R2 após checkpoint documental/backup. R2_PASS: ampla inicial76/0 e final76/0; sete isolados7/0 nas duas rodadas; auditprodução0/0/0/lint/doisTS/build/480unit/243integração PASS. Nenhum produto/harness/dependência alterado, falhas históricas não reproduzidas e causa física não atribuída. Não reexecutar closure final ainda nem declarar M5_READY; M6 todo/não iniciado. Evidência docs/gika/M5_CLOSURE_R2_EVIDENCE.md e JSON sanitizado.
+Parar para revisão do fechamento final após checkpoint/backup. M5_READY_FOR_NEXT_PHASE: auditprodução0/0/0/lint/doisTS/build/480unit/243integração e única ampla Gika76/76 PASS. M5/closure done; M6 todo/não iniciado, aguardar autorização específica antes de qualquer implementação. Evidência docs/gika/M5_CLOSURE_FINAL_EVIDENCE.md e JSON sanitizado.
+
+## M5-CLOSURE-FINAL — fechamento atual
+
+Entrada f5b969d1c134afe51496ee90773a401719c53ac7 local/origin/fetch limpa/exata. Primeiras execuções atuais: auditprodução0critical/high/moderate/lint/doisTS/build/480unit/243integração PASS; única suíte Gika76/76 PASS, nenhuma repetição/fixture/deadline/asserção/retry alterado. Admin13.10 confirmado/forge ausente. Revisão read-only Auth/commands/receipts/confirmation/recurrence/batch/offline sem defeito concreto atual; policy individual e gate batch estreito ADR020 qualificados, partial itemizado explícito.248fontes/config/manifest/lock idênticos; screenshots gerados restaurados. Só evidência/JSON/STATE/TASKS, commit documental e backup feat; verificar HEAD local=origin/worktree limpo ao encerrar. Primeiro closure M5_BLOCKED e R1/R2 anteriores preservados: R1 corrigiu segurança, R2 não reproduziu sete históricos, causa física não atribuída. Decisão atual M5_READY_FOR_NEXT_PHASE, m5_closure done; parar para revisão, M6 todo/não iniciado.
 
 ## M5-CLOSURE-R2 — estabilidade medida
 

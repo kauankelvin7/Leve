@@ -367,13 +367,18 @@ security_hardening:
 
 # Gate documental de encerramento; preserva o histórico de M5 e M6.
 m5_closure:
-  status: blocked
-  decision: M5_BLOCKED
+  status: done
+  decision: M5_READY_FOR_NEXT_PHASE
   entry_checkpoint: "8a892504753d7624f50cf54f534ce7c38fde195a"
   evidence: "docs/gika/M5_CLOSURE_EVIDENCE.md"
   gates: "Lint/doisTS/build/480unit/243integração PASS. Primeira Gika56PASS/20FAIL; entrada exata somente20 originais13PASS/7FAIL; nenhum deadline relaxado.284arquivos não documentais idênticos."
-  blocker: "Histórico M5_BLOCKED preservado; R1_PASS audit0/0/0 e R2_PASS ampla inicial/final76/0 e sete fresh7/0 duas rodadas. Closure final não reexecutado nesta etapa, aguardar revisão R2; não declarar READY nem iniciar M6."
-  next_action: "Aguardar revisão de R2/checkpoint/push; closure final em etapa autorizada separada, M6 todo/não iniciado."
+  blocker: null
+  next_action: "Parar para revisão do closure final após checkpoint/push feat; M6 todo/não iniciado, aguardar autorização específica."
+  initial_decision: M5_BLOCKED
+  final_entry_checkpoint: "f5b969d1c134afe51496ee90773a401719c53ac7"
+  final_evidence: "docs/gika/M5_CLOSURE_FINAL_EVIDENCE.md; docs/gika/evidence/m5-closure-final-gates.json"
+  final_gates: "Primeiras execuções auditprodução0/0/0/lint/doisTS/build/480unit/243integração PASS; única ampla Gika76/76 PASS, sem rerun/fixture/deadline/assertion/retry alterado. Admin13.10/forgeausente, revisão read-only invariantes sem defeito concreto atual.248fontes/config idênticos, só documentação."
+  history: "Primeiro gate M5_BLOCKED preservado na evidência original; R1_PASS corrigiu segurança, R2_PASS não reproduziu sete históricos. READY atual não apaga falhas anteriores nem identifica causa física histórica."
 
 m5_closure_r1:
   status: done
