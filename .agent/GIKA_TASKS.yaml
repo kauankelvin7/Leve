@@ -334,7 +334,9 @@ milestones:
     tasks:
       - id: M8-T1
         title: "Rules engine de sugestões locais"
-        status: todo
+        status: done
+        evidence: ["docs/gika/M8_EVIDENCE.md T1; daySuggestion sobre leitura existente completa, threshold4–5/cap5, fingerprint sem privado; lint/doisTS/build/533unit PASS."]
+        acceptance_criteria: ["Local/puro/determinístico/bounded<=150, sem IO/model/commands/history/log/timers; partial/loading/error/normal/date/cap bloqueados; somente facts de taskpending hoje."]
         dependencies: [M7-T2]
       - id: M8-T2
         title: "Geração de proposta somente sob interação"

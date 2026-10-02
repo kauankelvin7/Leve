@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-- Status global: `M7_DONE_STOP_BEFORE_M8`.
+- Status global: `M8_T1_DONE_NEXT_M8_T2`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8 e posteriores todo/não iniciados.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 done; M8-T2 todo, avanço automático autorizado. M9 e posteriores todo/não iniciados.
 
 ## Hardening — resumo histórico
 
@@ -15,11 +15,11 @@
 
 ## Autorização atual
 
-M6 aprovado; pedido atual autoriza M7-T1→T2 sequenciais sobre25eecb063afa06d0d1dd98273baee354f42b7752 local/origin/fetch exatos e worktree limpo. Ponytail/full, Caveman/full e humanizer local aplicados. Sem M8/Character/TQA/PR/main/deploy/Gemini live ou novas fases.
+M7 aprovado; pedido atual autoriza M8-T1→T2 sequenciais sobre44b8928e26b0a01385efd6b2b5138f93fe5fdae6 local/origin/fetch exatos/worktree limpo. Ponytail/full/Caveman/full/humanizer local. Sem M9/Character/TTS/TQA/PR/main/deploy/live ou nova fase.
 
 ## Próxima ação
 
-Parar após M7 para revisão. Não iniciar M8/Character/TQA. Backup final somente feat/gika-integration; igualdade HEAD local=origin/worktree limpo verificada no encerramento.
+Concluir T1 com gates locais, avançar T2 explicit interaction/UI/gates e backup somente feat; parar após M8 para revisão.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 
