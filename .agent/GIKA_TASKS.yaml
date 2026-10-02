@@ -307,7 +307,7 @@ milestones:
       - id: M6-T3
         title: "Organizar semana"
         status: done
-        evidence: ["M6_EVIDENCE.md T3/final; get_week/civil week, slots strict e mesmas confirmações/commands/receipts; ocorrência explícita preserva irmã/template, offline bloqueia confirmar/autoexecução; 508unit/252integração/86Gika/17shell/Axe/audit0 PASS. Primeira85/85 preservada, correção offline e fixture semanal duas datas documentadas; checkpoint funcional e backup feat registrados no STATE."]
+        evidence: ["M6_EVIDENCE.md T3/final; get_week/civil week, slots strict e mesmas confirmações/commands/receipts; ocorrência explícita preserva irmã/template, offline bloqueia confirmar/autoexecução; 508unit/252integração/86Gika/17shell/Axe/audit0 PASS. Primeira85/85 preservada, correção offline e fixture semanal duas datas documentadas; checkpoint funcional T3 430b892917317e0b73563631f527dde01e73588d; backup feat/igualdade local=origin e worktree limpo no encerramento."]
         acceptance_criteria: ["Mesmo planner/contrato/batch com get_week/fuso/weekStartsOn, até7dias/5tarefas, partial não executa/não alega completo; occurrence explícito, future/all lote negados, offline sem fila/autoexecução; gates completos e backup feat, parar antes M7."]
         dependencies: [M6-T2]
 

@@ -56,3 +56,5 @@ A primeira ampla85/85 precede a correção offline e permanece registrada; a fin
 Não mudaram dependências/lock, Rules, Auth/membership, command layer/outbox nem CSS/shell/Today. Todos76 E2E antigos byte-idênticos, guard de fronteira existente ampliado trivialmente. Nenhum npm verify/harness novo necessário. Logs de gates em /tmp/leve-m6-final3-*, /tmp/leve-m6-final-corrected-*, /tmp/leve-m6-week-proof-*, /tmp/leve-m6-shell.log; apenas resultados sanitizados neste documento, sem tokens/traces/payload privado versionados.
 
 T1 commit e39cd6a632bf018b09d7666e0a0b77ba6f9968a1; T2 commit85e3ec95b6c1ce7925edfe28eecab29945fb1d2a. T3 funcional e checkpoint final são registrados no STATE após commit, com backup somente feat/gika-integration e verificação local=origin/worktree limpo. M6-T1/T2/T3 done; parar para revisão antes de M7, sem milestone/closure adicional.
+
+Checkpoint funcional T3: `430b892917317e0b73563631f527dde01e73588d` (parent85e3ec9), worktree limpo verificado após commit. Checkpoint documental seguinte apenas registra SHA/estado, seguido de backup da mesma branch; igualdade local/origin e clean são conferidas após push.
