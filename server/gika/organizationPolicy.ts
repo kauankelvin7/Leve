@@ -1,3 +1,5 @@
+import { isUpdateRequest } from './updatePolicy.ts';
+import { isRescheduleRequest } from './reschedulePolicy.ts';
 import { batchPlanSchema, batchOperationId, type BatchPlan } from '../../packages/domain/src/gikaBatch.ts';
 import { classifyBatchAction } from './batchPolicy.ts';
 import type { ReadRepository } from './reads.ts';
@@ -12,8 +14,9 @@ import { GikaFault } from './model.ts';
 
 /** Intent selects a bounded software read, never a model-selected query. */
 export function organizationPeriod(text: string): 'day' | 'week' | null {
-  const source = text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-  if (!/\b(?:organiza|organize|organizar|organizaria|reorganiza|reorganize|reorganizar)\b/u.test(source)) return null;
+  if(isUpdateRequest(text)||isRescheduleRequest(text)||/^(?:por favor[, ]+)?(?:pode\s+)?(?:terminei|conclu[ií]|conclua|complete|marca|marque|cria|crie|adiciona|adicione)\b/iu.test(text.trim()))return null;
+  const source = text.replace(/"[^"\n]*"|'[^'\n]*'|“[^”\n]*”|‘[^’\n]*’/gu,'').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  if (!/\b(?:organiza|organize|organizar|organizaria|reorganiza|reorganize|reorganizar|distribuir)\b/u.test(source)) return null;
   if (/\bsemana\b/u.test(source)) return 'week';
   return /\b(?:dia|hoje)\b/u.test(source) ? 'day' : null;
 }
@@ -25,7 +28,7 @@ export function planningContext(read: ReadResult, context: ModelContext): ModelI
   if (read.partial || read.items.length >= 50 || candidates.length > 5) throw new GikaFault('GIKA_POLICY');
   return { startDate: read.startDate, endDate: read.endDate, tasks: candidates.map((item,ref) => {
     if (item.schedule.type !== 'task' || !item.schedule.dueDate) throw new GikaFault('GIKA_POLICY');
-    return { ref, title: item.title, status: item.status, dueDate: item.schedule.dueDate, dueTime: item.schedule.dueTime, recurring: Boolean(item.seriesId || item.occurrenceKey) };
+    return { ref, title: item.title, status: item.status, dueDate: item.schedule.dueDate, dueTime: item.schedule.dueTime, timeZone:item.schedule.timeZone, recurring: Boolean(item.seriesId || item.occurrenceKey) };
   }) };
 }
 export function validateOrganization(call: unknown, read: ReadResult, fresh: ReadResult, context: ModelContext, period: 'day' | 'week', text = ''): OrganizationPreview {
@@ -40,7 +43,7 @@ export function validateOrganization(call: unknown, read: ReadResult, fresh: Rea
     const target = candidates[proposal.ref];
     if (!target || target.schedule.type !== 'task' || !target.schedule.dueDate) throw new GikaFault('GIKA_POLICY');
     if (proposal.dueDate < context.today || proposal.dueDate > read.endDate) throw new GikaFault('GIKA_POLICY');
-    if ((target.seriesId || target.occurrenceKey) && proposal.action === 'move' && scopedIntent(text,{}).scope !== 'occurrence') throw new GikaFault('GIKA_POLICY');
+    if ((target.seriesId || target.occurrenceKey) && proposal.action === 'move' && organizationScope(text) !== 'occurrence') throw new GikaFault('GIKA_POLICY');
     const before = {dueDate:target.schedule.dueDate,dueTime:target.schedule.dueTime}, after = {dueDate:proposal.dueDate,dueTime:proposal.dueTime};
     // A suggested time is visible and sealed; clearing time is not supported by the existing patch.
     if ((after.dueTime === null && before.dueTime !== null) || (proposal.action === 'keep') !== (JSON.stringify(before) === JSON.stringify(after))) throw new GikaFault('GIKA_POLICY');
@@ -62,4 +65,8 @@ export async function organizationBatch(preview: OrganizationPreview, repository
   }
   if(classifyBatchAction({action:'reschedule',count:items.length,complete:true,recurrenceVerified:items.every(item=>item.scope==='none'||Boolean(item.recurrence))})!=='confirm')throw new GikaFault('GIKA_POLICY');
   return batchPlanSchema.parse({action:'reschedule',sourceDate:preview.startDate,organization:preview,items});
+}
+
+export function organizationScope(text:string){
+  return scopedIntent(text.replace(/s[oó] estas ocorr[eê]ncias/giu,'só esta ocorrência'),{}).scope;
 }

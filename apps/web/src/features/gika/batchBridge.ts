@@ -29,6 +29,7 @@ export async function confirmGikaBatch(value: BatchConfirmation, request: { requ
     try {
       signal.throwIfAborted();
       let raw;
+      if(confirmation.plan.organization && typeof navigator !== 'undefined' && navigator.onLine === false)return batchResult(statuses);
       try { raw = await sendCommand(command, { queueOnNetworkError: false, expectedUid: uid, signal }); }
       catch (error) {
         authorize(uid);
@@ -42,6 +43,7 @@ export async function confirmGikaBatch(value: BatchConfirmation, request: { requ
         confirmation = recovered;
         command = await batchEnvelope(confirmation, request, index);
         authorize(uid); signal.throwIfAborted();
+        if(confirmation.plan.organization && typeof navigator !== 'undefined' && navigator.onLine === false)return batchResult(statuses);
         raw = await sendCommand(command, { queueOnNetworkError: false, expectedUid: uid, signal });
       }
       authorize(uid);

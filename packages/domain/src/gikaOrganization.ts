@@ -15,3 +15,5 @@ export const organizationPreviewSchema = z.object({
 }).strict().refine(plan => Temporal.PlainDate.from(plan.startDate).until(plan.endDate).days >= 0 && Temporal.PlainDate.from(plan.startDate).until(plan.endDate).days < 7 && plan.items.every(item => item.before.dueDate >= plan.startDate && item.before.dueDate <= plan.endDate && item.after.dueDate >= plan.startDate && item.after.dueDate <= plan.endDate) && new Set(plan.items.map(item => item.id)).size === plan.items.length && plan.items.every(item => (item.action === 'keep') === (JSON.stringify(item.before) === JSON.stringify(item.after))));
 export type OrganizationPreview = z.infer<typeof organizationPreviewSchema>;
 export type OrganizationCall = z.infer<typeof organizationCallSchema>;
+
+export const organizationResolutionSchema = z.object({status:z.enum(['partial','limit','empty','scope_required','unsupported_scope','stale'])}).strict();

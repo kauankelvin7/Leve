@@ -307,6 +307,18 @@ Fixture de interpretação sem credencial; command/Auth/Firestore/receipt/acks r
 
 ## M6 — proposta de organização
 
-M6-E01..E06: proposta diária strict, cada slot resolvido por software; minimização sem identidade/notas; referência inventada/unknown/duplicada/missing, horário inventado, data fora do horizonte, partial/cap/stale e conta revogada bloqueiam. gika-organization.test.ts usa provider/read fixtures, sem alegar interpretação Gemini live. T1 emite apenas sugestão; confirmação/execução e semana são T2/T3.
+M6-E01..E06: proposta diária strict, cada slot resolvido por software; minimização sem identidade/notas; referência inventada/unknown/duplicada/missing, remoção de horário não suportada, data fora do horizonte, partial/cap/stale e conta revogada bloqueiam. gika-organization.test.ts usa provider/read fixtures, sem alegar interpretação Gemini live. T1 emite apenas sugestão; confirmação/execução e semana são T2/T3. Horário sugerido no contrato final é patch explícito visível/selado, nunca default silencioso.
 
 M6-E07..E13: confirmação mesma infraestrutura, antes/depois/preservados no selo; cancel/editar não escreve; stale preservado bloqueia primeiro commit; ack real/replay/concorrência/lostack não refaz efeito; partial/auth/unknown refs bloqueiam; mobile-dark Axe e offline draft sem autoenvio. Provas integração gika-batch e E2E gika-organization; primeira falha de seletor preservada em M6_EVIDENCE.
+
+| Eval | Comportamento | Prova executável |
+|---|---|---|
+| M6-E14..E16 | get_week/fuso/weekStartsOn civis, até7dias/5tarefas, sem histórico indiscriminado; patch diferente por item | unit organization e integração batch com leitura real emulada |
+| M6-E17..E19 | partial/cap/empty/stale são resoluções estruturadas sem autorização; ferramenta errada/narrativa/campos desconhecidos rejeitados; repetição idêntica colapsa | unit HTTP, integração, E2E partial/tamper/stale |
+| M6-E20..E22 | recurrence semscope esclarece, occurrence explícito preserva irmã/template; future/all negados na composição | integração organization/batch e regressão recurrence |
+| M6-E23..E25 | preservados/diff/IDs/revs/fusos selados; stale antes do primeiro commit não escreve, depois dele resultado parcial explícito; retry/concorrência/recovery não duplicam | integração real commands/receipts, batch bridge unit, E2E ackretido/confirm |
+| M6-E26..E28 | offline preserva draft e cancel, confirmar/retomar bloqueados; reconectar não executa; queda entre itens conserva ack e deixa próximos pendentes | unit bridge offline e E2E composer/preview offline |
+| M6-E29..E31 | logout/conta revogada impedem plano/efeito, novo pedido invalida preview; títulos “Organizar semana” não desviam create/complete/update/reschedule | unit HTTP/intent/bridge e E2E logout/newdraft, regressão Gika completa |
+| M6-E32..E34 | light/dark/mobile/foco/teclado/Axe; mesmo renderer/batch/command layer, sem acesso direto model→Firestore | E2E organização + shell e guard arquitetural existente ampliado |
+
+Fixtures provam interpretação contratual; Auth/Firestore/commands/receipts/acks são reais emulados com dados sintéticos. E2E cria previews assinados controlados para observar UI/execução; integração prova o caminho router→leitura→ModelAdapter fixture→validação→preview. Não declarar interpretação Gemini live. Nenhum planner paralelo/undo universal/atomicidade global/persistência de conversa.

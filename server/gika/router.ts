@@ -1,5 +1,6 @@
+import { organizationCallSchema } from '../../packages/domain/src/gikaOrganization.ts';
 import { Temporal } from '@js-temporal/polyfill';
-import { organizationBatch, organizationPeriod, planningContext, validateOrganization } from './organizationPolicy.ts';
+import { organizationBatch, organizationCandidates, organizationScope, organizationPeriod, planningContext, validateOrganization } from './organizationPolicy.ts';
 import { validateBatch, resolveBatch } from './batchPolicy.ts';
 import { issueBatchConfirmation } from './confirmation.ts';
 import { z } from 'zod';
@@ -98,29 +99,36 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         release = acquire(identity.uid);
         const period = organizationPeriod(input.text);
         if (period) {
-          if (period !== 'day') return gikaInterpretationSchema.parse({text:'A organização da semana ainda não está disponível. Peça uma sugestão para hoje.',simulated:false,reads:[]});
-          const range = {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
-          // Read only today's tasks; proposal may distribute them over the current bounded week.
-          const source = {...range,startDate:context.today,endDate:context.today};
+          const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
+          // Daily reads today; weekly reads the existing civil week. No history expansion.
+          const source = period==='week' ? range : {...range,startDate:context.today,endDate:context.today};
           const read = readResultSchema.parse(await repository.read(identity.uid,source));
+          const beforeProvider=await repository.authorize(identity);
+          if(JSON.stringify(beforeProvider)!==JSON.stringify(context)||signal.aborted)throw new GikaFault('GIKA_POLICY');
           if(read.timeZone!==context.timeZone || read.startDate!==source.startDate || read.endDate!==source.endDate)throw new GikaFault('GIKA_POLICY');
-          if(read.partial || read.items.length>=50)return gikaInterpretationSchema.parse({text:'Esta consulta está incompleta. Não posso propor uma organização completa.',simulated:false,reads:[]});
-          if(read.items.filter(item=>item.kind==='task'&&item.status==='pending').length>5)return gikaInterpretationSchema.parse({text:'Posso organizar até 5 tarefas por vez. Escolha um dia com um conjunto menor.',simulated:false,reads:[]});
+          if(read.partial || read.items.length>=50)return gikaInterpretationSchema.parse({text:'Esta consulta está incompleta. Não posso propor uma organização completa.',simulated:false,reads:[],organizationResolution:{status:'partial'}});
+          if(organizationCandidates(read,context.today).length>5)return gikaInterpretationSchema.parse({text:'Posso organizar até 5 tarefas por vez. Escolha um dia com um conjunto menor.',simulated:false,reads:[],organizationResolution:{status:'limit'}});
+          const scope=organizationScope(input.text);
+          if(scope==='future'||scope==='all')return gikaInterpretationSchema.parse({text:'Não posso organizar próximas ocorrências ou séries em grupo. Use sua agenda para esse escopo.',simulated:false,reads:[],organizationResolution:{status:'unsupported_scope'}});
           const planning = planningContext(read,context);
-          if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[]});
-          const calls = await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal);
+          if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[],organizationResolution:{status:'empty'}});
+          const calls = validateToolCalls(await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal));
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
           const fresh = readResultSchema.parse(await repository.read(identity.uid,source));
           await repository.authorize(identity);
           if(fresh.startDate!==source.startDate || fresh.endDate!==source.endDate)throw new GikaFault('GIKA_POLICY');
+          if(hashCanonicalValue({...read,items:[...read.items].sort((a,b)=>a.id.localeCompare(b.id))})!==hashCanonicalValue({...fresh,items:[...fresh.items].sort((a,b)=>a.id.localeCompare(b.id))}))return gikaInterpretationSchema.parse({text:'Sua agenda mudou durante a sugestão. Faça o pedido novamente.',simulated:false,reads:[],organizationResolution:{status:'stale'}});
+          const proposed=organizationCallSchema.safeParse(calls[0]);
+          if(!proposed.success)throw new GikaFault('GIKA_MALFORMED_CALL');
+          if(proposed.data.args.items.some(item=>item.action==='move' && planning.tasks[item.ref]?.recurring) && scope!=='occurrence')return gikaInterpretationSchema.parse({text:'Há tarefas que se repetem. Quer organizar só estas ocorrências? Faça o pedido indicando esse escopo.',simulated:false,reads:[],organizationResolution:{status:'scope_required'}});
           const preview = validateOrganization(calls[0],{...read,endDate:range.endDate},{...fresh,endDate:range.endDate},context,period,input.text);
           if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
           const plan = await organizationBatch(preview,repository,identity.uid,input);
           await repository.authorize(identity);
           if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
-          return gikaInterpretationSchema.parse({text:plan?'Sugestão para o seu dia. Confira as mudanças antes de confirmar.':'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
+          return gikaInterpretationSchema.parse({text:plan?`Sugestão para ${period==='week'?'sua semana':'o seu dia'}. Confira as mudanças antes de confirmar.`:'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
         const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
         // Recheck account/policy after the upstream wait, before exposing data.

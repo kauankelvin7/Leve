@@ -2,9 +2,10 @@
 
 ## Estado atual
 
-- Status global: `M6_T2_DONE`.
-- Branch de trabalho da integração responsiva: `feat/gika-responsive-integration`, baseada em `696e0e5`. Linha Gika aprovada: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
-- M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
+- Status global: `M6_DONE_STOP_BEFORE_M7`.
+- Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7 e posteriores todo/não iniciados.
+
 ## Hardening — resumo histórico
 
 - DiceBear core/avataaars9.4.2→9.4.3, commit separado73e750c;325 unit/2 avatarE2E/lint/build/doisTS PASS, SVGs padrão idênticos/rotateinjection corrigido.
@@ -14,11 +15,11 @@
 
 ## Autorização atual
 
-Integração seletiva do Responsive Shell V2 autorizada em branch isolada, sem merge cego. Fonte `25ed3817`, base Gika `696e0e5`. Ponytail/full e Caveman/full oficiais instalados fora do projeto e aplicados manualmente. Contratos funcionais/persistência/dependências preservados; sem M6/Character/TQA/PR/main/deploy/Gemini live.
+Pedido atual autoriza M6-T1→T2→T3 sequenciais, com commits atômicos e backup final somente da feat/gika-integration. Ponytail/full, Caveman/full e humanizer local aplicados. Integração responsiva aprovada é baseline. Sem M7/Character/TQA/PR/main/deploy/Gemini live ou novas fases.
 
 ## Próxima ação
 
-Revisar `feat/gika-responsive-integration`. Porte concluído: audit produção0/0/0, lint/doisTS/build,480unit/243integração/17shell/76Gika PASS; matriz light/dark/reflow e Axe aprovados. Primeira Gika75/76 e regressão do launcher corrigida estão registradas em `docs/RESPONSIVE-SHELL-V2.md`. M5_READY_FOR_NEXT_PHASE permanece; M6 todo/não iniciado. Após revisão, roadmap volta diretamente a M6, sem novo milestone ou closure.
+Revisar M6 concluído. Gates finais: audit produção0/0/0, lint/doisTS/build,508unit/252integração/86Gika/17shell/Axe PASS. Checkpoint e backup somente feat/gika-integration; igualdade local/origin e worktree limpo devem ser confirmados após push. Não iniciar M7.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 
@@ -181,8 +182,17 @@ Commit funcional atômico verificado: `dd2a6e88f9c25e87241187886d6264f4c13375fe`
 
 ## M6 — autorização e retomada atual
 
-Integração responsiva aprovada consolidada por fast-forward696e0e5→c840492, publicada e local/origin iguais/worktree limpo. Pedido atual autoriza T1→T2→T3 sequenciais, sem aprovação intermediária. T1 em implementação; M7/Character/TQA fora de escopo.
+Integração responsiva aprovada consolidada por fast-forward696e0e5→c840492, publicada e local/origin iguais/worktree limpo. Pedido atual autorizou T1→T2→T3 sequenciais, sem aprovação intermediária. Tarefas concluídas; M7/Character/TQA fora de escopo.
 
-M6-T1 concluído: contexto diário mínimo/cap5/slots sem identidade, schema strict, releitura/revisões após upstream e sugestão estruturada sem comando. Lint/doisTS/build/501unit PASS. Provas HTTP fixture e minimização em gika-organization.test.ts; UI usa card existente. Próxima ação autorizada: M6-T2 sem pausa entre tarefas. Gates completos de UI/emuladores ao consolidar fluxo executável; nenhum live.
+Registro histórico M6-T1 concluído: contexto diário mínimo/cap5/slots sem identidade, schema strict, releitura/revisões após upstream e sugestão estruturada sem comando. Lint/doisTS/build/501unit PASS. Provas HTTP fixture e minimização em gika-organization.test.ts; UI usa card existente. Próxima ação autorizada: M6-T2 sem pausa entre tarefas. Gates completos de UI/emuladores ao consolidar fluxo executável; nenhum live.
 
-M6-T2 concluído sobre e39cd6a: mesma confirmação batch selando proposta/preservados/diff, writer/receipts convencionais, executor sequencial e resultados parciais existentes. Horário sugerido é alteração explícita no preview; remoção de horário não suportada pelo patch atual. Editar novo pedido cancela prévia antiga. Lint/doisTS/build/502unit/250integração/8E2E organização + Axe mobile-dark PASS; primeira focal6/1 por seletor novo documentada. Próxima tarefa autorizada M6-T3.
+Registro histórico M6-T2 concluído sobre e39cd6a: mesma confirmação batch selando proposta/preservados/diff, writer/receipts convencionais, executor sequencial e resultados parciais existentes. Horário sugerido é alteração explícita no preview; remoção de horário não suportada pelo patch atual. Editar novo pedido cancela prévia antiga. Lint/doisTS/build/502unit/250integração/8E2E organização + Axe mobile-dark PASS; primeira focal6/1 por seletor novo documentada. Próxima tarefa autorizada M6-T3.
+
+
+## M6 — conclusão
+
+T3 reutiliza get_week/civil week do perfil, mesmo schema/validator/planner/batch cap5 e confirmation selada; até7dias, somente pendentes datadas de hoje em diante. Explicit occurrence mantém irmã/template; future/all na composição negados. Modelo recebe dados mínimos/slots, sem IDs/UID/revisões/notas. Releitura integral e auth precedem preview, guard revalida pendentes/preservados, writer/receipt/ack convencionais são únicos. Sugestão de horário é diff explícito; não remove horário. Offline bloqueia confirmar/retomar/envio entre itens, conserva cancel/draft/acks e não autoexecuta reconexão. Sem promessa transacional global/Undo universal/persistência nova.
+
+Gates finais reais: auditprodução high/JSON0total (0critical/high/moderate), lint/doisTS/build PASS,508unit PASS,252integração PASS,86Gika PASS em13,6min,17shell/responsive PASS em46,7s; Axe mobile-dark/desktop-light da prévia e superfícies shell0. Integração final repetida após fortalecer fixture semanal com duas datas reais distintas/revisões+replay:252PASS, lint/doisTS PASS; sem alterar produto. Primeira ampla85/85 preservada; depois correção mínima de confirmação offline + dois unit/um E2E. Primeira falha T3 unit502/1 por malformed retornando503 corrigida para422; typecheck/seletor T2 históricos preservados em M6_EVIDENCE. Nenhuma deadline/retry/assertion relaxada ou falha omitida.
+
+Base responsiva c840492 preservada, sem CSS/shell/Today/Auth/membership/Rules/commandLayer/outbox/dependências alterados. Guard arquitetural existente ampliado; nenhum novo writer/collection/signer/receipt engine/planner paralelo. Screenshots históricos gerados restaurados. Sem GEMINI_API_KEY/Gemini live/produção/billing/PR/main/deploy/M7/Character/TQA. Limitação: interpretação Gemini real do M6 não provada; provider fixtures + domínio/auth/persistência/receipts reais emulados. Evidência/evals/ADR021 e TASKS atualizados; parar após checkpoint/backup para revisão.

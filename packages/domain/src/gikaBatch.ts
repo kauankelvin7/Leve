@@ -10,12 +10,12 @@ export const batchItemSchema = z.object({ operationId: z.uuid(), id: entityIdSch
 export const batchPlanSchema = z.object({ action: z.enum(['complete', 'reschedule']), sourceDate: civilDateSchema, organization: organizationPreviewSchema.optional(), items: z.array(batchItemSchema).min(1).max(GIKA_BATCH_LIMIT) }).strict().superRefine((plan, context) => {
   if (plan.organization) {
     const moves = plan.organization.items.filter(item => item.action === 'move');
-    if (plan.action !== 'reschedule' || plan.organization.period !== 'day' || plan.organization.startDate !== plan.sourceDate || moves.length !== plan.items.length || moves.some((move,index) => {
+    if (plan.action !== 'reschedule' || plan.organization.startDate !== plan.sourceDate || moves.length !== plan.items.length || moves.some((move,index) => {
       const item = plan.items[index];
       return !item || move.id !== item.id || move.revision !== item.revision || move.title !== item.title || move.timeZone !== item.timeZone || JSON.stringify(move.before) !== JSON.stringify(item.before) || !('dueDate' in item.patch) || move.after.dueDate !== item.patch.dueDate || move.after.dueTime !== (item.patch.dueTime ?? item.before.dueTime) || move.recurring !== (item.scope === 'occurrence');
     })) context.addIssue({code:'custom',message:'Confira a proposta dessa prévia.'});
   }
-  if (new Set(plan.items.map(item => item.id)).size !== plan.items.length || new Set(plan.items.map(item => item.operationId)).size !== plan.items.length || plan.items.some(item => item.before.dueDate !== plan.sourceDate || (plan.action === 'complete' ? !('status' in item.patch) : !('dueDate' in item.patch)))) context.addIssue({ code: 'custom', message: 'Confira as tarefas dessa prévia.' });
+  if (new Set(plan.items.map(item => item.id)).size !== plan.items.length || new Set(plan.items.map(item => item.operationId)).size !== plan.items.length || plan.items.some(item => (!plan.organization && item.before.dueDate !== plan.sourceDate) || (plan.action === 'complete' ? !('status' in item.patch) : !('dueDate' in item.patch)))) context.addIssue({ code: 'custom', message: 'Confira as tarefas dessa prévia.' });
 });
 export const batchConfirmationSchema = z.object({ plan: batchPlanSchema, token: z.string().regex(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/).max(16384) }).strict();
 export const gikaBatchConfirmationSchema = batchConfirmationSchema;

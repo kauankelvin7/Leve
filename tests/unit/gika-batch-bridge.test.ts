@@ -106,3 +106,14 @@ it('expiry after one ack retains the known partial commit and never authorizes p
   await expect(confirmGikaBatch(await confirmation(), request, 'account-a', signal())).rejects.toMatchObject({ code: 'GIKA_CONFIRMATION_EXPIRED', result: { applied: 1, failed: 1 } });
   expect(state.command).toHaveBeenCalledTimes(2); expect(state.request).not.toHaveBeenCalled();
 });
+
+it.each(['before','between'] as const)('M6 offline %s dispatch leaves unapplied targets pending, never queues or autoexecutes',async phase=>{
+  const value=await confirmation('reschedule');
+  value.plan.organization={period:'day',startDate:value.plan.sourceDate,endDate:'2026-10-02',items:value.plan.items.map(item=>({id:item.id,title:item.title,revision:item.revision,timeZone:item.timeZone,before:item.before,after:{dueDate:'2026-10-02',dueTime:item.before.dueTime},action:'move',recurring:false}))};
+  vi.stubGlobal('navigator',{onLine:phase==='between'});
+  if(phase==='between')state.command.mockImplementationOnce(async command=>{vi.stubGlobal('navigator',{onLine:false});return ack(command);});
+  try{
+    const result=await confirmGikaBatch(value,request,'account-a',signal());
+    expect(result).toMatchObject({applied:phase==='between'?1:0,pending:phase==='between'?1:2,unknown:0});expect(state.command).toHaveBeenCalledTimes(phase==='between'?1:0);expect(state.request).not.toHaveBeenCalled();
+  }finally{vi.unstubAllGlobals();}
+});

@@ -14,7 +14,7 @@ describe('M6 proposal is bounded data, never mutation authority', () => {
   });
   it('minimizes provider context: no entity/revision/UID, uses task data as a user part', () => {
     const planning = planningContext(read(),context)!;
-    expect(planning.tasks[0]).toEqual({ref:0,title:'Java',status:'pending',dueDate:context.today,dueTime:null,recurring:false});
+    expect(planning.tasks[0]).toEqual({ref:0,title:'Java',status:'pending',dueDate:context.today,dueTime:null,timeZone:context.timeZone,recurring:false});
     const payload = geminiPayload({text:'Organiza meu dia',context,planning});
     expect(JSON.stringify(payload)).not.toContain('real-task');expect(JSON.stringify(payload)).not.toContain('revision');
     expect(payload.contents[0]?.parts).toHaveLength(2);
@@ -88,4 +88,25 @@ describe('M6-T1 HTTP software resolution before and after model',()=>{
 it('M6-T2 suggested time is an explicit validated change, not an inferred command default',()=>{
   const proposal=call();Object.assign(proposal.args.items[0]!,{dueTime:'19:00'});
   expect(validateOrganization(proposal,read(),read(),context,'day').items[0]?.after).toEqual({dueDate:'2026-10-03',dueTime:'19:00'});
+});
+
+import { readRange } from '../../server/gika/policy';
+import { organizationBatch } from '../../server/gika/organizationPolicy';
+import { batchPlanSchema } from '../../packages/domain/src/gikaBatch';
+it('M6-T3 same contract resolves week in profile civil context, no second planner',async()=>{
+  expect(organizationPeriod('Como posso distribuir melhor essas tarefas esta semana?')).toBe('week');
+  for(const weekStartsOn of [0,1] as const){
+    const current={...context,weekStartsOn};const range=readRange({name:'get_week',args:{date:current.today}},current);
+    expect(range).toMatchObject({startDate:weekStartsOn===1?'2026-09-28':'2026-09-27',endDate:weekStartsOn===1?'2026-10-04':'2026-10-03'});
+  }
+  const range=readRange({name:'get_week',args:{date:context.today}},context),data={...read(),...range};
+  const preview=validateOrganization(call(),data,data,context,'week');
+  const repository={authorize:async()=>context,read:async()=>data,recoverMutation:async()=>null};
+  const plan=await organizationBatch(preview,repository,'test-user',{requestId:crypto.randomUUID(),text:'Organiza minha semana'});
+  expect(plan?.organization?.period).toBe('week');expect(plan?.items[0]?.before.dueDate).toBe(context.today);expect(plan?.sourceDate).toBe('2026-09-28');
+  expect(batchPlanSchema.safeParse({...plan,organization:undefined}).success).toBe(false);
+});
+
+it('M6 organizer words inside a conventional task title never hijack M3/M4 intent',()=>{
+  for(const text of ['Renomeia "Organizar semana" para "Planejar"','Move "Organizar meu dia" para amanhã','Terminei Organizar semana','Adiciona Organizar semana amanhã'])expect(organizationPeriod(text)).toBeNull();
 });

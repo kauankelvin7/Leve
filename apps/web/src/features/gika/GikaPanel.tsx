@@ -77,7 +77,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}
-      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} active={open} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
+      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} active={open} online={online} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
       {status === 'loading' && <GikaLoading demo={demo} />}
       {status === 'error' && <GikaError code={errorCode} online={online} onRetry={() => void retry()} />}
       <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Consultando sua agenda…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>

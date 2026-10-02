@@ -243,9 +243,54 @@ describe('M6-T2 daily proposal composes the proven command/confirmation/receipt 
     }};
     try{
       const response=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(context.input);
-      expect(response.status).toBe(variant==='partial'?200:variant==='revoked'?403:422);expect(response.body.batchConfirmation).toBeUndefined();
+      expect(response.status).toBe(variant==='partial'||variant==='stale'?200:variant==='revoked'?403:422);expect(response.body.batchConfirmation).toBeUndefined();
       for(const [index,document]of (await snapshot(context)).entries())expect(document).toEqual({...original[index],...(variant==='stale'&&index===0?{revision:2}:{})});
       if(variant==='partial')expect(modelState.calls).toBe(0);
     }finally{spy?.mockRestore();}
   });
+});
+
+describe('M6-T3 week reuses daily proposal, bounded reads and existing commands',()=>{
+  it('civil week includes different source dates, temporal-only patches preserve private fields and retry receipts',async()=>{
+    const context=await ready('reschedule',null);context.input.text='Como posso distribuir melhor essas tarefas esta semana?';
+    // Keep two distinct source dates inside the current civil week, including Sunday runs.
+    if(Temporal.PlainDate.from(today()).dayOfWeek===7)await db.doc(`users/${context.user.uid}`).update({weekStartsOn:0});
+    await send(context.user,{command:'activity.update',operationId:crypto.randomUUID(),entityId:context.ids[1],expectedRevision:1,payload:{title:'Teste 1',descriptionPlain:'Nota sintética preservada',categoryId:null,colorHex:'#123456',estimatedMinutes:35,schedule:{type:'task',dueDate:tomorrow(),dueTime:null,timeZone:zone,disambiguation:'reject'},reminderSpecs:[]}}).expect(200);
+    modelState.model={interpret:async input=>{
+      expect(input.planning?.tasks).toHaveLength(2);
+      expect(input.planning!.tasks.map(item=>item.dueDate)).toEqual([today(),tomorrow()]);
+      expect(input.planning!.startDate <= today()).toBe(true);expect(input.planning!.endDate >= today()).toBe(true);
+      return [{name:'propose_organization',args:{items:input.planning!.tasks.map(item=>({ref:item.ref,action:'move',dueDate:item.dueDate,dueTime:item.ref===0?'09:00':'20:00'}))}}];
+    }};
+    const response=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(context.input).expect(200);
+    expect(response.body.batchConfirmation.plan.organization.period).toBe('week');
+    for(const [index,item]of response.body.batchConfirmation.plan.items.entries()){
+      const envelope=await batchEnvelope(response.body.batchConfirmation,context.input,index);
+      await send(context.user,envelope).expect(200);await send(context.user,envelope).expect(200).expect(r=>expect(r.body.result).toBe('alreadyApplied'));
+      expect((await db.doc(`users/${context.user.uid}/activities/${item.id}`).get()).data()).toMatchObject({revision:item.revision+1,status:'pending',descriptionPlain:'Nota sintética preservada',schedule:{dueDate:index===0?today():tomorrow(),dueTime:index===0?'09:00':'20:00'}});
+    }
+    expect(modelState.calls).toBe(1);
+  });
+});
+it('M6 recurring proposal clarifies missing scope; explicit occurrence never moves siblings or template',async()=>{
+  const context=await ready('reschedule'),seriesId=crypto.randomUUID();
+  const activity={title:'Rotina sintética M6',descriptionPlain:'Privado preservado',categoryId:null,reminderSpecs:[],schedule:{type:'task',dueDate:today(),dueTime:'19:00',timeZone:zone,disambiguation:'reject'}};
+  await send(context.user,{command:'activity.createSeries',operationId:crypto.randomUUID(),entityId:seriesId,expectedRevision:0,payload:{activity,recurrence:{frequency:'daily',interval:1,until:null,count:3,monthlyPolicy:'lastDay'}}}).expect(200);
+  const root=db.collection(`users/${context.user.uid}/activities`),members=(await root.where('seriesId','==',seriesId).get()).docs;
+  const target=members.find(document=>document.data().occurrenceKey===today())!;
+  const series=(await db.doc(`users/${context.user.uid}/series/${seriesId}`).get()).data();
+  modelState.model={interpret:async input=>{
+    const call={name:'propose_organization',args:{items:input.planning!.tasks.map(item=>({ref:item.ref,action:item.recurring?'move':'keep',dueDate:item.recurring?tomorrow():item.dueDate,dueTime:item.dueTime}))}};
+    return [call,call]; // Repeated technical function call normalizes, never creates two operations.
+  }};
+  const input={requestId:crypto.randomUUID(),text:'Organiza meu dia'};
+  const unresolved=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(input).expect(200);
+  expect(unresolved.body.organizationResolution).toEqual({status:'scope_required'});expect(unresolved.body.batchConfirmation).toBeUndefined();
+  const explicit={requestId:crypto.randomUUID(),text:'Organiza meu dia, só estas ocorrências'};
+  const resolved=await request(app).post('/api/gika/respond').set('Authorization',`Bearer ${context.user.token}`).send(explicit).expect(200);
+  expect(resolved.body.batchConfirmation.plan.items).toHaveLength(1);expect(resolved.body.batchConfirmation.plan.items[0].scope).toBe('occurrence');
+  await send(context.user,await batchEnvelope(resolved.body.batchConfirmation,explicit,0)).expect(200);
+  expect((await root.doc(target.id).get()).data()).toMatchObject({revision:2,schedule:{dueDate:tomorrow()}});
+  for(const member of members.filter(item=>item.id!==target.id))expect((await member.ref.get()).data()).toEqual(member.data());
+  expect((await db.doc(`users/${context.user.uid}/series/${seriesId}`).get()).data()).toEqual(series);
 });
