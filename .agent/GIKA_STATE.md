@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M5_CLOSURE_BLOCKED_STOP_BEFORE_M6`.
+- Status global: `M5_CLOSURE_R1_DONE_CLOSURE_BLOCKED_STOP_BEFORE_R2_M6`.
 - Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
@@ -14,11 +14,21 @@
 
 ## Autorização atual
 
-Pedido atual autoriza exclusivamente M5-CLOSURE — Security & Regression Gate depois de M5-T4 revisado/aprovado. Entrada/fetch local=origin `8a892504753d7624f50cf54f534ce7c38fde195a`, feat/gika-integration e worktree limpo verificados. Somente auditoria cruzada, gates, evidência/estado e backup remoto feat; corrigir produto apenas se houver defeito concreto demonstrado. Sem dependências/M6/live/PR/main/deploy/shell/Character Foundation.
+Pedido atual autoriza exclusivamente M5-CLOSURE-R1 targeted Firebase Admin/node-forge. Entrada/fetch local=origin `5ca793e17f23f671833bdf7cebd793cc96107af3`, feat/gika-integration e worktree limpo verificados. Upgrade mínimo Admin13.6→13.10, sem Firebase client/overrideforge/crypto manual; gates/evidência, commit funcional isolado, checkpoint documental e push feat. Não iniciar R2/M6/live/PR/main/deploy/shell/Character Foundation.
 
 ## Próxima ação
 
-Parar para revisão após gate documental M5-CLOSURE e backup remoto feat. Audit produção atual 0 critical/2 high/0 moderate, GHSA-86w9-cpqp-85rv em firebase-admin13.6.0→node-forge1.4.0; não atualizar dependências nesta etapa. Não declarar READY nem iniciar M6. Evidência em docs/gika/M5_CLOSURE_EVIDENCE.md; M5 histórico done não significa closure de segurança aprovado.
+Parar para revisão de M5-CLOSURE-R1 após commit funcional/checkpoint/push. R1_PASS: Admin13.10 e forge removido, produção0critical/0high/0moderate. Closure global permanece blocked; R2/M6 não autorizados/iniciados. Evidência docs/gika/M5_CLOSURE_R1_SECURITY_EVIDENCE.md e árvore sanitizada; não declarar gate amplo de closure reexecutado/aprovado por causa de R1.
+
+## M5-CLOSURE-R1 — segurança direcionada concluída
+
+Entrada local/origin/fetch5ca793e17f23f671833bdf7cebd793cc96107af3 limpa na feat. Upstream13.10 usa crypto.createPrivateKey no lugar de forge, exports públicos usados preservados/engines>=18/Node24; cert aceita RSA sintética e rejeita inválida nas duas versões sem segredo escrito/logado. Mudança funcional somente package.json/package-lock.json, pinAdmin13.6→13.10, GoogleAuth10.9.1/gaxios7.3.1 necessários; Firebaseclient12.19/Firestore7.11.6+4.17.2/Storage7.22/gax4.6.1/grpc1.14.5/uuid11.1.1/overrides preservados. Sem overrideforge/crypto manual/auditfix/upgrades14/produção/arquitetura.
+
+Duas instalações limpas PASS (lock final preserva metadados libc que npm removeu de bindings não relacionados). Produçãoaudit high/JSON PASS0critical/high/moderate, forge ausente em TODA árvore. Lint/doisTS/build/243integração npmrunintegration PASS; unit inicial479/1 reproduzida na entrada por LOG_LEVELerror do runner, ambiente padrão480PASS sem mudar teste. E2E Gika56PASS na primeira execução por seis grupos serializados/fresh demo:12createUndo/6complete/6update/12rescheduleconfirmation/7recurrence/13batch. Authoriginal1FAIL strict selector Criarconta antes cadastro, reproduzido entrada13.6; suplemento /tmp comexacttrue/Pularguia e mesmos deadlines/asserções/fluxo PASS em13.6 e13.10. Primeira cópia13.10 symlinkdeps teve28font403 confirmadas Vitefsallow e falhou consolefinal; repetição cópiafísica igualbaseline PASS sem mudar Vite/produto. Não declarar bateria original Auth/Gika integralmente verde.282arquivos produto/harness byte-idênticos à entrada, nenhum segredo real/Gemini live/.env/PR/main/deploy/shell/Character Foundation/R2/M6. R1_PASS segurança direcionada; closure global blocked e histórico de falhas preservado, sem anunciar READY. Commit funcional isolado seguido de checkpoint documental/backup feat e verificação local/origin/worktree no encerramento.
+
+## Checkpoint funcional R1
+
+Commit funcional isolado verificado: `12c36521eeea7aa39fa1a7ccc7381c70a1b8dbe2`, parent5ca793e17f23f671833bdf7cebd793cc96107af3, somente package.json/package-lock.json. Todos os gates R1 e limitações estão na evidência específica. Checkpoint documental seguinte registra esse SHA sem alterar produto; audit final0/0/0. Backup remoto autorizado somente feat, igualdade HEAD local/origin e worktree limpo serão verificados no encerramento. Parar antes de R2/M6; closure global continua blocked.
 
 ## M5-CLOSURE — gate executado, bloqueado
 
