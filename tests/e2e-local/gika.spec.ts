@@ -162,6 +162,8 @@ test('IME não envia composição e uma saída inválida vira erro sem alegar su
 test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável', async ({ page }) => {
   test.setTimeout(120_000);
   await enterLocalAgenda(page);
+  await page.setViewportSize({ width: 853, height: 1280 });
+  await expect(page.locator('.sidebar .profile-avatar')).toBeVisible();
   await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
   await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
   const dialog = page.getByRole('dialog', { name: 'Gika', exact: true });
@@ -178,7 +180,7 @@ test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o paine
       expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations, `${theme}/${appearance}`).toEqual([]);
     }
   }
-  for (const [width, height] of [[1440, 900], [1366, 768], [1024, 768], [430, 932], [390, 844], [360, 800], [360, 400]]) {
+  for (const [width, height] of [[2560, 1440], [1920, 1080], [1440, 900], [1366, 768], [1024, 768], [853, 1280], [430, 932], [390, 844], [360, 800], [360, 400]]) {
     await page.setViewportSize({ width: width!, height: height! });
     await expect.poll(async () => { const bounds = await dialog.boundingBox(); return bounds!.y + bounds!.height; }).toBeLessThanOrEqual(height! + 1);
     const box = await dialog.boundingBox();

@@ -2,6 +2,10 @@ version: 1
 project: gika
 source_of_truth: true
 
+# Integração responsiva seletiva concluída em feat/gika-responsive-integration.
+# Evidência: docs/RESPONSIVE-SHELL-V2.md. Aguardar revisão; M6 todo.
+# Nenhuma tarefa/milestone adicional ou alteração ao grafo M5/M6.
+
 status_values:
   - todo
   - in_progress

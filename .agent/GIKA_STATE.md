@@ -3,7 +3,7 @@
 ## Estado atual
 
 - Status global: `M5_READY_FOR_NEXT_PHASE_STOP_BEFORE_M6`.
-- Branch de trabalho: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
+- Branch de trabalho da integração responsiva: `feat/gika-responsive-integration`, baseada em `696e0e5`. Linha Gika aprovada: `feat/gika-integration`. Hardening aprovado e integrado por fast-forward de `a922594699cd95e2bc6602bccc215f4a23e75f41` para `8300c2b48408ba12664573ee92c1402b5aafd82f`; origem/SHAs exatos e worktree limpo verificados antes da integração. `chore/security-hardening` permanece em `8300c2b`; main e branch visual não alteradas, sem deploy; integração hardening histórica anterior ao backup autorizado.
 - M0/M1/M2/M3/M4 done; M5-T1 revisado/aprovado/done, M5 done; M5-T2 done; M5-T3 aprovado/done; M5-T4 done; M6+ todo/não iniciados.
 ## Hardening — resumo histórico
 
@@ -14,11 +14,11 @@
 
 ## Autorização atual
 
-R1/R2 revisados/aprovados. Pedido atual autoriza exclusivamente M5-CLOSURE-FINAL, entrada/fetch local=origin f5b969d1c134afe51496ee90773a401719c53ac7, feat e worktree limpo verificados. Gates atuais e revisão somente leitura, nenhuma implementação/correção/refatoração/dependência/TQA. Checkpoint documental/push feat; não iniciar M6/live/PR/main/deploy/shell/Character Foundation.
+Integração seletiva do Responsive Shell V2 autorizada em branch isolada, sem merge cego. Fonte `25ed3817`, base Gika `696e0e5`. Ponytail/full e Caveman/full oficiais instalados fora do projeto e aplicados manualmente. Contratos funcionais/persistência/dependências preservados; sem M6/Character/TQA/PR/main/deploy/Gemini live.
 
 ## Próxima ação
 
-Parar para revisão do fechamento final após checkpoint/backup. M5_READY_FOR_NEXT_PHASE: auditprodução0/0/0/lint/doisTS/build/480unit/243integração e única ampla Gika76/76 PASS. M5/closure done; M6 todo/não iniciado, aguardar autorização específica antes de qualquer implementação. Evidência docs/gika/M5_CLOSURE_FINAL_EVIDENCE.md e JSON sanitizado.
+Revisar `feat/gika-responsive-integration`. Porte concluído: audit produção0/0/0, lint/doisTS/build,480unit/243integração/17shell/76Gika PASS; matriz light/dark/reflow e Axe aprovados. Primeira Gika75/76 e regressão do launcher corrigida estão registradas em `docs/RESPONSIVE-SHELL-V2.md`. M5_READY_FOR_NEXT_PHASE permanece; M6 todo/não iniciado. Após revisão, roadmap volta diretamente a M6, sem novo milestone ou closure.
 
 ## M5-CLOSURE-FINAL — fechamento atual
 

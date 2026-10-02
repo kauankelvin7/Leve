@@ -94,22 +94,30 @@ test('modo sólido e compras sem persistência', async ({ page }) => {
   await expect(page.getByRole('status')).toHaveText('1 item para comprar.');
 });
 
-for (const width of [320, 360, 390, 768, 1024, 1440]) {
+for (const [width, height] of [[320, 900], [360, 900], [390, 844], [768, 900], [853, 1280], [1024, 768], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440]] as const) {
   test(`layout sem rolagem horizontal em ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 });
+    await page.setViewportSize({ width, height });
     await page.goto('/demo/hoje');
     await expect(page.getByRole('heading', { name: 'Meu dia', exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await expect(page.getByRole('navigation')).toBeVisible();
+    if (width >= 1920) {
+      const main = await page.locator('.main-wrapper').boundingBox();
+      expect(main!.width).toBeGreaterThan(width * .68);
+    }
   });
 }
 
 test('acessibilidade automatizada dos destinos e diálogo', async ({ page }) => {
-  for (const route of ['hoje', 'calendario', 'notas', 'compras', 'configuracoes']) {
-    await page.goto(`/demo/${route}`);
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    const scan = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    expect(scan.violations).toEqual([]);
+  await page.goto('/demo/hoje');
+  for (const appearance of ['light', 'dark']) {
+    await page.evaluate(value => localStorage.setItem('leve.appearance', value), appearance);
+    for (const route of ['hoje', 'calendario', 'notas', 'compras', 'configuracoes']) {
+      await page.goto(`/demo/${route}`);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      const scan = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+      expect(scan.violations).toEqual([]);
+    }
   }
   await page.goto('/demo/hoje');
   await page.getByRole('button', { name: 'Adicionar tarefa', exact: true }).click();

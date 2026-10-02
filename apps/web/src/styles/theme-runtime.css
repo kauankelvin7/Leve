@@ -237,6 +237,7 @@
 
 :root[data-appearance='dark'] .app-shell .note,
 :root[data-appearance='dark'] .app-shell .note.butter,
+:root[data-appearance='dark'] .app-shell .activity-card,
 :root[data-appearance='dark'] .app-shell .note.studies,
 :root[data-appearance='dark'] .app-shell .note.personal,
 :root[data-appearance='dark'] .app-shell .note.health,

@@ -970,7 +970,8 @@ textarea {
    ============================================================ */
 .today-page,
 .calendar-page,
-.notes-page,
+.notes-page { width: 100%; min-width: 0; }
+
 .settings-page,
 .search-page,
 .trash-page {
@@ -1244,13 +1245,13 @@ body {
 }
 
 .app-shell {
-  grid-template-columns: 232px minmax(0, 1fr);
-  gap: clamp(30px, 3.2vw, 52px);
-  padding: clamp(20px, 2.2vw, 34px);
+  grid-template-columns: clamp(216px, 13.5vw, 272px) minmax(0, 1fr);
+  gap: clamp(22px, 2vw, 48px);
+  padding: clamp(20px, 2.2vw, 48px);
 }
 
 .main-wrapper {
-  width: min(100%, 1120px);
+  width: 100%;
   margin-inline: auto;
 }
 
