@@ -350,7 +350,7 @@ milestones:
   M9:
     name: "Hardening e release"
     status: blocked
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; referência intacta/visual lock e CLI Rive1.3.0 local comprovados. CHARACTER_ASSET_REQUIRED e RIVE_ZERO_COST_PRODUCT_BLOCKER (splash Free sem aceite) impedem conclusão visual/RC; master/rig Gika ausentes."
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; referência/visual lock e CLI1.3.0 comprovados. Free/splash autorizados no desenvolvimento e Cadet condicional na export final (ADR024); custo não bloqueia autoria. CHARACTER_ASSET_REQUIRED/VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED: dois ensaios vetoriais rejeitados visualmente, master/rig ausentes."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -365,12 +365,12 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: blocked
-        evidence: ["M9_EVIDENCE T3; acabamento técnico histórico verificado; GIKA_VISUAL_LOCK e JPEG aprovado intacto concluídos, CLI1.3.0 oficial compilou/renderizou RML local em /tmp. Master/rig Gika ausentes; CHARACTER_ASSET_REQUIRED e RIVE_ZERO_COST_PRODUCT_BLOCKER (splash Free aguardando decisão) preservados. Nenhum runtime/controller improvisado."]
+        evidence: ["M9_EVIDENCE T3; acabamento técnico histórico verificado; referência/visual lock/CLI1.3.0 comprovados. Free/Cadet autorizados conforme ADR024, sem assinatura antecipada. Dois ensaios de reconstrução não passaram QA; VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED, master/rig ausentes. Previews rejeitados em character/qa, nenhum runtime/controller substituto."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: blocked
-        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada somente referência/docs/estado, sem rerun de código. Aceite RC depende de master/rig reais e decisão R$0/splash em T3; não M9_DONE_RC_READY."]
+        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada referência/docs/QA/estado, sem mudança de produto. Decisão financeira resolvida (ADR024); aceite RC depende de master/rig reais e gates após integração, não M9_DONE_RC_READY."]
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.

@@ -38,4 +38,8 @@ Não criar runtime/controller antes de master/rig e spike funcionais. GikaMark a
 
 As seis especificações históricas estão em `design/gika-character-foundation@3b3011c8b4ea0a5a19b5d7f18be06eb18767d8db`: CHARACTER_SCOPE e character/{CHARACTER_BIBLE,MOTION_SYSTEM,TECHNICAL_ARCHITECTURE,INTEGRATION_PLAN,ACCEPTANCE_CRITERIA}. A ordem antiga anterior ao M6 e o gatilho histórico input-enviado/listening são superados pelo pedido atual; não integrar aquela branch cegamente.
 
-Visual lock é concluído; master, fallbacks oficiais, rig da Gika, motions e QA no produto **não**. Ferramenta e licença atuais são registradas em [M9_EVIDENCE](../M9_EVIDENCE.md). Não declarar `M9_DONE_RC_READY` sem esses artefatos e gates. R$0 permanece obrigatório; splash oficial do plano Free exige decisão humana antes da integração final, conforme seção 4.2 do plano fornecido.
+Visual lock é concluído; master, fallbacks oficiais, rig da Gika, motions e QA no produto **não**. Ferramenta/licença/ensaios atuais são registrados em [M9_EVIDENCE](../M9_EVIDENCE.md). Não declarar `M9_DONE_RC_READY` sem esses artefatos e gates.
+
+Autorização posterior do usuário (ADR024): Rive Free durante criação/rig/animação/validação, splash permitido somente no desenvolvimento. Produção sem splash obrigatória; Cadet autorizado na exportação final **após** asset/rig integralmente aprovados. Sem assinatura antecipada nem troca de tecnologia. A decisão financeira não bloqueia desenvolvimento.
+
+Os [ensaios 01](qa/rejected-vectorization-01.png) e [02](qa/rejected-vectorization-02.png) são QA **reprovado**, não master/avatar/fallback. Auto-trace auxiliar deixou lacunas/fragmentação e componentes de outra vista, sem anatomia editável adequada ao rig. `VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED`: preservar a referência e refinar manualmente o master, sem aceitar os ensaios como personagem final.

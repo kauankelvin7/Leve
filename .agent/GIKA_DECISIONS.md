@@ -226,3 +226,10 @@ M7 usa SpeechRecognition/webkitSpeechRecognition por gesto explícito, sem depen
 ## ADR-GIKA-023 — App Check depende de validação operacional
 
 M9 não ativa AppCheck sem sitekey/domínios/provider web/PWA/Firestore/APIAdmin e teste de usuários legítimos/offline/emuladores. Ativar enforcement parcial ou fallback bypass não oferece proteção correta; reCAPTCHAEnterprise/CloudBilling não autorizado. Proteções Auth/Rules/commands/quotas/signer permanecem. Ausência não classificada como vulnerabilidade por si só. Reavaliar cadastro gratuito/operacional com UAT, sem serviço pago automático.
+
+## ADR-GIKA-024 — Rive Free no desenvolvimento, Cadet somente na exportação final
+
+- Status: accepted; autorização explícita posterior ao checkpoint78f03ea.
+- Decisão do usuário: Rive Free durante criação, rig, animação e validação. Splash tolerado nesse período, nunca como solução final. Após asset e rig integralmente aprovados, Cadet autorizado para exportar `.riv` final sem splash. Não trocar tecnologia por custo.
+- Consequências: RIVE_ZERO_COST_PRODUCT_BLOCKER deixa de bloquear desenvolvimento. Nenhuma assinatura/billing/trial antecipada; aprovação integral é precondição da ação paga, não presumida por build/headless/controller. Exceção específica de licença autoral/export final, sem alterar custo da infraestrutura/Gemini Free Tier ou demais contratos. Não ocultar/remover splash nem tratar unsigned local como bypass.
+- Escopo preservado: M9 existente, sem runtime/controller sobre master reprovado, novo milestone, writer, Rules, policy ou persistência. Gate visual continua obrigatório; VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED não é resolvido pela licença.
