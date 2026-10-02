@@ -5,6 +5,7 @@
 - Status global: `M9_BLOCKED_CHARACTER_ASSET_REQUIRED`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 blocked pelo asset real; T1/T2 done, T3 blocked visualmente, T4 regressão técnica aprovada e aceite RC blocked pelo mesmo requisito.
+- Retomada Character sobre `e28da58`: referência aprovada versionada intacta e visual lock concluído. Rive CLI oficial `1.3.0` instalado fora do projeto; compilação/renderização RML local comprovadas. A ausência histórica da ferramenta não é mais o impedimento atual. `CHARACTER_ASSET_REQUIRED` permanece (master/rig da Gika não produzidos); `RIVE_ZERO_COST_PRODUCT_BLOCKER` registra exportação/publicação sem splash dependente de plano pago, com aceitação do splash Free ainda não autorizada.
 
 ## Hardening — resumo histórico
 
@@ -19,7 +20,7 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-Retomar M9-T3 somente com asset vetorial e rig Rive reais conforme Character Bible. Integrar e verificar estados visuais/animados reais, runtime/lazy/cleanup/reduced motion; então completar o aceite RC de M9-T4. Os demais gates técnicos já passaram. Não substituir por CSS/SVG improvisado nem declarar Character/RC concluídos por fallback; nenhum novo milestone.
+Retomar M9-T3 a partir de `docs/gika/character/GIKA_VISUAL_LOCK.md` e referência original. Resolver a decisão de runtime R$0/splash Free sem assinatura ou bypass; pergunta de aceitação enviada, nenhuma resposta presumida. A ferramenta local permite autoria, mas ainda faltam master fiel/fallbacks/rig reais; prova com exemplo oficial não é asset da Gika. Depois integrar e verificar estados/runtime/lazy/cleanup/reduced motion e gates finais de T3/T4. Os gates técnicos históricos permanecem registrados, sem alegar nova execução. Não substituir por CSS/SVG improvisado nem declarar Character/RC concluídos por fallback; nenhum novo milestone.
 
 ## M8 — conclusão
 
@@ -247,3 +248,7 @@ Verify canônico primeira execução PASS: audit0/lint/AST/doisTS/build/537unit/
 ## Checkpoint M9 — gates técnicos e bloqueio visual
 
 T1 d63ce2e; T2 146bb4a; T3 técnico98c7497; harness a0cf7d4; guia546ec5f; fixtures f617340. Este checkpoint é documental: M9_BLOCKED_CHARACTER_ASSET_REQUIRED; T3/T4 blocked somente pelo asset/rig e aceite visual correspondente, com regressão independente PASS. Não declarar M9_DONE_RC_READY. Publicar somente feat/gika-integration e conferir HEAD local=origin/worktree limpo no encerramento. Nenhum novo milestone/closure/TQA/main/PR/deploy/live/TTS.
+
+## Retomada Character — referência e Rive oficial
+
+Entrada `e28da58ca6c619d774efb5687ec04aedd6e4c5d5`, local/origin/fetch iguais e worktree limpo antes de alterações. Pedido GIKA_RIVE_PRODUCTION_TO_RC + `46737.jpg` supersede a limitação histórica de autoria: CLI oficial1.3.0 executa após biblioteca Debian verificada/extract fora do projeto. Exemplo oficial em `/tmp` verificou/compilou/renderizou dois frames distintos; não foi integrado nem apresentado como Gika. Referência JPEG1280×960/223809bytes/hash preservados e visual lock com mecha anatômica esquerda (viewer direita), rosto/cabelo/roupa/motion/privacidade congelados. Fontes oficiais pricing/CLI confirmam splash Free e publicação limpa em Cadet+; unsigned local sem scripts não prova autorização de exportação comercial sem splash. Nenhuma conta, publicação Rive, assinatura, runtime React ou dependência do Leve adicionada. Detalhes e primeiras falhas em M9_EVIDENCE. M9/T3/T4 continuam blocked; decisão de splash pendente, asset/rig da Gika ausentes. Somente referência/documentação/estado nesta retomada; regressão técnica histórica não reexecutada por não haver mudança de produto.

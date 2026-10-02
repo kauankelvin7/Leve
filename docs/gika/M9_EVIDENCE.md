@@ -89,3 +89,48 @@ Comparação byte a byte com entrada2e73b3a:98arquivos protegidos (server exceto
 Limites operacionais preservados: AppCheck depende de configuração/UAT gratuitos; limiter por instância; warning de chunks sem benefício seguro de split demonstrado; métricas lab não são LCP/INP/CLS de campo. Microfone/permissões/browser em aparelho real, rig Rive, Gemini live, produção e UAT humanos não foram comprovados nesta execução. Sem áudio/TTS/live/billing/deploy/main/PR; push autorizado somente feat/gika-integration.
 
 Checkpoint documental final baseado em test/harness `f61734024f853764e6c2939a981c508a1ef86704` e guia `546ec5f`. Estado/tasks preservam T1/T2 done e T3/T4 blocked pelo acabamento real. Nenhum código alterado depois da verificação; confirmar push/local=origin/worktree limpo no encerramento.
+
+## Retomada Character — referência aprovada e autoria Rive
+
+Entrada `e28da58ca6c619d774efb5687ec04aedd6e4c5d5`, feat/gika-integration; fetch/local/origin iguais, worktree limpo antes de alterações. Pedido GIKA_RIVE_PRODUCTION_TO_RC lido; imagem fornecida inspecionada, sem gerar outra personagem. Seis especificações Character lidas na fonte imutável `design/gika-character-foundation@3b3011c8b4ea0a5a19b5d7f18be06eb18767d8db`, sem merge da branch antiga.
+
+**Entregue:** [GIKA_VISUAL_LOCK](character/GIKA_VISUAL_LOCK.md) e [referência original](character/reference/gika-approved-reference.jpg). JPEG1280×960,223809bytes; SHA256 `f2fd8858087f663c473586e79445af8d837fc00296b88215e6975941828b8b05`. Cópia byte a byte, mantendo extensão verdadeira em vez de converter para PNG. Rosto/cabelo/figurino e uma mecha anatômica esquerda (viewer direita frontal) congelados; `VOICE_CAPTURE_STARTED → listening`, `REQUEST_STARTED → thinking`, ack real antes success. Nenhum master/fallback oficial/rig da Gika entregue nesta retomada.
+
+### Ferramenta: resultado factual, distinto do asset
+
+LinuxDebian13/x86_64, Node24.19.0, Inkscape/Blender presentes. Rive CLI **1.3.0** instalado pelo script oficial `https://releases.rive.app/cli/install.sh`, inspecionado integralmente antes de executar: origem oficial, manifest/SHA256, validação dos caminhos do tar, instalação no usuário fora do Leve. Sem plugin callable Rive/editor autenticado nesta execução. Não instalar pacote React/player: ainda não há consumidor legítimo no produto.
+
+Primeira execução `--version/doctor/help` falhou exit127: `libGLESv2.so.2` ausente, inclusive no caminho headless. Não é falha do Leve nem prova de CLI indisponível. Ambiente sem sudo; extraído pacote oficial Debian trixie `libgles2 1.7.0-1+b2`, conferindo SHA256 contra Packages.xz oficial, em `~/.local/share/gika-rive-system-libs`; LD_LIBRARY_PATH somente nos subprocessos de autoria, sem workaround/configuração de produção. Em seguida `rive --version` confirmou1.3.0; analytics desativado.
+
+Provas em `/tmp`, sem login/upload:
+
+| Prova | Resultado |
+| --- | --- |
+| Scaffold oficial `create`, `--verify` | PASS; zero erros/warnings |
+| Scaffold `--once` | PASS; `.riv` unsigned228bytes, artboard/SM padrão vazios |
+| Scaffold headless `--screenshot --advance=1` | PASS; PNG500×500 inspecionado, fundo vazio esperado |
+| Exemplo oficial `rml_triangle --verify/--once` | PASS; zero erros/warnings, `.riv`394621bytes (inclui fonte do exemplo) |
+| Exemplo headless frames1 e30 | PASS; PNGs inspecionados, geometria realmente rotacionou |
+
+Preservadas duas tentativas de flags incompatíveis: `--once --screenshot` exit2 e `--screenshot --format=json` exit2. Referência oficial exige modos separados e JSON somente em verify/once/publish/test; chamadas corrigidas, sem editar produto/binário ou ocultar tentativas. Exemplo/PNGs temporários não versionados: **não são Gika, não provam face rig, fidelidade ou performance da personagem**. Não emitir `RIVE_AUTHORING_TOOL_UNAVAILABLE`: autoria local agora comprovada.
+
+Limitação concreta do fluxo SVG: documentação instalada `docs/assets.md` informa que `SVGAsset` é editor-only/stripped na exportação RML; é necessário converter vetores em shapes RML antes da compilação. Não basta anexar um SVG para obter um rig. Nenhum segundo converter/engine/abstração criado antes de existir master fiel.
+
+### Licença/custo — bloqueio da decisão de runtime
+
+Fontes oficiais consultadas nesta retomada:
+
+- [Pricing](https://rive.app/pricing): “Free exports play a Rive splash screen. Upgrade to remove it.” Free$0 inclui Editor/CLI e exportação com splash; Cadet+ inclui exportação sem splash.
+- [CLI getting started](https://rive.app/docs/cli/getting-started): autoria/build/preview locais sem login; `--publish` assina via API e `.rev` exige conta. Web rejeita scripts unsigned; arquivos sem scripts não têm essa restrição técnica.
+- [CLI commands](https://rive.app/docs/cli/reference/commands): publicação limpa exige projeto vinculado a arquivo em workspace Cadet+; watermark aplica com ou sem scripts.
+- [Overview](https://rive.app/docs/cli/overview), [downloads](https://rive.app/downloads), [agents](https://rive.app/docs/cli/agents), [examples](https://rive.app/docs/cli/examples) acessíveis. Announcement da comunidade retornouHTTP403; não usado como prova. URLs preliminares cli/commands e cli/ai-agents retornaram404; índice oficial apontou as URLs corretas acima.
+
+**`RIVE_ZERO_COST_PRODUCT_BLOCKER`**: uso final sem splash por exportação/publicação oficial não atende R$0 no plano informado. Aceitação humana do splash Free foi solicitada e ainda não recebida; não assumir aceite. A restrição de assinatura não se aplica tecnicamente a builds locais sem scripts, mas isso **não comprova uma exceção de licença/publicação sem splash**. Não usar unsigned como bypass de watermark. Nenhuma assinatura/billing/trial/conta Rive criada, login/export `.rev`/`--publish`/upload executado ou splash removido. Não afirmar que uma exportação Free real foi testada: falta conta/arquivo assinado para essa prova.
+
+Alternativas sem cobrança: manter autoria/preview locais e adiar runtime; ou usar exportação Free com splash após aceite explícito e validação da exportação. SVG estático fiel, quando houver master, pode servir apenas como fallback previsto: não substitui o requisito de rig/motion real. Nenhuma troca de tecnologia autorizada ou realizada.
+
+### Estado e verificação desta retomada
+
+Somente referência, visual lock e documentação/estado/tarefas alterados; package/lock/runtime/UI/domínio/Auth/policy/Rules/commands/receipts/persistência intactos. Verificação focal: igualdade binária/hash/formato, links locais, YAML e estados blocked, diff whitespace e escopo exclusivamente documental. Gates completos anteriores continuam **históricos**, não reexecutados nem apresentados como validação de personagem; o plano exige nova bateria após integração real. Asset QA, Rive state inputs, avatar/fallback, idle+blink, React/lazy/cleanup/30aberturas/performance e matriz de personagem permanecem não executados porque não existe asset/rig da Gika.
+
+Decisão preservada: **M9_BLOCKED_CHARACTER_ASSET_REQUIRED**, com bloqueio adicional `RIVE_ZERO_COST_PRODUCT_BLOCKER`. Visual lock e tool probe concluídos não são Character Foundation concluída. Não declarar VECTOR_ASSET_HUMAN_REFINEMENT_REQUIRED ou VISUAL_IDENTITY_DRIFT sem uma tentativa visual que os demonstre. Próxima ação: decisão de splash/licença, seguida de master fiel/rig e gates reais no M9 existente. Checkpoint documental e backup somente feat/gika-integration; verificar igualdade local/origin e worktree limpo ao encerrar.

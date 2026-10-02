@@ -350,7 +350,7 @@ milestones:
   M9:
     name: "Hardening e release"
     status: blocked
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos PASS, CHARACTER_ASSET_REQUIRED impede conclusão visual e RC."
+    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; referência intacta/visual lock e CLI Rive1.3.0 local comprovados. CHARACTER_ASSET_REQUIRED e RIVE_ZERO_COST_PRODUCT_BLOCKER (splash Free sem aceite) impedem conclusão visual/RC; master/rig Gika ausentes."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -365,12 +365,12 @@ milestones:
       - id: M9-T3
         title: "Acessibilidade, performance e offline"
         status: blocked
-        evidence: ["M9_EVIDENCE T3; CSS AA/avatar/zoom, destaque real do guia e design/inspeção/performance verificados; CHARACTER_ASSET_REQUIRED impede acabamento visual/RC. Demais itens T4 autorizados a continuar."]
+        evidence: ["M9_EVIDENCE T3; acabamento técnico histórico verificado; GIKA_VISUAL_LOCK e JPEG aprovado intacto concluídos, CLI1.3.0 oficial compilou/renderizou RML local em /tmp. Master/rig Gika ausentes; CHARACTER_ASSET_REQUIRED e RIVE_ZERO_COST_PRODUCT_BLOCKER (splash Free aguardando decisão) preservados. Nenhum runtime/controller improvisado."]
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: blocked
-        evidence: ["M9_EVIDENCE T4: primeira verify PASS, audit0/lint/AST/doisTS/build/537unit/252integração/8critical; Gika100/Plannerdesign13/convencional20/shell17 PASS. Aceite RC depende do asset real de T3."]
+        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomada somente referência/docs/estado, sem rerun de código. Aceite RC depende de master/rig reais e decisão R$0/splash em T3; não M9_DONE_RC_READY."]
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.
