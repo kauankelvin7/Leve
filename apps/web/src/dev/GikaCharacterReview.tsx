@@ -48,7 +48,7 @@ function GikaCharacterReview() {
     <header><p>Leve · desenvolvimento</p><h1>Revisão visual da Gika</h1><p>Mesmo busto, rig e runtime do painel. Nenhuma ação na agenda.</p></header>
     <section className="character-review-stage" aria-label="Personagem em revisão">
       <div ref={host} className="character-review-actor" style={{ width: size, height: size }}><GikaCharacter state={state} animate={animate} /></div>
-      <dl aria-live="polite"><div><dt>Estado semântico</dt><dd>{state}</dd></div><div><dt>Tamanho</dt><dd>{size} × {size} CSS px</dd></div><div><dt>reducedMotion</dt><dd>{String(reducedMotion)}</dd></div><div><dt>Renderer</dt><dd>{ready ? 'ready' : 'fallback'}</dd></div></dl>
+      <dl aria-live="polite"><div><dt>Estado semântico</dt><dd>{state}</dd></div><div><dt>Expressão</dt><dd>{state === 'success' ? 'idle · fallback visual' : state}</dd></div><div><dt>Tamanho</dt><dd>{size} × {size} CSS px</dd></div><div><dt>reducedMotion</dt><dd>{String(reducedMotion)}</dd></div><div><dt>Renderer</dt><dd>{ready ? 'ready' : 'fallback'}</dd></div></dl>
     </section>
     {compare && <section className="character-review-grid" aria-label="Comparação dos nove estados">{Object.keys(characterModes).map(mode => <figure key={mode}>
       <div className="character-review-actor" style={{ width: size, height: size }}><GikaCharacter state={mode as CharacterState} animate={animate} /></div><figcaption>{mode}</figcaption>

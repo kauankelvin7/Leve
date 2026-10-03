@@ -1,0 +1,138 @@
+{
+  "segments": [
+    {
+      "seconds": 2.5,
+      "label": "Welcome real, sem labels de QA; idle/blink"
+    },
+    {
+      "seconds": 9.2,
+      "label": "Migração real welcome → header; resposta fixture, nenhum Gemini"
+    },
+    {
+      "seconds": 14.6,
+      "label": "120 px · Rest"
+    },
+    {
+      "seconds": 17.7,
+      "label": "120 px · Idle"
+    },
+    {
+      "seconds": 20.8,
+      "label": "120 px · Blink"
+    },
+    {
+      "seconds": 23.9,
+      "label": "120 px · Listening"
+    },
+    {
+      "seconds": 27,
+      "label": "120 px · Thinking"
+    },
+    {
+      "seconds": 30.1,
+      "label": "120 px · Clarify"
+    },
+    {
+      "seconds": 33.3,
+      "label": "120 px · Success → idle visual"
+    },
+    {
+      "seconds": 36.5,
+      "label": "120 px · Error"
+    },
+    {
+      "seconds": 39.6,
+      "label": "120 px · Offline"
+    },
+    {
+      "seconds": 42.7,
+      "label": "120 px · Idle"
+    },
+    {
+      "seconds": 47.1,
+      "label": "120 px · dark · nove estados semânticos"
+    },
+    {
+      "seconds": 53.5,
+      "label": "96 px · dark"
+    },
+    {
+      "seconds": 57.7,
+      "label": "96 px · light"
+    },
+    {
+      "seconds": 61.9,
+      "label": "Reduced motion · equivalentes estáticos · success mantém sorriso master"
+    },
+    {
+      "seconds": 67,
+      "label": "Compact ·64px · estático"
+    },
+    {
+      "seconds": 70.4,
+      "label": "Mesmo RGBA · cinco fundos · sem recoloração"
+    }
+  ],
+  "reviewPrivateRequests": 0,
+  "providerRequests": 0,
+  "commands": 0,
+  "pageErrors": 0,
+  "durationSeconds": 75,
+  "session": "synthetic emulators; auth only in memory; response fixture; no Gika command",
+  "entry": "76a044a4bfdd986375067f4a7d2715f5f29f6317",
+  "decision": "GIKA_V1_FACIAL_REVIEW_REQUIRED",
+  "visualFallback": {
+    "success": "idle"
+  },
+  "unchangedRiveSha256": "2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6",
+  "theme": {
+    "actualRestRgbaIdentical": true,
+    "staticSourcesIdenticalAcrossThemes": [
+      "rest",
+      "idle",
+      "blink",
+      "listening",
+      "thinking",
+      "clarify",
+      "success",
+      "error",
+      "offline"
+    ],
+    "themeChangesCharacter": false,
+    "filter": "none",
+    "opacity": 1,
+    "mixBlendMode": "normal",
+    "cliTransparentScreenshot": "opaque gray default; not valid alpha evidence"
+  },
+  "gates": {
+    "lint_and_AST47": "PASS first",
+    "web_and_server_typechecks": "PASS first via build",
+    "build": "PASS first; existing chunk-size warning",
+    "controller_unit": "8 PASS first",
+    "character_e2e": "5 PASS first / 36.0s / Axe 0",
+    "production_playground_isolation": "404 / no review surface or dev strings",
+    "broad_regression": "NOT RUN per scope; server/domain/Rive/CSS unchanged"
+  },
+  "captureNote": "First product captures caught CSS theme transitions. Final capture waits for actual resolved solid token; no product/CSS/test deadline changed.",
+  "deliveryNote": "Attempt to copy artifacts to /mnt/data unavailable (filesystem permission). Video is committed with QA evidence for remote access through the approved branch; no deploy.",
+  "video": {
+    "file": "docs/gika/character/qa/gika-v1-facial-review.mp4",
+    "durationSeconds": 74.36,
+    "bytes": 2199927,
+    "sha256": "618f099c8e468cc3ea61a189d71db46a7496886d1661b80edfb0cc4433310bd7",
+    "encoding": "H264 MP4; full continuous recording, no cuts"
+  },
+  "screenshots": {
+    "audit-states-light-120.png": "0bd106626b9d0b86aeb961e660dc4d3dbdf0ff01cd2ce83de6453d18d8e0d8d0",
+    "states-light-96.png": "8490f858606fc71f845371f22679d5ceac23d37c87c3f7b9e2c1c9c7d0fd3355",
+    "states-light-120.png": "39f29d0431a21a5f1f1104719741285a2e0283b534caafbc804fc496317036f7",
+    "states-dark-96.png": "30ce7f8a62b62fa9294934e2dfccd1fd3ef5db6f4fad7fa5f06da876b82a857d",
+    "states-dark-120.png": "dd018de238d112faed74961efa725611ada63dde8e0db519d502cc1baae0c83e",
+    "reduced-motion-final.png": "a1be3cc1e55119e8d00e8da807207d8513ce6ce4e0d8c05582de7166adb98cef",
+    "blink-runtime-sequence.png": "ef7409939ee8c943c6aa19a152347df27df62864e8b9595de750362e1e12326d",
+    "matte-matrix.png": "0d960911436721832b6ee78808ce18f3214639ea629e648933ce453d76d5f220",
+    "welcome-dark-390.png": "fee6e39e7f90a4e8f3ce99ec8223bb80712f7fc8008c9f7878c41ea30c0f4a09",
+    "welcome-light-1366.png": "80ed9fad45ef052281ac9892184a25e68ada59e7dbb470bcf7f3dc6bde38d719",
+    "header-dark-desktop.png": "ecb4edf159b2f78176bca5621a20e5a50e9f882c8e70676dc8b684bbb02bd4b8"
+  }
+}

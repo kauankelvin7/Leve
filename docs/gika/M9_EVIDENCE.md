@@ -519,3 +519,56 @@ Verificações mínimas reais após restaurar:
 Primeira tentativa de CLI omitiu o LD_LIBRARY_PATH existente e falhou ao carregar libGLESv2.so.2; o comparador identificou build ignorado ainda contendo o protótipo. Com a configuração de ambiente já documentada, recompilação/comparação passaram e substituíram esse artefato local. Nenhum ajuste de produto/biblioteca/dependência. Checks focais anteriores da tentativa não constituem aceite dos gestos e não substituem esta prova de restauração.
 
 Nenhuma regressão ampla, continuação M9, tentativa adicional de reconstrução corporal/matte, Gemini live, main/PR/deploy/Cadet/export final. Somente checkpoint documental e backup de feat/gika-integration. **PARADO**, aguardando especificação separada de GIKA RIG-READY MASTER ASSET, sem propor ou implementar nova solução.
+
+## Gika v1 — facial-only quality pass (decisão vigente)
+
+**GIKA_V1_FACIAL_SCOPE_APPROVED · FULL_BODY_CHARACTER_RIG_DEFERRED.** A decisão em [GIKA_V1_FACIAL_SCOPE](character/GIKA_V1_FACIAL_SCOPE.md) supera Gate A como requisito de release. `RIG_READY_MASTER_ART_SOURCE_BLOCKED` e `RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW` permanecem fatos históricos, não justificam reconstrução corporal nem bloqueiam a v1 facial. M9-T3 continua in_progress/T4 blocked pelo aceite visual e regressão final posteriores.
+
+Entrada remota/local `76a044a4bfdd986375067f4a7d2715f5f29f6317`, branch feat/gika-integration, fetch/fast-forward limpo de07e1da1; nenhuma divergência ou trabalho local descartado. RML/RIV/poses/master/controller estavam idênticos ao baseline17381e6, sem overlays rejeitados no runtime. Ponytail/full, Caveman/full e humanizer-br locais aplicados; nenhuma instalação/dependência nova.
+
+### Auditoria antes da edição
+
+Inspeção real no playground/runtime em48/64/96/120px, light/dark e reduced; transições e sequência de blink capturadas. KEEP significa manter para revisão humana, não aprovação visual final. Nenhuma nova arte foi criada.
+
+| State | Implementação atual auditada | Fidelidade | Expressão | Transição | Pequeno48–64 | Light/dark | Reduced motion | Decisão |
+|---|---|---|---|---|---|---|---|---|
+| rest | Master neutro, modo0 | Preservada | Sorriso discreto | Sem salto observado | Legível | Mesmo RGBA | Master estático | KEEP |
+| idle | Master + micro movimento/blink, modo1 | Preservada | Amigável | Sem crop/pop observado | Sutil | Mesmo RGBA | Master estático | KEEP |
+| blink | Pálpebras/backing existentes, modo2 | Preservada | Fechamento real | Fecha/reabre; boca/cabelo estáveis | Legível | Mesmo RGBA | Pálpebras fechadas | KEEP |
+| listening | Olhos atentos/inclinação, modo3 | Preservada | Atenção discreta | Sem feature residual observada | Sutil | Mesmo RGBA | Pose atenta | KEEP |
+| thinking | Gaze/brows pensativos, modo4 | Preservada | Foco facial, sem mão | Sem feature residual observada | Diferença sutil | Mesmo RGBA | Pose pensativa | KEEP |
+| clarify | Brows/boca Curiosa, modo5 | Preservada | Interrogativa contida | Sem salto observado | Diferença sutil | Mesmo RGBA | Pose curiosa | KEEP |
+| success | Boca Alegre, modo6 histórico | Master intacto, encaixe da boca ruim | Sorriso oblíquo/colado | Entrada revela desalinhamento | Defeito não resolvido por escala | Mesmo defeito nos dois | Donor estático também inadequado | **FALLBACK → idle** |
+| error | Brows/boca concern, modo7 | Preservada | Preocupação leve | Sem residual observado | Próxima de thinking | Mesmo RGBA | Concern estático | KEEP |
+| offline | Pálpebras fechadas, modo8 | Preservada | Calma/inativa | Retorno limpo observado | Legível | Mesmo RGBA | Mesma pose calma | KEEP |
+
+[Antes120](character/qa/facial-v1-audit-states-light-120.png), [final120light](character/qa/facial-v1-states-light-120.png), [final120dark](character/qa/facial-v1-states-dark-120.png), [96light](character/qa/facial-v1-states-light-96.png), [96dark](character/qa/facial-v1-states-dark-96.png), [blink do vídeo real](character/qa/facial-v1-blink-runtime-sequence.png), [reduced](character/qa/facial-v1-reduced-motion-final.png).
+
+### Mudança mínima
+
+Somente GikaCharacter aplica `success → idle` **na apresentação**, antes de escolher Rive ou imagem estática. O `data-character-state` e o controller mantêm success apenas após ACK real. `data-character-visual-state` identifica a expressão efetiva. Removido import do PNG success da apresentação; nenhuma correção/desenho facial amplo. Playground existente informa separadamente o fallback visual, sem nova ferramenta ou estado funcional.
+
+Modo6/donor original permanece histórico dentro do RIV intocado, mas não é selecionado pelo componente do produto. Rest/idle/blink/listening/thinking/clarify/error/offline permanecem visuais finais desta proposta. Conceitos hello→idle, confirm→clarify, attention→error/clarify, celebrate→success semântico→idle visual, resting→rest não ganham assets ou novos eventos; mantidos os eventos reais atuais. Voz continua única origem de listening; request→thinking; texto do modelo não confirma sucesso.
+
+RIV64233bytes/SHA256 `2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6` preservado. Nenhuma edição de rig, state machine, face, cabelo, mecha, alfa, CSS, GikaPanel, semântica/controller, domínio/segurança ou persistência. Uma presença no welcome (desktop135×133/mobile128×126) migra para header56/48; nenhum segundo personagem. Corpo/gestos/props/Gate A não retomados.
+
+### Tema, limites e revisão
+
+Canvas rest comparado byte a byte: RGBA igual antes/depois da troca de tema; fontes estáticas dos9estados iguais entre temas. [Matte matrix](character/qa/facial-v1-matte-matrix.png) usa um frame/mesmoRGBA sobre branco/cinza/Leve claro/escuro/ciano, sem filtro/recoloração. Nenhum defeito novo que justificasse limpeza de pixels observado. Line-art escuro legítimo preservado. Primeiro lote de capturas do produto pegou a transição CSS de tema; substituído por capturas após esperar a cor efetiva do token solid, sem alterar produto/deadline. Não foi falha de gate nem alteração de alfa.
+
+[Welcome mobile dark](character/qa/facial-v1-welcome-dark-390.png), [welcome desktop light](character/qa/facial-v1-welcome-light-1366.png), [conversa/header](character/qa/facial-v1-header-dark-desktop.png). Fonte continua119×117/canvas135×133, sem detalhe novo ou upscale de autoria. Em telas de alta densidade não se promete resolução vetorial. Expressões compactas são deliberadamente sutis; thinking/error podem se aproximar. Blink usa cadência autorada existente (loop6s), sem novo scheduler aleatório. Não se declara naturalidade humana aprovada só por pixels/testes.
+
+Vídeo runtime real **74,36s**, MP4/H264, sem cortes de entrada/saída: [gika-v1-facial-review.mp4](character/qa/gika-v1-facial-review.mp4), versionado nesta branch para revisão remota sem localhost/deploy. Inicia welcome→header sem labels de QA; depois estados120, light/dark96/120, reduced, compacto64 e matrix. Setup/conta exclusivamente emulados, autenticação somente em memória; resposta textual fixture. **0 chamadas Gemini,0 commands no vídeo,0 IO privado no playground,0 pageerrors**. Sequência, hash e gates em [evidência sanitizada](evidence/character-v1-facial.json). Vídeo é evidência versionada, não import/bundle do produto. Cópia para/mnt/data indisponível por permissão do ambiente; entrega pelo próprio repositório autorizado.
+
+### Gates proporcionais e primeira execução
+
+- `npm run lint`: PASS; inclui AST47fontes.
+- `npm run build`: PASS; executa web+server typechecks. Warning existente de chunk>500KB preservado, sem tuning de bundle fora do escopo.
+- `npx vitest run tests/unit/gika-character.test.ts`: **8/8 PASS**, primeira execução.
+- `LEVE_LOCAL_URL=http://localhost:5174 GEMINI_API_KEY= npx playwright test --config playwright.local.config.ts tests/e2e-local/gika-character.spec.ts`: **5/5 PASS36,0s**, primeira execução,1worker. Axe0, lazy/CSP/modos reais/20open-close/RAF0, reduced/offline/draft/falhaasset, sem requests privados no playground, única presença, narrativa≠success, ACK real emulado. Testes existentes ampliados para comprovar success semântico + idle visual/static; sem remover asserções, aumentar timeout/retry ou adicionar casos redundantes.
+- Build normal servido localmente5180: `/dev/gika-character`→404, ausência do playground/código de review no bundle. Não houve deploy.
+- Diff/hashes/links/estrutura de evidências verificados antes do commit. Nenhum gate funcional falhou nesta rodada. Capturas iniciais de tema qualificadas acima.
+
+Não repetir regressão M9 inteira, unit/integração ampla ou fullGika: mudança limitada à apresentação; Rive/CSS/controller/server/contratos intocados. Sem Gemini live, export/licenciamento, PR/main/deploy.
+
+**GIKA_V1_FACIAL_REVIEW_REQUIRED.** Aguardar aprovação visual humana; não Character approved/M9_DONE_RC_READY/export ready. Somente após aprovação explícita, executar regressão final M9 e próximos gates autorizados.

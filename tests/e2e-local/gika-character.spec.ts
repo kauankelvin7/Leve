@@ -36,6 +36,14 @@ test('Character development review uses real modes without auth, agenda or provi
   await expect(character(page).locator('img')).toHaveAttribute('data-static-state', 'offline');
   await expect(character(page).locator('canvas')).toHaveCount(0);
   await expect(page.locator('dd').last()).toHaveText('fallback');
+  await page.getByRole('button', { name: 'Success', exact: true }).click();
+  await expect(character(page)).toHaveAttribute('data-character-state', 'success');
+  await expect(character(page)).toHaveAttribute('data-character-visual-state', 'idle');
+  await expect(character(page).locator('img')).toHaveAttribute('data-static-state', 'idle');
+  const successPortrait = await character(page).locator('img').getAttribute('src');
+  await page.getByRole('button', { name: 'Idle', exact: true }).click();
+  await expect(character(page).locator('img')).toHaveAttribute('src', successPortrait!);
+  await page.getByRole('button', { name: 'Offline', exact: true }).click();
   await page.getByLabel('Enquadrar como retrato', { exact: true }).uncheck();
   await expect(character(page)).toHaveCSS('overflow', 'visible');
   await page.getByLabel('Escuro', { exact: true }).check();
@@ -95,6 +103,8 @@ test('Character success only after real create command ack; failure and logout k
   await question(page).fill('Teste Character Ack amanhã'); await question(page).press('Enter'); await expect.poll(() => committed).toBe(true);
   await expect(character(page)).toHaveAttribute('data-character-state', 'thinking'); await expect(page.getByRole('group', { name: 'Tarefa adicionada', exact: true })).toHaveCount(0);
   release(); await expect(character(page)).toHaveAttribute('data-character-state', 'success'); await expect(page.getByRole('group', { name: 'Tarefa adicionada', exact: true })).toBeVisible();
+  await expect(character(page)).toHaveAttribute('data-character-visual-state', 'idle');
+  await expect(character(page).locator('img')).toHaveAttribute('data-static-state', 'idle');
   await page.unroute('**/api/commands'); await page.unroute('**/api/gika/respond');
   await page.route('**/api/gika/respond', route => route.fulfill({ status: 503, json: { code: 'GIKA_UNAVAILABLE', message: 'Indisponível.' } }));
   await question(page).fill('Falha sintética'); await question(page).press('Enter'); await expect(character(page)).toHaveAttribute('data-character-state', 'error');

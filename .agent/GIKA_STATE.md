@@ -2,10 +2,11 @@
 
 ## Estado atual
 
-- Status global: `RIG_READY_MASTER_ART_SOURCE_BLOCKED`.
+- Status global: `GIKA_V1_FACIAL_REVIEW_REQUIRED`.
+- Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
-- Character: baseline técnico `17381e6447729b01f3b8d1ec7d1401ea882c0450` restaurado integralmente após interrupção humana do Gesture Recovery. Neutral Master, rig facial/expressões anteriores,10bones/9estados, controller, Rive/lazy/fallback/reduced/playground e contratos preservados. Protótipos de recortes/overlays raster não entram no runtime nem no repositório. RIV64233bytes/hash2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6. Restauração técnica não aprova Character; alinhamento visual de success permanece pendente.
+- Character: baseline técnico `17381e6447729b01f3b8d1ec7d1401ea882c0450` restaurado integralmente após interrupção humana do Gesture Recovery. Neutral Master, rig facial/expressões anteriores,10bones/9estados, controller, Rive/lazy/fallback/reduced/playground e contratos preservados. Protótipos de recortes/overlays raster não entram no runtime nem no repositório. RIV64233bytes/hash2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6. V1 preserva esse asset sem reautoria; success semântico usa idle visual (sorriso master) no renderer e no fallback estático. Donor Alegre desalinhado não é mais selecionado pela apresentação do produto; seu modo histórico continua no arquivo Rive intacto.
 - Reduced motion mantém a expressão estática de cada estado, sem runtime/loop; offline estático disponível sem rede. ACK/eventos/prioridades de execução intocados. Nenhum contrato de domínio/segurança alterado.
 - Playground somente Vite dev `/dev/gika-character`: mesmos runtime/rig/poses do produto, comparação dos9estados e MATTE TEST do mesmo RGBA em5fundos. Sem Auth/UID/agenda/Firestore/Gemini/command; ausente do build normal (rota404). Vídeo/capturas anteriores em docs/gika/character/qa/expression-* são históricos preservados, não aprovação visual final.
 
@@ -21,6 +22,12 @@
 M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32c77, local/origin/fetch limpos/exatos. Ponytail/full/Caveman/full/humanizer local. Character somente conforme asset real e fallback; nenhum TTS/live/PR/main/deploy/TQA/nova fase. Exceção financeira posterior e específica: Free durante toda autoria/rig/animação/validação, Cadet somente para export final sem splash depois de asset e rig integralmente aprovados. Não alterar Gemini Free Tier/infra nem assinar antecipadamente.
 
 ## Próxima ação
+
+**PARADO para `GIKA_V1_FACIAL_REVIEW_REQUIRED`.** Entrada76a044a4bfdd986375067f4a7d2715f5f29f6317, fast-forward limpo/local=origin confirmado. Auditoria visual anterior à edição: KEEP rest/idle/blink/listening/thinking/clarify/error/offline; FALLBACK success→idle. Sem novo desenho/gesto/rig, CSS, controller, contrato ou dependência. Mesma presença única welcome/header; playground mostra expressão efetiva separada do estado semântico.
+
+Focais: lint/AST47, ambos typechecks/build,8unit controller,5E2E Character com Axe/ACK real emulado/lifecycle/offline/reduced/fallback PASS na primeira execução. Capturas/vídeo e detalhes em M9_EVIDENCE. Sem regressão ampla M9/Gemini live. Revisão humana pendente, não Character approved/M9_DONE/RC/export ready. Após aprovação explícita, regressão final M9; não iniciar automaticamente.
+
+## Gate A — histórico superado pelo escopo facial v1
 
 **PARADO em Gate A — RIG_READY_MASTER_ART_SOURCE_BLOCKED.** Entrada2306314151bfb518321ed64999de50ef79d61d55, fast-forward/local=origin/worktree limpo confirmados. Ferramentas de autoria disponíveis; única tentativa SVG manual renderizada786×2048/84paths/69grupos/sem rasters falhou por rosto/olhos, cabelo e proporções. Correção necessária seria outro redesenho amplo, não localizada; nenhuma segunda tentativa. Evidência/comparação e capacidades em docs/gika/rig-master/GATE_A_VALIDATION.md.
 
