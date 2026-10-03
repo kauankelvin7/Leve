@@ -572,3 +572,5 @@ Vídeo runtime real **74,36s**, MP4/H264, sem cortes de entrada/saída: [gika-v1
 Não repetir regressão M9 inteira, unit/integração ampla ou fullGika: mudança limitada à apresentação; Rive/CSS/controller/server/contratos intocados. Sem Gemini live, export/licenciamento, PR/main/deploy.
 
 **GIKA_V1_FACIAL_REVIEW_REQUIRED.** Aguardar aprovação visual humana; não Character approved/M9_DONE_RC_READY/export ready. Somente após aprovação explícita, executar regressão final M9 e próximos gates autorizados.
+
+Checkpoint funcional v1: `ef54d05b83c6caff49292dcd32ea2fecf65fc52c`, parent76a044a. Implementação, regressões focais e evidência visual no mesmo commit; checkpoint documental seguinte apenas registra a referência. Publicação autorizada somente feat/gika-integration, sem produção/main/PR.

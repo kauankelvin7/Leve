@@ -23,6 +23,8 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
+Commit funcional v1: `ef54d05b83c6caff49292dcd32ea2fecf65fc52c`. Vídeo/capturas/tabela e resultados focais acompanham o commit. Checkpoint documental seguinte somente registra esse SHA; aguardar revisão humana.
+
 **PARADO para `GIKA_V1_FACIAL_REVIEW_REQUIRED`.** Entrada76a044a4bfdd986375067f4a7d2715f5f29f6317, fast-forward limpo/local=origin confirmado. Auditoria visual anterior à edição: KEEP rest/idle/blink/listening/thinking/clarify/error/offline; FALLBACK success→idle. Sem novo desenho/gesto/rig, CSS, controller, contrato ou dependência. Mesma presença única welcome/header; playground mostra expressão efetiva separada do estado semântico.
 
 Focais: lint/AST47, ambos typechecks/build,8unit controller,5E2E Character com Axe/ACK real emulado/lifecycle/offline/reduced/fallback PASS na primeira execução. Capturas/vídeo e detalhes em M9_EVIDENCE. Sem regressão ampla M9/Gemini live. Revisão humana pendente, não Character approved/M9_DONE/RC/export ready. Após aprovação explícita, regressão final M9; não iniciar automaticamente.
