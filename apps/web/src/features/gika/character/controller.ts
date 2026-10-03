@@ -13,7 +13,7 @@ export function characterActivity(_current: CharacterActivity, event: CharacterE
   }
 }
 export function characterState(facts: { open: boolean; online: boolean; visible: boolean; reducedMotion: boolean; requestPending: boolean; voiceListening: boolean; activity: CharacterActivity }): CharacterState {
-  if (!facts.open || !facts.visible || facts.reducedMotion) return 'rest';
+  if (!facts.open || !facts.visible) return 'rest';
   if (!facts.online) return 'offline';
   if (facts.requestPending || facts.activity === 'thinking') return 'thinking';
   if (facts.voiceListening) return 'listening';

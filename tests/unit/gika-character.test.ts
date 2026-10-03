@@ -5,8 +5,13 @@ const facts = { open: true, online: true, visible: true, reducedMotion: false, r
 it('exact nine-state visual surface; no celebration/gesture or model-controlled input', () => {
   expect(characterModes).toEqual({ rest: 0, idle: 1, blink: 2, listening: 3, thinking: 4, clarify: 5, success: 6, error: 7, offline: 8 });
 });
-it.each([{ open: false }, { visible: false }, { reducedMotion: true }])('inactive presentation is static even with an ack %j', inactive => {
+it.each([{ open: false }, { visible: false }])('inactive presentation is static even with an ack %j', inactive => {
   expect(characterState({ ...facts, activity: 'success', ...inactive })).toBe('rest');
+});
+it('reduced motion retains the emotional state; rendering controls animation separately', () => {
+  for (const activity of ['idle', 'thinking', 'clarify', 'success', 'error'] as const) expect(characterState({ ...facts, reducedMotion: true, activity })).toBe(activity);
+  expect(characterState({ ...facts, reducedMotion: true, online: false })).toBe('offline');
+  expect(characterState({ ...facts, reducedMotion: true, voiceListening: true })).toBe('listening');
 });
 it('offline takes precedence over pending request and voice, without commands', () => {
   expect(characterState({ ...facts, online: false, requestPending: true, voiceListening: true })).toBe('offline');

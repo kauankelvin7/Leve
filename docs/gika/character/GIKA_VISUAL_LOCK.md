@@ -109,3 +109,11 @@ Pedido posterior sobre f056244 substitui a exigência de meia-altura: **busto an
 Enquadramento proposto: clipping circular intencional, fundo discreto do token Leve e limite de1px do container; deslocamento vertical6% do mesmo render para que o término inferior coincida com a borda do retrato. Nenhum fade/outline branco, alteração de fonte/alfa/rosto/cabelo/mecha ou upscale; o clipping pertence à interface, não é novo asset. Este enquadramento ainda depende de revisão humana, inclusive o cabelo na borda e nitidez120. Playground permite desmarcar a moldura para comparar a composição anterior no mesmo runtime.
 
 Aprovação do bust-only não é aprovação automática desta moldura ou das animações. Gate atual: `GIKA_HUMAN_VISUAL_REVIEW_REQUIRED`; somente depois do aceite explícito executar regressão proporcional e seguir a decisão vigente de export.
+
+## Expression pass — Neutral Master como autoridade estrutural
+
+A prancha não é sprite sheet. Nenhuma cabeça completa, cabelo, silhueta, pele, pescoço, ombro, camiseta, brinco, crop, escala ou posição é herdada de variantes. Neutra continua master estrutural. Somente detalhes faciais aprovados são registrados nas âncoras do master, em escala1/sem espelhar; pixels fora do suporte facial são ocultados pelo próprio master e rejeitados pela QA se restarem. Manifesto em `assets/gika/rive/essential-bust/expressions/registration.json`; inventário em [EXPRESSION_INVENTORY.md](EXPRESSION_INVENTORY.md).
+
+A signature_purple_curl continua sendo exclusivamente a camada original do master, byte-idêntica; lado anatômico esquerdo. Face-base, olhos/brows/boca neutros, cabelo frontal e pálpebras aprovadas também permanecem byte-idênticos. O ajuste de matte restringe-se a34pixels da extração master, sem recoloração por tema ou mudança de desenho.
+
+Light/dark alteram somente UI/fundo do retrato. Mesmo frame RGBA deve ser idêntico entre temas; comparar branco/cinza/Leve claro/Leve escuro/ciano. Não encobrir contorno com outline, blur/fade ou sombra. Todas as expressões/motions/reset/crop e poses reduced continuam sujeitas à revisão humana; testes/hash não concedem aprovação visual.

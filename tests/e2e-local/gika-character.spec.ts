@@ -32,13 +32,19 @@ test('Character development review uses real modes without auth, agenda or provi
     await expect(character(page)).toHaveCSS('width', `${size}px`);
   }
   await page.getByLabel('Reduzir movimento', { exact: true }).check();
-  await expect(character(page)).toHaveAttribute('data-character-state', 'rest');
+  await expect(character(page)).toHaveAttribute('data-character-state', 'offline');
+  await expect(character(page).locator('img')).toHaveAttribute('data-static-state', 'offline');
   await expect(character(page).locator('canvas')).toHaveCount(0);
   await expect(page.locator('dd').last()).toHaveText('fallback');
   await page.getByLabel('Enquadrar como retrato', { exact: true }).uncheck();
   await expect(character(page)).toHaveCSS('overflow', 'visible');
   await page.getByLabel('Escuro', { exact: true }).check();
   await page.getByLabel('Fundo sólido', { exact: true }).check();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.getByRole('button', { name: 'MATTE TEST · capturar frame', exact: true }).click();
+  const matteImages = page.getByRole('region', { name: 'MATTE TEST', exact: true }).locator('img');
+  await expect(matteImages).toHaveCount(5);
+  expect(new Set(await matteImages.evaluateAll(images => images.map(image => (image as HTMLImageElement).src))).size).toBe(1);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(privateRequests).toBe(0);
 });
@@ -98,8 +104,8 @@ test('Character success only after real create command ack; failure and logout k
 test('Character reduced motion/offline/asset failure preserve faithful static draft and composer', async ({ page, context }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' }); const assets: string[] = [];
   page.on('request', request => { if (/\.wasm|\.riv(?:\?|$)/.test(request.url())) assets.push(request.url()); });
-  await enter(page); await open(page); await expect(character(page)).toHaveAttribute('data-character-state', 'rest'); await expect(character(page).locator('canvas')).toHaveCount(0); expect(assets).toEqual([]);
-  await question(page).fill('Rascunho preservado'); await context.setOffline(true); await expect(page.getByRole('button', { name: 'Enviar pergunta', exact: true })).toBeDisabled(); await expect(question(page)).toHaveValue('Rascunho preservado');
+  await enter(page); await open(page); await expect(character(page)).toHaveAttribute('data-character-state', 'idle'); await expect(character(page).locator('canvas')).toHaveCount(0); expect(assets).toEqual([]);
+  await question(page).fill('Rascunho preservado'); await context.setOffline(true); await expect(character(page)).toHaveAttribute('data-character-state', 'offline'); await expect(character(page).locator('img')).toHaveAttribute('data-static-state', 'offline'); await expect(page.getByRole('button', { name: 'Enviar pergunta', exact: true })).toBeDisabled(); await expect(question(page)).toHaveValue('Rascunho preservado');
   await context.setOffline(false); await expect(question(page)).toHaveValue('Rascunho preservado'); await close(page);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   const failedAsset = page.waitForEvent('requestfailed', request => /\.riv(?:\?|$)/.test(request.url()));

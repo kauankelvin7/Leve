@@ -22,12 +22,12 @@
   "faceBackingPixels": 1202,
   "faceBackingMethod": "nearest adjacent same-face skin, harmonic relaxation only in hidden feature masks; no ML",
   "matteBoundaryPixels": 623,
-  "hairMatteInteriorPixels": 185,
+  "hairMatteInteriorPixels": 370,
   "underlapAddedPixels": {
-    "hair_back_visible": 1468,
+    "hair_back_visible": 1467,
     "hair_front_visible": 114,
-    "side_curls_L_visible": 32,
-    "side_curls_R_visible": 26,
+    "side_curls_L_visible": 31,
+    "side_curls_R_visible": 24,
     "neck_shoulders_visible": 69
   },
   "lidRegistration": {
@@ -182,23 +182,23 @@
     },
     "neck_shoulders_visible": {
       "pixelsWithAlpha": 1631,
-      "sha256": "3deaba844ea7376aa1202a422b929ceefb1e168697f0912011d8daa82e991cdf"
+      "sha256": "b18e71fc2dd49f3902b6ffb95811c564dda99c877da10d5eaf3c8ad54f6ebee5"
     },
     "hair_front_visible": {
       "pixelsWithAlpha": 1582,
       "sha256": "e2f1c69049702120db633f75667d2e9790e5b0c12c1f148b87b5940e2d10ce94"
     },
     "side_curls_L_visible": {
-      "pixelsWithAlpha": 796,
-      "sha256": "f3aca3dc76354862dc2e51d253f13edfdb312d0c1536580572888903be0bff9d"
+      "pixelsWithAlpha": 795,
+      "sha256": "40ebd0fc316e8240abf6bf03b24cb7cfb1e091ec4e579d04697e21d0c67acfe5"
     },
     "side_curls_R_visible": {
-      "pixelsWithAlpha": 1564,
-      "sha256": "b6ffe5ff632466807508feb782506dc7560c3e79f7cf170dfa23a78a33a3390d"
+      "pixelsWithAlpha": 1562,
+      "sha256": "8b4140f14f1762f3aff3cd6d944b052d20de4ced0fc7dc2aae1fe6b8c318d1d5"
     },
     "hair_back_visible": {
-      "pixelsWithAlpha": 4004,
-      "sha256": "74325c01fb9e1a80a9779b1496f68b24cd42396255a7a39658625f235b642b63"
+      "pixelsWithAlpha": 4003,
+      "sha256": "26e8159fe59ba6b9133ac5631734c5b0e375ce8ed5f7d9f8db7a56509b92e8cd"
     },
     "face_base_clean": {
       "pixelsWithAlpha": 2195,

@@ -37,7 +37,8 @@ Y,X=np.indices((h,w))
 hair_core=core&~protected&(rgb.mean(2)<125)
 near_distance,hair_ix=ndi.distance_transform_edt(~hair_core,return_indices=True)
 signature_color=(rgb[:,:,2].astype(int)>rgb[:,:,1].astype(int)+18)&(rgb[:,:,0].astype(int)>rgb[:,:,1].astype(int)+12)&(X>=80)
-hair_matte=fg&~protected&(Y<92)&(rgb.mean(2)>145)&(chroma<65)&(near_distance<=4)&~signature_color
+shirt_boundary=poly([(27,96),(48,94),(63,103),(81,94),(109,102),(114,117),(25,117)])
+hair_matte=fg&~protected&~shirt_boundary&(Y<116)&(rgb.mean(2)>100)&(chroma<45)&(near_distance<=3)&~signature_color
 hair_color=rgb[tuple(hair_ix)].astype(float);v=hair_color-background
 coverage=np.clip(np.sum((rgb.astype(float)-background)*v,axis=2)/np.maximum(np.sum(v*v,axis=2),1),0,1)
 alpha[hair_matte]=coverage[hair_matte];clean[hair_matte]=hair_color[hair_matte].astype('uint8')

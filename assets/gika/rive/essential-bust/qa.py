@@ -7,7 +7,20 @@ import numpy as np
 from scipy import ndimage as ndi
 p=Path(__file__).resolve().parent;out=Path('/tmp/gika-essential-qa');out.mkdir(exist_ok=True)
 cli=os.environ.get('GIKA_RIVE_CLI','rive');names=['rest','idle','blink','listening','thinking','clarify','success','error','offline']
-frames=[1,16,20,48,60,120,180,240];sizes=[24,32,48,56,64,72]
+frames=[1,16,20,48,60,120,180,240];sizes=[24,32,48,56,64,72,96,120]
+scene=E.parse(p/'scene.rml').getroot();board=scene.find('Artboard')
+assert len(scene.findall('Artboard'))==1 and len(board.findall('StateMachine'))==1
+assert len(board.findall('.//RootBone'))==10
+assert [el.get('name') for el in scene.find('ViewModel') if el.tag.startswith('ViewModelProperty')]==['mode']
+master_support=np.array(Image.open(p.parent.parent/'source/hybrid-bust-v2/layers/face_base_clean.png'))[:,:,3]>0
+for detail in (p/'expressions').glob('*.png'):
+ assert not ((np.array(Image.open(detail))[:,:,3]>0)&~master_support).any(),(detail.name,'donor outside master support')
+features=[el.get('id') for el in board.findall('Image') if el.get('name') in ['eye_L','eye_R','brow_L','brow_R','mouth_neutral','lid_L_closed','lid_R_closed'] or el.get('name') in [f.stem for f in (p/'expressions').glob('*.png')]]
+for animation in board.findall('LinearAnimation'):
+ for ident in features:
+  channel=animation.find(f'KeyedObject[@objectId="{ident}"]/KeyedProperty[@propertyKey="18"]')
+  assert channel is not None and channel[0].get('frame')=='0',(animation.get('name'),ident,'missing explicit reset')
+
 face=ndi.binary_erosion(np.array(Image.open(p.parent.parent/'source/hybrid-bust-v2/layers/face_base_clean.png'))[:,:,3]>240,iterations=4)
 checks=[];distinct={};centroids=[];rest={}
 for theme,bg in [('light','#fff9f3'),('dark','#24212d')]:
@@ -23,11 +36,12 @@ for theme,bg in [('light','#fff9f3'),('dark','#24212d')]:
     im=np.array(Image.open(out/(file+'.png')).convert('RGB'));Y,X=np.indices(im.shape[:2]);pur=(im[:,:,2].astype(int)>im[:,:,1].astype(int)+25)&(im[:,:,0].astype(int)>im[:,:,1].astype(int)+15)&(X>w*.60)&(Y<h*.85)
     assert pur.any(),(file,'missing curl');cy,cx=np.nonzero(pur);assert cx.mean()>w*.55;centroids.append(float(cx.mean()/w))
     if w==135:
-     if name=='rest':angle=0;dy=0
-     elif name in ['offline','blink']:angle=0;dy=0
-     elif name=='success':angle=float(np.interp(frame,[0,16,32,60],[0,.015,0,0]));dy=float(np.interp(frame,[0,16,32,60],[0,.7,0,0]))
-     else:
-      tilt={'idle':0,'listening':-.018,'thinking':.018,'clarify':.032,'error':-.026}[name];angle=float(np.interp(frame,[0,60,180,240],[tilt,tilt+.006,tilt-.006,tilt]));dy=float(np.interp(frame,[0,120,240],[0,-.3,0]))+(.5 if name=='error' else 0)
+     tilt={'rest':0,'idle':0,'blink':0,'listening':-.045,'thinking':.038,'clarify':.052,'success':-.012,'error':-.030,'offline':0}[name]
+     angle=tilt;dy=0
+     if name in ['listening','thinking','clarify']:angle=float(np.interp(frame,[0,45,90,360],[tilt,tilt+.005,tilt,tilt]))
+     if name=='idle':dy=float(np.interp(frame,[0,120,180,360],[0,-.2,0,0]))
+     if name=='success':dy=float(np.interp(frame,[0,16,32,60],[0,.6,0,0]))
+     if name=='error':dy=.6
      # Ignore the first blended120ms; later frames use exact authored transforms.
      if frame>=16:
       c,s=math.cos(angle),math.sin(angle);x,y=73,91;matrix=(c,s,x-c*x-s*(y+dy),-s,c,y+s*x-c*(y+dy));expected=np.array(Image.fromarray(face).transform((135,133),Image.Transform.AFFINE,matrix,Image.Resampling.NEAREST));color=np.array(Image.new('RGB',(1,1),bg))[0,0];isbg=np.abs(im.astype(int)-color).max(2)<=1
@@ -36,7 +50,7 @@ for theme,bg in [('light','#fff9f3'),('dark','#24212d')]:
       source=Image.open(p.parent.parent/'source/hybrid-bust-v2/source-bust-matte-clean.png');flat=Image.new('RGBA',source.size,bg);flat.alpha_composite(source);delta=np.abs(im.astype(int)-np.array(flat.convert('RGB')).astype(int));assert delta.max()<=2;rest[theme]={'maxRgbError':int(delta.max()),'meanRgbError':float(delta.mean())}
     checks.append(file)
    distinct[name]=hashlib.sha256((out/f'{name}-{theme}-60.png').read_bytes()).hexdigest()
-# Offline deliberately identical to rest; explicit blink and success end at rest.
+# Feature identity and actual rendering checks supplement, never replace, human visual review.
 assert len(set(distinct[n] for n in ['idle','listening','thinking','clarify','error']))==5,distinct
 sheet=Image.new('RGB',(9*160,340),'#eee7f0');draw=ImageDraw.Draw(sheet)
 for row,theme in enumerate(['light','dark']):
@@ -48,5 +62,5 @@ for name in names:
  for frame in frames:
   im=Image.new('RGB',(270,153));im.paste(Image.open(out/f'{name}-light-{frame}.png'),(0,20));im.paste(Image.open(out/f'{name}-dark-{frame}.png'),(135,20));ImageDraw.Draw(im).text((4,2),name+' frame '+str(frame),fill='white');sequence.append(im)
 sequence[0].save(out/'essential-motion.png',save_all=True,append_images=sequence[1:],duration=[round((frames[i+1]-frame)*1000/60) if i+1<len(frames) else 17 for _ in names for i,frame in enumerate(frames)],loop=0,disposal=0,blend=0)
-report={'nativeFrames':len(names)*len(frames)*2,'smallFrames':len(names)*len(sizes)*2,'states':names,'sizes':sizes,'restFidelity':rest,'curlCentroidWidthFraction':[min(centroids),max(centroids)],'faceAndNeckExposureHoles':0,'distinctAnimatedStates':5,'anatomicalSide':'LEFT / viewer RIGHT frontal','rigBytes':(p/'gika-essential-bust.riv').stat().st_size,'rigSha256':hashlib.sha256((p/'gika-essential-bust.riv').read_bytes()).hexdigest(),'limitations':['Small119x117native bust only; not HD240/fullbody.','Headless motion proof requires product/browser integration and human review.','Local unsigned scriptless build, not final signed production export/licensing proof.']}
+report={'nativeFrames':len(names)*len(frames)*2,'smallFrames':len(names)*len(sizes)*2,'states':names,'sizes':sizes,'restFidelity':rest,'curlCentroidWidthFraction':[min(centroids),max(centroids)],'faceAndNeckExposureHoles':0,'distinctAnimatedStates':5,'allFeatureChannelsReset':True,'neutralMasterBones':10,'semanticStates':9,'anatomicalSide':'LEFT / viewer RIGHT frontal','rigBytes':(p/'gika-essential-bust.riv').stat().st_size,'rigSha256':hashlib.sha256((p/'gika-essential-bust.riv').read_bytes()).hexdigest(),'limitations':['Small119x117native bust only; not HD240/fullbody.','Headless motion proof requires product/browser integration and human review.','Local unsigned scriptless build, not final signed production export/licensing proof.']}
 (p/'qa-results.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report))
