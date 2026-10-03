@@ -24,10 +24,11 @@
 .gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 8px; }
 .gika-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .gika-identity-mark { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; color: var(--color-action-primary); background: var(--color-accent-soft); border-radius: 15px; }
-.gika-character { position: relative; display: block; width: 56px; height: 56px; flex-shrink: 0; }
+.gika-character { position: relative; display: block; width: 56px; height: 56px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-border); }
 .gika-character img, .gika-character canvas, .gika-welcome-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .gika-character canvas { position: absolute; inset: 0; visibility: hidden; }
 .gika-character canvas[data-rive-ready='true'] { visibility: visible; }
+.gika-character > img, .gika-character > canvas { transform: translateY(6%); }
 .gika-character:has(canvas[data-rive-ready='true']) > img { visibility: hidden; }
 .gika-heading h2 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.25rem; font-weight: 800; }
 .gika-kicker { margin: 2px 0 0; color: var(--color-text-muted); font-size: .75rem; }

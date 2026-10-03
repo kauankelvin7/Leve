@@ -16,7 +16,19 @@ export default defineConfig(({ mode }) => {
   return {
     root: fileURLToPath(new URL('.', import.meta.url)),
     envDir: projectRoot,
-    plugins: [react()],
+    plugins: [react(), {
+      name: 'gika-character-review',
+      apply: 'serve',
+      configureServer(server) {
+        server.middlewares.use(async (request, response, next) => {
+          if (request.url?.split('?')[0] !== '/dev/gika-character') return next();
+          try {
+            const html = await server.transformIndexHtml('/dev/gika-character', '<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Gika · revisão visual</title></head><body><div id="root"></div><script type="module" src="/src/dev/GikaCharacterReview.tsx"></script></body></html>');
+            response.setHeader('Content-Type', 'text/html'); response.end(html);
+          } catch (error) { next(error); }
+        });
+      },
+    }],
     build: { outDir: '../../dist', emptyOutDir: true, sourcemap: false },
     server: { host: 'localhost', proxy: { '/api': 'http://localhost:8788' } },
     preview: { host: 'localhost' },

@@ -17,6 +17,32 @@ const question = (page: Page) => page.getByRole('textbox', { name: 'Pergunte à 
 const open = (page: Page) => page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click();
 const close = (page: Page) => page.getByRole('button', { name: 'Fechar Gika', exact: true }).click();
 
+test('Character development review uses real modes without auth, agenda or provider requests', async ({ page }) => {
+  let privateRequests = 0;
+  page.on('request', request => { if (/\/api\/|googleapis\.com|:(8080|9099)\//.test(request.url())) privateRequests++; });
+  await page.goto('/dev/gika-character');
+  await expect(page.getByRole('heading', { name: 'Revisão visual da Gika', exact: true })).toBeVisible();
+  await expect(character(page).locator('canvas')).toHaveAttribute('data-rive-ready', 'true');
+  for (const state of ['rest', 'idle', 'blink', 'listening', 'thinking', 'clarify', 'success', 'error', 'offline']) {
+    await page.getByRole('button', { name: state.charAt(0).toUpperCase() + state.slice(1), exact: true }).click();
+    await expect(character(page)).toHaveAttribute('data-character-state', state);
+  }
+  for (const size of [48, 64, 96, 120]) {
+    await page.getByRole('button', { name: `${size} px`, exact: true }).click();
+    await expect(character(page)).toHaveCSS('width', `${size}px`);
+  }
+  await page.getByLabel('Reduzir movimento', { exact: true }).check();
+  await expect(character(page)).toHaveAttribute('data-character-state', 'rest');
+  await expect(character(page).locator('canvas')).toHaveCount(0);
+  await expect(page.locator('dd').last()).toHaveText('fallback');
+  await page.getByLabel('Enquadrar como retrato', { exact: true }).uncheck();
+  await expect(character(page)).toHaveCSS('overflow', 'visible');
+  await page.getByLabel('Escuro', { exact: true }).check();
+  await page.getByLabel('Fundo sólido', { exact: true }).check();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  expect(privateRequests).toBe(0);
+});
+
 test('Character lazy Rive: real frames, request thinking, narration never success, close cleanup', async ({ page }) => {
   const assets: string[] = []; page.on('request', request => { if (/\.wasm|\.riv(?:\?|$)/.test(request.url())) assets.push(request.url()); });
   await page.addInitScript(() => {

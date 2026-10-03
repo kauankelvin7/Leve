@@ -100,3 +100,12 @@ A duplicação header/centro foi corrigida localmente após o feedback: uma úni
 Busto: canvas135×133 com margem8; corpo119×117, apresentado em128×126 no mobile e no máximo135×133 no desktop, nunca além do nativo. Header conserva48/56 e uma única instância. Nenhum fade/máscara/outline para esconder o término da camiseta. Esse corte continua visível e reprova a composição final.
 
 [Matte antes/depois](qa/matte-composition-comparison.png): contaminação clara demonstrada em dark; correção não generativa de185pixels localizados com cor de cabelo adjacente e alfa estimado da própria referência. Só hair_back e side_curls L/R mudaram; outras11camadas são byte-idênticas. Rig/meshes/timelines permanecem iguais; recompilação apenas incorpora texturas corrigidas. QA252frames novamente PASS, não aprovação visual humana nem presença adaptativa completa.
+
+
+## Direção final atual — bust-only e retrato em revisão humana
+
+Pedido posterior sobre f056244 substitui a exigência de meia-altura: **busto animado é o escopo final permitido**. Presença adaptativa significa escala/enquadramento/posição/estado/motion/hierarquia. `HALF_BODY_SOURCE_INSUFFICIENT` é limitação factual, não release blocker. Não criar GikaPresence ou reconstruir pixels ocultos.
+
+Enquadramento proposto: clipping circular intencional, fundo discreto do token Leve e limite de1px do container; deslocamento vertical6% do mesmo render para que o término inferior coincida com a borda do retrato. Nenhum fade/outline branco, alteração de fonte/alfa/rosto/cabelo/mecha ou upscale; o clipping pertence à interface, não é novo asset. Este enquadramento ainda depende de revisão humana, inclusive o cabelo na borda e nitidez120. Playground permite desmarcar a moldura para comparar a composição anterior no mesmo runtime.
+
+Aprovação do bust-only não é aprovação automática desta moldura ou das animações. Gate atual: `GIKA_HUMAN_VISUAL_REVIEW_REQUIRED`; somente depois do aceite explícito executar regressão proporcional e seguir a decisão vigente de export.

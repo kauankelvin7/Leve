@@ -2,10 +2,11 @@
 
 ## Estado atual
 
-- Status global: `M9_IN_PROGRESS_CHARACTER_HYBRID_BUST`.
+- Status global: `GIKA_HUMAN_VISUAL_REVIEW_REQUIRED`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
-- Character: integração essencial preservada, nove estados/10bones/umViewModel.mode, controller/lazy/fallback/reduced/CSP/cleanup unchanged. Composição revisada sobre057744ff: welcome próximo da pergunta/ações, canvas nativo135×133 desktop e128×126 mobile, sem upscale; espaço relativo ao texto reduz decoração a200%. Matte localizado185pixels em três texturas de cabelo; outras11PNGs, rosto/mecha/fonte e RML byte-idênticos. Rig51569bytes/QA252frames PASS. HALF_BODY_SOURCE_INSUFFICIENT para presença meia-altura final e corte inferior da camiseta ainda visível: COMPOSITION_NOT_APPROVED_ADAPTIVE_PRESENCE_QA_REQUIRED permanece aberto. Não declarar Character/M9 visualmente concluídos ou export aprovado.
+- Character: direção final atual é bust-only, autorizada sobre `f056244db1c6449844431c7c8e3bb505886f85ed`. Meia-altura não é requisito de M9; HALF_BODY_SOURCE_INSUFFICIENT permanece somente como limitação factual da fonte. Sem GikaPresence, pixels ocultos ou geração. Mesmos asset/RIV/9estados/controller/lazy/fallback/reduced; novo enquadramento circular discreto no CSS do portrait, em revisão humana, não aprovado automaticamente.
+- Playground exclusivamente Vite dev: `/dev/gika-character`; entrada independente sem Auth, agenda, UID, Gemini, Firestore ou command. Controles dos nove modos,48/64/96/120, light/dark/solid/reduced; variante sem moldura para comparação; metadata state/size/reducedMotion/ready-fallback. Build e preview de produção não incluem a página.
 
 ## Hardening — resumo histórico
 
@@ -20,11 +21,11 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-Finalizar o contorno natural do busto e fonte aprovada de presença meia-altura antes do aceite visual/export licenciado. Pose principal possui pixels para ilustração sentada fixa, mas não revela torso atrás do joelho/mandíbula e pescoço atrás da mão; turnaround menor não prova presença maior nítida. Detalhes e inspeção em M9_EVIDENCE/Visual Lock. Não criar nova personagem, GikaPresence placeholder, fade para esconder corte ou ampliar119×117.
+Aguardar aprovação explícita das animações e enquadramento no playground: `GIKA_HUMAN_VISUAL_REVIEW_REQUIRED`. Executar `npm run dev:web -- --port 5174` e abrir `http://localhost:5174/dev/gika-character`; playground não exige emuladores, seed ou login. Compare retrato/sem moldura, nove estados, tamanhos e reduced motion antes de autorizar regressão final proporcional. Capturas human-review-* em docs/gika/character/qa, instruções/evidência em M9_EVIDENCE.
 
-Nesta execução, logout26tarefas foi reproduzido e corrigido somente no dock/scroll do launcher; M8 passou a ter conta emulada isolada por caso, sem alterar cap5/policy. Primeira ampla atual104/1 encontrou regressão real CSS/reflow; CSS da entrada reaplicado passou, correção focal passou e ampla final105/105 PASS. Histórico95/9 e primeiras falhas de fixture preservados. Checkpoint funcional `8c2e765dc360a9d32d22741944a3488b8e42ddf4`. Gates finais consolidados: auditprodução0/lintAST47/doisTS/build/545unit/252integração/105Gika/17shell/13Plannerdesign PASS;20convencionais PASS em cinco arquivos/processos fresh, sessão2/2 após precondição de ativação reproduzida na entrada. Primeiras falhas convencionais e comparações preservadas, sem timer/Auth/policy/deadline novo. Nenhum domínio/commands/Auth/Rules/receipts/controller/dependência alterado.
+Gates técnicos da entrada permanecem históricos aprovados: audit0/lintAST47/doisTS/build/545unit/252integração/105Gika/17shell/13Plannerdesign/20convencionais fresh. Nesta alteração visual/dev executados somente lint/AST, ambos typechecks, build,1focal do playground com Axe, isolamento do bundle/preview de produção e10capturas reais; primeira falha TS2532 e timeout de seletor com capitalização errada preservados na evidência, corrigidos sem ampliar prazo. Não repetida bateria M9 por instrução do usuário. Nenhum contrato funcional/source/rig mudou.
 
-M9-T3 continua in_progress; T4/RC blocked pelo acabamento/presença adaptativa/QA humano e export oficial sem splash. Capturas de seis viewports light/dark e solid/reduced/text200 não equivalem à matriz final completa de nove estados/modes. Não assinar Cadet, não reportar M9_READY_FOR_FINAL_RIVE_EXPORT_APPROVAL ou M9_DONE_RC_READY. Sem novo milestone/closure, PR/main/deploy/UAT/live; parar para revisão do trabalho dentro do M9 atual.
+M9-T3 in_progress; T4/RC blocked somente pelo aceite visual humano e verificações/export posterior conforme decisão vigente. HALF_BODY_SOURCE_INSUFFICIENT não é mais release blocker. Não declarar M9_DONE nem export aprovado. Não pagar Cadet/exportar Rive, executar Gemini, iniciar UAT, fazer main/deploy ou outra fase. Após aprovação humana, seguir instrução específica vigente de regressão/export; não presumir pagamento ou solução final de splash.
 
 ## M8 — conclusão
 

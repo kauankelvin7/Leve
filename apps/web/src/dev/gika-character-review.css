@@ -1,0 +1,19 @@
+.character-review { max-width: 760px; margin: 0 auto; padding: 32px max(20px, env(safe-area-inset-left)); color: var(--color-text); }
+.character-review h1 { font-family: Nunito, sans-serif; font-size: clamp(1.5rem, 4vw, 2rem); }
+.character-review p { line-height: 1.5; }
+.character-review-stage { display: grid; justify-items: center; gap: 24px; padding: 28px; border: 1px solid var(--color-border); border-radius: 24px; background: var(--color-glass); backdrop-filter: blur(12px); }
+.character-review.solid .character-review-stage { background: var(--color-solid); backdrop-filter: none; }
+.character-review-actor { display: grid; place-items: center; }
+.character-review-actor .gika-character { width: 100%; height: 100%; }
+.character-review[data-framing='plain'] .gika-character { overflow: visible; border-radius: 0; background: none; box-shadow: none; }
+.character-review[data-framing='plain'] .gika-character > img, .character-review[data-framing='plain'] .gika-character > canvas { transform: none; }
+.character-review dl { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 24px; margin: 0; }
+.character-review dl div { text-align: center; }
+.character-review dt { font-size: .8rem; color: var(--color-text-muted); }
+.character-review dd { margin: 4px 0 0; }
+.character-review fieldset { margin-top: 20px; border: 1px solid var(--color-border); border-radius: 16px; padding: 16px; }
+.character-review legend { font-weight: 600; }
+.character-review-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.character-review button { min-height: 44px; padding: 8px 14px; }
+.character-review button[aria-pressed='true'] { background: var(--color-action-primary); color: var(--color-action-foreground); }
+.character-review label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-right: 20px; }
