@@ -14,3 +14,7 @@ Decisão principal: **Rive continua como engine principal**. O próximo problema
 Hard rule:
 
 > Nenhum novo rig de produção começa a partir da prancha achatada. O novo master precisa existir e ser aprovado primeiro.
+
+## Resultado do Gate A
+
+[RIG_READY_MASTER_ART_SOURCE_BLOCKED](GATE_A_VALIDATION.md): uma tentativa SVG manual reprovada por identidade; evidência QA não é master/runtime. Ferramentas disponíveis, Rive mantido, Gate B não iniciado.

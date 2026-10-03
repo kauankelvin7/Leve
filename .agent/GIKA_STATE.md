@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW`.
+- Status global: `RIG_READY_MASTER_ART_SOURCE_BLOCKED`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
 - Character: baseline técnico `17381e6447729b01f3b8d1ec7d1401ea882c0450` restaurado integralmente após interrupção humana do Gesture Recovery. Neutral Master, rig facial/expressões anteriores,10bones/9estados, controller, Rive/lazy/fallback/reduced/playground e contratos preservados. Protótipos de recortes/overlays raster não entram no runtime nem no repositório. RIV64233bytes/hash2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6. Restauração técnica não aprova Character; alinhamento visual de success permanece pendente.
@@ -22,11 +22,11 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-**PARADO.** `RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW`: aparência de collage/recortes, inconsistência de resolução, junções artificiais e ausência de continuidade corporal adequada para rigging. Aguardar especificação separada de GIKA RIG-READY MASTER ASSET; não propor nem implementar outra solução agora.
+**PARADO em Gate A — RIG_READY_MASTER_ART_SOURCE_BLOCKED.** Entrada2306314151bfb518321ed64999de50ef79d61d55, fast-forward/local=origin/worktree limpo confirmados. Ferramentas de autoria disponíveis; única tentativa SVG manual renderizada786×2048/84paths/69grupos/sem rasters falhou por rosto/olhos, cabelo e proporções. Correção necessária seria outro redesenho amplo, não localizada; nenhuma segunda tentativa. Evidência/comparação e capacidades em docs/gika/rig-master/GATE_A_VALIDATION.md.
 
-Restauração mínima verificada: todos os fontes/runtimes/testes e assets byte-idênticos a17381e6 antes da documentação; Rive verify/once0errors/warnings e recompilação idêntica ao RIV versionado; build com ambos typechecks PASS;1Character E2Edev+Axe PASS; build normal sem protótipos/playground e rota404. Primeira tentativa CLI sem LD_LIBRARY_PATH falhou por libGLESv2.so.2 ausente; variável de ambiente previamente documentada resolveu, sem mudança de produto. Sem regressão ampla/audit novamente.
+Não existe novo source master/preview aprovado, hidden anatomy/gestures certificados ou Gate A human-review-ready. Candidato somente em/tmp; imagem versionada é QA reprovado. Falta artwork técnico fiel com anatomia completa; não fingir que estrutura/alfa ou PNG achatado resolvem a identidade. Engine Rive preservada; nenhum rig/bone/SM/React/produto/M9/Gate B iniciado. Baseline anterior e rejeição RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW continuam preservados.
 
-M9-T3 in_progress; T4/RC blocked. Não continuar M9, autoria de gestos/matte, export/pagamento Cadet/publicação Rive, Gemini live, main/PR/deploy. Evidências anteriores preservadas; checkpoint atual somente documental em feat/gika-integration.
+Verificações desta execução: formatos/resolução/hashes/XML/alpha/names/links/YAML/escopo. Sem instalação de ferramenta/dependência, build ou regressão de produto; runtime/assets históricos byte-idênticos à entrada. Checkpoint somente documental/QA em feat/gika-integration; não Character/M9/RC/export ready, main/PR/deploy/Cadet/Gemini live.
 
 ## M8 — conclusão
 
