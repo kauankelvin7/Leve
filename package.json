@@ -30,7 +30,13 @@
     "test:e2e": "playwright test",
     "screenshots": "tsx scripts/screenshots.ts",
     "check": "npm run build && npm test && npm run test:e2e",
-    "gika:smoke": "node scripts/gika-smoke.mjs"
+    "gika:smoke": "node scripts/gika-smoke.mjs",
+    "glass:check": "node scripts/glass/check.mjs",
+    "glass:e2e": "node scripts/glass/run.mjs e2e",
+    "glass:shots:before": "node scripts/glass/run.mjs before",
+    "glass:shots:after": "node scripts/glass/run.mjs after",
+    "glass:verify": "node scripts/glass/run.mjs verify",
+    "glass:selftest": "node scripts/glass/run.mjs selftest"
   },
   "dependencies": {
     "@dicebear/avataaars": "9.4.3",

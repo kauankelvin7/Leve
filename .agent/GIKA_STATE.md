@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `M9_DONE_RC_READY`; base técnica aprovada, finalização Liquid Glass/RC consolidado ainda pendente.
+- Status global: `LIQUID_GLASS_HARNESS_IN_PROGRESS`; M9_DONE_RC_READY congelado emb0e7bae753ec93374a3ebe3ec2b1a5ac07298046, final RC ainda pendente.
 - Aprovação humana vigente: `GIKA_V1_FACIAL_HUMAN_APPROVED`; v1 facial aceitável na versão gratuita, KEEP rest/idle/blink/listening/thinking/clarify/error/offline, FALLBACK success→idle visual/master. Sucesso semântico continua exclusivamente após ACK real.
 - `FULL_BODY_CHARACTER_RIG_DEFERRED` e `RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER` definitivos para v1; histórico preservado, sem reabrir autoria corporal.
 - Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
@@ -27,7 +27,7 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 M9 final concluído sobre a entrada2fc1663. Gate atual: audit0/lint/AST47/ambosTS/build/545unit/252integração/106Gika únicos/13Plannerdesign/20convencionais/17shell/PWA/Axe aprovados. Primeira mutações55/1 registrada; teste reduced motion obsoleto corrigido em337789b e17afetados PASS, sem mudança de produto/deadline/retry/fixture/seletores/autoridade. Reconciliadas branches sem port/merge necessário.
 
-Congelar o checkpoint documental desta conclusão; criar feat/liquid-glass-system exatamente desse SHA, registrar SHA real em docs/release/M9_FINAL.md e adaptar harness/CSS Glass existente. Depois lotes verdes, integração feat e regressão final/UAT controlado. Sem main/deploy/pagamento/Gemini live/nova funcionalidade/milestone. Não parar entre etapas verdes autorizadas.
+BaseM9 b0e7bae753ec93374a3ebe3ec2b1a5ac07298046 publicada/local=origin/worktree limpo. Branch feat/liquid-glass-system criada exatamente dessa base; SHA real registrado em docs/release/M9_FINAL.md. Adaptar harness/CSS Glass existente; inventário de produção sem /demo/dev como autoridade visual. Depois lotes verdes, integração feat e regressão final/UAT controlado. Sem main/deploy/pagamento/Gemini live/nova funcionalidade/milestone. Não parar entre etapas verdes autorizadas.
 
 ## Facial v1 — checkpoint anterior de revisão
 

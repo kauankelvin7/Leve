@@ -2,7 +2,7 @@
 
 Decisão: **M9_DONE_RC_READY / GIKA_V1_FACIAL_APPROVED**.
 
-Entrada: `2fc1663503a609db286dde6971f719bb1b13102f`, feat/gika-integration, fetch/local=origin/worktree limpo confirmados. Aprovação humana facial em1a7287d; reconciliação emcb91205; correção de teste em337789b. Este checkpoint congela o produto antes de Liquid Glass; seu SHA será registrado na branch isolada imediatamente após a criação, antes de alterar o sistema Glass.
+Entrada: `2fc1663503a609db286dde6971f719bb1b13102f`, feat/gika-integration, fetch/local=origin/worktree limpo confirmados. Aprovação humana facial em1a7287d; reconciliação emcb91205; correção de teste em337789b. M9_FROZEN_BASE_SHA: `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`. Branch Liquid Glass criada exatamente desse checkpoint, antes de qualquer alteração Glass.
 
 ## Gates executados fresh
 
