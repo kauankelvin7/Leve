@@ -1,5 +1,15 @@
 # M9 — hardening e release candidate
 
+## Regressão final autorizada — entrada 2fc1663
+
+`GIKA_V1_FACIAL_HUMAN_APPROVED` vigente: KEEP rest/idle/blink/listening/thinking/clarify/error/offline; success semântico após ACK usa idle visual/sorriso master. Corpo e Gate A não bloqueiam v1; histórico abaixo permanece.
+
+Primeiras execuções atuais: audit de produção0critical/high/moderate, lint/AST47, ambos typechecks/build,545unit,252integração,17shell,7proatividade e43Gika interface PASS. Mutações56: **55PASS/1FAIL**, não integralmente verde. Falha mobile reschedule aos16,2s, antes de confirmar: teste esperava `rest`, observou `clarify` estático. Produto e teste eram byte-idênticos à entrada; `a67261c` já havia preservado expressão semântica em reduced motion, conforme o escopo facial aprovado. Os5Character focais atuais já exigem essa semântica.
+
+Correção exclusivamente de teste `337789b`: mantém estados clarify→thinking→success, valida ausência de canvas no mobile/reduced e success visual→idle/static após ACK. Não altera seletores, timeouts, retries, fixtures, contratos ou produto. Primeira pós-correção:17/17 Character+reschedule/confirmation PASS; lint/ambos typechecks PASS. Trace/contexto original preservados somente no artefato local `.cache/final-run/m9-first-failure`; documentação sanitizada não inclui tokens, IDs ou payloads.
+
+Prova adicional com build de produção/preview4173: service worker ativo `leve-shell-v7`,16entradas de cache, página de entrada recarregada offline e playground não renderizado. Não equivale a certificação de push em dispositivo real. Primeiras Planner/design13/13 e jornadas convencionais20/20 em cinco processos fresh PASS. M9-T3/T4 done: `M9_DONE_RC_READY` / `GIKA_V1_FACIAL_APPROVED`. Gate e limitações em docs/release/M9_FINAL.md; Glass e RC consolidado são os próximos passos já autorizados, sem novo milestone.
+
 Entrada2e73b3ab4fbd72b04fc328dce60be7b928b32c77; branchfeat/gika-integration, fetch/local/origin iguais, worktree limpo. M8 aprovado, T1→T4 sequenciais autorizados. Ponytail/full/Caveman/full/humanizer local; sem novos milestones/closures/serviços pagos.
 
 ## T1 — revisão factual

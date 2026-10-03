@@ -1,5 +1,21 @@
 # ExecPlan — Gika no Leve
 
+## Finalização autorizada — M9, Liquid Glass e RC
+
+**Objetivo:** concluir M9 sobre a Gika facial aprovada, adaptar seletivamente as superfícies de vidro e entregar uma única linha verificável para revisão de merge. Não constitui novo milestone.
+
+**Contexto:** entrada `2fc1663503a609db286dde6971f719bb1b13102f`; React/Vite, CSS Glass histórico, comandos/receipts e harness de emuladores existentes. Aprovação facial e reconciliação documental registradas, sem port histórico necessário. O cliente conecta emuladores somente em DEV; verificações autenticadas devem preservar essa restrição, sem habilitar emuladores no produto de produção.
+
+**Não objetivos/contratos:** sem main, deploy, pagamento, Gemini live, corpo/gestos ou nova funcionalidade. Auth, Rules, comandos, policy, confirmation, revisions, receipts, recorrência, batch, organização, voz, proatividade e Character permanecem intactos. Glass modifica somente superfícies, com fallback sólido, contraste AA e blur máximo 24px.
+
+**Passos/gates:** (1) regressão M9 fresh completa e checkpoint congelado; (2) branch `feat/liquid-glass-system` exatamente dessa base; (3) harness com cores modernas, limites, isolamento e self-tests; congelar harness; (4) inventário/manifesto protegido e capturas before de rotas reais; (5) lotes de até cinco componentes, cada qual com Glass check/E2E, lint, ambos typechecks, build e focais; (6) capturas after, inspeção real, acessibilidade/responsividade/performance; (7) integração preferencialmente fast-forward; (8) regressão total e UAT sintético, evidência final, push e igualdade local/remoto/worktree limpo. Primeiras falhas preservadas; nenhum timeout/retry/asserção relaxado.
+
+**Ownership:** executor principal possui Git, estado, tarefas, CSS/TSX de superfícies e documentos de release; auditorias paralelas somente leitura. Harness e manifesto ficam protegidos por hashes após validação. Dependências de produção não mudam.
+
+**Rollback:** commits pequenos e semânticos; retirar Glass de uma superfície inviável preservando o componente original. Reversão posterior por commits específicos, nunca reset destrutivo. A base M9 congelada preserva o produto anterior ao Glass.
+
+**Evidências/retomada:** logs locais sanitizados em `/tmp/leve-final-run`; resultados persistidos em `docs/release/M9_FINAL.md`, `docs/release/BRANCH_RECONCILIATION.md`, `docs/glass/` e evidência RC final conforme cada gate for realmente concluído. M9 fresh concluído; única falha de teste reduced obsoleto corrigida em337789b com17afetados verdes. M9_DONE_RC_READY; próximo checkpoint congela base, Glass não iniciado.
+
 ## Objetivo
 
 Entregar a **Gika**, assistente inteligente do Leve, como interface de linguagem natural para consultar e operar a agenda sem duplicar regras de negócio, sem dar ao LLM acesso direto à persistência e sem tornar a IA requisito para o funcionamento básico do produto.

@@ -2,12 +2,12 @@
 
 ## Estado atual
 
-- Status global: `M9_FINAL_REGRESSION_IN_PROGRESS`.
+- Status global: `M9_DONE_RC_READY`; base técnica aprovada, finalização Liquid Glass/RC consolidado ainda pendente.
 - Aprovação humana vigente: `GIKA_V1_FACIAL_HUMAN_APPROVED`; v1 facial aceitável na versão gratuita, KEEP rest/idle/blink/listening/thinking/clarify/error/offline, FALLBACK success→idle visual/master. Sucesso semântico continua exclusivamente após ACK real.
 - `FULL_BODY_CHARACTER_RIG_DEFERRED` e `RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER` definitivos para v1; histórico preservado, sem reabrir autoria corporal.
 - Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
-- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
+- M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9-T1/T2/T3/T4 done. Gika facial v1 aprovada pelo usuário; regressão final fresh aprovada e histórico de falhas preservado em docs/release/M9_FINAL.md. Final RC consolidado depende ainda de Glass e nova regressão/UAT autorizados.
 - Character: baseline técnico `17381e6447729b01f3b8d1ec7d1401ea882c0450` restaurado integralmente após interrupção humana do Gesture Recovery. Neutral Master, rig facial/expressões anteriores,10bones/9estados, controller, Rive/lazy/fallback/reduced/playground e contratos preservados. Protótipos de recortes/overlays raster não entram no runtime nem no repositório. RIV64233bytes/hash2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6. V1 preserva esse asset sem reautoria; success semântico usa idle visual (sorriso master) no renderer e no fallback estático. Donor Alegre desalinhado não é mais selecionado pela apresentação do produto; seu modo histórico continua no arquivo Rive intacto.
 - Reduced motion mantém a expressão estática de cada estado, sem runtime/loop; offline estático disponível sem rede. ACK/eventos/prioridades de execução intocados. Nenhum contrato de domínio/segurança alterado.
 - Playground somente Vite dev `/dev/gika-character`: mesmos runtime/rig/poses do produto, comparação dos9estados e MATTE TEST do mesmo RGBA em5fundos. Sem Auth/UID/agenda/Firestore/Gemini/command; ausente do build normal (rota404). Vídeo/capturas anteriores em docs/gika/character/qa/expression-* são históricos preservados, não aprovação visual final.
@@ -25,7 +25,9 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-Execução final autorizada sobre2fc1663503a609db286dde6971f719bb1b13102f, fetch/local=origin/worktree limpo confirmados. Registrar aprovação facial, reconciliar branches seletivamente e executar M9 fresh. Liquid Glass somente após M9 green/checkpoint congelado; branch isolada e harness sobre CSS existente, depois integração feat/regressão final/RC-UAT controlado. Sem main/deploy/pagamento/Gemini live/nova funcionalidade/milestone. Critérios e sequência no pedido vigente; não interromper entre lotes verdes.
+M9 final concluído sobre a entrada2fc1663. Gate atual: audit0/lint/AST47/ambosTS/build/545unit/252integração/106Gika únicos/13Plannerdesign/20convencionais/17shell/PWA/Axe aprovados. Primeira mutações55/1 registrada; teste reduced motion obsoleto corrigido em337789b e17afetados PASS, sem mudança de produto/deadline/retry/fixture/seletores/autoridade. Reconciliadas branches sem port/merge necessário.
+
+Congelar o checkpoint documental desta conclusão; criar feat/liquid-glass-system exatamente desse SHA, registrar SHA real em docs/release/M9_FINAL.md e adaptar harness/CSS Glass existente. Depois lotes verdes, integração feat e regressão final/UAT controlado. Sem main/deploy/pagamento/Gemini live/nova funcionalidade/milestone. Não parar entre etapas verdes autorizadas.
 
 ## Facial v1 — checkpoint anterior de revisão
 
