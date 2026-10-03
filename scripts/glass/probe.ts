@@ -7,6 +7,12 @@ export const viewports = [[390,844],[853,1280],[1024,768],[1366,768],[1920,1080]
 const manifest = JSON.parse(await readFile(process.env.GLASS_MANIFEST ?? 'glass.manifest.json','utf8')) as { components: {id:string;selector:string;scope:string}[] };
 export const phase = process.env.GLASS_PHASE === 'before' ? 'before' : 'after';
 export async function inspect(page: Page, name: string, solid = false) {
+  // Measure the native loaded font and settled finite UI transition, as the
+  // existing design suite does. No sleep, retry, or altered product timing.
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
+  });
   const result = await page.evaluate(({ solid, components, complete }) => {
     const errors: string[] = [], colors: {element:string;background:string;foreground:string}[] = [], filters: unknown[] = [];
     const visible = (e: Element) => { const r = e.getBoundingClientRect(), s = getComputedStyle(e); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };

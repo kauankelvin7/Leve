@@ -12,6 +12,21 @@ try {
   assert.equal((await fixture('color:#111')).status, 'PASS');
   assert.equal((await fixture('color:#aaa')).status, 'FAIL');
   assert.equal((await fixture('color:rgb(0 0 0 / 20%)')).status, 'FAIL');
+  assert.equal((await fixture('color:white;background:white')).status, 'FAIL');
+  await page.setContent('<style>body{background:white}#target{font:16px Arial;color:black;opacity:.82;margin:30px}</style><p id="target">Synthetic text only opacity</p>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.locator('#target').evaluate(e => { e.style.opacity = '.1'; });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'FAIL');
+  await page.setContent('<style>body{background:white}#target{position:relative;font:24px Arial;white-space:pre;color:black;width:180px;margin:30px}</style><div id="target">I          I<svg style="position:absolute;left:30px;top:0;width:20px;height:20px"><rect width="20" height="20" fill="black"/></svg></div>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.setContent('<style>body{background:white}#target{display:block;font:16px Arial;margin:30px;color:black;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100px}</style><strong id="target">Synthetic long text truncates with native ellipsis</strong>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.setContent('<style>body{background:white}#target{font:16px Arial;width:250px;height:50px;background:white;color:black}#target::placeholder{color:#111;opacity:.82}</style><textarea id="target" placeholder="Synthetic placeholder"></textarea>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.locator('#target').fill('Synthetic input value');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.locator('#target').evaluate(e => { e.style.color = 'white'; });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'FAIL');
   assert.equal((await fixture('color:#888;font-size:24px')).status, 'PASS');
   assert.equal((await fixture('color:#888;font-size:23px')).status, 'FAIL');
   assert.equal((await fixture('color:#888;font-size:19px;font-weight:700')).status, 'PASS');
@@ -25,7 +40,9 @@ try {
   await page.setContent('<style>body{margin:0;background:white}#target{font:88px/60px Arial;margin:50px;color:black;background:linear-gradient(90deg,white,#eee)}</style><div id="target">Leve</div>');
   assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
   await page.locator('#target').evaluate(e => { e.style.overflow = 'hidden'; e.style.height = '10px'; });
-  assert.deepEqual(await measureIncompleteContrast(page, ['#target']), { status: 'UNMEASURED', reason: 'CSS_CLIPPED_TEXT' });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  await page.locator('#target').evaluate(e => { e.style.height = '0px'; });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'UNMEASURED');
   assert.equal((await fixture('color:oklch(.2 0 0)')).status, 'PASS');
   assert.equal((await measureIncompleteContrast(page, ['#absent'])).status, 'UNMEASURED');
   assert.equal((await measureIncompleteContrast(page, [['iframe', '#target']])).status, 'UNMEASURED');
@@ -58,7 +75,32 @@ try {
   await page.setContent('<style>body{background:white}#target{padding:20px;color:black;background:white}#target:has(span){padding:40px}</style><div id="target">Synthetic selector guard</div>');
   assert.deepEqual(await measureIncompleteContrast(page, ['#target']), { status: 'UNMEASURED', reason: 'FORCED_WRAPPER_STYLE_CHANGED' });
   assert.equal(await page.locator('#target span').count(), 0);
-  console.log('PASS native incomplete contrast: gradients, alpha, font thresholds, modern color, offscreen/restoration, unsupported targets/effects');
+  await page.emulateMedia({ forcedColors: 'none' });
+  // Offscreen owners can still paint shadows/generated overlays into the clip.
+  for (const declaration of ['box-shadow:0 -1000px 0 200px white', '--overlay:1']) {
+    await page.setContent('<style>body{background:white}#target{color:black}#distant{margin-top:1000px}#distant::before{content:"";position:fixed;inset:0;background:white;opacity:var(--overlay,0);pointer-events:none}</style><p id="target">Synthetic guarded text</p><div id="distant">Synthetic distant paint</div>');
+    const originalScreenshot = page.screenshot.bind(page);
+    page.screenshot = async options => {
+      const png = await originalScreenshot(options);
+      await page.locator('#distant').evaluate((element, css) => { element.style.cssText = css; }, declaration);
+      return png;
+    };
+    try { assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'UNMEASURED'); }
+    finally { page.screenshot = originalScreenshot; }
+  }
+  await page.setContent('<style>body{background:white}#target{margin:30px;color:black}</style><p id="target">Synthetic timer 00:00</p>');
+  const screenshot = page.screenshot.bind(page);
+  page.screenshot = async options => {
+    const png = await screenshot(options);
+    await page.locator('#target').evaluate(e => { e.textContent = 'Synthetic timer 00:01'; });
+    return png;
+  };
+  try {
+    assert.deepEqual(await measureIncompleteContrast(page, ['#target']), { status: 'UNMEASURED', reason: 'PAINT_CONTENT_OR_STYLE_CHANGED' });
+  } finally {
+    page.screenshot = screenshot;
+  }
+  console.log('PASS native contrast: glyph mask, equal colors, neighboring SVG, ellipsis, text-only opacity, textarea/placeholder, forced colors, rounding/fonts, restoration and changing-text rejection');
 } finally {
   await browser.close();
 }
