@@ -34,7 +34,7 @@
 }
 
 .calendar-time-view {
-  --calendar-time-axis: 62px;
+  --calendar-time-axis: max(62px, 3.875rem);
   margin-top: 20px;
 }
 
@@ -118,8 +118,8 @@
 }
 
 .calendar-time-date.today strong {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   margin: 3px auto 0;
   display: grid;
   place-items: center;
@@ -209,6 +209,7 @@
   color: var(--color-text-muted);
   font-size: .68rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .calendar-time-axis span:first-child {
