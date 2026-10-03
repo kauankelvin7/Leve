@@ -350,7 +350,7 @@ milestones:
   M9:
     name: "Hardening e release"
     status: in_progress
-    evidence: "docs/gika/M9_EVIDENCE.md; gates técnicos históricos PASS; ADR024 preservada. ADR025: pipeline híbrido comprovado. V2 direção aprovada e integração essencial autorizada:14camadas preservadas/noveestados/rig51586/Controller visual-only/lazy Canvas/fallback/reduced motion. Autoria QA252capturas PASS; gates técnicos executados, primeiras falhas/classificação preservadas em M9_EVIDENCE. Composição atual não aprovada; presença adaptativa/enquadramento/duplicação/halo são QA obrigatório. Sem aceite RC/export final ou expansão."
+    evidence: "docs/gika/M9_EVIDENCE.md; histórico técnico preservado. Expression/motion/matte sobre4505bec: Neutral Master/9states/10bones; donors seletivos,34pixels fringe, reduced estático por estado; QA288/8unit/5focal+Axe/lintAST/doisTS/build/isolamento aprovados. Retrato circular aprovado como direção; nova atuação/matte aguardam humano. GIKA_HUMAN_VISUAL_REVIEW_REQUIRED; sem aceite Character/M9/RC/export ou expansão."
     tasks:
       - id: M9-T1
         title: "Segurança, App Check/rate limits conforme stack factual"
@@ -366,7 +366,7 @@ milestones:
         title: "Acessibilidade, performance e offline"
         status: in_progress
         evidence: ["M9_EVIDENCE Character essencial; funcional0375d2d; mesmas14PNGs/master, noveestados/umViewModel.mode/10bones/build51586. CLI/QA252frames PASS, Controller facts-only sem autoridade de execução, lazy/runtime/fallback/reduced/offline. Audit0/lint/doisTS/build/545unit/252integração PASS; Ampla95/9 não integralmente verde (fixtures cap e launcher baseline reproduzidos; reconnectvoz NOT_REPRODUCED); focais13/13+pós-presença9/9+scroll1/1+shell17/17/Axe0/12viewportthemes+200% PASS. Feedback do usuário: composição atual não aprovada; presença adaptativa, escala, duplicação header/centro e halo/cortes pendentes, sem upscale do raster. T3 permanece in_progress e não RC_READY."]
-        current_evidence: "Revisão humana sobre f056244: bust-only autorizado; HALF_BODY_SOURCE_INSUFFICIENT é limitação, não bloqueio. Playground /dev/gika-character somente Vite dev, sem Auth/IO privado; runtime/controller/asset reais intactos. CSS portrait circular+comparação sem moldura. Lint/AST/doisTS/build/1focal+Axe/isolamento production/10capturas PASS; primeiras falhas de implementação/harness preservadas. GIKA_HUMAN_VISUAL_REVIEW_REQUIRED, T3 in_progress; aguardar humano antes regressão final/export."
+        current_evidence: "Expression/motion/matte sobre4505bec: Neutral Master/10bones/9estados preservados; donors locais registrados Alegre/Pensativa/Curiosa, sem cabeças/cabelo/pele de variantes.34pixels matte; mecha/face-base byte-idênticas. Reduced mostra expressão estática; mesma RGBA entre temas. Dev-only comparação/MATTE TEST; vídeo92s/capturas. Rive0errors/QA288/8unit/5CharacterE2E+Axe/lintAST47/doisTS/build/isolamento PASS; tentativas preservadas em M9_EVIDENCE. GIKA_HUMAN_VISUAL_REVIEW_REQUIRED; sem aceite final/M9_DONE/Cadet/export/live/main/deploy."
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"

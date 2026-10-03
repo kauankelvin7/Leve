@@ -443,3 +443,60 @@ Validação proporcional executada: lint/AST47 PASS; ambos typechecks PASS; buil
 Primeiras falhas preservadas: typecheck/build iniciais TS2532 no rótulo `mode[0]`, corrigido com `charAt(0)`; focal inicial1FAIL/60s esperando botão lowercase `rest` com exact:true, enquanto label real é `Rest`. Somente seletor corrigido para capitalização real, mesmas asserções/deadline; primeira pós-correção1PASS. Não atribuídos a baseline/runtime. Gates amplos da entrada permanecem históricos; unit/integration/fullGika/shell/Planner/audit não repetidos nesta espera de revisão, conforme instrução. Não exportado Rive nem pago Cadet.
 
 **GIKA_HUMAN_VISUAL_REVIEW_REQUIRED.** T3 in_progress/T4 blocked, sem M9_DONE. Aguardar aprovação explícita de animações/moldura/nitidez antes da regressão final proporcional e decisões de export. Nenhum aceite visual inferido de Axe/capturas/testes.
+
+
+## Expression & Motion Pass + Theme Matte Pass — revisão humana
+
+Entrada `4505bec1aedd3c0888c49f173769e4ce5924e88b`: fetch/branch/local=origin/worktree limpo confirmados antes da autoria. Vídeo anterior de4min03 foi reprovado pelo usuário por expressões próximas demais da neutra; não apagar o histórico técnico. Circular aprovado como direção, bust-only preservado; meia-altura não bloqueia. Ponytail/full/Caveman/full/humanizer-br aplicados; sem nova fase/dependência/tecnologia.
+
+[Inventário completo antes→depois](character/EXPRESSION_INVENTORY.md):35regiões, incluindo10expressões faciais,9poses,5turnarounds e repetições/escala/estilo. As expressões são Neutra, Alegre, Rindo, Pensativa, Curiosa, Surpresa, Animada, Confiante, Carinhosa e Piscando. As poses são Oi!, Focada, Pensando, Explicando, Comemorando, Relaxando, Confiante, Usando o app e Grata. Focada foi inspecionada como atenção/observação; tablet/cabeça/corpo não importados. Nenhum décimo estado reading nem gesto extra.
+
+| Visual aprovado | Antes → depois | Uso concreto |
+| --- | --- | --- |
+| Neutra | USED → USED | master/rest/idle, todas as partes estruturais |
+| Alegre | NOT_USED → PARTIALLY_USED | boca aberta/sorriso success |
+| Pensativa | NOT_USED → PARTIALLY_USED | olhos/brows thinking, brows/boca error |
+| Curiosa | NOT_USED → PARTIALLY_USED | olhos atentos listening; olhos/brow/boca clarify |
+| Carinhosa | PARTIALLY_USED → PARTIALLY_USED | mesmas pálpebras blink/offline |
+| Demais regiões | NOT_USED → NOT_USED no runtime | referência/QA/reserva; sem importação de cabeças ou corpos |
+
+Neutral Master mantém14camadas,10bones,meshes/weights,umartboard/umSM/GikaVisual.mode9. Dez detalhes PNG vêm somente da fonte aprovada SHA2562aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba; polígonos/centros/âncoras registrados em `assets/gika/rive/essential-bust/expressions/registration.json`. Apenas translação em escala1, sem espelhamento.16pixels de detalhes fora do suporte facial foram removidos por oclusão do master; QA agora rejeita qualquer donor restante fora dele. Não se copiam pele/cabelo/mecha/face-base/pescoço/roupa/brincos/crop/escala das variantes. Mecha original e face-base continuam byte-idênticas, assim como features neutras/cabelo frontal/pálpebras.
+
+Atuação: expressões sustentadas, inclinações pequenas na mesma bone de cabeça e pausas; sem bobbing contínuo/cabelo flutuante. Success preserva sorriso após microgesto e só vem de ACK real. Offline é calmo com pálpebras fechadas, sem loop no produto.17canais de feature opacity resetados explicitamente em todos os9estados. Transições contínuas idle→listening→thinking→clarify/success/error/offline→idle e blink estão no vídeo, sem cortes. Rest/idle permanecem próximos por intenção; blink é transitório, não9desenhos independentes.
+
+Única mudança de apresentação no controller: reducedMotion não transforma todos os estados em rest. Ele continua desligando runtime/motion; pose estática correspondente é amostrada do próprio Rive em135×133, sem upscale. Idle usa neutral estático; blink/offline compartilham fechamento calmo. Fechado/hidden continuam rest, offline/pending/voice/ACK mantêm autoridade/prioridades. Nenhum Gemini escolhe emoção.
+
+### Tema/matte causal
+
+O mesmo rest/frame RGBA capturado do Canvas é **byte-idêntico** antes/depois da troca light/dark;9fontes estáticas também idênticas entre temas. Canvas filter:none/opacity1/mix-blend:normal. Pretos internos existem no próprio desenho, não são recoloração de dark. Franja clara herdada do raster foi demonstrada em branco/cinza/Leve claro/Leve escuro/ciano:34pixels únicos ajustados por cobertura alpha/cor de cabelo adjacente, sem outline/fade/blur/sombra de ocultação.38alterações de pixels em4layers refletem overlaps:13hair-back,14curlsR,4curlsL,7neck-layer (esses7 são cachos externos alocados nessa layer, não pele/camiseta). Gola/roupa/pele/mecha protegidas.
+
+CLI screenshot sem Fill é **cinza opaco**, portanto o primeiro cálculo de alpha usando essa captura era inválido e foi descartado. Prova válida usa PNG transparente do Canvas real; [matrix](character/qa/expression-matte-matrix.png) mostra o mesmo frame sobre5fundos. Diagnóstico2× apenas para inspeção, nunca asset upscaled no produto. Aceite humano do matte continua pendente.
+
+### Gates proporcionais e tentativas
+
+| Gate | Resultado atual |
+| --- | --- |
+| Rive verify/once/inspect oficial1.3 |0errors/warnings, RIV64233bytes, unsigned local |
+| Authoring QA |288renders:144native +144small até96/120, sem face/neck holes; curl no lado correto; rest maxRGBerror2; suporte/master/reset verificados |
+| Unit focal controller |8/8PASS, incluindo emoção static reduced e ACK |
+| Character E2E + Axe |primeira5/5PASS45,3s; após carregamento estático5/5PASS35s; final suporte master5/5PASS44s |
+| MATTE TEST/Axe |focaldev1PASS após expansão; incluído no5final; privados0 |
+| Lint/AST |finalPASS,47fontes; falha intermediária do helper preservada abaixo |
+| Web/server typecheck + build |ambosPASS/buildPASS; warning de chunk histórico |
+| Production isolation |módulo/textos/devroute ausentes do dist; preview local renderiza404normal, sem ator/playground |
+
+Falhas/diagnósticos de autoria preservados em [registro](evidence/character-expression-motion.json): helper browser import absoluto causou1lint import/no-unresolved (corrigido usando modulePath do harness existente, sem suppress); amostragem inicial de canvas ainda não desenhado produziu poses vazias descartadas (mount/play-pause/scrub/flush + guard não-vazio); primeira gravação parou antes de capturar pela fixture sem agenda ativada (setup convencional em conta emulada, sem fix Auth); screenshot de light esperava token incorreto e passou a esperar cor resolvida real, sem maior prazo; snapshots imediatos dark pegavam transição CSS dos controles, finais esperam estado semântico de cor. Nenhuma asserção de domínio/removida, timeout/retry aumentado ou falha atribuída a baseline arbitrariamente.
+
+Regressão ampla545/252/105/etc e audit histórico **não repetidos**, conforme pedido de iteração humana. Dependências/manifests intocados. Não inferir aprovação visual de hashes/Axe. Protected domain/server/commands/Auth/Rules/policy/receipts/recurrence/batch/organization/voice/proactivity/Gemini/persistence não têm diff. Runtime/CSP/lazy/cleanup preservados;20open-close e RAF0 continuam cobertos no focal.
+
+Peso medido: RIV51569→64233; WASM1992302/runtime210823 unchanged. Primeiro build com9PNGs inline aumentava painel91→418KB; substituído pelo carregamento sob demanda de5poses, neutral/offline inline disponíveis sem rede: painel124,15KB/gzip66,49KB.5PNGs~25KBcada carregam somente quando usados, sem layout shift por dimensões fixas. Bootstrap~1210,12KB unchanged entre builds desta rodada. Não é nova medição de campo/heap60 nem meta universal de performance.
+
+### Revisão entregue
+
+Vídeo real **92,6s**, MP4/H264: `/workspace/gika-expression-review/gika-expression-motion-review.mp4`. Contém light/dark96/120,9estados lado a lado, reduced, frame/plain, matte, transições completas, welcome/header. Sem cortes de transições; somente encoding. Playground privados0/provider0/pageerrors0. Capturas de produto usam apenas conta/dados sintéticos de emuladores e resposta textual fixture; sem Gemini/command da Gika e sem credencial de usuário real.
+
+Capturas: [light96](character/qa/expression-light-96.png), [light120](character/qa/expression-light-120.png), [dark96](character/qa/expression-dark-96.png), [dark120](character/qa/expression-dark-120.png), [reduced](character/qa/expression-reduced.png), [matte](character/qa/expression-matte-matrix.png), [MATTE TEST](character/qa/expression-matte-playground.png), [welcome mobile](character/qa/expression-welcome-mobile.png), [welcome desktop](character/qa/expression-welcome-desktop.png), [header](character/qa/expression-active-header.png). Não esconder limitação de119×117nativos; nitidez/expressividade96–120 e naturalidade/crop exigem julgamento humano.
+
+Receita reprodutível: `PYTHONDONTWRITEBYTECODE=1 python assets/gika/rive/essential-bust/author.py`; `rive --verify/--once/inspect` no diretório do rig; copiar build local para gika-essential-bust.riv; com dev5174 aberto, `node assets/gika/rive/essential-bust/capture-poses.cjs`; author QA viaqa.py. CLI precisa do LD_LIBRARY_PATH já existente no ambiente, sem nova dependência/tecnologia. Scrub da API2.44 é somente ferramenta de autoria; runtime do produto não o usa.
+
+Commit funcional `a67261c2224fa7a1fea3846e2e3696738a76768b`. **GIKA_HUMAN_VISUAL_REVIEW_REQUIRED.** M9-T3in_progress/T4blocked. Não Character final/M9done/RC/export ready. Sem pagamento Cadet/publicação/export final/main/PR/deploy/Gemini live. Aguardar nova aprovação humana.
