@@ -574,3 +574,11 @@ Não repetir regressão M9 inteira, unit/integração ampla ou fullGika: mudanç
 **GIKA_V1_FACIAL_REVIEW_REQUIRED.** Aguardar aprovação visual humana; não Character approved/M9_DONE_RC_READY/export ready. Somente após aprovação explícita, executar regressão final M9 e próximos gates autorizados.
 
 Checkpoint funcional v1: `ef54d05b83c6caff49292dcd32ea2fecf65fc52c`, parent76a044a. Implementação, regressões focais e evidência visual no mesmo commit; checkpoint documental seguinte apenas registra a referência. Publicação autorizada somente feat/gika-integration, sem produção/main/PR.
+
+## Aprovação humana facial v1 — entrada final2fc1663
+
+**GIKA_V1_FACIAL_HUMAN_APPROVED.** O usuário aprovou explicitamente a personagem facial atual como aceitável para a versão gratuita. KEEP rest/idle/blink/listening/thinking/clarify/error/offline; FALLBACK success→idle visual usando sorriso master. Sucesso semântico permanece condicionado somente ao ACK real; runtime/controller/asset não alterados nesta decisão.
+
+**FULL_BODY_CHARACTER_RIG_DEFERRED · RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER.** Corpo/meia-altura/gestos/props/novo master não bloqueiam v1/M9/RC. Gate A e rejeições históricas preservados. Sem assinatura/export pago ou mudança de engine exigidos.
+
+Aprovação visual autoriza agora regressão M9 fresh e finalização técnica; não substitui gates, não declara M9 done por resultados históricos. Branch feat/gika-integration local/origin2fc1663503a609db286dde6971f719bb1b13102f limpa após fetch.

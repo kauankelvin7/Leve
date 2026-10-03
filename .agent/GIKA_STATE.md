@@ -2,7 +2,9 @@
 
 ## Estado atual
 
-- Status global: `GIKA_V1_FACIAL_REVIEW_REQUIRED`.
+- Status global: `M9_FINAL_REGRESSION_IN_PROGRESS`.
+- Aprovação humana vigente: `GIKA_V1_FACIAL_HUMAN_APPROVED`; v1 facial aceitável na versão gratuita, KEEP rest/idle/blink/listening/thinking/clarify/error/offline, FALLBACK success→idle visual/master. Sucesso semântico continua exclusivamente após ACK real.
+- `FULL_BODY_CHARACTER_RIG_DEFERRED` e `RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER` definitivos para v1; histórico preservado, sem reabrir autoria corporal.
 - Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
@@ -22,6 +24,10 @@
 M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32c77, local/origin/fetch limpos/exatos. Ponytail/full/Caveman/full/humanizer local. Character somente conforme asset real e fallback; nenhum TTS/live/PR/main/deploy/TQA/nova fase. Exceção financeira posterior e específica: Free durante toda autoria/rig/animação/validação, Cadet somente para export final sem splash depois de asset e rig integralmente aprovados. Não alterar Gemini Free Tier/infra nem assinar antecipadamente.
 
 ## Próxima ação
+
+Execução final autorizada sobre2fc1663503a609db286dde6971f719bb1b13102f, fetch/local=origin/worktree limpo confirmados. Registrar aprovação facial, reconciliar branches seletivamente e executar M9 fresh. Liquid Glass somente após M9 green/checkpoint congelado; branch isolada e harness sobre CSS existente, depois integração feat/regressão final/RC-UAT controlado. Sem main/deploy/pagamento/Gemini live/nova funcionalidade/milestone. Critérios e sequência no pedido vigente; não interromper entre lotes verdes.
+
+## Facial v1 — checkpoint anterior de revisão
 
 Commit funcional v1: `ef54d05b83c6caff49292dcd32ea2fecf65fc52c`. Vídeo/capturas/tabela e resultados focais acompanham o commit. Checkpoint documental seguinte somente registra esse SHA; aguardar revisão humana.
 
