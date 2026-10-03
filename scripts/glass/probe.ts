@@ -2,6 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { measureColor } from './color.mjs';
+import { measureIncompleteContrast, type ContrastMeasurement } from './contrast.mjs';
 export const viewports = [[390,844],[853,1280],[1024,768],[1366,768],[1920,1080],[2560,1440]] as const;
 const manifest = JSON.parse(await readFile(process.env.GLASS_MANIFEST ?? 'glass.manifest.json','utf8')) as { components: {id:string;selector:string;scope:string}[] };
 export const phase = process.env.GLASS_PHASE === 'before' ? 'before' : 'after';
@@ -44,8 +45,14 @@ export async function inspect(page: Page, name: string, solid = false) {
   const directory = `.cache/glass/${phase}`; await mkdir(directory, { recursive: true });
   const summarize = (rules: typeof axe.violations) => rules.map(rule => ({ id: rule.id, impact: rule.impact, targets: rule.nodes.map(node => node.target) }));
   const unresolvedContrast = axe.incomplete.filter(rule => rule.id === 'color-contrast' && rule.nodes.length);
-  if (unresolvedContrast.length) result.errors.push('UNMEASURED_CONTRAST: Axe color-contrast incomplete');
-  await writeFile(`${directory}/${name}.json`, JSON.stringify({ ...result, colors: measuredColors, axe: { violations: summarize(axe.violations), incomplete: summarize(axe.incomplete) }, phase, verification: phase === 'before' ? 'BASELINE_ONLY' : 'STRICT' }, null, 2));
+  const contrastMeasurements: (ContrastMeasurement & { targetIndex: number })[] = [];
+  for (const rule of unresolvedContrast) for (const node of rule.nodes) {
+    const measurement = await measureIncompleteContrast(page, node.target);
+    const targetIndex = contrastMeasurements.length;
+    contrastMeasurements.push({ targetIndex, ...measurement });
+    if (measurement.status !== 'PASS') result.errors.push(`${measurement.status === 'FAIL' ? 'CONTRAST_RATIO' : 'UNMEASURED_CONTRAST'}: incomplete target ${targetIndex}`);
+  }
+  await writeFile(`${directory}/${name}.json`, JSON.stringify({ ...result, colors: measuredColors, contrastMeasurements, axe: { violations: summarize(axe.violations), incomplete: summarize(axe.incomplete) }, phase, verification: phase === 'before' ? 'BASELINE_ONLY' : 'STRICT' }, null, 2));
   if (process.env.GLASS_CAPTURE === '1') await page.screenshot({ path: `${directory}/${name}.png`, fullPage: true, animations: 'disabled' });
   if (phase !== 'before') {
     expect.soft(result.errors, name).toEqual([]);
