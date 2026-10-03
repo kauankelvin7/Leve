@@ -592,3 +592,7 @@ Checkpoint funcional v1: `ef54d05b83c6caff49292dcd32ea2fecf65fc52c`, parent76a04
 **FULL_BODY_CHARACTER_RIG_DEFERRED · RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER.** Corpo/meia-altura/gestos/props/novo master não bloqueiam v1/M9/RC. Gate A e rejeições históricas preservados. Sem assinatura/export pago ou mudança de engine exigidos.
 
 Aprovação visual autoriza agora regressão M9 fresh e finalização técnica; não substitui gates, não declara M9 done por resultados históricos. Branch feat/gika-integration local/origin2fc1663503a609db286dde6971f719bb1b13102f limpa após fetch.
+
+### Defeito de layout encontrado durante Glass
+
+Depois do congelamento M9, a inspeção native mostrou o launcher interceptando Excluir em uma lista curta de Compras no mobile390x844. A reprodução com reload e um item falhou no hit test por10s; reservar o botão Sair em vez do padding do footer corrigiu a causa. Primeira focal pós-correção2/2PASS inclui logout em agenda longa e remoção convencional confirmada. Nova regressão incrementa o conjunto Gika em um caso justificado; nenhum timeout/retry/assertion histórica alterado. Rodada inicial do novo teste falhou em seletor de navegação duplicado, corrigido para nav Principal; variante SPA passou antes do fix e não foi usada como prova do bug. Gate final amplo ainda obrigatório.

@@ -55,7 +55,9 @@ export function GikaLauncher() {
       let bottom = window.innerWidth <= 739 ? 82 : 24;
       for (const obstacle of document.querySelectorAll('.active-timer-bar, .active-timer-error-bar, .sidebar, .page-footer')) {
         if (obstacle.matches('.sidebar') && window.innerWidth > 739) continue;
-        const rect = obstacle.getBoundingClientRect();
+        // Footer padding is available space, not an interactive obstacle.
+        // Reserving the whole box pushed the launcher onto short-list actions.
+        const rect = (obstacle.matches('.page-footer') ? obstacle.querySelector('button') ?? obstacle : obstacle).getBoundingClientRect();
         if (obstacle.matches('.page-footer') && (rect.top >= window.innerHeight || rect.bottom <= window.innerHeight - bottom - width.height - 12)) continue;
         if (rect.height && rect.right > width.left && rect.left < width.right) bottom = Math.max(bottom, window.innerHeight - rect.top + 12);
       }

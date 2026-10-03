@@ -18,3 +18,26 @@ test('M9 launcher leaves logout reachable after scrolling a long agenda', async 
   console.log(JSON.stringify({stage:'conventional footer hit test',syntheticPending:26,...hit}));expect(hit.targetIsLauncher).toBe(false);
   await logout.click(); await expect(page.getByLabel('E-mail')).toBeVisible();
 });
+
+test('M9 launcher leaves short shopping list actions reachable on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'light' });
+  const email = await isolatedTestAccount('launcher-shopping');
+  await page.goto('/entrar'); await page.getByLabel('E-mail').fill(email); await page.getByLabel('Senha', { exact: true }).fill('leve-local-123'); await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Finalize sua agenda' })).toBeVisible();
+  await page.getByRole('button', { name: 'Criar minha agenda' }).click(); await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Principal', exact: true }).getByRole('link', { name: 'Compras', exact: true }).click();
+  await page.getByLabel('Nome da lista').fill('Synthetic launcher list'); await page.getByRole('button', { name: 'Criar lista', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Synthetic launcher list', exact: true })).toBeVisible();
+  await page.getByLabel('Adicionar item', { exact: true }).fill('Synthetic item'); await page.getByRole('button', { name: 'Adicionar item', exact: true }).click();
+  await expect(page.getByText('Synthetic item', { exact: true })).toBeVisible();
+  await page.goto('/compras');
+  const card = page.locator('.shopping-list-card').filter({ hasText: 'Synthetic launcher list' });
+  const remove = card.getByRole('button', { name: 'Excluir', exact: true });
+  await remove.scrollIntoViewIfNeeded();
+  await expect.poll(() => remove.evaluate(element => { const rect = element.getBoundingClientRect(); return !!document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)?.closest('.gika-launcher'); })).toBe(false);
+  await remove.click(); await expect(card).toHaveCount(0);
+  await expect(page.locator('.gika-panel')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Pergunte à Gika', exact: true })).toBeVisible();
+});
