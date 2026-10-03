@@ -500,3 +500,22 @@ Capturas: [light96](character/qa/expression-light-96.png), [light120](character/
 Receita reprodutível: `PYTHONDONTWRITEBYTECODE=1 python assets/gika/rive/essential-bust/author.py`; `rive --verify/--once/inspect` no diretório do rig; copiar build local para gika-essential-bust.riv; com dev5174 aberto, `node assets/gika/rive/essential-bust/capture-poses.cjs`; author QA viaqa.py. CLI precisa do LD_LIBRARY_PATH já existente no ambiente, sem nova dependência/tecnologia. Scrub da API2.44 é somente ferramenta de autoria; runtime do produto não o usa.
 
 Commit funcional `a67261c2224fa7a1fea3846e2e3696738a76768b`. **GIKA_HUMAN_VISUAL_REVIEW_REQUIRED.** M9-T3in_progress/T4blocked. Não Character final/M9done/RC/export ready. Sem pagamento Cadet/publicação/export final/main/PR/deploy/Gemini live. Aguardar nova aprovação humana.
+
+
+## Gesture Recovery interrompido — restauração do baseline
+
+Entrada e baseline restaurado: `17381e6447729b01f3b8d1ec7d1401ea882c0450`, feat/gika-integration; local/origin iguais após fetch. Decisão humana: **RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW**. Motivo: aparência de collage/recortes, inconsistência de resolução, junções artificiais e ausência de continuidade corporal adequada para rigging.
+
+Os recortes/overlays desta tentativa são somente protótipos de pose.14 arquivos rastreados foram restaurados byte a byte;24 arquivos exclusivos da tentativa e o diff foram preservados em `/tmp/gika-gesture-rejected-uncommitted`, fora do repositório e sem import no runtime. Inclui a experiência de alinhamento da boca: nenhuma alteração desta rodada permanece em produção. Neutral Master, rig facial/expressões anteriores, state machine/controller, Rive, lazy/fallback/reduced/playground e contratos funcionais/segurança permanecem exatamente como na entrada. Fontes e evidências históricas não foram descartados. Success continua sujeito ao problema visual reportado; restauração não é aprovação da personagem.
+
+Verificações mínimas reais após restaurar:
+
+- Diff de todos os arquivos rastreados contra17381e6 vazio antes de escrever este checkpoint documental.
+- Rive verify/once:0errors/0warnings, recompilação byte-idêntica ao RIV64233bytes; SHA256 `2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6`.
+- Build e ambos typechecks PASS; warning histórico de chunk grande permanece.
+- Único E2E focal development review:1/1PASS6,1s (caso3,9s), nove modos reais/reduced/Matte/Axe e0requisições privadas. Sem relaxar teste/deadline/retry.
+- Build normal contém exatamente o RIV do baseline, sem símbolos/assets dos protótipos ou playground. Rota dev no preview local do build normal mostra404, sem superfície de revisão.
+
+Primeira tentativa de CLI omitiu o LD_LIBRARY_PATH existente e falhou ao carregar libGLESv2.so.2; o comparador identificou build ignorado ainda contendo o protótipo. Com a configuração de ambiente já documentada, recompilação/comparação passaram e substituíram esse artefato local. Nenhum ajuste de produto/biblioteca/dependência. Checks focais anteriores da tentativa não constituem aceite dos gestos e não substituem esta prova de restauração.
+
+Nenhuma regressão ampla, continuação M9, tentativa adicional de reconstrução corporal/matte, Gemini live, main/PR/deploy/Cadet/export final. Somente checkpoint documental e backup de feat/gika-integration. **PARADO**, aguardando especificação separada de GIKA RIG-READY MASTER ASSET, sem propor ou implementar nova solução.

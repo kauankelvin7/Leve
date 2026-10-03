@@ -2,12 +2,12 @@
 
 ## Estado atual
 
-- Status global: `GIKA_HUMAN_VISUAL_REVIEW_REQUIRED`.
+- Status global: `RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW`.
 - Branch: `feat/gika-integration`; base responsiva aprovada `c840492d2f587f2222f9697fa5aecb5aac325ca6`, consolidada por fast-forward e publicada após verificar ancestralidade/worktree limpo/local=origin.
 - M0–M5 done; `M5_READY_FOR_NEXT_PHASE` preservado. M6-T1 done (`e39cd6a`), M6-T2 done (`85e3ec9`), M6-T3 done; M6 concluído, gates finais aprovados. M7-T1 e M7-T2 done; M7 concluído, gates finais aprovados. M8-T1 e M8-T2 done; M8 concluído com gates finais aprovados. M9 in_progress; T1/T2 done, T3 in_progress no acabamento visual da composição, T4 regressão técnica histórica aprovada e aceite RC blocked pelo acabamento visual ainda incompleto.
-- Character: bust-only; retrato circular aprovado como direção. Motion do vídeo anterior foi reprovado pelo usuário; esta rodada sobre4505bec mantém Neutral Master/10bones/9estados e acrescenta somente donors faciais registrados (Alegre/Pensativa/Curiosa), sem cabeças/cabelo/pele/roupa/escala de variantes. Face-base e mecha do master byte-idênticas; alpha de34pixels de fringe corrigido. RIV64233bytes local unsigned, não export final. Meia-altura é limitação, não requisito/bloqueio.
+- Character: baseline técnico `17381e6447729b01f3b8d1ec7d1401ea882c0450` restaurado integralmente após interrupção humana do Gesture Recovery. Neutral Master, rig facial/expressões anteriores,10bones/9estados, controller, Rive/lazy/fallback/reduced/playground e contratos preservados. Protótipos de recortes/overlays raster não entram no runtime nem no repositório. RIV64233bytes/hash2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6. Restauração técnica não aprova Character; alinhamento visual de success permanece pendente.
 - Reduced motion mantém a expressão estática de cada estado, sem runtime/loop; offline estático disponível sem rede. ACK/eventos/prioridades de execução intocados. Nenhum contrato de domínio/segurança alterado.
-- Playground somente Vite dev `/dev/gika-character`: mesmos runtime/rig/poses do produto, comparação dos9estados e MATTE TEST do mesmo RGBA em5fundos. Sem Auth/UID/agenda/Firestore/Gemini/command; ausente do build normal (rota404). Artefato remoto: vídeo real curto + capturas em docs/gika/character/qa/expression-*; revisão humana pendente.
+- Playground somente Vite dev `/dev/gika-character`: mesmos runtime/rig/poses do produto, comparação dos9estados e MATTE TEST do mesmo RGBA em5fundos. Sem Auth/UID/agenda/Firestore/Gemini/command; ausente do build normal (rota404). Vídeo/capturas anteriores em docs/gika/character/qa/expression-* são históricos preservados, não aprovação visual final.
 
 ## Hardening — resumo histórico
 
@@ -22,11 +22,12 @@ M8 aprovado; M9 sequencial autorizado sobre2e73b3ab4fbd72b04fc328dce60be7b928b32
 
 ## Próxima ação
 
-**GIKA_HUMAN_VISUAL_REVIEW_REQUIRED.** Revisar o novo vídeo/capturas de expression/motion/matte e o playground existente. Listening/thinking/clarify/success/error/offline agora usam atuações faciais específicas; rest/idle neutros e blink transitório preservados. Isso não constitui aceite visual automático. Evidência/tabela antes→depois em docs/gika/M9_EVIDENCE.md e character/EXPRESSION_INVENTORY.md.
+**PARADO.** `RASTER_GESTURE_APPROACH_REJECTED_BY_HUMAN_VISUAL_REVIEW`: aparência de collage/recortes, inconsistência de resolução, junções artificiais e ausência de continuidade corporal adequada para rigging. Aguardar especificação separada de GIKA RIG-READY MASTER ASSET; não propor nem implementar outra solução agora.
 
-Gates proporcionais desta rodada: Rive verify/once/inspect0errors/warnings; QA288renders/master/reset;8unit focais;5CharacterE2E finais+Axe; lint/AST47;doisTS/build;isolamento production PASS. Primeiras tentativas/limites registrados. Bateria ampla/audit histórico não repetidos, conforme pedido; sem alegação de nova regressão integral M9 verde.
+Restauração mínima verificada: todos os fontes/runtimes/testes e assets byte-idênticos a17381e6 antes da documentação; Rive verify/once0errors/warnings e recompilação idêntica ao RIV versionado; build com ambos typechecks PASS;1Character E2Edev+Axe PASS; build normal sem protótipos/playground e rota404. Primeira tentativa CLI sem LD_LIBRARY_PATH falhou por libGLESv2.so.2 ausente; variável de ambiente previamente documentada resolveu, sem mudança de produto. Sem regressão ampla/audit novamente.
 
-M9-T3 in_progress; T4/RC blocked por revisão visual humana e verificações/export subsequentes. HALF_BODY_SOURCE_INSUFFICIENT não bloqueia. Não declarar Character final/M9_DONE/RC/export ready. Não pagar Cadet/exportar/publicar Rive, executar Gemini live, abrir PR, fazer main/deploy/UAT ou iniciar outra fase.
+M9-T3 in_progress; T4/RC blocked. Não continuar M9, autoria de gestos/matte, export/pagamento Cadet/publicação Rive, Gemini live, main/PR/deploy. Evidências anteriores preservadas; checkpoint atual somente documental em feat/gika-integration.
+
 ## M8 — conclusão
 
 Entrada44b8928 local/origin/fetch limpa/exata; T1 commit571b6bfe9b3d685ca8295de14b66d0e24b99f14f. Regra local4–5 pending hoje sobre leitura existente completa, sem IA/IO/write; fingerprint/8dismissals em memória/currentToday/UID. UI panel/daily-brief nativa; opt-in somente draft, manualsend/M6/preview/confirmation/commands/receipts existentes. Offline hint sem fila/lazy/reconnectexec, rascunho/UID preservados. Cancel-lazy novo defeito reproduzido1FAIL e corrigido com invalidation/sequence; primeira pósfix1PASS. Gates finais audit0/lint/doisTS/build/533unit/7focal/37regressão/17shell/Axe PASS; primeira focal6PASS/primeira regressão37PASS preservadas. Integração server redundante não repetida (camada intocada), E2E real emuladores/fixtures sem live/credencial. UI desktoplight/mobiledark/200% revisada; sem CSS/dependência/query/persistência/Character/TTS novo. M8_EVIDENCE detalha limites e tentativas; parar para revisão, M9 todo.
