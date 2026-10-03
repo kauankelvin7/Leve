@@ -89,3 +89,14 @@ Gate visual pendente: presença adaptativa (busto expressivo no idle; meia-altur
 Esse requisito permanece obrigatório antes de Character/M9 visualmente concluídos. A integração técnica/estados continuam preservados; não declarar QA visual final PASS ou RC_READY. Asset de meia-altura não foi entregue por este bust rig e não pode ser fingido ampliando-o. Nenhum gesto/celebração adicional autorizado.
 
 A duplicação header/centro foi corrigida localmente após o feedback: uma única instância, centro idle/blink antes de mensagens e header depois. Dimensões atuais preservadas, sem upscale. Isso não aprova escala/enquadramento/presença adaptativa finais nem entrega meia-altura.
+
+
+## Composição final — inspeção sobre 057744ff
+
+[Inspeção da fonte](qa/presence-source-inspection.png) distingue pixels nativos de um asset final. Pose principal: recorte345×455, mão sobre mandíbula/pescoço e joelho sobre camiseta/torso; tem resolução para ilustração sentada estática, mas não oferece as partes ocultas de um torso independente. Turnaround frontal: inspeção125×198, detalhe facial menor e pernas continuam no limite inferior; não prova meia-altura limpa na escala maior pretendida. Não declarar impossibilidade do pipeline híbrido: a limitação é desta fonte/composição, não do Rive.
+
+`HALF_BODY_SOURCE_INSUFFICIENT`: para GikaPresence com enquadramento natural, falta fonte aprovada de camiseta/ombros com contorno inferior completo; na pose principal, torso atrás do joelho e mandíbula/pescoço atrás da mão caso separados. Não gerar essas partes, ampliar a pose menor ou inventar roupa/anatomia. Não foi criado GikaPresence placeholder. A mecha permanece na camada master e byte-idêntica.
+
+Busto: canvas135×133 com margem8; corpo119×117, apresentado em128×126 no mobile e no máximo135×133 no desktop, nunca além do nativo. Header conserva48/56 e uma única instância. Nenhum fade/máscara/outline para esconder o término da camiseta. Esse corte continua visível e reprova a composição final.
+
+[Matte antes/depois](qa/matte-composition-comparison.png): contaminação clara demonstrada em dark; correção não generativa de185pixels localizados com cor de cabelo adjacente e alfa estimado da própria referência. Só hair_back e side_curls L/R mudaram; outras11camadas são byte-idênticas. Rig/meshes/timelines permanecem iguais; recompilação apenas incorpora texturas corrigidas. QA252frames novamente PASS, não aprovação visual humana nem presença adaptativa completa.

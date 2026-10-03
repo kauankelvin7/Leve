@@ -366,11 +366,13 @@ milestones:
         title: "Acessibilidade, performance e offline"
         status: in_progress
         evidence: ["M9_EVIDENCE Character essencial; funcional0375d2d; mesmas14PNGs/master, noveestados/umViewModel.mode/10bones/build51586. CLI/QA252frames PASS, Controller facts-only sem autoridade de execução, lazy/runtime/fallback/reduced/offline. Audit0/lint/doisTS/build/545unit/252integração PASS; Ampla95/9 não integralmente verde (fixtures cap e launcher baseline reproduzidos; reconnectvoz NOT_REPRODUCED); focais13/13+pós-presença9/9+scroll1/1+shell17/17/Axe0/12viewportthemes+200% PASS. Feedback do usuário: composição atual não aprovada; presença adaptativa, escala, duplicação header/centro e halo/cortes pendentes, sem upscale do raster. T3 permanece in_progress e não RC_READY."]
+        current_evidence: "Composição sobre057744ff, funcional8c2e765d: fontePNG/master preservada, canvas135x133/mobile128x126 sem upscale, matte185pixels/3camadas;11camadas/RML/controller idênticos. Launcher/Sair26tarefas corrigido no dock; M8/convencional somente fixtures demonstradas. Final audit0/lintAST47/doisTS/build/545unit/252integração/105Gika/17shell/13Plannerdesign/20convencional fresh PASS; primeiras falhas preservadas. HALF_BODY_SOURCE_INSUFFICIENT e corte inferior da camiseta/matriz visual completa/QA humano ainda bloqueiam presença adaptativa; T3 in_progress/T4 blocked, sem READY/export licenciado."
         dependencies: [M9-T2]
       - id: M9-T4
         title: "Regression suite e release candidate"
         status: blocked
         evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomadas anteriores de referência/docs/QA/estado sem produto preservadas. Integração essencial atual entregue tecnicamente; gates/falhas qualificadas em M9_EVIDENCE, composição explicitamente não aprovada e presença adaptativa/halo/cortes pendentes. Decisão financeira resolvida (ADR024); aceite RC depende de busto híbrido/rig visualmente aprovados e gates após integração, não M9_DONE_RC_READY."]
+        current_evidence: "M9_EVIDENCE composição final sobre057744ff: gates técnicos atuais PASS, histórico qualificado preservado; RC/export blocked por fonte/silhueta/presença adaptativa/QA visual. Não M9_READY_FOR_FINAL_RIVE_EXPORT_APPROVAL nem M9_DONE_RC_READY."
         dependencies: [M9-T3]
 
 # Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.
