@@ -1,18 +1,22 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { isolatedTestAccount } from '../helpers/gikaBatch';
 
 test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async ({ page }) => {
   test.setTimeout(150_000);
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   const title = `Atividade rosa ${Date.now()}`;
+  // Other persistence/import cases may fill the four-dot summary before this task.
+  const email = await isolatedTestAccount('refinements');
   await page.goto('/entrar');
-  await page.getByLabel('E-mail').fill('leve.local@example.test');
+  await page.getByLabel('E-mail').fill(email);
   await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
-  if (await page.getByRole('button', { name: 'Pular guia', exact: true }).isVisible()) await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
+  // This account is new: await its onboarding instead of racing an immediate visibility check.
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
   await page.goto('/configuracoes');
   await page.getByRole('button', { name: 'Ver tutorial novamente' }).click();
   const tutorial = page.getByRole('dialog').filter({ has: page.locator('#tutorial-title') });

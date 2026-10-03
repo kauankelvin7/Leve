@@ -23,11 +23,11 @@
   "restFidelity": {
     "light": {
       "maxRgbError": 2,
-      "meanRgbError": 0.03896778984498283
+      "meanRgbError": 0.03904204956836536
     },
     "dark": {
       "maxRgbError": 2,
-      "meanRgbError": 0.0303536619326093
+      "meanRgbError": 0.030595006033602525
     }
   },
   "curlCentroidWidthFraction": [
@@ -37,8 +37,8 @@
   "faceAndNeckExposureHoles": 0,
   "distinctAnimatedStates": 5,
   "anatomicalSide": "LEFT / viewer RIGHT frontal",
-  "rigBytes": 51586,
-  "rigSha256": "18295a0cc8a4b9095d235209ae20ca4c35cb796605aa48828fe9c28c0668dc0e",
+  "rigBytes": 51569,
+  "rigSha256": "44c797f18c652c64830eab2a9b3f12a79d2c37f35b485e472781b1a48243fdaf",
   "limitations": [
     "Small119x117native bust only; not HD240/fullbody.",
     "Headless motion proof requires product/browser integration and human review.",

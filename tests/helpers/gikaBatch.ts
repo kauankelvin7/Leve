@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { Temporal } from '@js-temporal/polyfill';
+import { getAuth } from 'firebase-admin/auth';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { batchPlanSchema, batchOperationId, type BatchConfirmation } from '../../packages/domain/src/gikaBatch';
@@ -10,6 +11,13 @@ import { inspectRecurrence } from '../../server/gika/recurrenceGuard';
 process.env.FIRESTORE_EMULATOR_HOST ??= 'localhost:8080';
 if (!/^localhost:8080$|^127\.0\.0\.1:8080$/.test(process.env.FIRESTORE_EMULATOR_HOST)) throw Error('Local emulator required.');
 export const batchTestDb = getFirestore(getApps().find(app => app.name === 'gika-batch-e2e') ?? initializeApp({ projectId: 'demo-leve' }, 'gika-batch-e2e'));
+export async function isolatedTestAccount(prefix: string) {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST ??= 'localhost:9099';
+  if (!/^localhost:9099$|^127\.0\.0\.1:9099$/.test(process.env.FIREBASE_AUTH_EMULATOR_HOST)) throw Error('Local Auth emulator required.');
+  const email = `${prefix}-${crypto.randomUUID()}@example.test`;
+  await getAuth(getApps().find(app => app.name === 'gika-batch-e2e')).createUser({ email, password: 'leve-local-123', emailVerified: true, displayName: 'Conta local' });
+  return email;
+}
 export const batchTestZone = 'America/Sao_Paulo';
 export const batchSourceDate = Temporal.Now.instant().toZonedDateTimeISO(batchTestZone).toPlainDate().add({ days: 12 }).toString();
 export const batchDestinationDate = Temporal.PlainDate.from(batchSourceDate).add({ days: 1 }).toString();

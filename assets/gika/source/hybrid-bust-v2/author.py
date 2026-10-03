@@ -30,6 +30,17 @@ _,ox=ndi.distance_transform_edt(fg,return_indices=True);background=rgb[tuple(ox)
 v=near-background;alpha=np.ones((h,w),float)
 alpha[edge]=np.clip(np.sum((rgb.astype(float)-background)*v,axis=2)[edge]/np.maximum(np.sum(v*v,axis=2)[edge],1),.02,1)
 clean=rgb.copy();clean[edge]=near[edge].astype('uint8')
+# Actual dark-background QA exposed light matte islands up to 4px inside curls.
+# Decontaminate only low-chroma hair fringe with adjacent same-source dark hair;
+# face/shirt and the signature-purple pixels are excluded. No new silhouette.
+Y,X=np.indices((h,w))
+hair_core=core&~protected&(rgb.mean(2)<125)
+near_distance,hair_ix=ndi.distance_transform_edt(~hair_core,return_indices=True)
+signature_color=(rgb[:,:,2].astype(int)>rgb[:,:,1].astype(int)+18)&(rgb[:,:,0].astype(int)>rgb[:,:,1].astype(int)+12)&(X>=80)
+hair_matte=fg&~protected&(Y<92)&(rgb.mean(2)>145)&(chroma<65)&(near_distance<=4)&~signature_color
+hair_color=rgb[tuple(hair_ix)].astype(float);v=hair_color-background
+coverage=np.clip(np.sum((rgb.astype(float)-background)*v,axis=2)/np.maximum(np.sum(v*v,axis=2),1),0,1)
+alpha[hair_matte]=coverage[hair_matte];clean[hair_matte]=hair_color[hair_matte].astype('uint8')
 a=np.where(fg,np.round(alpha*255),0).astype('uint8')
 regions=[
  ('eye_L',[(70,49),(76,45),(86,46),(93,51),(93,60),(86,64),(73,62),(69,56)]),
@@ -158,5 +169,5 @@ for j,b in enumerate(doc.findall('Artboard')):
 for a0 in list(doc.findall('ImageAsset')):doc.remove(a0)
 for n,aid in assets.items():E.SubElement(doc,'ImageAsset',file='layers/'+n+'.png',name=n,id=aid)
 E.indent(doc);E.ElementTree(doc).write(root/'scene.rml',encoding='unicode');(root/'rive.yaml').write_text('name: gika-hybrid-bust-v2\n')
-meta={'sourceSha256':hashlib.sha256(src.read_bytes()).hexdigest(),'sourceBox':box,'nativeSize':native_size,'assetCanvas':[w,h],'sourceOffset':[margin,margin],'sourceFormat':'PNG RGB','faceBackingPixels':int(feature.sum()),'faceBackingMethod':'nearest adjacent same-face skin, harmonic relaxation only in hidden feature masks; no ML','matteBoundaryPixels':int(edge.sum()),'underlapAddedPixels':pads,'lidRegistration':lidmeta,'signatureSide':'anatomical LEFT / viewer RIGHT','layerFiles':{n:{'pixelsWithAlpha':int((v[:,:,3]>0).sum()),'sha256':hashlib.sha256((root/'layers'/f'{n}.png').read_bytes()).hexdigest()} for n,v in layers.items()}}
+meta={'sourceSha256':hashlib.sha256(src.read_bytes()).hexdigest(),'sourceBox':box,'nativeSize':native_size,'assetCanvas':[w,h],'sourceOffset':[margin,margin],'sourceFormat':'PNG RGB','faceBackingPixels':int(feature.sum()),'faceBackingMethod':'nearest adjacent same-face skin, harmonic relaxation only in hidden feature masks; no ML','matteBoundaryPixels':int(edge.sum()),'hairMatteInteriorPixels':int(hair_matte.sum()),'underlapAddedPixels':pads,'lidRegistration':lidmeta,'signatureSide':'anatomical LEFT / viewer RIGHT','layerFiles':{n:{'pixelsWithAlpha':int((v[:,:,3]>0).sum()),'sha256':hashlib.sha256((root/'layers'/f'{n}.png').read_bytes()).hexdigest()} for n,v in layers.items()}}
 (root/'extraction.json').write_text(json.dumps(meta,indent=2)+'\n');print(json.dumps({k:v for k,v in meta.items() if k not in ['layerFiles','lidRegistration']}))

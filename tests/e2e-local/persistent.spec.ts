@@ -73,6 +73,9 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page).toHaveURL(/\/hoje$/);
   await expect(page.getByText('Sua semana')).toBeVisible();
   await expect(page.getByLabel('Fuso horário')).toHaveCount(0);
+  // Finish onboarding before testing reloads on other routes; its first step opens Meu dia.
+  const skipGuide = page.getByRole('button', { name: 'Pular guia', exact: true });
+  if (await skipGuide.isVisible()) await skipGuide.click();
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Título').fill(activityTitle);
   await page.getByLabel('Data').fill(today);
@@ -153,10 +156,11 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page.getByText(`Compromisso persistente ${suffix}`, { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('button', { name: 'Excluir' }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toHaveCount(0);
-  await page.goto('/lixeira');
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira', exact: true }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('button', { name: 'Restaurar' }).click();
-  await page.goto('/hoje');
+  await expect(page.getByText(activityTitle, { exact: true })).toHaveCount(0);
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();

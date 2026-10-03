@@ -1,12 +1,21 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
-test('cronômetro explícito, conclusão e registro manual persistem após recarregar', async ({ page }) => {
-  test.setTimeout(120_000);
+async function enterConfiguredAgenda(page: Page) {
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');
   await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText(/Finalize sua agenda|Meu dia/);
+  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) {
+    await page.getByRole('button', { name: 'Criar minha agenda', exact: true }).click();
+    await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
+  }
   await expect(page.locator('#page-title')).toHaveText('Meu dia');
+}
+
+test('cronômetro explícito, conclusão e registro manual persistem após recarregar', async ({ page }) => {
+  test.setTimeout(120_000);
+  await enterConfiguredAgenda(page);
   if (await page.getByRole('button', { name: /Pular (guia|tutorial)/ }).isVisible()) await page.getByRole('button', { name: /Pular (guia|tutorial)/ }).click();
   await page.getByRole('button', { name: 'Nova atividade', exact: true }).click();
   const title = `Sessão ${Date.now()}`;
@@ -34,11 +43,7 @@ test('cronômetro explícito, conclusão e registro manual persistem após recar
 
 test('cronômetro continua contando fora do detalhe da atividade', async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto('/entrar');
-  await page.getByLabel('E-mail').fill('leve.local@example.test');
-  await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
-  await page.getByRole('button', { name: 'Entrar', exact: true }).click();
-  await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  await enterConfiguredAgenda(page);
   await page.getByRole('button', { name: 'Nova atividade', exact: true }).click();
   const title = `Cronômetro persistente ${Date.now()}`;
   await page.getByLabel('Título', { exact: true }).fill(title);

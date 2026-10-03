@@ -1,12 +1,14 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { Temporal } from '@js-temporal/polyfill';
-import { batchTestDb, batchTask, batchReceipt, batchTestPayload } from '../helpers/gikaBatch';
+import { batchTestDb, batchTask, batchReceipt, batchTestPayload, isolatedTestAccount } from '../helpers/gikaBatch';
 import { batchOperationId, batchPlanSchema, type BatchConfirmation } from '../../packages/domain/src/gikaBatch';
 import { issueBatchConfirmation } from '../../server/gika/confirmation';
 
+// Each case owns its account: tasks left by complete/update must not suppress cap5 hints.
 async function enter(page: Page) {
-  await page.goto('/entrar'); await page.getByLabel('E-mail').fill('leve.local@example.test'); await page.getByLabel('Senha', { exact: true }).fill('leve-local-123'); await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  const email = await isolatedTestAccount('m8');
+  await page.goto('/entrar'); await page.getByLabel('E-mail').fill(email); await page.getByLabel('Senha', { exact: true }).fill('leve-local-123'); await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page.locator('#page-title')).toHaveText(/Finalize sua agenda|Meu dia/);
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page.locator('#page-title')).toHaveText('Meu dia'); const skip = page.getByRole('button', { name: 'Pular guia', exact: true }); await skip.waitFor({ state: 'visible', timeout: 3000 }).catch(() => undefined); if (await skip.isVisible()) await skip.click();

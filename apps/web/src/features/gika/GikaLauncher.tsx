@@ -46,16 +46,17 @@ export function GikaLauncher() {
   }, [session?.uid]);
 
   // The timer is portaled to body and can grow when it displays an error.
-  // Measure actual dock heights rather than assuming a fixed timer size.
+  // Measure dock heights and keep the conventional footer reachable while scrolling.
   useEffect(() => {
     const button = launcher.current;
     if (!button) return;
     const update = () => {
       const width = button.getBoundingClientRect();
       let bottom = window.innerWidth <= 739 ? 82 : 24;
-      for (const obstacle of document.querySelectorAll('.active-timer-bar, .active-timer-error-bar, .sidebar')) {
+      for (const obstacle of document.querySelectorAll('.active-timer-bar, .active-timer-error-bar, .sidebar, .page-footer')) {
         if (obstacle.matches('.sidebar') && window.innerWidth > 739) continue;
         const rect = obstacle.getBoundingClientRect();
+        if (obstacle.matches('.page-footer') && (rect.top >= window.innerHeight || rect.bottom <= window.innerHeight - bottom - width.height - 12)) continue;
         if (rect.height && rect.right > width.left && rect.left < width.right) bottom = Math.max(bottom, window.innerHeight - rect.top + 12);
       }
       button.style.setProperty('--gika-dock-bottom', `${bottom}px`);
@@ -63,14 +64,15 @@ export function GikaLauncher() {
     const resize = new ResizeObserver(update);
     const observe = () => {
       resize.disconnect();
-      document.querySelectorAll('.active-timer-bar, .active-timer-error-bar, .sidebar').forEach(element => resize.observe(element));
+      document.querySelectorAll('.active-timer-bar, .active-timer-error-bar, .sidebar, .page-footer').forEach(element => resize.observe(element));
       update();
     };
     const mutations = new MutationObserver(observe);
     mutations.observe(document.body, { childList: true });
     window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
     observe();
-    return () => { resize.disconnect(); mutations.disconnect(); window.removeEventListener('resize', update); };
+    return () => { resize.disconnect(); mutations.disconnect(); window.removeEventListener('resize', update); window.removeEventListener('scroll', update, true); };
   }, [pathname]);
 
   function close() { setOpen(false); setDayDraftRequest(0); launcher.current?.focus({ preventScroll: true }); }

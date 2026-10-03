@@ -22,8 +22,9 @@
   "faceBackingPixels": 1202,
   "faceBackingMethod": "nearest adjacent same-face skin, harmonic relaxation only in hidden feature masks; no ML",
   "matteBoundaryPixels": 623,
+  "hairMatteInteriorPixels": 185,
   "underlapAddedPixels": {
-    "hair_back_visible": 1471,
+    "hair_back_visible": 1468,
     "hair_front_visible": 114,
     "side_curls_L_visible": 32,
     "side_curls_R_visible": 26,
@@ -188,16 +189,16 @@
       "sha256": "e2f1c69049702120db633f75667d2e9790e5b0c12c1f148b87b5940e2d10ce94"
     },
     "side_curls_L_visible": {
-      "pixelsWithAlpha": 797,
-      "sha256": "79d7fdfe66e5b73e14443b004205f416f009c63f32a0721502cd9c905705059a"
+      "pixelsWithAlpha": 796,
+      "sha256": "f3aca3dc76354862dc2e51d253f13edfdb312d0c1536580572888903be0bff9d"
     },
     "side_curls_R_visible": {
       "pixelsWithAlpha": 1564,
-      "sha256": "e9a7a5abd4644a3e9ac4a6929dd5c5511cbb50be6cda5f7c101ea0971d0085dc"
+      "sha256": "b6ffe5ff632466807508feb782506dc7560c3e79f7cf170dfa23a78a33a3390d"
     },
     "hair_back_visible": {
-      "pixelsWithAlpha": 4008,
-      "sha256": "94840e94dffbc6e1e1e3bb644610d354b065635ad9302be3971ab817ceb39874"
+      "pixelsWithAlpha": 4004,
+      "sha256": "74325c01fb9e1a80a9779b1496f68b24cd42396255a7a39658625f235b642b63"
     },
     "face_base_clean": {
       "pixelsWithAlpha": 2195,
@@ -211,7 +212,5 @@
       "pixelsWithAlpha": 118,
       "sha256": "6a0836c0b3a730bb2c1970c0ad417a1dc688ea7988815a68c1287d7e9862b74d"
     }
-  },
-  "source": "docs/gika/character/reference/gika-authoring-v2-original.png",
-  "v1SourcePreserved": true
+  }
 }

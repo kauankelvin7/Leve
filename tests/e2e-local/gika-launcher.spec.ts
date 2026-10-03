@@ -1,0 +1,20 @@
+import { test, expect } from '@playwright/test';
+import { isolatedTestAccount } from '../helpers/gikaBatch';
+import { Temporal } from '@js-temporal/polyfill';
+test('M9 launcher leaves logout reachable after scrolling a long agenda', async ({ page }) => {
+  const email = await isolatedTestAccount('launcher');
+  await page.goto('/entrar'); await page.getByLabel('E-mail').fill(email); await page.getByLabel('Senha', { exact: true }).fill('leve-local-123'); await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText(/Finalize sua agenda|Meu dia/);
+  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
+  await expect(page.locator('#page-title')).toHaveText('Meu dia');
+  const skip=page.getByRole('button',{name:'Pular guia',exact:true}); await skip.waitFor({state:'visible',timeout:3000}).catch(()=>undefined);if(await skip.isVisible())await skip.click();
+  const today=Temporal.Now.instant().toZonedDateTimeISO('America/Sao_Paulo').toPlainDate().toString();
+  await page.evaluate(async dueDate=>{const path='/src/platform/api.ts';const {sendCommand}=await import(/* @vite-ignore */path);for(let index=0;index<26;index++)await sendCommand({command:'activity.create',operationId:crypto.randomUUID(),entityId:crypto.randomUUID(),expectedRevision:0,payload:{title:`Synthetic footer ${index}`,descriptionPlain:'',categoryId:null,colorHex:null,estimatedMinutes:null,reminderSpecs:[],schedule:{type:'task',dueDate,dueTime:null,timeZone:'America/Sao_Paulo',disambiguation:'reject'}}});},today);
+  await expect(page.getByRole('heading',{name:'26 tarefas para hoje',exact:true})).toBeVisible();
+  await page.route('**/api/gika/respond',()=>{}); await page.getByRole('button',{name:'Pergunte à Gika',exact:true}).click(); const input=page.getByRole('textbox',{name:'Pergunte à Gika',exact:true});await input.fill('Synthetic pending query');await input.press('Enter'); await page.getByRole('button',{name:'Fechar Gika',exact:true}).click();
+  const logout=page.getByRole('button',{name:'Sair',exact:true});await logout.scrollIntoViewIfNeeded();
+  await expect.poll(() => logout.evaluate(element => { const b = element.getBoundingClientRect(); return !!document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2)?.closest('.gika-launcher'); })).toBe(false);
+  const hit=await logout.evaluate(element=>{const b=element.getBoundingClientRect();return {targetIsLauncher:!!document.elementFromPoint(b.x+b.width/2,b.y+b.height/2)?.closest('.gika-launcher'),top:Math.round(b.top),bottom:Math.round(b.bottom)};});
+  console.log(JSON.stringify({stage:'conventional footer hit test',syntheticPending:26,...hit}));expect(hit.targetIsLauncher).toBe(false);
+  await logout.click(); await expect(page.getByLabel('E-mail')).toBeVisible();
+});
