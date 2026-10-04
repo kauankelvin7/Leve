@@ -2,6 +2,10 @@ version: 1
 project: gika
 source_of_truth: true
 
+# Hotfix conversacional de produção, sem nova milestone: histórico geral bounded,
+# ferramentas de conversa/leitura/ação separadas; criação exige pedido explícito.
+# Evidência e gates: docs/gika/CONVERSATION_ROUTING_EVIDENCE.md.
+
 # Continuação focal do smoke Preview em 2026-10-04, entrada ce28348.
 # Controle ausente em leve-preview provisionado create-only; fail-closed preservado.
 # Diagnóstico por estágio e regressões focais: .agent/GIKA_STATE.md (sem nova milestone).

@@ -374,3 +374,14 @@ Um rig/nove estados/mesmas14camadas. Controller sem conteúdo/IDs/domain: typing
 - Fonte/mecha/rosto/lids continuam hash-pinned; somente matte demonstrado em três camadas de cabelo foi corrigido. QA dos nove estados não prova contorno inferior natural ou meia-altura final. `HALF_BODY_SOURCE_INSUFFICIENT` e QA visual humano pendente continuam impedindo o fechamento do M9.
 
 - Sessão fresh: ativação/onboarding pela UI é precondição explícita; entrada reproduziu2falhas antes do cronômetro. Depois do ajuste de setup,2/2PASS, mantendo clocks, ACKs, reload e assertions do timer. Nenhuma correção de produto/timeout necessária.
+
+## Conversa geral: regressões de roteamento
+
+- `Oi`, `Obrigado`, `Quem é você?`, `Tudo bem?`, procrastinação e dicas gerais: Gemini retorna `respond_conversation`; nenhuma leitura de atividades/séries, descriptor ou escrita de domínio/receipt. A quota técnica permanece ativa.
+- `Oi` → `O que tenho hoje?`: contexto geral limitado + leitura autenticada existente, sem comando.
+- `Crie uma tarefa para amanhã`: ação explícita incompleta pede título; não inventa tarefa.
+- `Talvez academia amanhã`, `Academia amanhã`, `sim`: tool de criação equivocada não produz descriptor, inclusive com pedido anterior no histórico.
+- Saída vazia: esclarecimento neutro; conversa + ação/consulta: rejeição, sem efeito. Histórico excessivo/identidade extra e resposta conversacional com descriptor: schema rejeita.
+- UI: histórico não inclui resultados de agenda; timezone permanece interno; a microcopy permanente de áudio é removida, preservando voz, draft, envio manual e acessibilidade.
+
+Provas determinísticas: `tests/unit/gika-gemini.test.ts`, `tests/unit/gika-create-policy.test.ts`, `tests/integration/gika.test.ts` e `tests/e2e-local/gika-readonly.spec.ts`. Não alegam interpretação Gemini live nem configuração de produção.

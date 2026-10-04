@@ -124,3 +124,36 @@ test('E70: 503, timeout e resposta inválida permitem consultar calendário apó
   await page.getByRole('link', { name: 'Calendário', exact: true }).click();
   await expect(page.locator('#page-title')).toHaveText('Calendário');
 });
+
+ test('general conversation keeps only bounded general turns, then agenda query has no mutation and no timezone microcopy', async ({page}) => {
+   await enter(page);
+   const requests: Record<string,unknown>[]=[]; const commands:string[]=[];
+   page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/api/commands'))commands.push(request.url());});
+   await page.route('**/api/gika/respond',route=>{
+     const input=route.request().postDataJSON();requests.push(input);
+     return route.fulfill({json:input.text==='O que tenho hoje?'?{text:'Veja sua agenda.',intent:'agenda_query',simulated:false,reads:[read]}:{text:input.text==='Oi'?'Oi! Como posso te ajudar?':'Posso conversar e ajudar com a agenda.',intent:'conversation',simulated:false,reads:[]}});
+   });
+   await page.getByRole('button',{name:'Pergunte à Gika'}).click();
+   const composer=page.getByRole('textbox',{name:'Pergunte à Gika',exact:true});
+   await composer.fill('Oi');await composer.press('Enter');
+   await expect(page.locator('.gika-content')).toContainText('Oi! Como posso te ajudar?');
+   expect(requests[0]).not.toHaveProperty('conversation');
+   await composer.fill('O que tenho hoje?');await composer.press('Enter');
+   await expect(page.locator('.gika-result')).toBeVisible();
+   expect(requests[1]!.conversation).toEqual([{role:'user',text:'Oi'},{role:'assistant',text:'Oi! Como posso te ajudar?'}]);
+   await expect(page.locator('.gika-panel')).not.toContainText('Horários em');
+   await expect(page.locator('#gika-voice-privacy')).toHaveCount(0);
+   await composer.fill('Como você pode ajudar?');await composer.press('Enter');
+   await expect(composer).toHaveValue('');
+   expect(JSON.stringify(requests[2]!.conversation)).not.toContain(read.items[0]!.title);
+   expect(commands).toEqual([]);
+   expect((await new AxeBuilder({page}).include('.gika-panel').analyze()).violations).toEqual([]);
+   await page.getByRole('button',{name:'Fechar Gika'}).click();
+   await page.getByRole('button',{name:'Sair',exact:true}).click();
+   await expect(page.getByRole('heading',{name:'Entre na sua agenda',exact:true})).toBeVisible();
+   await enter(page);
+   await page.getByRole('button',{name:'Pergunte à Gika'}).click();
+   await composer.fill('Oi');await composer.press('Enter');
+   await expect(page.locator('.gika-content')).toContainText('Oi! Como posso te ajudar?');
+   expect(requests[3]).not.toHaveProperty('conversation');
+ });

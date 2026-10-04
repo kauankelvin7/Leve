@@ -173,3 +173,9 @@ Batch cap5/occurrence explícito continua autoridade de composição; future/all
 ## M9 — hardening observado
 
 A whitelist pública Firebase permanece; APIkeys privadas em VITE_ falham no build. Diagnósticos de erro usam somente classe/code/status técnico, sem message/stack/conteúdo/UID; rotas de receipt são genéricas. AppCheck não foi habilitado sem registro/provider/sitekey/domínios/UAT gratuitos coordenados (ADR023); Auth/Rules/commands não foram enfraquecidos. Rate limiter Gika continua local por instância, com seus caps existentes; não promete quota distribuída após restart/entre instâncias. Guard AST e regressão complementam, sem substituir, autorização/validação transacional existente.
+
+## Conversa geral: fronteira de autoridade
+
+`respond_conversation` é uma saída textual do Gemini em schema fechado. Não recebe acesso ao repositório, não gera descriptor e não pode coexistir com outra tool. Auth, membership, controle global e quota permanecem obrigatórios; reautorizar após o provider também vale para conversa e saída vazia. Texto renderizado jamais invoca comandos ou constitui ACK.
+
+Histórico opcional é limitado a seis turnos gerais e não contém resultados privados de agenda acrescentados pelo software. Trate inclusive o papel `assistant` enviado pelo cliente como não confiável. Toda mutação precisa estar explícita no pedido atual e passar pelo validator existente; histórico não completa alvo, patch ou consentimento. Saudações, títulos/datas isolados e `sim` não autorizam criação. Rules, receipts, confirmation contracts, limites e writers permanecem inalterados.

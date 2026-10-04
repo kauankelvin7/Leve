@@ -50,7 +50,7 @@ export function GikaMessage({ message, active = true, online = true, superseded 
     {(message.rescheduleResolution ?? message.updateResolution ?? message.completionResolution)?.candidates.length ? <section className="gika-result" role="group" aria-label="Tarefas encontradas"><ul>{(message.rescheduleResolution ?? message.updateResolution ?? message.completionResolution)!.candidates.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {item.dueDate ? civilLabel(item.dueDate) : 'Sem data'} · {item.status === 'completed' ? 'Concluída' : item.status === 'canceled' ? 'Cancelada' : 'Pendente'}</span></li>)}</ul></section> : null}
     {message.simulated && message.preview === 'organize-demo' && <GikaDemoPreview />}
     {message.reads?.map((read, index) => <GikaToolResult key={index} title={read.startDate === read.endDate ? `Agenda de ${civilLabel(read.startDate)}` : `Agenda de ${civilLabel(read.startDate)} a ${civilLabel(read.endDate)}`}>
-      <p>Horários em {read.timeZone}.</p>
+
       {read.partial && <p>Consulta parcial. Pode haver outros itens ou rotinas ainda não disponíveis neste período.</p>}
       {read.items.length ? <ul>{read.items.map(item => <li key={item.id}><strong>{item.title}</strong><span> · {itemLabel(item)}</span></li>)}</ul> : <p>{read.partial ? 'Não há itens nesta parte da consulta.' : 'Nada planejado para esse período.'}</p>}
     </GikaToolResult>)}

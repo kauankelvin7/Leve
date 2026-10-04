@@ -102,7 +102,7 @@ test('M7-T2 mobile dark append, double start, processing, cancellation and layou
   let requests = 0; page.on('request', request => { if (/\/api\/(?:gika|commands)/u.test(request.url())) requests++; });
   const input = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true }); await input.fill('Já digitado');
   await page.getByRole('button', { name: 'Usar voz', exact: true }).click(); await expect(page.locator('#gika-voice-status')).toHaveText('Ouvindo…');
-  await expect(page.locator('#gika-voice-status')).toBeInViewport(); await expect(page.locator('#gika-voice-privacy')).toBeInViewport();
+  await expect(page.locator('#gika-voice-status')).toBeInViewport(); await expect(page.locator('#gika-voice-privacy')).toHaveCount(0);
   expect(await page.locator('#gika-voice-status').evaluate(element => getComputedStyle(element).clipPath)).toBe('none');
   await page.screenshot({ path: '/tmp/leve-m7-mobile-dark-listening.png' }); expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
   await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.current!.onresult?.({ results: [{ isFinal: true, 0: { transcript: 'academia amanhã' } }] }));

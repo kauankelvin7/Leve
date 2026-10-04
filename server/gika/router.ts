@@ -14,19 +14,19 @@ import { validateReschedule,resolveReschedule,isRescheduleRequest } from './resc
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
 import express, { Router, type ErrorRequestHandler } from 'express';
-import { gikaRequestSchema, gikaInterpretationSchema, readResultSchema } from '../../packages/domain/src/gika.ts';
+import { GIKA_MAX_REQUEST_BYTES, gikaRequestSchema, gikaInterpretationSchema, readResultSchema } from '../../packages/domain/src/gika.ts';
 import { AppError } from '../errors.ts';
 import { createGeminiAdapter } from './gemini.ts';
 import { bounded, GikaFault, type ModelAdapter } from './model.ts';
 import { readRange } from './policy.ts';
-import { resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
+import { isCreationRequest, resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { consumeGikaQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
 export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
   const router = Router();
-  router.use(express.json({ limit: '12kb', strict: true }));
+  router.use(express.json({ limit: GIKA_MAX_REQUEST_BYTES, strict: true }));
   const bodyError: ErrorRequestHandler = (error, _request, _response, next) => {
     if (error?.type === 'entity.too.large') { next(new AppError(413, 'PAYLOAD_TOO_LARGE', 'Conteúdo acima do limite permitido.')); return; }
     if (error?.type === 'entity.parse.failed') { next(new AppError(400, 'VALIDATION_ERROR', 'Confira a pergunta e tente novamente.')); return; }
@@ -101,6 +101,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         stage = 'authorization';
         const context = await repository.authorize(identity);
+        const actionRequested = isCreationRequest(input.text) || isUpdateRequest(input.text) || isRescheduleRequest(input.text) || /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text);
         const period = organizationPeriod(input.text);
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
@@ -143,12 +144,16 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         stage = 'quota';
         await consumeQuota(identity.uid);
         stage = 'model';
-        const interpreted = await model.interpret({ text: input.text, context }, signal, { correlationId: response.locals.correlationId });
+        const interpreted = await model.interpret({ text: input.text, context, ...(input.conversation ? { conversation: input.conversation } : {}) }, signal, { correlationId: response.locals.correlationId });
         stage = 'policy';
         const calls = validateToolCalls(interpreted);
         // Recheck account/policy after the upstream wait, before exposing data.
-        const current = calls.length ? await repository.authorize(identity) : context;
+        const current = await repository.authorize(identity);
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
+        if (calls[0]?.name === 'respond_conversation') {
+          if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+          return gikaInterpretationSchema.parse({ text: calls[0].args.text, intent: actionRequested ? 'agenda_action' : 'conversation', simulated: false, reads: [] });
+        }
         if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
           const intent=validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
           if('clarification' in intent)return gikaInterpretationSchema.parse({text:intent.clarification,simulated:false,reads:[]});
@@ -280,10 +285,10 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           const intent = validateCreation(calls[0].args, input.text, current);
           const decision = assessCreation(Boolean(intent.task), 'verified');
           if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
-          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
+          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: isCreationRequest(input.text) ? 'agenda_action' : 'conversation', simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
+        const ranges = calls.map(call => { if (call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         stage = 'read';
         for (const range of ranges) {
@@ -294,12 +299,12 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           reads.push(read);
         }
         const text = reads.length === 0
-          ? (isRescheduleRequest(input.text) ? 'Não movi nenhuma tarefa. Informe o título, o dia atual e a nova data.' : isUpdateRequest(input.text) ? ('clarification' in resolveUpdateIntent(input.text, current) ? 'Qual tarefa você quer renomear e qual será o novo título?' : 'Não alterei nenhuma tarefa. Reformule o pedido ou use sua agenda.') : /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text) ? ('clarification' in resolveCompletionIntent(input.text, current) ? 'Qual tarefa você quer concluir? Informe o título e o dia.' : 'Não concluí nenhuma tarefa. Reformule o pedido ou use sua agenda.') : resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Você pode reformular o pedido ou consultar sua agenda.')
+          ? (isRescheduleRequest(input.text) ? 'Não movi nenhuma tarefa. Informe o título, o dia atual e a nova data.' : isUpdateRequest(input.text) ? ('clarification' in resolveUpdateIntent(input.text, current) ? 'Qual tarefa você quer renomear e qual será o novo título?' : 'Não alterei nenhuma tarefa. Reformule o pedido ou use sua agenda.') : /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text) ? ('clarification' in resolveCompletionIntent(input.text, current) ? 'Qual tarefa você quer concluir? Informe o título e o dia.' : 'Não concluí nenhuma tarefa. Reformule o pedido ou use sua agenda.') : isCreationRequest(input.text) ? resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Reformule o pedido ou use sua agenda.' : 'Como posso te ajudar? Você pode conversar comigo ou fazer um pedido sobre sua agenda.')
           : reads.some(read => read.partial) ? 'Esta consulta mostra parte da sua agenda. Confira o calendário para ver mais.'
           : 'Veja sua agenda para o período consultado.';
-        return gikaInterpretationSchema.parse({ text, simulated: false, reads });
+        return gikaInterpretationSchema.parse({ text, intent: reads.length ? 'agenda_query' : actionRequested ? 'agenda_action' : 'conversation', simulated: false, reads });
       }, controller.signal, 15_000);
-      if (!controller.signal.aborted) response.json(result);
+      if (!controller.signal.aborted) response.json({ ...result, intent: result.intent ?? (result.reads.length ? 'agenda_query' : 'agenda_action') });
     } catch (error) {
       gikaDiagnostic(error instanceof GikaFault && error.diagnosticClass?.startsWith('ServiceControls') ? 'config_error'
         : error instanceof GikaFault && error.code === 'GIKA_TIMEOUT' ? 'timeout' : stage, {

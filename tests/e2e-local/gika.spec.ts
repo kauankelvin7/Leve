@@ -343,8 +343,8 @@ test('conversa tem scroll independente, composer expansível e cards apenas simu
   const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
   const voice = page.getByRole('button', { name: 'Usar voz', exact: true });
   await expect(voice).toBeVisible();
-  if (await voice.isEnabled()) await expect(page.locator('#gika-voice-privacy')).toContainText('Áudio pode ser enviado online.');
-  else await expect(page.locator('#gika-voice-status')).toContainText('Voz não disponível');
+  await expect(page.locator('#gika-voice-privacy')).toHaveCount(0);
+  if (!await voice.isEnabled()) await expect(page.locator('#gika-voice-status')).toContainText('Voz não disponível');
   await expect(page.locator('.gika-suggestions button svg')).toHaveCount(4);
   await expect(page.locator('.gika-character')).toHaveCount(1);
   const initialHeight = (await question.boundingBox())!.height;

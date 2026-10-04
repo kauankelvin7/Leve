@@ -14,6 +14,7 @@ import { GikaFault } from './model.ts';
 
 /** Intent selects a bounded software read, never a model-selected query. */
 export function organizationPeriod(text: string): 'day' | 'week' | null {
+  if (/\b(?:ideia|dica|explique|explica|procrastina[cç][aã]o)\b/iu.test(text)) return null;
   if(isUpdateRequest(text)||isRescheduleRequest(text)||/^(?:por favor[, ]+)?(?:pode\s+)?(?:terminei|conclu[ií]|conclua|complete|marca|marque|cria|crie|adiciona|adicione)\b/iu.test(text.trim()))return null;
   const source = text.replace(/"[^"\n]*"|'[^'\n]*'|“[^”\n]*”|‘[^’\n]*’/gu,'').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   if (!/\b(?:organiza|organize|organizar|organizaria|reorganiza|reorganize|reorganizar|distribuir)\b/u.test(source)) return null;

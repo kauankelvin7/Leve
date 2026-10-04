@@ -12,6 +12,7 @@ export type CreationIntent = { task: CreateTaskDescriptor; clarification?: never
 export function resolveCreationIntent(text: string, context: ModelContext): CreationIntent {
   const source = text.trim().replace(/\s+/g, ' '); const plain = normalized(source);
   const verb = plain.match(prefix);
+  if (!verb) return { clarification: 'O que você gostaria de fazer? Pode conversar comigo ou fazer um pedido sobre sua agenda.' };
   const dates = [...plain.matchAll(datePattern)];
   if ((!verb && (/\?/.test(plain) || /\b(o que|quais|consultar|mostra|mostrar|ver minha|ver meu|pendencias)\b/.test(plain) || /^(?:tenho|existe|preciso|ver)\b/.test(plain)))
     || (!verb && /\b(?:terminei|conclui|conclua|concluir|marca|marque|complete|renomeia|renomeie|renomear|muda|mude|altera|altere|move|mova|mover|joga|jogue|passa|passe|reagenda|reagende)\b/.test(plain))
@@ -46,6 +47,7 @@ export function resolveCreationIntent(text: string, context: ModelContext): Crea
   const task = createTaskDescriptorSchema.safeParse({ title: remaining, dueDate: date, dueTime, timeZone: context.timeZone });
   return task.success ? { task: task.data } : { clarification: 'Confira o título, a data e o horário da tarefa.' };
 }
+export function isCreationRequest(text: string) { return prefix.test(normalized(text)); }
 export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
   if (calls.length > 3) throw new GikaFault('GIKA_POLICY');
   const tools = calls.map(call => {
@@ -56,6 +58,7 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
     }
     return parsed.data;
   });
+  if (tools.some(tool => tool.name === 'respond_conversation') && tools.length !== 1) throw new GikaFault('GIKA_POLICY');
   if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task' || tool.name === 'reschedule_task' || tool.name === 'batch_complete' || tool.name === 'batch_reschedule' || tool.name === 'propose_organization') && tools.length !== 1) {
     const first = tools[0];
     // Schemas above normalize property order and reject unknown fields before collapsing repetition.

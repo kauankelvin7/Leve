@@ -1,3 +1,11 @@
+## Continuação de produção — conversa Gika
+
+Entrada `main@e129f65df6a02b76b9a51ed3f1caed6ae03dd69c`, fetch/local=origin/worktree limpo. Pedido vigente autoriza conversa geral Gemini, roteamento seguro, contexto geral bounded em memória, remoção de microcopy timezone/áudio e commit/push em main após gates. Nenhuma nova milestone.
+
+Causa: texto livre descartado + fallback sem calls sempre passava por resolveCreationIntent. Correção: resposta conversacional estruturada sem autoridade, três categorias explícitas, fallback neutro, criação apenas com pedido explícito no texto atual. Contratos de comandos/ACK/policy/receipts/confirmation/recorrência/lote/Rules preservados. Histórico somente geral, seis turnos, sem resultados de agenda, reautorização também para conversa. Verificação concluída: audit zero, lint/AST, ambos typechecks/build, 598 unitários, 245 integrações Gika e regressões E2E focais aprovados; primeiras falhas de fixtures/expectativas preservadas. Deploy/produção não verificados por falta de acesso Vercel; resultados finais em `docs/gika/CONVERSATION_ROUTING_EVIDENCE.md`.
+
+Histórico abaixo permanece como evidência, não substitui esta autorização de produção.
+
 # Gika — estado persistente
 
 ## Estado atual

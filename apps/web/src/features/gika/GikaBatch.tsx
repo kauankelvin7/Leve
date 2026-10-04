@@ -65,7 +65,7 @@ export function GikaBatch({ confirmation, context, active, online = true, supers
     <ul className="gika-batch-items">{confirmation.plan.items.map((item, index) => <li key={item.id}>
       <strong>{item.title}</strong>
       <span>{moment(item.before.dueDate, item.before.dueTime)}{completing ? ' → Concluída' : 'dueDate' in item.patch ? ` → ${moment(item.patch.dueDate, item.patch.dueTime ?? item.before.dueTime)}` : ''}</span>
-      {organization && <span>Horários em {item.timeZone}.</span>}
+
       {item.scope === 'occurrence' && <span>Rotina: só esta ocorrência.</span>}
       {result && <span>{itemStatus[result.items[index]!.status]}</span>}
     </li>)}</ul>

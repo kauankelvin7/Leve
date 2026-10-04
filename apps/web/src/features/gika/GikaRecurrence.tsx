@@ -67,7 +67,7 @@ export function GikaRecurrence({ choice, confirmation: initial, context, active 
       {proposal.operation === 'update' && <dl className="gika-confirmation-diff"><div><dt>De</dt><dd>{proposal.task.title}</dd></div><div><dt>Para</dt><dd>{proposal.patch.title}</dd></div></dl>}
       {proposal.operation === 'reschedule' && <dl className="gika-confirmation-diff"><div><dt>De</dt><dd>{moment(proposal.task.dueDate, proposal.task.dueTime)}</dd></div><div><dt>Para</dt><dd>{moment(proposal.patch.dueDate, proposal.patch.dueTime ?? proposal.task.dueTime)}</dd></div></dl>}
       {proposal.operation === 'complete' && <p>Vou marcar esta tarefa como concluída.</p>}
-      <p>Horários em {proposal.task.timeZone}.</p>
+
     </>}
     <p ref={feedback} tabIndex={-1} role="status" aria-live="polite">{text}</p>
     {(state === 'choice' || state === 'preview' || busy || (state === 'failed' && retryAllowed)) && <div className="gika-card-actions">

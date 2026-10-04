@@ -23,7 +23,7 @@ export function GikaConfirmationCard({ confirmation, state, result, feedbackRef,
     : state === 'failed' ? (errorText ?? 'Não consegui confirmar. Confira sua agenda e tente novamente.') : 'Confira a nova data antes de mover.';
   return <section className="gika-result gika-confirmation" role="group" aria-label={state === 'confirmed' ? 'Tarefa reagendada' : 'Prévia de reagendamento'} aria-busy={state === 'confirming'} data-confirmation-state={state}>
     <div className="gika-card-title"><Icon name={state === 'confirmed' ? 'check' : 'calendar'} /><strong>{result?.title ?? task.title}</strong></div>
-    {state === 'confirmed' ? <p>{moment({ dueDate: result!.dueDate!, dueTime: result!.dueTime })}</p> : <><dl className="gika-confirmation-diff"><div><dt>De</dt><dd>{moment(summary.before)}</dd></div><div><dt>Para</dt><dd>{moment(summary.after)}</dd></div></dl><p>Horários em {task.timeZone}.</p></>}
+    {state === 'confirmed' ? <p>{moment({ dueDate: result!.dueDate!, dueTime: result!.dueTime })}</p> : <><dl className="gika-confirmation-diff"><div><dt>De</dt><dd>{moment(summary.before)}</dd></div><div><dt>Para</dt><dd>{moment(summary.after)}</dd></div></dl></>}
     <p ref={feedbackRef} tabIndex={-1} role="status" aria-live="polite">{text}</p>
     {(state === 'awaiting_confirmation' || state === 'confirming' || (state === 'failed' && retryAllowed)) && <div className="gika-card-actions">
       {state === 'awaiting_confirmation' && <button type="button" disabled={!active} onClick={onCancel}>Cancelar</button>}

@@ -17,7 +17,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     const payload = geminiPayload(input);
     expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
     expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
-    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['batch_complete', 'batch_reschedule', 'get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'reschedule_task', 'get_week']);
+    expect(payload.tools[0]!.functionDeclarations.map(tool => tool.name)).toEqual(['respond_conversation', 'batch_complete', 'batch_reschedule', 'get_today', 'get_day', 'create_task', 'complete_task', 'update_task', 'reschedule_task', 'get_week']);
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'update_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'date', 'patch'], properties: { patch: { additionalProperties: false, required: ['title'] } } });
     expect(payload.tools[0]!.functionDeclarations.find(tool => tool.name === 'create_task')?.parametersJsonSchema).toMatchObject({ additionalProperties: false, required: ['title', 'dueDate', 'dueTime'] });
     for (const name of ['batch_complete', 'batch_reschedule']) {
@@ -198,3 +198,21 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     await expect(createGeminiAdapter(async () => Response.json(body([{ functionCall: call }]))).interpret(input, signal())).resolves.toEqual([call]);
   });
 });
+
+ it('general conversation is structured Gemini output; bounded history is context, not tool authority', async () => {
+   const conversation = [{role:'user' as const,text:'Oi'}, {role:'assistant' as const,text:'Oi! Como posso te ajudar?'}];
+   const payload = geminiPayload({...input, text:'Quem é você?', conversation});
+   expect(payload.contents.map(turn => turn.role)).toEqual(['user','model','user']);
+   expect(payload.systemInstruction.parts[0]!.text).toContain('Intenção incerta nunca assume mutação');
+   const adapter = createGeminiAdapter(async () => Response.json(body([{functionCall:{name:'respond_conversation',args:{text:'Sou a Gika, sua assistente do Leve.'}}}])));
+   expect(await adapter.interpret({...input,text:'Quem é você?'},signal())).toEqual([{name:'respond_conversation',args:{text:'Sou a Gika, sua assistente do Leve.'}}]);
+ });
+
+ it('conversation schema rejects agenda effects and oversized or identity-bearing history', async () => {
+   const {gikaRequestSchema,gikaInterpretationSchema}=await import('../../packages/domain/src/gika');
+   const {validateToolCalls}=await import('../../server/gika/createPolicy');
+   expect(()=>validateToolCalls([{name:'respond_conversation',args:{text:'Oi',uid:'other'}}])).toThrow();
+   expect(()=>gikaRequestSchema.parse({requestId:crypto.randomUUID(),text:'Oi',conversation:Array(7).fill({role:'user',text:'x'})})).toThrow();
+   expect(()=>gikaRequestSchema.parse({requestId:crypto.randomUUID(),text:'Oi',conversation:[{role:'user',text:'x',uid:'other'}]})).toThrow();
+   expect(()=>gikaInterpretationSchema.parse({text:'Oi',intent:'conversation',simulated:false,reads:[],createTask:{title:'X',dueDate:null,dueTime:null,timeZone:input.context.timeZone}})).toThrow();
+ });

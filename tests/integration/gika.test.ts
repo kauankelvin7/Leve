@@ -50,7 +50,7 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
       tomorrow = Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString();
       return [{ name: 'create_task', args: creationArgs(tomorrow) }];
     } };
-    const interpreted = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200);
+    const interpreted = await ask(user.token, { requestId: id, text: 'Adiciona Academia amanhã' }).expect(200);
     expect(interpreted.body).toMatchObject({ createTask: { ...creationArgs(tomorrow), timeZone }, reads: [] });
     expect(interpreted.body).not.toHaveProperty('createdTask');
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
@@ -66,7 +66,7 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
   it.each(['Cria uma tarefa', 'Academia'])('missing information asks instead of writing %s', async text => {
     const user = await account(); state.model = { interpret: async () => [{ name: 'create_task', args: creationArgs('2026-10-02') }] };
     const response = await ask(user.token, { requestId: id, text }).expect(200);
-    expect(response.body).not.toHaveProperty('createTask'); expect(response.body.text).toContain(text === 'Academia' ? 'qual dia' : 'Qual tarefa');
+    expect(response.body).not.toHaveProperty('createTask'); expect(response.body.text).toContain(text === 'Academia' ? 'O que você gostaria de fazer?' : 'Qual tarefa');
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
@@ -85,26 +85,26 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
   });
   it.each([{ name: 'create_task', args: { dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null, owner: 'someone-else' } }, { name: 'complete_task', args: {} }, { name: 'undo_create_task', args: { entityId: id } }])('malformed/unknown tool never writes %j', async call => {
     const user = await account(); state.model = { interpret: async () => [call] };
-    await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(422);
+    await ask(user.token, { requestId: id, text: 'Adiciona Academia amanhã' }).expect(422);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
   it('narrative claiming success without a valid tool is discarded', async () => {
     const actual = await vi.importActual<typeof import('../../server/gika/gemini')>('../../server/gika/gemini');
     const user = await account(); state.model = actual.createGeminiAdapter(async () => Response.json({ candidates: [{ finishReason: 'STOP', content: { parts: [{ text: 'Criei Academia amanhã com sucesso.' }] } }] }));
-    const response = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200);
+    const response = await ask(user.token, { requestId: id, text: 'Adiciona Academia amanhã' }).expect(200);
     expect(response.body.text).toContain('Não adicionei'); expect(response.body).not.toHaveProperty('createTask');
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
   it('membership revoked during model wait denies the descriptor; unauthenticated creation denies before model', async () => {
-    await request(app).post('/api/gika/respond').send({ requestId: id, text: 'Academia amanhã' }).expect(401);
+    await request(app).post('/api/gika/respond').send({ requestId: id, text: 'Adiciona Academia amanhã' }).expect(401);
     expect(state.inputs).toHaveLength(0); const user = await account();
     state.model = { interpret: async input => { await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' }); return [{ name: 'create_task', args: creationArgs(Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString()) }]; } };
-    await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(403);
+    await ask(user.token, { requestId: id, text: 'Adiciona Academia amanhã' }).expect(403);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
   });
   it.each(['membership', 'restricted'])('existing command rechecks policy immediately before the transaction %s', async failure => {
     const user = await account(); state.model = { interpret: async input => [{ name: 'create_task', args: creationArgs(Temporal.PlainDate.from(input.context.today).add({ days: 1 }).toString()) }] };
-    const response = await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(200); const command = creationCommand(response.body);
+    const response = await ask(user.token, { requestId: id, text: 'Adiciona Academia amanhã' }).expect(200); const command = creationCommand(response.body);
     if (failure === 'membership') await db.doc(`memberships/${user.uid}`).update({ state: 'suspended' }); else await db.doc('serviceControls/global').update({ mode: 'restricted' });
     await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command).expect(failure === 'membership' ? 403 : 503);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
@@ -300,7 +300,7 @@ describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators',
 });
 
 describe('M3-T2 E11 existing atomic command receipts across retries/processes', () => {
-  const text = 'Academia amanhã';
+  const text = 'Adiciona Academia amanhã';
   async function intent(user: { token: string }, requestId = id, requestText = text) {
     const response = await ask(user.token, { requestId, text: requestText }).expect(200);
     const { createTask } = gikaInterpretationSchema.parse(response.body);
@@ -748,3 +748,49 @@ describe('M4-T2 additional resolution and private receipt regressions', () => {
   }
  });
 });
+
+ describe('conversational routing without agenda authority', () => {
+   it.each(['Oi','Obrigado','Quem é você?','Tudo bem?','Me explique o que é procrastinação','Me dê uma ideia para organizar meu dia'])('general %s uses Gemini text without private agenda reads or writes', async text => {
+     const user = await account();
+     const actual = await vi.importActual<typeof import('../../server/gika/gemini')>('../../server/gika/gemini');
+     state.model = actual.createGeminiAdapter(async () => Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall:{name:'respond_conversation',args:{text:'Resposta natural do Gemini.'}}}]}}]}));
+     const read = vi.spyOn(db, 'collection');
+     try {
+       const response = await ask(user.token,{requestId:crypto.randomUUID(),text}).expect(200);
+       expect(response.body).toEqual({text:'Resposta natural do Gemini.',intent:'conversation',simulated:false,reads:[]});
+       expect(read.mock.calls.some(([path]) => path.includes('/activities') || path.includes('/series'))).toBe(false);
+     } finally {read.mockRestore();}
+     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+     expect((await db.collection('commandReceipts').get()).size).toBe(0);
+   });
+   it('greeting follow-up queries agenda using read-only tools with bounded general context', async () => {
+     const user = await account();
+     const response = await ask(user.token,{requestId:crypto.randomUUID(),text:'O que tenho hoje?',conversation:[{role:'user',text:'Oi'},{role:'assistant',text:'Oi! Como posso te ajudar?'}]}).expect(200);
+     expect(response.body.intent).toBe('agenda_query'); expect(response.body.reads).toHaveLength(1);
+     expect(state.inputs[0]!.conversation).toHaveLength(2);
+     expect((await db.collection('commandReceipts').get()).size).toBe(0);
+   });
+   it.each(['proposal', 'clarification'])('explicit creation without title is an action clarification, never an invented task (%s)', async kind => {
+     const user = await account();
+     state.model={interpret:async()=>kind === 'proposal' ? [{name:'create_task',args:{title:'Inventada',dueDate:'2026-10-05',dueTime:null}}] : [{name:'respond_conversation',args:{text:'Qual tarefa você quer adicionar?'}}]};
+     const response=await ask(user.token,{requestId:crypto.randomUUID(),text:'Crie uma tarefa para amanhã'}).expect(200);
+     expect(response.body.intent).toBe('agenda_action'); expect(response.body.text).toContain('Qual tarefa');
+     expect(response.body).not.toHaveProperty('createTask');
+     expect((await db.collection('commandReceipts').get()).size).toBe(0);
+   });
+   it.each(['Oi','Obrigado','Talvez academia amanhã','Academia amanhã','sim'])('misrouted create tool and previous history cannot authorize ambiguous %s', async text => {
+     const user=await account();
+     state.model={interpret:async()=>[{name:'create_task',args:{title:text,dueDate:null,dueTime:null}}]};
+     const response=await ask(user.token,{requestId:crypto.randomUUID(),text,conversation:[{role:'user',text:'Cria Academia amanhã'},{role:'assistant',text:'Posso ajudar.'}]}).expect(200);
+     expect(response.body).not.toHaveProperty('createTask');
+     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+     expect((await db.collection('commandReceipts').get()).size).toBe(0);
+   });
+   it('empty model result clarifies generically instead of assuming creation; mixed conversation/action is rejected',async()=>{
+     const user=await account();state.model={interpret:async()=>[]};
+     const response=await ask(user.token,{requestId:crypto.randomUUID(),text:'Oi'}).expect(200);
+     expect(response.body.intent).toBe('conversation');expect(response.body.text).not.toContain('adicionar essa tarefa');
+     state.model={interpret:async()=>[{name:'respond_conversation',args:{text:'Olá'}},{name:'create_task',args:{title:'Academia',dueDate:null,dueTime:null}}]};
+     await ask(user.token,{requestId:crypto.randomUUID(),text:'Oi'}).expect(422);
+   });
+ });
