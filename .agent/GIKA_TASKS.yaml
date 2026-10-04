@@ -441,5 +441,5 @@ glass_rc_uat_continuation:
   evidence: docs/release/GLASS_RC_UAT.md
   gates: "Na ponta combinada: verify PASS auditprod0/lint/boundaries/typecheck web+server/build/546unit/257integration/8critical; glass:selftest/check PASS; 853 light/dark focais PASS58.3s/58.6s, welcome12/chat10 targets/theme, min chat5.48:1/6.19:1, Axe0/errors0/overflowfalse; E2E local ampla PASS141/141 em21.0min. Histórico de execuções anteriores/timeouts preservado em docs e estado, sem relaxar guardas. Main/deploy proibidos pelo pedido."
   publication: completed
-  published_head: "61ffa4cda11f596a8a3e6fe45bdb74c68297028c"
+  published_product_commit: "61ffa4cda11f596a8a3e6fe45bdb74c68297028c"
   remote_matches_head: true
