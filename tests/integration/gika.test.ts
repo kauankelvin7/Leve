@@ -855,6 +855,20 @@ describe('current-turn action priority and grounded creation',()=>{
     expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'ir à academia',dueTime:'19:00'});expect(state.inputs).toHaveLength(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
+  it('accepts the production colloquial creation with reordered fields and filler without re-asking known data',async()=>{
+    const user=await account();
+    const current='eu quero agendar para amanhã às 7 horas da noite é ir à academia';
+    state.routing={intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'eu quero agendar',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}};
+    state.model={interpret:async()=>{throw Error('Grounded complete action must not fall back to a second interpretation');}};
+    const response=await ask(user.token,{requestId:crypto.randomUUID(),text:current}).expect(200);
+    const dueDate=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().add({days:1}).toString();
+    expect(response.body.domainIntent).toBe('AGENDA_ACTION');
+    expect(response.body.text).toBe('Preparando a tarefa…');
+    expect(response.body.createTask).toEqual({title:'ir à academia',dueDate,dueTime:'19:00',timeZone:zone});
+    expect(state.inputs).toHaveLength(0);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
   it('uncertain current follow-up does not use an earlier complete request',async()=>{
     const user=await account();state.routing={intent:'AGENDA_ACTION',certain:false,reply:null};
     const response=await ask(user.token,{requestId:crypto.randomUUID(),text:'Então isso',conversation:[{role:'user',text:current}]}).expect(200);
