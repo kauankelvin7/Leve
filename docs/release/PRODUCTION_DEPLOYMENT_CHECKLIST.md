@@ -59,7 +59,7 @@ Se qualquer smoke crítico falhar, interromper tráfego para o release e usar o 
 ## Bloqueios e riscos residuais
 
 - O painel Vercel não foi inspecionado; presença, valores, escopos e validade das variáveis precisam ser verificados por pessoa autorizada sem copiá-las para este repositório.
-- Preview usa o projeto isolado `leve-preview`; a CSP foi ajustada por origem exata. Auth e variáveis Vercel ainda precisam ser concluídos antes do smoke hospedado.
+- Preview usa o projeto isolado `leve-preview`; a CSP foi ajustada por origem exata. Auth está habilitado. Variáveis Vercel foram informadas como configuradas pelo usuário, mas o smoke hospedado está bloqueado pela proteção de acesso da Vercel.
 - Tokens legados em `leve-db`: **ZERO** na leitura autorizada; não foi necessário executar migration.
 - App Check não é verificado pela API. DDoS volumétrico, flood antes da função e rate limiting por IP dependem de controles do provedor/edge; Express não resolve esses riscos.
 - Gika depende de quota/termos e disponibilidade do provedor Gemini; manter Free Tier e monitorar consumo/custos no provedor, sem incluir segredo em logs.
@@ -70,13 +70,15 @@ Se qualquer smoke crítico falhar, interromper tráfego para o release e usar o 
 - Firebase CLI 15.30.0 autenticada: `leve-preview` (Leve Preview) e `leve-db` foram identificados como projetos distintos. `leve-preview` permanece com `billingEnabled=false`; não foi vinculado billing.
 - Web App Preview criado: **Leve Preview Web**, app ID `1:944230005668:web:efd2da46ed30cb1a925f31`, sender ID público `944230005668`, auth domain `leve-preview.firebaseapp.com`.
 - Firestore Preview criado: `(default)`, Native/Standard, `southamerica-east1`, mesma região da produção. As Rules e os 10 índices do repo foram aplicados exclusivamente nesse projeto. Rules remotas idênticas ao arquivo local (SHA-256 `6951e7663938f90a57172b9ca92b731410e3ca7b87065d266aaa89ee5fbffa7b`). Verificação REST final: 10/10 índices equivalentes ao repo, todos **READY**.
-- Firebase Auth ainda não foi inicializado: a configuração retorna `CONFIGURATION_NOT_FOUND`. O inicializador público de Identity Platform retornou `BILLING_NOT_ENABLED`; nenhuma operação de billing foi tentada. A API Identity Toolkit já estava habilitada. **Ação manual:** abrir Authentication no projeto `leve-preview`, clicar Get started no Firebase Auth padrão/Spark, habilitar Email/Password e Google; no Google selecionar o e-mail de suporte autorizado. Não fazer upgrade para Identity Platform pago. Depois adicionar o hostname exato do Preview Vercel aos Authorized domains, sem wildcard e sem usar o projeto de produção.
-- Vercel CLI, link `.vercel` e credenciais Vercel continuam ausentes. Não foi possível ler/alterar variáveis Preview, confirmar o escopo de `GEMINI_API_KEY` nem executar smoke hospedado. O usuário informou que a chave Gemini já foi cadastrada na Vercel; sua presença por escopo continua **NOT_VERIFIED**, sem leitura/exibição de valor.
-- HMAC Preview não foi criado/configurado porque não há destino Vercel autenticado. Ele precisa ser novo, aleatório e exclusivo de Preview; nunca copiar o HMAC de produção. É necessário na API mesmo sem worker para confirmações Gika. Se o scheduler Preview for usado, compartilhar somente entre API Preview e seu próprio worker, mantendo o worker atual intacto.
+- Firebase Auth confirmado por leitura da configuração: Email/Password habilitado com senha obrigatória e Google habilitado. O hostname exato do deployment Preview foi incluído em Authorized domains de `leve-preview`, preservando os domínios anteriores. Não houve mudança no Auth de produção.
+- O usuário informou Firebase Admin/Web, `SCHEDULER_HMAC_SECRET` e `GEMINI_API_KEY` configurados no escopo Vercel Preview. Vercel CLI, link `.vercel` e credenciais Vercel continuam ausentes no runner. A configuração efetiva dessas variáveis e os escopos de Gemini permanecem **NOT_VERIFIED**; nenhum valor foi lido/exibido.
+- GitHub registra deployment Vercel **Preview/success** para o runtime `f532995293369e884ee9d83475cbea68f88987a6`: `https://leve-agenda-vercel-c0xninhpw-kauans-projects-6a261bab.vercel.app`.
+- A prova de acesso hospedado usou requests sem seguir redirects: `/`, `/entrar`, `/api/health`, `/manifest.webmanifest` e `/sw.js` retornaram **302 para `vercel.com/sso-api`**. O app/API não ficou acessível ao runner. Login, CRUD, Gemini real, confirmação/HMAC, responsividade e PWA hospedados **não foram executados** e não são PASS. HTTP 200 obtido depois de seguir o redirect era a página de login da Vercel, não o Leve.
+- **Ação necessária para o smoke:** disponibilizar uma credencial autorizada de acesso ao deployment protegido, por exemplo `VERCEL_AUTOMATION_BYPASS_SECRET` no ambiente do runner, via canal seguro. Não enviar o valor pelo chat/commit/log. Alterações de proteção ou audiência devem atingir somente Preview; Production permanece intacta.
 - Produção recebeu apenas leituras de metadados e a verificação projetada de tokens legados: **ZERO**. Nenhum dado real foi alterado, nenhum token foi registrado, nenhuma migration foi executada.
-- CSP local/config versionada agora inclui `leve-preview.firebaseapp.com` por origem exata. Não houve deploy de app, alteração de produção, merge em `main` ou nova milestone.
+- CSP versionada inclui `leve-preview.firebaseapp.com` por origem exata. O Preview foi identificado pela integração Git autenticada do GitHub; não houve deploy Production, alteração de dados de produção, merge em `main` ou nova milestone.
 
-### Preenchimento manual na Vercel — somente Preview
+### Variáveis Vercel — somente Preview (configuração informada pelo usuário)
 
 As seis variáveis públicas abaixo foram obtidas do Web App e estão também no artefato local ignorado `.cache/preflight/leve-preview-public.env` (sem segredos). Pode obter novamente a configuração pública por `firebase apps:sdkconfig WEB 1:944230005668:web:efd2da46ed30cb1a925f31 --project leve-preview`.
 
@@ -90,7 +92,7 @@ As seis variáveis públicas abaixo foram obtidas do Web App e estão também no
 | `VITE_FIREBASE_API_KEY` | Configuração pública retornada pelo comando SDK acima/artefato local; não usar a chave Web de produção. |
 | `FIREBASE_CLIENT_EMAIL` | Service account **do `leve-preview`**, via Firebase Settings → Service accounts; não reutilizar identidade administrativa de produção. |
 | `FIREBASE_PRIVATE_KEY` | Chave privada dessa service account, inserida diretamente no Secret de Preview; não enviar pelo chat/commit/log. Nenhuma chave administrativa foi criada sem destino configurável. |
-| `SCHEDULER_HMAC_SECRET` | Gerar no ambiente do operador com CSPRNG, pelo menos 32 bytes, e preencher diretamente como Secret Preview. Não reutilizar o valor Production. |
+| `SCHEDULER_HMAC_SECRET` | O usuário informou configurado. Deve ser novo/exclusivo de Preview, gerado com CSPRNG de pelo menos 32 bytes; não reutilizar o valor Production. O runner não leu seu valor. |
 | `GEMINI_API_KEY` | Confirmar que a chave já cadastrada está no escopo Preview, server-only. Não alterar Production. |
 | `VITE_FIREBASE_VAPID_KEY` | Somente se push for habilitado: gerar/obter a chave **pública** Web Push de `leve-preview` em Cloud Messaging. Não reutilizar VAPID de produção. Sem ela, push indisponível; login/dados continuam operacionais. |
 
@@ -103,7 +105,7 @@ Deixar `VITE_USE_EMULATORS` ausente/false e não cadastrar hosts de emulador na 
 - Vitest focal: `deployment-csp`, `client-env`, `gika-character` e `gika-voice`, **25/25 PASS**. O novo teste protege as origens exatas de Auth, preserva produção e rejeita ampliação de `frame-src`/JS eval.
 - Auth/Rules com emuladores `demo-leve`: `security-rules` + `identity`, **27/27 PASS**. Nenhuma conta de produção ou usuário real foi criado para testar configuração.
 - CSP no Chromium: frames e `connect-src` de `leve-preview.firebaseapp.com` e `leve-db.firebaseapp.com` permitidos; frame de outro domínio Firebase bloqueado. Todas as requisições foram interceptadas/sintéticas; essa prova não contatou produção e não substitui login hospedado.
-- Smoke hospedado Preview **BLOCKED** por Firebase Auth ainda não inicializado e falta de acesso Vercel. Nenhum resultado de login/Gemini/push hospedado é declarado PASS.
+- Smoke hospedado Preview **BLOCKED** pela proteção de acesso da Vercel (302 SSO nos cinco recursos sondados). Auth providers confirmados por API e hostname Preview autorizado; variáveis runtime, login/CRUD/Gemini/HMAC/console/responsividade/PWA aguardam acesso. Nenhum resultado hospedado é declarado PASS. A continuação modificou somente documentação e Authorized domains de `leve-preview`; os gates de código anteriores permanecem aplicáveis, sem repetição artificial da bateria.
 
 ## Matriz exata de gates e decisões
 
@@ -114,4 +116,4 @@ Deixar `VITE_USE_EMULATORS` ausente/false e não cadastrar hosts de emulador na 
 | `firebase.json` deploy/config diff | **NO** — idêntico ao `main` remoto. |
 | Migration de tokens | **NO** — resultado read-only **ZERO** em `leve-db`; não executada. |
 | Manual Vercel | **YES** — confirmar Node 24.x e cadastrar/verificar variáveis Production/Preview conforme acima. |
-| Deploy de app Firebase/Vercel | **NO**. Aplicação de Rules/índices autorizada exclusivamente em Firebase Preview. |
+| Deploy de app Firebase/Vercel | Preview disponível via integração Git; **Production NO**. Aplicação de Rules/índices exclusivamente em Firebase Preview. |
