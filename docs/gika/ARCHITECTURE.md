@@ -263,3 +263,7 @@ O adapter Gemini classifica semanticamente o pedido em `SOCIAL`, `GIKA_META`, `A
 O controle de serviço e a quota precedem o provider; a autoridade é revalidada depois da classificação e da interpretação. Consulta/ação nova pode exigir duas chamadas Gemini dentro dos deadlines existentes; a quota interna conta um pedido lógico. Receipts recuperados e confirmação determinística não chamam o modelo novamente.
 
 Follow-ups usam até seis turnos de conversa, com até 1.000 caracteres cada, em memória no painel e dentro de 12 KiB por request. Não se incluem resultados de agenda, descriptors, receipts ou identidade. O painel perde contexto no logout/troca de conta. Histórico é conteúdo não confiável, não completa alvo/patch ou consentimento. Não existe persistência de conversa ou novo writer. Timezone permanece interno; reconhecimento de voz conserva seu contrato.
+
+## Prioridade do pedido atual
+
+A classificação de domínio não envia histórico ao Gemini: a mensagem atual decide a classe. Para create/reschedule simples completos, `currentAction` contém somente fragmentos literais atuais, não IDs ou efeitos finais. O software valida origem/coverage/operação, deriva data/horário e produz a proposta pelos parsers/validators existentes. Sem segunda interpretação de uma ação completa com contexto antigo; receipt/confirmation continuam vinculados ao pedido original. Histórico limitado permanece para conversa e esclarecimento de referência, nunca consentimento de ação anterior. Intervalos/lembretes não viram capacidades novas por normalização.

@@ -391,3 +391,7 @@ Provas determinísticas: `tests/unit/gika-gemini.test.ts`, `tests/unit/gika-crea
 `tests/unit/gika-domain-routing.test.ts` testa os 12 exemplos de produto, adapter Gemini/classificação estrita e dispatcher HTTP: SOCIAL, GIKA_META, AGENDA_QUERY, AGENDA_ACTION, ORGANIZATION_CONVERSATION e OUT_OF_SCOPE. Estudar Python como tarefa/consulta não é confundido com pedir ensino de Python. Incerteza, ausência/malformação do classificador e query propondo mutação não autorizam ação. Os testes determinísticos verificam o contrato com transporte controlado; não certificam precisão semântica live do provider.
 
 `tests/integration/gika.test.ts` aplica a mesma matriz com Auth/Firestore emulados e verifica zero writes/receipts na conversa. `tests/e2e-local/gika-readonly.spec.ts` verifica conversa social/meta/organização e redirecionamento fora do escopo, sem commands e com Axe. Regressões de timezone e microcopy de áudio permanecem.
+
+## Follow-up com intenção atual explícita
+
+Regressão exata OUT_OF_SCOPE → `então agende para amanhã ir à academia às 7 horas da noite`: normalizador/civil-time em unit, descriptor → command real → retry/receipt/isolamento em integration, bridge → ACK → reload em E2E. Também cobre ação sem histórico, após SOCIAL/meta/organização, reagendamento às20h com confirmação, pedido incerto, source anterior/adulterado, horário inventado e instruções descartadas. Intervalos/lembretes classificam ACTION mas não inventam contratos ausentes. Evidência em [CURRENT_TURN_ROUTING_EVIDENCE.md](CURRENT_TURN_ROUTING_EVIDENCE.md).

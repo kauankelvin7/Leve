@@ -183,3 +183,7 @@ Histórico opcional é limitado a seis turnos gerais e não contém resultados p
 ## Fronteira de domínio conversacional
 
 Gika não é assistente de propósito geral. O classificador semântico estruturado não recebe agenda, UID ou ferramentas mutáveis. Classificação ausente, inválida ou incerta não libera interpretação/leituras da agenda. Fora do escopo tem resposta server-owned, sem tutorial/código/conhecimento gerado. SOCIAL/GIKA_META/ORGANIZATION_CONVERSATION não chegam a comandos ou agenda reads. AGENDA_QUERY tem allowlist somente read-only + esclarecimento; a policy rejeita tool mutável mesmo se o provider a propuser. AGENDA_ACTION conserva todos os validadores e confirmações. Receipts/replay continuam vinculados ao pedido original, não ao texto de conversa.
+
+## Proposta semântica grounded
+
+Somente classificação certa AGENDA_ACTION pode conter currentAction. Origem integral, fragmentos únicos/não sobrepostos, conservação do conteúdo e derivação civil de software precedem os validators. Negação, operações conflitantes, lotes/recorrência, campo inventado ou restante não representado não concedem efeito. Source do histórico não é aceito. O metadado não vem do cliente e não entra nos commands; confirmação e receipts mantêm UID/request original/revision/efeito existentes.

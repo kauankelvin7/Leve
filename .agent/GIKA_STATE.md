@@ -1,3 +1,7 @@
+## Correção vigente — prioridade da mensagem atual
+
+Base `main@a6d8c433920ca7fa719eecf0910873aac1045fbb`. Classificação usa somente o pedido atual; histórico não mantém OUT_OF_SCOPE. Ações simples completas recebem proposta semântica grounded em fragmentos literais atuais, normalizados pelo software antes dos validators existentes. Criação amanhã às7horas da noite resolve19:00; reagendamento mantém confirmação. Nenhum novo writer/policy/command/persistência. Evidência e limites de intervalos/lembretes: `docs/gika/CURRENT_TURN_ROUTING_EVIDENCE.md`.
+
 ## Correção vigente — domínio conversacional
 
 Base `main@58119bc9929e55d4c562ccf350c94b667495bad6`. Gika limitada a agenda/organização pessoal: SOCIAL, GIKA_META, AGENDA_QUERY, AGENDA_ACTION, ORGANIZATION_CONVERSATION, OUT_OF_SCOPE. Classificação semântica estrita precede agenda; incerteza não libera ação; fora do escopo recebe redirecionamento server-owned. O escopo GENERAL anterior abaixo é histórico e foi revogado. Commands/policy/confirmation/receipts/serviceControls/quotas, voz e hotfixes de microcopy preservados. Gates/evidência em `docs/gika/DOMAIN_SCOPE_EVIDENCE.md`. Sem nova milestone ou alteração de persistência.

@@ -10,7 +10,7 @@ import { prepareRecurrence, recurrenceEffect } from './recurrencePolicy.ts';
 import { hashCanonicalValue } from '../hash.ts';
 import { issueConfirmation } from './confirmation.ts';
 import { assessCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
-import { validateReschedule,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
+import { validateReschedule,resolveRescheduleIntent,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
 import express, { Router, type ErrorRequestHandler } from 'express';
@@ -19,7 +19,7 @@ import { AppError } from '../errors.ts';
 import { createGeminiAdapter } from './gemini.ts';
 import { bounded, GikaFault, type ModelAdapter } from './model.ts';
 import { readRange } from './policy.ts';
-import { isCreationRequest, resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
+import { normalizeCurrentAction, isCreationRequest, resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { consumeGikaQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
@@ -113,9 +113,11 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         if (!parsedIntent.success || !parsedIntent.data.certain) return gikaInterpretationSchema.parse({ text: 'Você quer ajuda para organizar sua rotina ou fazer um pedido sobre sua agenda?', intent: 'conversation', simulated: false, reads: [] });
         const classification = parsedIntent.data;
         requestDomainIntent = classification.intent;
+        const normalizedAction = classification.currentAction ? normalizeCurrentAction(classification.currentAction, input.text, context) : null;
+        const actionText = normalizedAction ?? input.text;
         if (classification.intent === 'OUT_OF_SCOPE') return gikaInterpretationSchema.parse({ text: 'Eu fico focada na sua agenda e organização no Leve. Posso ajudar a reservar um horário de estudo ou adicionar uma tarefa à sua agenda.', intent: 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
         if (classification.intent === 'SOCIAL' || classification.intent === 'GIKA_META' || classification.intent === 'ORGANIZATION_CONVERSATION') return gikaInterpretationSchema.parse({ text: classification.reply ?? 'Posso ajudar com sua agenda e organização no Leve. Como posso te ajudar?', intent: 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
-        const actionRequested = isCreationRequest(input.text) || isUpdateRequest(input.text) || isRescheduleRequest(input.text) || /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text);
+        const actionRequested = isCreationRequest(actionText) || isUpdateRequest(input.text) || isRescheduleRequest(input.text) || /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text);
         const period = classification.intent === 'AGENDA_ACTION' ? organizationPeriod(input.text) : null;
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
@@ -155,7 +157,16 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({text:plan?`Sugestão para ${period==='week'?'sua semana':'o seu dia'}. Confira as mudanças antes de confirmar.`:'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
         stage = 'model';
-        const interpreted = await model.interpret({ text: input.text, context, agendaIntent: classification.intent, ...(input.conversation ? { conversation: input.conversation } : {}) }, signal, { correlationId: response.locals.correlationId });
+        let interpreted;
+        if (normalizedAction && classification.currentAction?.kind === 'create_task') {
+          const proposal = resolveCreationIntent(normalizedAction, context);
+          interpreted = proposal.task ? [{ name: 'create_task', args: { title: proposal.task.title, dueDate: proposal.task.dueDate, dueTime: proposal.task.dueTime } }] : [{ name: 'respond_conversation', args: { text: proposal.clarification } }];
+        } else if (normalizedAction && classification.currentAction?.kind === 'reschedule_task') {
+          const proposal = resolveRescheduleIntent(normalizedAction, context);
+          interpreted = 'clarification' in proposal ? [{ name: 'respond_conversation', args: { text: proposal.clarification } }] : [{ name: 'reschedule_task', args: proposal }];
+        } else {
+          interpreted = await model.interpret({ text: input.text, context, agendaIntent: classification.intent, ...(input.conversation ? { conversation: input.conversation } : {}) }, signal, { correlationId: response.locals.correlationId });
+        }
         stage = 'policy';
         const calls = validateToolCalls(interpreted);
         if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
@@ -184,7 +195,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         if (calls[0]?.name === 'reschedule_task') {
           const scoped = scopedIntent(input.text, calls[0].args);
-          const intent = validateReschedule(calls[0].args, scoped.text, current);
+          const intent = validateReschedule(calls[0].args, normalizedAction ?? scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('reschedule_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -294,10 +305,10 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(committed || resolved.task ? { completeTask: committed ?? resolved.task } : { completionResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'create_task') {
-          const intent = validateCreation(calls[0].args, input.text, current);
+          const intent = validateCreation(calls[0].args, actionText, current);
           const decision = assessCreation(Boolean(intent.task), 'verified');
           if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
-          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: isCreationRequest(input.text) ? 'agenda_action' : 'conversation', simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
+          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : !isCreationRequest(actionText) ? 'Qual tarefa, data e horário você quer usar na sua agenda?' : intent.clarification, intent: isCreationRequest(actionText) ? 'agenda_action' : 'conversation', simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
         const ranges = calls.map(call => { if (call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });

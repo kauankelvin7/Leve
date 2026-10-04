@@ -4,7 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import type { ModelAdapter, ModelInput } from '../../server/gika/model';
 import { GikaFault } from '../../server/gika/model';
 import { auth, db } from '../../server/platform/firebase';
-const state = vi.hoisted(() => ({ model: null as ModelAdapter | null, inputs: [] as ModelInput[], routing: null as {intent:string;certain:boolean;reply:string|null} | null }));
+const state = vi.hoisted(() => ({ model: null as ModelAdapter | null, inputs: [] as ModelInput[], routing: null as Record<string, unknown> | null }));
 vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classify: async () => state.routing ?? ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => {
   state.inputs.push(input); return state.model!.interpret(input, signal);
 } }) }));
@@ -66,7 +66,7 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
   it.each(['Cria uma tarefa', 'Academia'])('missing information asks instead of writing %s', async text => {
     const user = await account(); state.model = { interpret: async () => [{ name: 'create_task', args: creationArgs('2026-10-02') }] };
     const response = await ask(user.token, { requestId: id, text }).expect(200);
-    expect(response.body).not.toHaveProperty('createTask'); expect(response.body.text).toContain(text === 'Academia' ? 'O que você gostaria de fazer?' : 'Qual tarefa');
+    expect(response.body).not.toHaveProperty('createTask'); expect(response.body.text).toContain(text === 'Academia' ? 'Qual tarefa, data e horário' : 'Qual tarefa');
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
@@ -822,4 +822,54 @@ describe('domain-scoped conversation with authenticated emulators',()=>{
     expect(state.inputs).toHaveLength(0);expect(response.body).not.toHaveProperty('createTask');expect(response.body.reads).toEqual([]);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
+});
+
+
+describe('current-turn action priority and grounded creation',()=>{
+  const current='então agende para amanhã ir à academia às 7 horas da noite';
+  it('production two-turn scenario commits academia tomorrow 19:00 once and recovers original receipt',async()=>{
+    const user=await account(),other=await account();
+    state.routing={intent:'OUT_OF_SCOPE',certain:true,reply:null};
+    const first=await ask(user.token,{requestId:crypto.randomUUID(),text:'gera um código em Python para mim'}).expect(200);
+    expect(first.body.domainIntent).toBe('OUT_OF_SCOPE');expect(state.inputs).toHaveLength(0);
+    state.routing={intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}};
+    state.model={interpret:async()=>{throw Error('A complete grounded current action must not be reinterpreted with history');}};
+    const body={requestId:id,text:current,conversation:[{role:'user',text:'gera um código em Python para mim'},{role:'assistant',text:first.body.text}]};
+    const response=await ask(user.token,body).expect(200);
+    const dueDate=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().add({days:1}).toString();
+    expect(response.body.createTask).toEqual({title:'ir à academia',dueDate,dueTime:'19:00',timeZone:zone});expect(state.inputs).toHaveLength(0);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+    const command=commandEnvelopeSchema.parse({command:'activity.create',operationId:id,entityId:id,expectedRevision:0,payload:taskActivityInput(response.body.createTask),gika:{requestTextHash:(await import('../../server/hash')).hashValue(current)}});
+    const dispatch=()=>request(app).post('/api/commands').set('Authorization',`Bearer ${user.token}`).send(command);
+    const applied=await dispatch().expect(200);expect(applied.body.result).toBe('applied');
+    const replay=await dispatch().expect(200);expect(replay.body).toEqual({...applied.body,result:'alreadyApplied'});
+    const recovered=await ask(user.token,body).expect(200);expect(recovered.body.createTask).toEqual(response.body.createTask);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(1);
+    expect((await db.doc(`users/${user.uid}/activities/${id}`).get()).data()).toMatchObject({title:'ir à academia',schedule:{dueDate,dueTime:'19:00'},revision:1});
+    expect((await db.collection(`users/${other.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').where('uid','==',user.uid).get()).size).toBe(1);
+  });
+  it.each(['SOCIAL','GIKA_META','OUT_OF_SCOPE','ORGANIZATION_CONVERSATION'])('complete create after %s remains an action without history authority',async previous=>{
+    const user=await account();state.routing={intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}};
+    const response=await ask(user.token,{requestId:crypto.randomUUID(),text:current,conversation:[{role:'user',text:previous},{role:'assistant',text:'Posso ajudar com sua agenda.'}]}).expect(200);
+    expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'ir à academia',dueTime:'19:00'});expect(state.inputs).toHaveLength(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+  it('uncertain current follow-up does not use an earlier complete request',async()=>{
+    const user=await account();state.routing={intent:'AGENDA_ACTION',certain:false,reply:null};
+    const response=await ask(user.token,{requestId:crypto.randomUUID(),text:'Então isso',conversation:[{role:'user',text:current}]}).expect(200);
+    expect(response.body).not.toHaveProperty('createTask');expect(state.inputs).toHaveLength(0);expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
+});
+
+
+it('organization conversation then explicit time move uses original confirmation without writing',async()=>{
+ const user=await account(),today=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
+ await seedTask(user.uid,'context-academia',today,'academia',{schedule:{type:'task',dueDate:today,dueTime:'19:00',timeZone:zone,disambiguation:'reject'}});
+ const current='Então mova academia para 20h';
+ state.routing={intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'reschedule_task',sourceText:current,requestExpression:'Então mova',title:'academia',dateExpression:null,timeExpression:'20h'}};
+ state.model={interpret:async()=>{throw Error('Do not reinterpret a grounded move with previous conversational class');}};
+ const response=await ask(user.token,{requestId:crypto.randomUUID(),text:current,conversation:[{role:'user',text:'Meu dia está cheio'},{role:'assistant',text:'Vamos escolher uma prioridade.'}]}).expect(200);
+ expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.rescheduleTask).toMatchObject({id:'context-academia',revision:1,patch:{dueDate:today,dueTime:'20:00'}});expect(response.body.confirmation).toBeDefined();
+ expect((await db.doc(`users/${user.uid}/activities/context-academia`).get()).data()?.schedule.dueTime).toBe('19:00');expect((await db.collection('commandReceipts').get()).size).toBe(0);
 });

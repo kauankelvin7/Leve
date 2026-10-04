@@ -1,8 +1,9 @@
+import type { z } from 'zod';
 import { isRegisteredMutation } from './actionPolicy.ts';
 import { assessInvalidTool, assessMultipleActions } from './policyAssessment.ts';
 import { Temporal } from '@js-temporal/polyfill';
 import { civilDateSchema } from '../../packages/domain/src/content.ts';
-import { createTaskArgsSchema, createTaskDescriptorSchema, toolCallSchema, type CreateTaskDescriptor, type ToolCall } from '../../packages/domain/src/gika.ts';
+import { gikaCurrentActionSchema, createTaskArgsSchema, createTaskDescriptorSchema, toolCallSchema, type CreateTaskDescriptor, type ToolCall } from '../../packages/domain/src/gika.ts';
 import { GikaFault, type ModelCall, type ModelContext } from './model.ts';
 const normalized = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').replace(/\s+/g, ' ').trim();
 const prefix = /^(?:por favor[, ]+)?(?:pode\s+)?(?:adiciona(?:r)?|adicione|cria(?:r)?|crie)(?:\s+(?:(?:uma|a)\s+)?tarefa)?(?:\s+para)?(?:\s+|$)/i;
@@ -46,6 +47,54 @@ export function resolveCreationIntent(text: string, context: ModelContext): Crea
   const dueTime = time.length ? `${time[0]![1]!.padStart(2, '0')}:${time[0]![2] ?? time[0]![3] ?? '00'}` : null;
   const task = createTaskDescriptorSchema.safeParse({ title: remaining, dueDate: date, dueTime, timeZone: context.timeZone });
   return task.success ? { task: task.data } : { clarification: 'Confira o título, a data e o horário da tarefa.' };
+}
+/** A semantic proposal is not an effect: ground every fragment in this request,
+ * derive civil fields in software, then run the existing action validator. */
+export function normalizeCurrentAction(action: z.infer<typeof gikaCurrentActionSchema>, text: string, context: ModelContext): string | null {
+  const parsed = gikaCurrentActionSchema.safeParse(action);
+  if (!parsed.success || parsed.data.sourceText !== text.trim()) return null;
+  const { requestExpression, title, dateExpression, timeExpression, kind } = parsed.data;
+  const source = text.trim();
+  if (!source.startsWith(requestExpression) || /\b(?:nao|talvez|se)\b/.test(normalized(requestExpression))) return null;
+  const request = normalized(requestExpression);
+  // Preserve the existing refusal of destructive/other operations; semantic
+  // normalization must not turn their literal directives into create/move.
+  if (/\b(?:exclu\w*|apag\w*|remov\w*|delet\w*|purg\w*|cancel\w*|reabr\w*|desfa\w*|lembre\w*|conclu\w*|complete|terminei|renome\w*)\b/.test(request)) return null;
+  if (/\b(?:recorrente|diariamente|semanalmente|serie|series|todos|todas|toda|todo|duas|dois|lote)\b/.test(request)) return null;
+  if (kind === 'create_task' && /\b(?:move|mova|mover|reagenda|reagende|muda|mude)\b/.test(request)) return null;
+  if (kind === 'reschedule_task' && /\b(?:adiciona\w*|cria\w*|crie)\b/.test(request)) return null;
+  const ranges: {index:number;length:number}[] = [];
+  for (const fragment of [requestExpression, title, dateExpression, timeExpression].filter((value): value is string => value !== null)) {
+    const index = source.indexOf(fragment);
+    if (index < 0 || source.indexOf(fragment, index + fragment.length) >= 0 || ranges.some(range => index < range.index + range.length && index + fragment.length > range.index)) return null;
+    ranges.push({index,length:fragment.length});
+  }
+  let residue = source;
+  for (const range of ranges.sort((a,b)=>b.index-a.index)) residue = residue.slice(0,range.index)+' '+residue.slice(range.index+range.length);
+  // Connectors only; unrepresented instructions/intervals/recurrence cannot disappear.
+  if (normalized(residue).replace(/\b(?:para|pra|no|na|em|as|a|o|dia)\b/g,'').replace(/[\s,.;!?"'“”‘’]/g,'')) return null;
+  if (!dateExpression && !timeExpression) return null;
+  if (dateExpression) {
+    const temporal = resolveCreationIntent(`Adiciona Referência temporal ${dateExpression}`,context);
+    if (!temporal.task || temporal.task.title !== 'Referência temporal' || !temporal.task.dueDate || temporal.task.dueTime !== null) return null;
+  }
+  let time: string | null = null;
+  if (timeExpression) {
+    const match = normalized(timeExpression).match(/^(?:as\s+)?(\d{1,2})(?::([0-5]\d)|h(?:([0-5]\d))?)?(?:\s+horas?)?(?:\s+(?:da|de)\s+(manha|tarde|noite))?$/);
+    if (!match) return null;
+    let hour = Number(match[1]);
+    if (match[4]) {
+      if (hour < 1 || hour >= 12 || (match[4] === 'noite' && hour < 6)) return null;
+      hour = hour % 12 + (match[4] === 'manha' ? 0 : 12);
+    }
+    if (hour > 23) return null;
+    time = `${String(hour).padStart(2,'0')}:${match[2] ?? match[3] ?? '00'}`;
+  }
+  if (kind === 'create_task') {
+    if (!dateExpression) return null;
+    return `Adiciona "${title}" ${dateExpression}${time ? ` às ${time}` : ''}`;
+  }
+  return `Move "${title}" para ${dateExpression ?? ''}${time ? ` às ${time}` : ''}`.replace(/\s+/g,' ').trim();
 }
 export function isCreationRequest(text: string) { return prefix.test(normalized(text)); }
 export function validateToolCalls(calls: ModelCall[]): ToolCall[] {

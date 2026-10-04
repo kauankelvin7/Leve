@@ -212,3 +212,30 @@ test('M3-T3 close during lost acknowledgement then reopen permits same-ID reconc
   await card.getByRole('button', { name: 'Tentar desfazer novamente', exact: true }).click(); await expect(card).toContainText('Criação desfeita.');
   expect(ids).toHaveLength(2); expect(ids[0]).toBe(ids[1]);
 });
+
+test('production OUT_OF_SCOPE follow-up creates academia tomorrow 19:00 through actual command ack',async({page})=>{
+  await enter(page);
+  const current='então agende para amanhã ir à academia às 7 horas da noite';
+  const commands:string[]=[];
+  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/api/commands'))commands.push(request.url());});
+  await page.route('**/api/gika/respond',async route=>{
+    const input=route.request().postDataJSON();
+    if(input.text!==current)return route.fulfill({json:{text:'Eu fico focada na sua agenda e organização no Leve.',intent:'conversation',domainIntent:'OUT_OF_SCOPE',simulated:false,reads:[]}});
+    expect(input.conversation).toEqual([{role:'user',text:'gera um código em Python para mim'},{role:'assistant',text:'Eu fico focada na sua agenda e organização no Leve.'}]);
+    const {normalizeCurrentAction,resolveCreationIntent}=await import('../../server/gika/createPolicy');
+    const today=Temporal.PlainDate.from(dueDate).subtract({days:1}).toString(),context={today,timeZone:'America/Sao_Paulo',weekStartsOn:1 as const};
+    const normalized=normalizeCurrentAction({kind:'create_task',sourceText:current,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'},current,context)!;
+    const task=resolveCreationIntent(normalized,context).task!;
+    expect(task).toMatchObject({title:'ir à academia',dueDate,dueTime:'19:00'});
+    return route.fulfill({json:{text:'Preparando a tarefa…',intent:'agenda_action',domainIntent:'AGENDA_ACTION',simulated:false,reads:[],createTask:task}});
+  });
+  const composer=await ask(page,'gera um código em Python para mim');
+  await expect(page.locator('.gika-content')).toContainText('Eu fico focada');expect(commands).toEqual([]);
+  const ack=page.waitForResponse(response=>response.url().endsWith('/api/commands')&&response.request().postDataJSON()?.command==='activity.create');
+  await composer.fill(current);await composer.press('Enter');
+  const applied=await ack;expect(applied.status()).toBe(200);expect(await applied.json()).toMatchObject({result:'applied',revision:1});
+  expect(applied.request().postDataJSON()).toMatchObject({command:'activity.create',expectedRevision:0,payload:{title:'ir à academia',schedule:{dueDate,dueTime:'19:00'}}});
+  await expect(page.getByRole('group',{name:'Tarefa adicionada',exact:true})).toContainText('ir à academia');expect(commands).toHaveLength(1);
+  await page.getByRole('button',{name:'Fechar Gika'}).click();await page.goto(`/hoje?dia=${dueDate}`);await page.reload();
+  await expect(page.locator('.day-activity').filter({hasText:'ir à academia'})).toHaveCount(1);
+});

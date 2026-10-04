@@ -15,7 +15,7 @@ function fixture(model: ModelAdapter) {
   app.use((_req,res,next)=>{res.locals.identity={uid:'synthetic-user'};next();});
   app.use('/gika',createGikaRouter(model,repository,quota));
   app.use((error:AppError,_req:express.Request,res:express.Response,_next:express.NextFunction)=>res.status(error.status??422).json({code:error.code}));
-  return {repository,quota,ask:(text:string)=>request(app).post('/gika/respond').send({requestId:crypto.randomUUID(),text})};
+  return {repository,quota,ask:(text:string,conversation?:ModelInput['conversation'])=>request(app).post('/gika/respond').send({requestId:crypto.randomUUID(),text,...(conversation?{conversation}:{})})};
 }
 const cases = [
   ['Oi','SOCIAL'],['Obrigado','SOCIAL'],['Quem é você?','GIKA_META'],['O que você pode fazer?','GIKA_META'],
@@ -71,4 +71,49 @@ describe('Gika semantic domain classification and software boundary',()=>{
     const adapter=createGeminiAdapter(async()=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall:{name:'classify_intent',args:{intent:'SOCIAL',certain:true,reply:'Oi'}}},{functionCall:{name:'create_task',args:{}}}]}}]}));
     await expect(adapter.classify!(input,new AbortController().signal)).rejects.toMatchObject({code:'GIKA_POLICY'});
   });
+});
+
+
+describe('explicit current request after another conversation domain',()=>{
+  const current='então agende para amanhã ir à academia às 7 horas da noite';
+  const previous=[['SOCIAL','Oi'],['GIKA_META','Quem é você?'],['OUT_OF_SCOPE','gera um código em Python para mim'],['ORGANIZATION_CONVERSATION','Meu dia está cheio']] as const;
+  it.each(previous)('%s never overrides a complete current action',async(_scope,first)=>{
+    const payloads:ReturnType<typeof geminiPayload>[]=[];
+    const model=createGeminiAdapter(async payload=>{
+      payloads.push(payload);
+      return Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall:{name:'classify_intent',args:{intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}}}}]}}]});
+    });
+    const f=fixture(model),response=await f.ask(current,[{role:'user',text:first},{role:'assistant',text:'Posso ajudar com sua agenda.'}]);
+    expect(response.status).toBe(200);expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'ir à academia',dueDate:'2026-10-05',dueTime:'19:00'});
+    expect(payloads).toHaveLength(1);expect(payloads[0]!.contents).toEqual([{role:'user',parts:[{text:current}]}]);expect(f.repository.read).not.toHaveBeenCalled();
+  });
+  it('a previous explicit action does not authorize a current ambiguous reply',async()=>{
+    const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:false,reply:null}),interpret:vi.fn()};
+    const f=fixture(model),response=await f.ask('Então isso',[{role:'user',text:current},{role:'assistant',text:'Posso ajudar.'}]);
+    expect(response.body).not.toHaveProperty('createTask');expect(model.interpret).not.toHaveBeenCalled();
+  });
+});
+
+
+it.each([
+ ['Me ensine Python','Então reserve amanhã das 19h às 20h para estudar Python'],
+ ['Qual a capital da França?','Então me lembre amanhã de pesquisar isso'],
+])('unsupported/incomplete fields after %s still route current %s as ACTION without invented effects',async(first,current)=>{
+ const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:null}),interpret:vi.fn().mockResolvedValue([{name:'respond_conversation',args:{text:'Posso adicionar uma tarefa com horário. Confirme os detalhes para usar sua agenda.'}}])};
+ const f=fixture(model),response=await f.ask(current,[{role:'user',text:first},{role:'assistant',text:'Eu fico focada na sua agenda e organização no Leve.'}]);
+ expect(response.status).toBe(200);expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.intent).toBe('agenda_action');expect(response.body).not.toHaveProperty('createTask');expect(f.repository.read).not.toHaveBeenCalled();
+});
+
+
+it('social then supported literal creation stays current-turn ACTION',async()=>{
+ const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:null}),interpret:vi.fn().mockResolvedValue([{name:'create_task',args:{title:'academia',dueDate:'2026-10-05',dueTime:'19:00'}}])};
+ const f=fixture(model),response=await f.ask('Adicione academia amanhã às 19h',[{role:'user',text:'Oi'},{role:'assistant',text:'Oi!'}]);
+ expect(response.status).toBe(200);expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'academia',dueTime:'19:00'});
+});
+
+it('standalone natural scheduling request has no history dependency',async()=>{
+ const current='agende para amanhã ir à academia às 7 horas da noite';
+ const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}}),interpret:vi.fn()};
+ const f=fixture(model),response=await f.ask(current);
+ expect(response.status).toBe(200);expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'ir à academia',dueDate:'2026-10-05',dueTime:'19:00'});expect(model.interpret).not.toHaveBeenCalled();
 });

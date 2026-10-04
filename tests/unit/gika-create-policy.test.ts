@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveCreationIntent, validateCreation, validateToolCalls } from '../../server/gika/createPolicy';
+import { normalizeCurrentAction, resolveCreationIntent, validateCreation, validateToolCalls } from '../../server/gika/createPolicy';
 import { parseGeminiResponse } from '../../server/gika/gemini';
 import { assessCreation } from '../../server/gika/policyAssessment';
 const context = { today: '2026-10-01', timeZone: 'America/Sao_Paulo', weekStartsOn: 1 as const };
@@ -46,5 +46,42 @@ describe('M3-T1 strict creation policy', () => {
     expect(() => validateToolCalls([{ name: 'create_task', args: { dueDate: null, dueTime: null } }])).toThrow();
     expect(() => validateToolCalls([{ name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null } }, { name: 'get_today', args: {} }])).toThrow('GIKA_POLICY');
     expect(() => validateToolCalls([{ name: 'complete_task', args: {} }])).toThrow();
+  });
+});
+
+
+describe('current-turn semantic action grounding',()=>{
+  const production='então agende para amanhã ir à academia às 7 horas da noite';
+  const action={kind:'create_task' as const,sourceText:production,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'};
+  it('reproduces the exact lexical fallback then validates the grounded current action at 19:00',()=>{
+    expect(resolveCreationIntent(production,context)).toEqual({clarification:'O que você gostaria de fazer? Pode conversar comigo ou fazer um pedido sobre sua agenda.'});
+    const canonical=normalizeCurrentAction(action,production,context)!;
+    expect(validateCreation({title:'ir à academia',dueDate:'2026-10-02',dueTime:'19:00'},canonical,context).task).toEqual({title:'ir à academia',dueDate:'2026-10-02',dueTime:'19:00',timeZone:context.timeZone});
+  });
+  it.each(['agende para amanhã ir à academia às 7 horas da noite','Inclua na agenda ir à academia amanhã às 19h','Pode colocar na agenda ir à academia amanhã às 19h'])('normalizes semantic directive independently of a specific verb: %s',sourceText=>{
+    const titleAt=sourceText.indexOf('ir à academia'),dateAt=sourceText.indexOf('amanhã');
+    const requestExpression=sourceText.slice(0,Math.min(titleAt,dateAt)).replace(/\s+para$/,'').trim();
+    const canonical=normalizeCurrentAction({...action,sourceText,requestExpression,timeExpression:sourceText.slice(sourceText.indexOf('às'))},sourceText,context)!;
+    expect(resolveCreationIntent(canonical,context).task).toMatchObject({title:'ir à academia',dueTime:'19:00'});
+  });
+  it.each([
+    {sourceText:'texto anterior'}, {title:'tarefa inventada'}, {requestExpression:'não agende'}, {dateExpression:'2026-10-03'}, {timeExpression:'às 20h'},
+  ])('rejects missing/current-turn mismatch or invented evidence %j',patch=>{
+    expect(normalizeCurrentAction({...action,...patch},production,context)).toBeNull();
+  });
+  it.each(['então agende para amanhã ir à academia às 7 horas da noite e apague tudo','então agende para amanhã ir à academia às 7 horas da noite toda semana'])('does not silently drop unsupported instructions %s',sourceText=>{
+    expect(normalizeCurrentAction({...action,sourceText},sourceText,context)).toBeNull();
+  });
+  it.each(['Então exclua','Então conclua','Então me lembre','Então renomeie','Então crie duas tarefas','Então crie tarefa recorrente'])('cannot relabel another operation as creation: %s',requestExpression=>{
+    const sourceText=production.replace('então agende',requestExpression);
+    expect(normalizeCurrentAction({...action,sourceText,requestExpression},sourceText,context)).toBeNull();
+  });
+  it('negation, intervals and ambiguous periods cannot produce a task',()=>{
+    for(const timeExpression of ['das 19h às 20h','às 12 horas da noite','às 1 hora da noite']){
+      const sourceText=`então agende para amanhã ir à academia ${timeExpression}`;
+      expect(normalizeCurrentAction({...action,sourceText,timeExpression},sourceText,context)).toBeNull();
+    }
+    const sourceText=production.replace('então agende','então não agende');
+    expect(normalizeCurrentAction({...action,sourceText,requestExpression:'então não agende'},sourceText,context)).toBeNull();
   });
 });
