@@ -21,3 +21,7 @@ Esta pasta é a referência geral da arquitetura implementada no repositório. D
 Esta visão geral cobre o Leve como sistema. [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md) é a especialização da Gika: políticas, resolução de pedidos, integração com o modelo e confirmação. Se a arquitetura compartilhada e a especialização parecerem divergir, use esta pasta para as fronteiras gerais e a documentação Gika para seus contratos; confira o código-fonte indicado antes de concluir que o comportamento atual mudou. A especialização preserva snapshots datados de milestones anteriores, que não substituem esta visão geral.
 
 ADRs registram escolhas e motivos, não todos os detalhes de implementação: [ADRs gerais](../adr/) e [decisões Gika](../../.agent/GIKA_DECISIONS.md). A [política de segurança](../../SECURITY.md) descreve relato responsável; as [regras de acesso](../../firestore.rules) e o servidor mostram as verificações efetivas.
+
+## Revisão D3
+
+A primeira revisão D3 rejeitou quatro generalizações: Bearer atribuído a todas as rotas `/api`, condição de acesso aplicada à leitura própria de `memberships/{uid}`, Worker representado como sistema externo e limite de leitura Gika estendido indevidamente à inspeção de recorrência. A resolução documenta as rotas health/version públicas e tick HMAC, a exceção da Rule de membership, o Worker como container Leve no runtime externo Cloudflare e o `limit(51)` sentinela separado do `read()` limitado a 50.

@@ -6,7 +6,7 @@ Este documento resume a fronteira de runtime. A [arquitetura especializada da Gi
 
 1. O painel envia texto e `requestId` pelo adaptador web a `POST /api/gika/respond`, usando o token Firebase da sessão.
 2. O middleware `/api` verifica o token. O router autoriza e deriva do perfil contexto civil, fuso e início de semana.
-3. O repositório Gika lê no servidor um recorte limitado de atividades e séries do UID autenticado. Queries têm limite 50 e resultados podem ser marcados parciais.
+3. No caminho `ReadRepository.read()`, o repositório Gika lê no servidor atividades e séries do UID autenticado com queries limitadas a 50; snapshots podem ser marcados parciais. A inspeção de escopo de recorrência é um caminho separado: consulta ocorrências futuras com `limit(51)` e aceita no máximo 50; o 51º registro funciona como sentinela de saturação e impede tratar o conjunto como completo.
 4. `server/gika/gemini.ts` implementa o adaptador para Gemini. Ele envia o texto e contexto necessário para interpretar o pedido. Nos fluxos de organização, envia uma projeção limitada de tarefas; não envia IDs de entidade ao modelo para ele escolher.
 5. O router valida as chamadas do modelo, resolve entidades e aplica policy no software. Resposta livre do modelo não é tratada como comprovante de uma escrita.
 

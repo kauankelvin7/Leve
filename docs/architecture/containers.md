@@ -15,6 +15,7 @@ C4Container
   Container_Ext(db, "Database", "Cloud Firestore", "Dados por conta, recibos e jobs")
   Container_Ext(model, "Model API", "Gemini adapter", "Interpreta pedidos Gika")
   Container_Ext(push, "Push", "Firebase Cloud Messaging", "Entrega notificações")
+  Container_Ext(cloudflare, "Runtime", "Cloudflare Workers", "Plataforma declarada para o cron")
   Rel(person, web, "Navega")
   Rel(web, auth, "Firebase Auth SDK")
   Rel(web, db, "Leituras permitidas pelas Rules")
@@ -22,6 +23,7 @@ C4Container
   Rel(api, db, "Firebase Admin SDK")
   Rel(api, model, "Pedido Gika do servidor")
   Rel(worker, api, "POST /api/internal/tick assinado")
+  Rel(worker, cloudflare, "Execução no runtime configurado")
   Rel(api, push, "Firebase Admin Messaging")
 ```
 
@@ -38,6 +40,6 @@ C4Container
 
 ## Limites de responsabilidade
 
-O browser lê apenas caminhos e operações permitidos por [firestore.rules](../../firestore.rules). A API usa Admin SDK para operações de domínio e tarefas privilegiadas; Admin SDK não herda as Rules. O Worker apenas forma a assinatura e chama a API; a API valida a assinatura e coordena as rotinas.
+O browser lê apenas caminhos e operações permitidos por [firestore.rules](../../firestore.rules). A API usa Admin SDK para operações de domínio e tarefas privilegiadas; Admin SDK não herda as Rules. O Worker é código do sistema Leve hospedado/configurado para Cloudflare Workers: forma a assinatura e chama a API. O runtime do provedor é uma dependência externa, e o manifest não comprova implantação ativa. A API valida a assinatura e coordena as rotinas.
 
 O mapeamento de endpoints e a diferença entre o servidor Express local e o adapter HTTP da Vercel estão em [runtime e deploy](deployment-runtime.md).
