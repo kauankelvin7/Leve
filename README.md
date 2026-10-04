@@ -25,7 +25,7 @@ A Gika usa a API e as políticas do servidor. Ela não grava no banco nem substi
 
 ## Executar localmente
 
-Requisitos: Node.js 24.x e npm 11.19.1. O projeto fixa a versão do npm em `package.json`.
+Requisitos: Node.js 24.x, npm 11.19.1 e Java 21 para o emulador Firestore. O projeto fixa a versão do npm em `package.json`.
 
 ```sh
 corepack enable
