@@ -65,6 +65,15 @@ Se qualquer smoke crítico falhar, interromper tráfego para o release e usar o 
 - Gika depende de quota/termos e disponibilidade do provedor Gemini; manter Free Tier e monitorar consumo/custos no provedor, sem incluir segredo em logs.
 - HSTS/CSP só foram auditados no código/config versionado; ainda requer verificação de headers no deployment real após release autorizada.
 
+### Resultado do preflight local — 2026-10-04
+
+- Firebase CLI 15.30.0 está instalada, mas não há conta autenticada (`login:list`: zero contas); `projects:list` falhou. Não foi possível confirmar projeto Preview, consultar Rules/índices remotos, criar Firebase Preview ou ler a coleção de produção. Tokens legados: **NOT_CHECKED**.
+- Vercel CLI, diretório `.vercel` ligado e credenciais Vercel não estão disponíveis no ambiente. Variáveis Preview não foram consultadas nem alteradas; não foi feito Preview smoke.
+- A configuração versionada do scheduler usa `https://leve-agenda.vercel.app`; nenhum acesso autenticado ao provedor do Worker foi encontrado. Nenhum HMAC Preview foi gerado/configurado, pois não havia destino para compartilhá-lo apenas no escopo Preview.
+- `GEMINI_API_KEY` não está disponível neste ambiente e a Vercel não pôde ser consultada. Resultado: **USER_ACTION_REQUIRED: GEMINI_API_KEY** se Gika real for requisito no Preview. Nenhuma chave foi inventada.
+- Nenhum domínio Firebase Preview foi definido. A CSP permanece restrita ao auth domain de produção `leve-db.firebaseapp.com`; não foi ampliada por suposição. Antes de Preview isolado, registrar o auth domain exato e adicionar somente essa origem em `frame-src` (e em outras diretivas somente se o fluxo demonstrar necessidade).
+- Não houve alteração remota, criação de projeto, mudança de billing, consulta/escrita de dados reais, deploy ou alteração de `main`.
+
 ## Matriz exata de gates e decisões
 
 | Item | Decisão neste checkpoint |
