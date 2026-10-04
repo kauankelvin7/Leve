@@ -55,3 +55,19 @@ Diagnóstico sobre dcf8c9c: badge React gera Text nodes adjacentes (`3`, espaço
 Compras reproduziu contraste1.01: texto herdava fill claro da superfície ink enquanto forced colors tornava fundo branco. Regra de cor do sistema na origem e nos descendentes, com especificidade equivalente ao tema dark, corrige o produto; sem forced-color-adjust:none ou exceção Axe. Verificação focal pendente.
 
 Verificação desta retomada: self-tests completos PASS; focal fresh forcedColors1/1PASS39.6s (1.0min incluindo setup); build/typechecks/lint/AST/staticcheck PASS. Primeiras falhas anteriores permanecem registradas.
+
+## Navegação Gika e mobile — autorização posterior
+
+Launcher fixed rejeitado pelo usuário. Mesmo opener move para nav existente, portrait master44px, key por UID, painel único lazy/focus/aria preservados. Removidos dock observers/listeners/offset/calendar compensation. Manifesto remove somente launcher: botão dentro da nav não recebe segundo blur. Assets/controller/expressões/ACK inalterados. Mobile mantém7alvos≥44px; rail compacto e desktop nome+avatar.
+
+Calendário: mobile h1 deixa3.3rem fixo por clamp responsivo, tabs nowrap/alvo44/padding menor, eixo temporal proporcional à fonte e board com largura mínima/scroll interno. Nenhum modelo/command temporal mudou.
+
+Primeiro focal Character+nav6PASS/1FAIL: cinco Character e logout PASS; extensão nova abriu painel antes da asserção original de zero painéis carregados. Falha de cenário do teste (lazy mantém dialog fechado montado), não bug de produto. Mover novas verificações para depois das asserções originais mantém todas elas e verifica retorno de foco/aria/target/portrait. Reexecução focal pendente.
+
+Mobile text200 primeira rodada: todas rotas sem overflow global/violações Axe, mas dois textos ellipsis da timeline retornam DOCUMENT_CLIPPED_TEXT. Root box ultrapassa scrollport enquanto os runs já são corretamente recortados por overflow; investigação factual do sampler em curso. Captura mostra categoria espremida; flex-basis proporcional à fonte permite wrap do filtro sem alterar domínio. Teste focal novo inicialmente rejeitou horários por contar múltiplos Range rects como múltiplas linhas: React renderiza Text adjacentes (`hora`, `:00`). Verificar alinhamento vertical de todos os rects e bounds do eixo observa o bug real de dígitos quebrados, sem exigir um único nó DOM.
+
+Sampler clipping reproduzido sem app: root x31–491 em scrollport x30–360/document390; runs visíveis estavam corretamente recortados. Union indevida recolocava bounds offscreen do root. Captura passa a usar somente runs comprovadamente visíveis; rootBox/guards/clipping/restauração permanecem. Selftest horizontal mantém branco/branco FAIL, alvo oculto UNMEASURED e scroll restaurado. Lock atualizado somente contrast/contrast-selftest por bug factual, sem waiver.
+
+Rodada com scroller corrigido: text2001/1PASS; authenticated390lightFAIL54.8s por NESTED_FILTER no dialog Gika dentro da nav recém-integrada. Nenhuma violação Axe/overflow. Aplicar superfície Gika já autorizada/manifestada pelo primitivo: mobile fullscreen sólido sem blur; desktop nav ink sólido + panel strong, sem blur no backdrop. Remover filtros/fallbacks/shadow/bg duplicados de gika.css, sem mudança de handler/controller. Reexecução pendente.
+
+Focal final do lote nav/calendário/Gika:3/3PASS2.6min (authenticated390light52.7s, solid41.4s, forcedColors38.9s), snapshots after reais; nenhum nested filter/Axe/overflow. Calendar200 focal1PASS e selftests/static/lint/AST/doisTS/buildPASS. Captura mobile revisada: título/tabs legíveis, avatar44px no nav, timeline contida. Overlays/dock restantes e ampla/final RC ainda pendentes.

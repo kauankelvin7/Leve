@@ -9,7 +9,7 @@ Base: M9 congelado `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`. Fonte visual: rot
 | Workspace/header | app/App.tsx | Privadas | Fluxo sobre canvas | Transparente | Não | Sem elevação/background que justifique blur | Baixo/zero/hierarquia existente |
 | Auth entry | features/identity/Login.tsx | Entrar/registrar/recuperar | Card sobre ambientação | 94%claro,blur34 | Sim/strong | Superfície elevada existente; tokens semânticos e fallback | Baixo/média/texto e campos opacos |
 | Gika panel | features/gika/GikaPanel.tsx | Privadas | Dialog sobre agenda | 97%solid,blur16+backdrop2 | Sim/strong desktop;solid mobile | Uma superfície externa, sem blur interno | Nenhum contrato/área limitada/AA+reduced |
-| Gika launcher | features/gika/GikaLauncher.tsx | Privadas | Fixed sobre agenda | 94%solid,blur12 | Sim/pressable | Pequena entrada flutuante | Nenhum contrato/pequena/alvo44+nav/timer |
+| Gika nav entry | features/gika/GikaLauncher.tsx | Privadas | Botão no nav existente | Transparent/portrait master44px | Não | Entrada fixed rejeitada; vidro somente no nav externo | Um panel lazy/foco+aria/alvo44, sem dock observers |
 | Gika composer | features/gika/gika.css | Dialog | Dentro do panel | Solid | Não | Leitura/entrada; evitar nested blur | Nenhum/zero/foco preservado |
 | Gika confirmation/batch/recurrence cards | features/gika | Dialog | Dentro do panel | Solid | Não | Preview verificável e legível, nenhum nested blur | Contratos intocados/zero/ações claras |
 | ConfirmDialog | components/ui/ConfirmDialog.tsx | Notas/compras/lixeira/etc | Native dialog | Solid,backdropblur4 | Sim/strong | Elevação única; scrim sem segundo blur | Handler intacto/limitada/AA+foco |
@@ -29,10 +29,10 @@ Base: M9 congelado `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`. Fonte visual: rot
 | Settings forms/danger | features/settings | Configurações | Forms/ações sensíveis | Fields/solid | Não | Legibilidade e risco exigem estabilidade | Nenhum/zero/AA+disabled |
 | Search/results | features/content/Search.tsx | Buscar | Campo/lista | Solid | Não | Resultados densos | Nenhum/zero/teclado |
 | Trash/review lists | features/trash/Trash.tsx;features/activities/Review.tsx | Lixeira/revisão | Lista | Solid | Não | Estados/destruição explícitos | Nenhum/zero/ações claras |
-| Buttons/floating controls | components/ui;features | Todas | Controles | Semânticos atuais | Apenas launcher/pressable | Não glassificar cada botão | Nenhum/pequena/alvos44 |
+| Buttons/floating controls | components/ui;features | Todas | Controles | Semânticos atuais | Não; navegação contém entrada Gika sem blur interno | Não glassificar cada botão | Nenhum/pequena/alvos44 |
 | Popovers | Router/componentes | — | Não localizado | — | Não criar | YAGNI | Zero |
 | Toast/notification/tutorial | components;features | Privadas | Portal/feedback | Solid | Não | Não aumentar efeitos/lifecycle | Nenhum/zero/status/alert |
 | Outbox/session/status banners | components;platform | Privadas | Estado crítico | Solid | Não | Não alterar contratos/feedback | Nenhum/zero/offline/Auth |
 | Privacy/long text | features/identity | Privacidade | Leitura longa | Paper | Não | Vidro não acrescenta informação | Nenhum/zero/leitura |
 
-Manifesto contém8superfícies, com escopo explícito. Nenhuma nova superfície é aprovada por existir uma classe `.panel`. Remover/substituir filtros históricos redundantes antes de empilhar overrides. Classes/tokens exclusivamente visuais; nenhuma regra de domínio/persistência muda.
+Manifesto contém7superfícies, com escopo explícito. Nenhuma nova superfície é aprovada por existir uma classe `.panel`. Remover/substituir filtros históricos redundantes antes de empilhar overrides. Classes/tokens exclusivamente visuais; nenhuma regra de domínio/persistência muda.

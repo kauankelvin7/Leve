@@ -169,17 +169,17 @@ input::file-selector-button { font: inherit; border: 0; padding: 8px 12px; margi
 /* Root bridge also reaches body portals such as the timer dock. */
 :root:has(.app-shell.solid),
 :root:has(.app-shell.high-contrast) { --glass-bg: var(--color-solid); --glass-bg-strong: var(--color-solid); --glass-shadow: none; }
-:root:has(.app-shell.solid) :is(.glass, .gika-panel, .gika-launcher, .active-timer-bar),
-:root:has(.app-shell.high-contrast) :is(.glass, .gika-panel, .gika-launcher, .active-timer-bar),
+:root:has(.app-shell.solid) :is(.glass, .gika-panel, .active-timer-bar),
+:root:has(.app-shell.high-contrast) :is(.glass, .gika-panel, .active-timer-bar),
 .glass.is-solid { backdrop-filter: none; -webkit-backdrop-filter: none; }
 :root:has(.app-shell.reduce-motion) :is(.active-timer-bar, .active-timer-state > span) { animation: none; }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   :root { --glass-bg: var(--color-solid); --glass-bg-strong: var(--color-solid); --glass-shadow: none; }
-  .glass.glass, :root :is(.gika-panel, .gika-launcher, .active-timer-bar),
+  .glass.glass, :root :is(.gika-panel, .active-timer-bar),
   :root :is(.gika-panel, .confirm-dialog, .calendar-recurrence-dialog)::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 @media (forced-colors: active) {
   :root { --glass-bg: Canvas; --glass-bg-strong: Canvas; --glass-border: CanvasText; --glass-shadow: none; }
-  .glass.glass, :root :is(.gika-panel, .gika-launcher, .active-timer-bar),
+  .glass.glass, :root :is(.gika-panel, .active-timer-bar),
   :root :is(.gika-panel, .confirm-dialog, .calendar-recurrence-dialog)::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }

@@ -40,4 +40,15 @@ test('M9 launcher leaves short shopping list actions reachable on mobile', async
   await remove.click(); await expect(card).toHaveCount(0);
   await expect(page.locator('.gika-panel')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Pergunte à Gika', exact: true })).toBeVisible();
+  const gika = page.getByRole('navigation', { name: 'Principal', exact: true }).getByRole('button', { name: 'Pergunte à Gika', exact: true });
+  await expect(gika).toHaveCount(1);
+  expect(await gika.evaluate(element => getComputedStyle(element).position)).not.toBe('fixed');
+  const target = await gika.boundingBox(), avatar = await gika.locator('img').boundingBox();
+  expect(target!.width).toBeGreaterThanOrEqual(44); expect(target!.height).toBeGreaterThanOrEqual(44);
+  expect(avatar!.width).toBeGreaterThanOrEqual(44); expect(avatar!.width).toBeLessThanOrEqual(52);
+  await gika.click(); await expect(page.getByRole('dialog', { name: 'Gika', exact: true })).toBeVisible();
+  await expect(page.locator('.gika-panel')).toHaveCount(1);
+  await expect(gika).toHaveAttribute('aria-expanded', 'true'); await expect(gika).toHaveAttribute('aria-controls', 'gika-dialog');
+  await page.getByRole('button', { name: 'Fechar Gika', exact: true }).click(); await expect(gika).toBeFocused();
+  await expect(gika).toHaveAttribute('aria-expanded', 'false');
 });

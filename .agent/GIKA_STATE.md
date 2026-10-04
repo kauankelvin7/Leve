@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `LIQUID_GLASS_HARNESS_IN_PROGRESS`; M9_DONE_RC_READY congelado emb0e7bae753ec93374a3ebe3ec2b1a5ac07298046, final RC ainda pendente.
+- Status global: `LIQUID_GLASS_FINALIZATION_IN_PROGRESS`; M9_DONE_RC_READY congelado emb0e7bae753ec93374a3ebe3ec2b1a5ac07298046, final RC ainda pendente.
 - Aprovação humana vigente: `GIKA_V1_FACIAL_HUMAN_APPROVED`; v1 facial aceitável na versão gratuita, KEEP rest/idle/blink/listening/thinking/clarify/error/offline, FALLBACK success→idle visual/master. Sucesso semântico continua exclusivamente após ACK real.
 - `FULL_BODY_CHARACTER_RIG_DEFERRED` e `RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER` definitivos para v1; histórico preservado, sem reabrir autoria corporal.
 - Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
@@ -294,3 +294,12 @@ Na branch Liquid Glass, a medição revelou launcher cobrindo Excluir em uma lis
 ## Liquid Glass — verificação bloqueada, M9 congelado preservado
 
 `BLOCKED_FORCED_COLORS_VERIFICATION`: última ampla29PASS/3FAIL/23não executados; após correções200% e timer focais passam, forced colors permanece FAIL (badge não certificado/Compras Axe). Três tentativas localizadas, nenhum timeout/retry/threshold alterado. Estado experimental somente em feat/liquid-glass-system; não integrar à feat/gika-integration nem declarar FINAL_RC_READY_FOR_MAIN_MERGE. M9 frozen b0e7bae preservado; detalhes docs/glass/FINAL_REPORT.md/DECISIONS.md.
+
+
+### Retomada autorizada após checkpoint dcf8c9c
+
+Forced colors desbloqueado factual: adjacent Text inline-flex agrupados na medição, Shopping usa system colors com especificidade do tema. Selftests/build/lint/AST/ambosTS e focal fresh1/1PASS39.6s; commit3be88f8. Histórico BLOCKED preservado, não constitui estado corrente. Novas medições/Glass amplo/RC ainda pendentes.
+
+Gika migra para nav existente com portrait master44px (mesmo panel lazy, key UID/focus/aria), não fixed. Dock observers/listeners/offset removidos. Character5/5 e logout PASS; cenário novo de nav corrigido sem remover asserção original, focal2/2PASS25.3s. Calendário390/200 mantém título/tabs/horários e scroll interno; regressão nova1/1PASS14.1s após corrigir contagem de Text rects da própria fixture. Categoria pode quebrar em outra linha. Sampler de clipping recebe correção factual para runs visíveis, guards intactos/selftestsPASS. Finalização Glass segue em branch isolada, sem integrar até gates/QA verdes. M9 frozen/Character/contratos intactos; nenhum main/deploy/live/paid.
+
+Lote nav/calendário/Gika validado:3/3GlassfocalPASS2.6min, sólido/forced/Axe sem violações/overflow/nested; foto390 revisada. Panel recebe primitivo central, mobile sólido/desktopstrong. Manifesto7 exclui fixedlauncher. Restantes overlays/dock/ampla/final RC pendentes.

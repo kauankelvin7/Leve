@@ -47,13 +47,6 @@
       "reason": "Barra flutuante pequena já possui vidro; centralizar valores e fallbacks, sem mudar timer."
     },
     {
-      "id": "gika-launcher",
-      "selector": ".gika-launcher",
-      "variant": "glass-pressable",
-      "scope": "visible launcher",
-      "reason": "Entrada flutuante pequena; manter alvo, posição e feedback existentes."
-    },
-    {
       "id": "gika-panel",
       "selector": ".gika-panel",
       "variant": "glass-strong",

@@ -141,3 +141,32 @@ test('calendário mantém contraste automatizado em claro e escuro', async ({ pa
     await assertNoGlobalOverflow(page);
   }
 });
+
+
+test('mobile com texto 200% mantém título, tabs e horários inteiros com rolagem interna', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await enterLocalAgenda(page); await openCalendar(page);
+  await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+  const headingLines = await page.locator('#page-title').evaluate(element => {
+    const range = document.createRange(); range.selectNodeContents(element); return range.getClientRects().length;
+  });
+  expect(headingLines).toBe(1);
+  for (const view of ['Mês', 'Semana', 'Dia'] as const) {
+    await chooseView(page, view); await assertNoGlobalOverflow(page);
+    const tab = page.getByRole('button', { name: view, exact: true });
+    expect(await tab.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    if (view !== 'Mês') {
+      const timesFit = await page.locator('.calendar-time-axis span').evaluateAll(elements => elements.every(element => {
+        const range = document.createRange(); range.selectNodeContents(element);
+        const rects = [...range.getClientRects()], axis = element.parentElement!.getBoundingClientRect();
+        return rects.length > 0 && rects.every(rect => Math.abs(rect.y - rects[0]!.y) < .1 && rect.left >= axis.left && rect.right <= axis.right);
+      }));
+      expect(timesFit).toBe(true);
+      const timeline = page.locator('.calendar-time-horizontal');
+      expect(await timeline.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+      await timeline.focus(); await page.keyboard.press('ArrowRight');
+      await expect.poll(() => timeline.evaluate(element => element.scrollLeft)).toBeGreaterThan(0);
+    }
+  }
+  await page.screenshot({ path: '.cache/glass/after/calendar-day-mobile-text200.png', fullPage: true });
+});

@@ -54,6 +54,14 @@ try {
   await page.setContent('<style>body{background:white}#scroller{height:80px;overflow:auto}#target{margin-top:300px;background:linear-gradient(90deg,white,#eee);color:black}</style><div id="scroller"><div id="target">Synthetic clipped scroller text</div></div>');
   await measureIncompleteContrast(page, ['#target']);
   assert.equal(await page.locator('#scroller').evaluate(e => e.scrollTop), 0);
+  // Offscreen root bounds are not visible paint inside a horizontal scrollport.
+  await page.setContent('<style>html{font-size:200%}body{margin:0;background:white}.scroller{margin:30px;width:330px;overflow-x:auto}.board{width:max(320px,18rem);padding-left:max(52px,3.25rem);box-sizing:border-box}#target{display:block;font:16px Arial;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:black;background:linear-gradient(90deg,white,#eee)}</style><div class="scroller"><div class="board"><strong id="target">Synthetic long title inside the scrollable timeline</strong></div></div>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  assert.equal(await page.locator('.scroller').evaluate(e => e.scrollLeft), 0);
+  await page.locator('#target').evaluate(e => { e.style.color = 'white'; e.style.background = 'white'; });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'FAIL');
+  await page.locator('#target').evaluate(e => { e.style.height = '0px'; });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'UNMEASURED');
   // A thin low-contrast stripe must fail even though almost the whole gradient passes.
   assert.equal((await fixture('color:#111;background:linear-gradient(90deg,white 0%,white 45%,#111 46%,#111 47%,white 48%)')).status, 'FAIL');
   // Descendant font/color are evaluated independently of the target container.

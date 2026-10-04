@@ -91,7 +91,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
     return () => { viewport?.removeEventListener('resize', update); viewport?.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, []);
 
-  return <CharacterEvents.Provider value={notifyCharacter}><dialog ref={dialog} id="gika-dialog" className="gika-panel" aria-labelledby="gika-title" aria-describedby="gika-demo-notice"
+  return <CharacterEvents.Provider value={notifyCharacter}><dialog ref={dialog} id="gika-dialog" className="gika-panel glass glass-strong" aria-labelledby="gika-title" aria-describedby="gika-demo-notice"
     onCancel={event => { event.preventDefault(); close(); }}
     onKeyDown={event => {
       if (event.key !== 'Tab') return;

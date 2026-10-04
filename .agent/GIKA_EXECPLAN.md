@@ -401,3 +401,8 @@ PRE fetch/branch/local=origin/worktree limpos e documentos Character persistidos
 
 
 Direção posterior sobre f056244: meia-altura removida do requisito de M9; bust-only e portrait UI explícito autorizados. Fonte insuficiente continua documentada, sem novo asset/pixels. Preparar /dev/gika-character isolado de produção, capturas e controles do runtime real; parar para revisão humana antes de repetir regressão final ou export. Isso substitui a exigência de meia-altura do parágrafo anterior, sem apagar seu histórico.
+
+
+### Retomada final Glass sobre dcf8c9c — escopo autorizado
+
+M9 congelado b0e7bae; sem reabertura. Forced colors: medir sem alterar inline-flex React/Text, usar system colors em Compras, nunca liberar unmeasured. Responsividade: calendário390/200%, scroll interno e mobile páginas reais. Gika: mesmo opener/panel lazy dentro da nav com portrait aprovado, excluir dock fixed e observadores obsoletos; não tocar assets/controller/domínio. Concluir overlays/Gika somente com primitivo central e manifesto7. Gates Glass fresh/selftests/after+review/perf antes de FF para integration; então regressão total sintética/RC-UAT, evidência final e push. Git/runtime/CSS/estado pertencem ao root; auditoria paralela somente leitura. Main/produção/live/paid intactos. Falhas iniciais preservadas, sem deadlines/retries/assertions relaxados.

@@ -1,12 +1,15 @@
 .gika-launcher {
-  position: fixed; z-index: 11; right: max(24px, env(safe-area-inset-right));
-  bottom: max(var(--gika-dock-bottom, 24px), env(safe-area-inset-bottom));
-  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 10px 18px;
-  border: 1px solid var(--color-border); border-radius: 24px; color: var(--color-text);
-  background: color-mix(in srgb, var(--color-solid) 94%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 6px 22px #0002; font-family: var(--font-brand, Nunito, sans-serif); font-weight: 800;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-width: 44px;
+  min-height: 54px; padding: 6px 12px; border: 1px solid transparent;
+  border-radius: 8px; color: inherit; background: transparent; box-shadow: none;
+  font-family: var(--font-brand, Nunito, sans-serif); font-size: .9rem; font-weight: 800;
 }
-.gika-launcher:hover { background: var(--color-accent-soft); }
+.gika-launcher:hover, .gika-launcher[aria-expanded='true'] { background: color-mix(in srgb, currentColor 8%, transparent); }
+.gika-launcher .gika-nav-avatar { width: 44px; height: 44px; }
+@media (max-width: 959px) {
+  .gika-launcher { justify-content: center; padding: 0; gap: 0; }
+  .gika-launcher .nav-label { display: none; }
+}
 .gika-mark { flex-shrink: 0; }
 .gika-launcher:focus-visible, .gika-panel :is(button, textarea, [tabindex]):focus-visible {
   outline: 3px solid var(--color-action-primary); outline-offset: 3px;
@@ -16,19 +19,18 @@
   height: min(700px, calc(var(--gika-viewport-height, 100dvh) - 32px)); max-height: calc(var(--gika-viewport-height, 100dvh) - 32px);
   margin: auto max(24px, env(safe-area-inset-right)) auto auto; padding: 0;
   border: 1px solid var(--color-border); border-radius: 28px; color: var(--color-text);
-  background: color-mix(in srgb, var(--color-solid) 97%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 20px 64px #0002; overflow: hidden; font-family: var(--font-body, 'DM Sans', sans-serif);
+  overflow: hidden; font-family: var(--font-body, 'DM Sans', sans-serif);
 }
 .gika-panel[open] { display: flex; flex-direction: column; }
-.gika-panel::backdrop { background: #101a162e; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+.gika-panel::backdrop { background: #101a162e; }
 .gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 8px; }
 .gika-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .gika-identity-mark { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; color: var(--color-action-primary); background: var(--color-accent-soft); border-radius: 15px; }
-.gika-character { position: relative; display: block; width: 56px; height: 56px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-border); }
-.gika-character img, .gika-character canvas, .gika-welcome-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.gika-character, .gika-nav-avatar { position: relative; display: block; width: 56px; height: 56px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-border); }
+.gika-nav-avatar img, .gika-character img, .gika-character canvas, .gika-welcome-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .gika-character canvas { position: absolute; inset: 0; visibility: hidden; }
 .gika-character canvas[data-rive-ready='true'] { visibility: visible; }
-.gika-character > img, .gika-character > canvas { transform: translateY(6%); }
+.gika-nav-avatar > img, .gika-character > img, .gika-character > canvas { transform: translateY(6%); }
 .gika-character:has(canvas[data-rive-ready='true']) > img { visibility: hidden; }
 .gika-heading h2 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.25rem; font-weight: 800; }
 .gika-kicker { margin: 2px 0 0; color: var(--color-text-muted); font-size: .75rem; }
@@ -88,12 +90,7 @@
 .gika-undo button { display: inline-flex; align-items: center; gap: 6px; }
 .gika-load-error { position: fixed; z-index: 13; right: 16px; bottom: 150px; width: min(400px, calc(100vw - 32px)); padding: 16px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); }
 .gika-load-error p { margin: 0 0 12px; }
-.solid :is(.gika-panel, .gika-launcher) { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
-.solid .gika-panel::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
-@supports not (backdrop-filter: blur(1px)) { .gika-panel, .gika-launcher { background: var(--color-solid); } }
-@media (prefers-reduced-transparency: reduce) { .gika-panel, .gika-launcher { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; } .gika-panel::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; } }
 @media (max-width: 739px) {
-  .gika-launcher { right: max(16px, env(safe-area-inset-right)); bottom: max(var(--gika-dock-bottom, 82px), calc(82px + env(safe-area-inset-bottom))); }
   .gika-panel { top: var(--gika-viewport-top, 0px); bottom: auto; width: 100%; height: min(var(--gika-viewport-height, 100dvh), 100dvh); max-height: min(var(--gika-viewport-height, 100dvh), 100dvh); margin: 0; border: 0; border-radius: 0; }
   .gika-heading { padding: max(12px, env(safe-area-inset-top)) 18px 6px; }
   .gika-heading h2 { font-size: 1.1rem; }
@@ -132,10 +129,6 @@
 .gika-panel[data-compact='true'] .gika-composer textarea { max-height: 64px; }
 .gika-panel[data-compact='true'] .gika-composer-hint { display: none; }
 
-/* Keep the floating entry outside the Planner's lower-right resize/move handles. */
-@media (min-width: 740px) {
-  .gika-launcher[data-calendar='true'] { left: max(24px, env(safe-area-inset-left)); right: auto; }
-}
 
 .gika-confirmation-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: .65rem 0; }
 .gika-confirmation-diff dt { font-size: .8rem; color: var(--color-text-muted); }

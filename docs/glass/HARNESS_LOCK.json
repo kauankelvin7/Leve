@@ -5,9 +5,9 @@
     "scripts/glass/check.mjs": "10506255d7811ece05bc07904075f0dbca2f096742e649e4c0ef4331d47b9bcd",
     "scripts/glass/color.d.mts": "370184f34f047ae2b9634f0d29d7fc70c33b9f3af881991eef57953a96c25043",
     "scripts/glass/color.mjs": "ae8df112195c2ffd9c1b9b4933694be749f9ccf6c2629a8e8b52fda83796cae3",
-    "scripts/glass/contrast-selftest.mjs": "763fbf25a1d388bc8c6c1b2cb3d090ab6e1e5aa2a5963983864b2c9d1f4020d1",
+    "scripts/glass/contrast-selftest.mjs": "8609763b541446b554ba6d975144845e3b836e9c4069a811f0cf2df0ed4ec832",
     "scripts/glass/contrast.d.mts": "b05efc818f52b98a6ce5a554fd69c11c6e0adae9ee1f32cbfac8504228da3289",
-    "scripts/glass/contrast.mjs": "f8eaf6bb7dc33a126a404857544008da4101bd7e0674e6694d83e950cc3fe8a2",
+    "scripts/glass/contrast.mjs": "d97568a8407e73d072ee40f4d7dad17d306090b91a46ec5d4dcd123a11fe887e",
     "scripts/glass/ports.mjs": "e5e8d686927b8c0baa91fce6d60dd8b0cbae001c75228a120f3738725f21577f",
     "scripts/glass/probe.ts": "981ece8c7e6b92c3e9de767bc8eb08ed16825fb70c9b200fb596bfa178877441",
     "scripts/glass/public.spec.ts": "edaa43d329da1c9e84145e4bad660ef35aeafbeaac28d1c3b14b0323da3fe4ee",
@@ -15,6 +15,6 @@
     "scripts/glass/selftest.mjs": "1d2dce26da2c3d293b7fd6e4a2d45908c4dbad8673ec32fed02007c4a002e286",
     "playwright.glass.config.ts": "a6d69c849f49035498db1a9ca9caf5d23fb19d39fc571b73f6b437ba7279046d",
     "reference/glass.css": "a6e9a681d630f7b8aa04d6e144968e09a0af68cbb65f72f965e1fd6857e157d6",
-    "glass.manifest.json": "c149d9037402f050dfd59a6c9070906caff8a48ee023d6909c52697913fa5034"
+    "glass.manifest.json": "5a527dc52352a23e59195977e68fe89940c45ca620f2d31a9ba80144169c70f3"
   }
 }

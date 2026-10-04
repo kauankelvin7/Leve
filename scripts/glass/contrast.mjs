@@ -75,7 +75,9 @@ export async function measureIncompleteContrast(page, target) {
         if (s.content && !['none', 'normal', '""', "''"].includes(s.content) && s.display !== 'none') return { reason: 'GENERATED_CONTENT' };
       }
       const r = root.getBoundingClientRect();
-      const rects = [r, ...runs.flatMap(run => run.rects)];
+      // A scrollport can clip the containing block beyond the viewport.
+      // Sample only proven-visible glyph bounds; retain the full root layout guard.
+      const rects = runs.flatMap(run => run.rects);
       const left = Math.floor(Math.min(...rects.map(rect => rect.x)) + scrollX), top = Math.floor(Math.min(...rects.map(rect => rect.y)) + scrollY);
       const right = Math.ceil(Math.max(...rects.map(rect => rect.x + rect.width)) + scrollX), bottom = Math.ceil(Math.max(...rects.map(rect => rect.y + rect.height)) + scrollY);
       if (left < 0 || top < 0 || right > document.documentElement.scrollWidth || bottom > document.documentElement.scrollHeight) return { reason: 'DOCUMENT_CLIPPED_TEXT' };

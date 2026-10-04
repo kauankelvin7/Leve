@@ -1780,7 +1780,7 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
     border-radius: 22px;
   }
   .sidebar-bottom { display: none; }
-  .sidebar nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .sidebar nav { grid-template-columns: repeat(7, minmax(44px, 1fr)); gap: 2px; overflow-x: auto; }
   .sidebar nav a {
     position: relative;
     min-width: 0;

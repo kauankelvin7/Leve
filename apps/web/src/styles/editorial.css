@@ -94,7 +94,6 @@
 @media (max-width: 739px) { .app-shell .timer-panel { padding: 24px 20px 20px; } .app-shell .timer-heading { align-items: start; flex-direction: column; gap: 16px; } .app-shell .timer-state { align-self: auto; } .app-shell .timer-display { font-size: 4rem; } }
 @media (min-width: 740px) {
   .app-shell .sidebar { background: var(--ink-surface); color: #fffdf8; border: 0; border-radius: 18px; backdrop-filter: none; box-shadow: none; top: clamp(20px, 2.2vw, 48px); height: calc(100dvh - clamp(40px, 4.4vw, 96px)); max-height: none; overflow: auto; overscroll-behavior: contain; padding: 24px 14px 14px; }
-  .app-shell:has(.gika-launcher[data-calendar='true']) .sidebar { height: calc(100dvh - clamp(40px, 4.4vw, 96px) - 64px); }
   .app-shell .sidebar .brand-caption { margin-bottom: 22px; }
   .app-shell .sidebar nav { gap: 3px; }
   .app-shell .sidebar nav a,
@@ -140,7 +139,7 @@
 @media (max-width: 739px) { .legal-grid { grid-template-columns: 1fr; } }
 @media (max-width: 739px) {
   .app-shell .page-heading { margin-block: 20px; padding-bottom: 18px; }
-  .app-shell .page-heading h1 { font-size: 3.3rem; }
+  .app-shell .page-heading h1 { font-size: clamp(1.65rem, 8.5vw, 2.5rem); overflow-wrap: normal; }
   .day-overview { grid-template-columns: 94px minmax(0, 1fr); margin-bottom: 20px; border-radius: 14px; }
   .day-overview-date { padding: 18px 8px; font-size: .68rem; line-height: 1.25; }
   .day-overview-date strong { font-size: 3.35rem; }
