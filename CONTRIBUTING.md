@@ -53,6 +53,7 @@ Mudanças em autenticação, Rules, comandos, revisão, recibos, recorrência, i
 - Conflitos devem preservar a intenção e o conteúdo da pessoa usuária. Não aplicar “última gravação vence” em silêncio.
 - O modo offline é opcional. Não crie outro cache, writer, outbox ou execução automática ao reconectar.
 - A Gika propõe; o servidor valida a política e a confirmação. Consulte [especificação](docs/gika/PRODUCT_SPEC.md), [arquitetura](docs/gika/ARCHITECTURE.md) e [segurança e política](docs/gika/SECURITY_AND_POLICY.md) antes de alterar essa integração.
+- Para fronteiras compartilhadas de leitura, escrita, autorização, sincronização e deploy, consulte a [arquitetura geral](docs/architecture/README.md).
 
 ## Segurança, privacidade e documentação
 

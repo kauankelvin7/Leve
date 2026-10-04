@@ -9,7 +9,11 @@ Encontre instruções por tarefa. O [README principal](../README.md) apresenta o
 
 ## Architecture
 
-- [Mapa de arquitetura e fluxos da Gika/Leve](gika/ARCHITECTURE.md)
+- [Arquitetura geral do Leve](architecture/README.md)
+- [Contexto e containers](architecture/system-context.md)
+- [Fluxos de runtime](architecture/runtime-flows.md)
+- [Gika — integração e limites](architecture/gika.md)
+- [Arquitetura especializada da Gika](gika/ARCHITECTURE.md)
 - [ADR: renderer do calendário](adr/002-calendar-renderer.md)
 - [ADR: fundação do projeto — histórico](adr/001-fundacao.md)
 

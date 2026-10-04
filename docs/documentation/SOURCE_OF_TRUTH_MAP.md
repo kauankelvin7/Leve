@@ -1,6 +1,6 @@
 # Mapa de fontes de verdade
 
-Este mapa descreve a árvore existente na base `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046` e distingue arquivos reais de destinos sugeridos para uma organização futura. Ele não cria autoridade nova nem altera os documentos referenciados.
+Este mapa registra a árvore auditada desde a base `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`, incluindo as pastas de arquitetura e documentação criadas nas etapas D1/D3. Distingue caminhos reais nesta branch de destinos ainda propostos; não cria autoridade nova além das convenções descritas.
 
 ## Precedência para interpretar o estado
 
@@ -19,14 +19,14 @@ Na base auditada, o estado de release Gika está em `M9_DONE_RC_READY`, com apro
 
 | Domínio | Fonte existente | Autoridade e uso |
 |---|---|---|
-| Arquitetura geral | [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md), [docs/adr/001-fundacao.md](../adr/001-fundacao.md), [docs/adr/002-calendar-renderer.md](../adr/002-calendar-renderer.md) | ARCHITECTURE é mapa técnico Gika/Leve com ressalvas de atualização; ADR 002 é a decisão vigente de renderer de calendário. ADR 001 é histórico da fundação, não arquitetura presente. |
+| Arquitetura geral | [docs/architecture/README.md](../architecture/README.md), [contexto](../architecture/system-context.md), [containers](../architecture/containers.md), [fluxos](../architecture/runtime-flows.md), [docs/adr/001-fundacao.md](../adr/001-fundacao.md), [docs/adr/002-calendar-renderer.md](../adr/002-calendar-renderer.md) | `docs/architecture/` é a referência geral canônica do sistema. ADR 002 é a decisão vigente do renderer de calendário; ADR 001 é história da fundação. |
 | Decisões | [docs/adr/](../adr/), [.agent/GIKA_DECISIONS.md](../../.agent/GIKA_DECISIONS.md), [docs/gika/ADR_020_BATCH_COMPOSITION.md](../gika/ADR_020_BATCH_COMPOSITION.md) | ADRs gerais e Gika registram decisões por escopo. `GIKA_DECISIONS.md` é log cumulativo; use decisões mais recentes e específicas. |
 | Estado e tarefas | [.agent/GIKA_STATE.md](../../.agent/GIKA_STATE.md), [.agent/GIKA_TASKS.yaml](../../.agent/GIKA_TASKS.yaml), [.agent/GIKA_EXECPLAN.md](../../.agent/GIKA_EXECPLAN.md), [CONTINUAR.md](../../CONTINUAR.md) | `.agent` é a fonte operacional da Gika. CONTINUAR é o ponto de retomada geral e contém seções de épocas/domínios diferentes. |
 | Release | [docs/release/M9_FINAL.md](../release/M9_FINAL.md), [docs/release/BRANCH_RECONCILIATION.md](../release/BRANCH_RECONCILIATION.md) | M9_FINAL é checkpoint/evidência da base e documenta pendências explícitas. BRANCH_RECONCILIATION relata apenas sua entrada e auditoria histórica. |
 | Evidências | [docs/gika/](../gika/), [docs/security/](../security/), [docs/evidence/](../evidence/), [docs/runbooks/](../runbooks/) | Relatórios e capturas são específicos a tarefas, commits e gates; não usar total ou resultado passado como execução atual. `docs/evidence/` contém um README e cinco PNGs tracked. |
-| Segurança | [AGENTS.md](../../AGENTS.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/security/](../security/), [docs/runbooks/validacao-local.md](../runbooks/validacao-local.md) | AGENTS define invariantes; SECURITY_AND_POLICY cobre Gika; docs/security contém auditorias/hardening datados. Não existe `SECURITY.md` na raiz desta base. |
+| Segurança | [SECURITY.md](../../SECURITY.md), [AGENTS.md](../../AGENTS.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/security/](../security/), [docs/runbooks/validacao-local.md](../runbooks/validacao-local.md) | SECURITY.md descreve relato responsável; AGENTS define invariantes; SECURITY_AND_POLICY cobre Gika; docs/security contém auditorias/hardening datados. |
 | Histórico | [docs/EXECUCAO.md](../EXECUCAO.md), [docs/RETOMADA-2026-09-11-edicao-persistente.md](../RETOMADA-2026-09-11-edicao-persistente.md), [docs/REFINAMENTO-APLICABILIDADE.md](../REFINAMENTO-APLICABILIDADE.md), [docs/RESPONSIVE-SHELL-V2.md](../RESPONSIVE-SHELL-V2.md), checkpoints antigos em [docs/gika/](../gika/) | Preservar decisões, evidências, falhas e transições. São registros de épocas anteriores, não índice do estado atual. |
-| Especialização Gika | [docs/gika/PRODUCT_SPEC.md](../gika/PRODUCT_SPEC.md), [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/gika/EVALS.md](../gika/EVALS.md), [docs/gika/character/](../gika/character/), [docs/gika/rig-master/](../gika/rig-master/) | Especificação, arquitetura, policy, evals e arquivos de autoria. Decisões de escopo posteriores prevalecem sobre specs de rig anteriores. |
+| Especialização Gika | [docs/architecture/gika.md](../architecture/gika.md), [docs/gika/PRODUCT_SPEC.md](../gika/PRODUCT_SPEC.md), [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/gika/EVALS.md](../gika/EVALS.md), [docs/gika/character/](../gika/character/), [docs/gika/rig-master/](../gika/rig-master/) | `docs/architecture/gika.md` resume as fronteiras compartilhadas; `docs/gika/ARCHITECTURE.md` detalha a especialização e checkpoints. Não são mapas concorrentes: visão geral fica em `docs/architecture/`, contratos específicos em `docs/gika/`. Decisões de escopo posteriores prevalecem sobre specs de rig anteriores. |
 | Agentes e linguagem | [AGENTS.md](../../AGENTS.md), [docs/AGENT-SETUP.md](../AGENT-SETUP.md), [.agent/skills/humanizer-br/SKILL.md](../../.agent/skills/humanizer-br/SKILL.md), [.agent/PLANS.md](../../.agent/PLANS.md) | AGENTS rege o trabalho; setup e PLANS complementam. humanizer-br orienta textos de interface. |
 | Entrada humana atual | [README.md](../../README.md), [CONTRIBUTING.md](../../CONTRIBUTING.md), [docs/README.md](../README.md) | README é apresentação/quick start; CONTRIBUTING é contribuição; docs/README é índice parcial da documentação. O link `LICENSE` resolve para MIT e os quatro PNGs sob `docs/screenshots/` existem na árvore. |
 
@@ -36,10 +36,8 @@ Os nomes abaixo são destinos de organização para etapas posteriores. Não exi
 
 | Destino proposto | Uso futuro sugerido | Situação nesta base |
 |---|---|---|
-| `docs/architecture/` | Índice e visão de arquitetura atual, com C4 Context/Containers e fluxos técnicos. | Diretório não existe. A arquitetura factual está hoje em `docs/gika/ARCHITECTURE.md`; decisões gerais estão nos ADRs. |
 | `docs/archive/` | Preservar documentos classificados para arquivo após atualizar links e navegação. | Diretório não existe. Candidatos permanecem em seus caminhos atuais; nenhum foi movido. |
 | `docs/adr/README.md` | Índice de ADRs gerais e convenção para novas decisões. | Diretório `docs/adr/` existe; o índice `README.md` não existe. |
-| `SECURITY.md` na raiz | Política pública de divulgação responsável e segurança. | Arquivo não existe. Os documentos técnicos existentes estão em `docs/security/` e `docs/gika/SECURITY_AND_POLICY.md`; não há contato/SLAs definidos pelo inventário. |
 | `docs/guides/` e `docs/runbooks/` expandidos | Guias por tarefa e procedimentos operacionais atuais. | `docs/runbooks/` existe com dois documentos; `docs/guides/` não existe. |
 
 ## Destinos existentes porém fora do índice central

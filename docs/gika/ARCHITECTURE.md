@@ -1,5 +1,7 @@
 # Gika — arquitetura factual do Leve
 
+Esta página é a **especialização técnica da Gika**. A visão geral canônica das fronteiras do Leve, containers e fluxos compartilhados está em [docs/architecture/](../architecture/README.md); esta página aprofunda a integração, policy e contratos próprios da Gika. Use a visão geral para responsabilidades comuns e esta especialização para comportamentos específicos da assistente. Os trechos seguintes são registros de auditoria por milestone/data: não os trate como um segundo estado atual quando divergirem de um checkpoint posterior ou do código.
+
 Auditoria M0 em 2026-09-30. Base: `f6b21b6695f4953e28daace00edb05b2dd4bfde1`, main clonada por HTTPS, worktree inicialmente limpo. Branch: `feat/gika-integration`. Este documento distingue código existente de contratos planejados da Gika.
 
 ## Stack, entradas e qualidade — M0-T1

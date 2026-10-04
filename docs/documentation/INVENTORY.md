@@ -52,7 +52,7 @@ As categorias são por arquivo. Um arquivo pode receber duas classificações qu
 
 | Documento | Classe | Papel e observação de estado |
 |---|---|---|
-| [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md) | REFERENCE / EVIDENCE | Mapa arquitetural factual Gika/Leve. Seu início contém referências de status/SHA anteriores ao checkpoint atual e caminhos históricos de screenshots; usar fatos por domínio e conferir mudanças contra o código/estado atual. |
+| [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md) | REFERENCE / EVIDENCE | Arquitetura especializada Gika, com snapshots de M0 e checkpoints Gika. A referência geral agora é [docs/architecture/README.md](../architecture/README.md); use esta página para contratos Gika e confira afirmações históricas contra o código atual. |
 | [docs/gika/PRODUCT_SPEC.md](../gika/PRODUCT_SPEC.md) | REFERENCE | Especificação de produto Gika; consultar junto às decisões posteriores e ao status da implementação. |
 | [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md) | REFERENCE / EVIDENCE | Política/ameaças Gika. Mantém limites explícitos e registra que o documento de capacidade citado não existe; não inferir os limiares ausentes. |
 | [docs/gika/EVALS.md](../gika/EVALS.md) | REFERENCE / EVIDENCE | Catálogo cumulativo de cenários e critérios; resultados executados pertencem aos relatórios de evidência correspondentes. |

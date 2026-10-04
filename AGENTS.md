@@ -25,7 +25,8 @@ Se fontes divergirem, prevalece o pedido mais recente do usuário, seguido pelo 
 
 ## Referências técnicas
 
-- [Arquitetura factual do Leve/Gika](docs/gika/ARCHITECTURE.md)
+- [Arquitetura geral e fluxos](docs/architecture/README.md)
+- [Especialização arquitetural da Gika](docs/gika/ARCHITECTURE.md)
 - [ADRs](docs/adr/)
 - [Políticas de segurança da Gika](docs/gika/SECURITY_AND_POLICY.md)
 - [Runbooks e validação](docs/runbooks/)
