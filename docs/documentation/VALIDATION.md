@@ -1,12 +1,13 @@
 # Revisões e validação documental
 
-Este registro preserva os resultados dos checkpoints de documentação. Os resultados abaixo não representam um parecer final de D4.
+Este registro preserva os resultados dos checkpoints e pareceres de documentação. O fechamento D4 aparece no registro mais recente da tabela.
 
 | Etapa | Revisão | Resolução registrada |
 |---|---|---|
 | D1 | REJECT inicial: o inventário inferiu ausência de `LICENSE` e screenshots após busca limitada a Markdown; deixou de identificar `LICENSE` MIT e nove PNGs versionados, e descreveu `docs/evidence/README.md` sem conferir todos os artefatos. | Corrigidos após auditoria da árvore Git e registro explícito das cinco imagens em `docs/evidence/` e quatro em `docs/screenshots/`. D1 PASS após commit `37a731bef` (correção factual do inventário). |
 | D3 | REJECT inicial: regra de leitura própria `memberships/{uid}`, rotas públicas e HMAC do tick, fronteira do Worker e limites de consulta da recorrência Gika estavam generalizados incorretamente. | Corrigidos contra Rules e arquivos de runtime; D3 PASS após commit `210f178a` e a atualização subsequente de autorização/agendamento em D3. |
-| D4 | REJECT Astra FINAL completo: único P2 — o quickstart de `README.md` lista Node.js/npm, mas omite Java 21, necessário porque `npm run dev` inicia o emulador Firestore. | Acrescentado Java 21 aos pré-requisitos do quickstart nesta correção. Revisão Astra FINAL curta pendente; não inferir PASS antes do parecer. |
+| D4 FINAL completo | REJECT Astra: único P2 — o quickstart de `README.md` listava Node.js/npm, mas omitia Java 21, necessário porque `npm run dev` inicia o emulador Firestore. | Java 21 foi acrescentado ao quickstart no commit `91b5f79`. O parecer posterior está registrado abaixo. |
+| D4 FINAL curta | Astra PASS sobre a revisão funcional/documental `91b5f79`. | `FINAL_REVIEW_PASS`; `TECHNICAL_DOCUMENTATION_V2_READY`. Este registro de fechamento não integra o commit revisado. |
 | D4 local | Validação documental após a correção P2. | `npm run docs:check` verifica links locais, âncoras em Markdown e referências `npm run` fora de registros históricos, inclusive em código inline. Fixtures temporárias confirmaram falha para destino ausente e âncora inexistente em caminho arquivado, e para script inválido em documentação vigente. `git diff --check` sem erros. |
 
 ## Limites do checker
