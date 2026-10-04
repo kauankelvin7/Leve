@@ -49,6 +49,32 @@ describe('M3-T1 strict creation policy', () => {
   });
 });
 
+describe('natural-language creation fallback after semantic routing', () => {
+  it.each([
+    ['consegue agendar amanhã para mim às 7 horas ir à academia', { title: 'ir à academia', dueDate: '2026-10-02', dueTime: '07:00' }],
+    ['agenda para mim amanhã às 7:00 o evento ir à academia', { title: 'ir à academia', dueDate: '2026-10-02', dueTime: '07:00' }],
+    ['eu quero agendar para amanhã às 7 horas da noite é ir à academia', { title: 'ir à academia', dueDate: '2026-10-02', dueTime: '19:00' }],
+    ['amanhã às 19h quero ir à academia', { title: 'ir à academia', dueDate: '2026-10-02', dueTime: '19:00' }],
+    ['bota academia amanhã 7 da noite', { title: 'academia', dueDate: '2026-10-02', dueTime: '19:00' }],
+  ])('accepts a grounded create_task tool call even when the legacy prefix cannot parse: %s', (text, args) => {
+    expect(resolveCreationIntent(text, context).task).toBeUndefined();
+    expect(validateCreation(args, text, context).task).toEqual({ ...args, timeZone: context.timeZone });
+  });
+  it('accepts repeated equivalent wording when every explicit date/time agrees', () => {
+    const text='amanhã 7 da noite quero academia, marca academia amanhã às sete da noite, coloca na agenda amanhã às 19h ir pra academia';
+    expect(validateCreation({ title: 'academia', dueDate: '2026-10-02', dueTime: '19:00' }, text, context).task)
+      .toEqual({ title: 'academia', dueDate: '2026-10-02', dueTime: '19:00', timeZone: context.timeZone });
+  });
+  it('rejects model-invented title/date/time and clarifies genuinely conflicting times', () => {
+    expect(() => validateCreation({ title: 'natação', dueDate: '2026-10-02', dueTime: '19:00' }, 'agende academia amanhã às 7 da noite', context)).toThrow('GIKA_POLICY');
+    expect(() => validateCreation({ title: 'academia', dueDate: '2026-10-03', dueTime: '19:00' }, 'agende academia amanhã às 7 da noite', context)).toThrow('GIKA_POLICY');
+    expect(() => validateCreation({ title: 'academia', dueDate: '2026-10-02', dueTime: '07:00' }, 'agende academia amanhã às 7 da noite', context)).toThrow('GIKA_POLICY');
+    expect(validateCreation({ title: 'academia', dueDate: '2026-10-02', dueTime: '19:00' }, 'agende academia amanhã às 7 e às 8 da noite', context))
+      .toEqual({ clarification: 'Qual horário exato você quer usar para essa tarefa?' });
+  });
+});
+
+
 
 describe('current-turn semantic action grounding',()=>{
   const production='então agende para amanhã ir à academia às 7 horas da noite';
