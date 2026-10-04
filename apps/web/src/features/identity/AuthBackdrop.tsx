@@ -5,10 +5,9 @@ const fragmentShader = `
 uniform vec2 u_resolution; uniform vec2 u_mouse; uniform float u_time; uniform sampler2D u_noise; uniform sampler2D u_buffer; uniform bool u_renderpass;
 const float PI=3.141592653589793; const int samples=8; const float sigma=2.0;
 float gaussian(vec2 i){return 1.0/(2.0*PI*sigma*sigma)*exp(-dot(i,i)/(2.0*sigma*sigma));}
-vec3 hash33(vec3 p){float n=sin(dot(p,vec3(7.,157.,113.)));return fract(vec3(2097152.,262144.,32768.)*n);}
 vec3 blur9(sampler2D image,vec2 uv,vec2 px){vec3 col=vec3(0.);float total=0.;for(int x=-4;x<4;x++){for(int y=-4;y<4;y++){float w=gaussian(vec2(float(x),float(y)));col+=texture2D(image,uv+px*vec2(float(x),float(y))).rgb*w;total+=w;}}return col/total;}
 void main(){vec2 uv=(gl_FragCoord.xy-.5*u_resolution)/u_resolution.y;uv*=4.;vec2 mouse=u_mouse*4.;vec2 sampleUv=gl_FragCoord.xy/u_resolution;vec2 origin=mouse*.2+vec2(.65,.5);sampleUv=.98*(sampleUv-origin)+origin;sampleUv+=vec2(sin((u_time+uv.y*.5)*10.)*.001,0.);vec4 tex;vec3 light=vec3(0.);
-if(u_renderpass){tex=vec4(blur9(u_buffer,sampleUv,vec2(1.)/u_resolution*.98)*.95,1.);float d=length(mouse-uv);light=vec3(smoothstep(.25,0.,d));}else{tex=texture2D(u_buffer,sampleUv)*.98;tex=vec4(smoothstep(0.,.5-fwidth(tex.x),tex.x),smoothstep(.2,.7-fwidth(tex.y),tex.y),smoothstep(-.05,.3-fwidth(tex.z),tex.z),1.);tex.rgb+=hash33(vec3(uv,u_time*.1))*.12-.06;}gl_FragColor=vec4(light,1.)+tex;}`;
+if(u_renderpass){tex=vec4(blur9(u_buffer,sampleUv,vec2(1.)/u_resolution*.98)*.95,1.);float d=length(mouse-uv);light=vec3(smoothstep(.25,0.,d));}else{float intensity=clamp(texture2D(u_buffer,sampleUv).r,0.,1.);float alpha=intensity*.12;gl_FragColor=vec4(vec3(.25,.48,.34)*alpha,alpha);return;}gl_FragColor=vec4(light,1.)+tex;}`;
 
 export function AuthBackdrop() {
   const host = useRef<HTMLDivElement>(null);
