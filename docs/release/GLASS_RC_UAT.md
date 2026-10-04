@@ -13,3 +13,5 @@ Integração local: `feat/gika-integration`. A branch principal `main` não foi 
 ## Verificação consolidada final
 
 Antes do encerramento, o remoto `feat/gika-integration` foi encontrado dois commits à frente do snapshot inicial (`a92b334`, `78283de`, hardening quota/headers). Ambos foram preservados por merge regular sobre o mesmo checkpoint congelado. Na ponta combinada: `npm run verify` PASS (audit prod0, lint/boundaries, typecheck web/server, build, 546 unit, 257 integração, 8 E2E críticos); `glass:selftest` e `glass:check` PASS; Gika Glass 853 light/dark PASS sem captura em58.3s/58.6s, medições acima preservadas; `npm run test:e2e:local` PASS141/141 em21.0min. Esse é o resultado final RC/UAT e supersede a falha intermitente descrita na rodada anterior. Nenhuma alteração em `main`, sem deploy.
+
+Publicação: `feat/gika-integration` foi enviada após confirmar que o remoto ainda apontava para `78283de` e era ancestral local. O remoto ficou em `61ffa4cda11f596a8a3e6fe45bdb74c68297028c`; `main` e deploy não foram usados.

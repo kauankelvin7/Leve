@@ -438,3 +438,5 @@ Gates: `npm run verify` PASS (audit prod0/lint/boundaries/client+server TS/build
 ### Confirmação na ponta remota atual
 
 Foi detectado avanço remoto `a92b334` + `78283de` (hardening de quota/headers) sobre o checkpoint congelado. Preservados por merge normal na branch integrada antes da última validação; os arquivos de quota não se sobrepõem à Glass. `npm run verify` final PASS (audit0/lint/boundaries/TS web+server/build/546unit/257integration/8critical), Glass selftest/check PASS; focal contrast 853 light/dark PASS58.3/58.6s sem capture. `npm run test:e2e:local` PASS141/141 em21min. RC/UAT integral aprovada nessa ponta; screenshots/traces sintéticos continuam locais/ignorados. Próximo encerramento: registrar commit local, conferir remoto ancestral atualizado e publicar somente feat/gika-integration; main/deploy fora do escopo.
+
+Publicação: branch `feat/gika-integration` enviada após verificar o remote tip e fast-forward (`78283de→61ffa4c`). HEAD remoto/local igual e worktree limpo. Draft de onboarding atualizado para o checkout completo em `/workspace/Leve`; exige review+publish pelo usuário no painel de configuração.
