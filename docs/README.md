@@ -1,71 +1,78 @@
 # Documentação do Leve
 
-Encontre instruções por tarefa. O [README principal](../README.md) apresenta o produto e o início rápido; [AGENTS.md](../AGENTS.md) resume as regras para mudanças assistidas por agentes.
+Este portal reúne caminhos por necessidade. O [README principal](../README.md) apresenta o produto e seu início rápido; [CONTRIBUTING](../CONTRIBUTING.md) orienta contribuições humanas; [AGENTS](../AGENTS.md) registra guardrails para agentes.
 
-## Getting started
+## Começar
 
-- [Instalar e executar localmente](../README.md#executar-localmente)
-- [Contribuir com o Leve](../CONTRIBUTING.md)
+- [Instalar e executar localmente](getting-started/README.md)
+- [Ambiente de desenvolvimento](guides/local-development.md)
+- [Contribuir](../CONTRIBUTING.md)
 
-## Architecture
+## Arquitetura
 
-- [Arquitetura geral do Leve](architecture/README.md)
-- [Contexto e containers](architecture/system-context.md)
+- [Arquitetura geral — fonte canônica](architecture/README.md)
+- [Contexto e containers](architecture/system-context.md) e [responsabilidades](architecture/containers.md)
 - [Fluxos de runtime](architecture/runtime-flows.md)
-- [Gika — integração e limites](architecture/gika.md)
-- [Arquitetura especializada da Gika](gika/ARCHITECTURE.md)
-- [ADR: renderer do calendário](adr/002-calendar-renderer.md)
-- [ADR: fundação do projeto — histórico](adr/001-fundacao.md)
+- [Autorização](architecture/authentication-authorization.md), [comandos](architecture/command-model.md), [persistência](architecture/data-persistence.md) e [offline](architecture/offline-sync.md)
+- [Runtime de deploy](architecture/deployment-runtime.md)
+- [Especialização Gika](architecture/gika.md) e [detalhe Gika](gika/ARCHITECTURE.md)
 
-## Guides
+## Guias
 
+- [Índice de guias](guides/README.md)
+- [Executar testes e verificações](guides/running-tests.md)
+- [Adicionar comando](guides/adding-a-command.md)
+- [Alterar regras Firestore](guides/changing-firestore-rules.md)
+- [Trabalhar na Gika](guides/working-with-gika.md)
+- [Investigar offline](guides/debugging-offline.md)
+
+## Referência
+
+- [Índice de referência](reference/README.md)
+- [Ambiente](reference/environment.md)
+- [Variáveis e configuração](reference/configuration.md)
+- [Scripts npm](reference/scripts.md)
+- [Estrutura do repositório](reference/repository-structure.md)
+- [Estilo documental](STYLE_GUIDE.md)
+- [Setup de agentes](AGENT-SETUP.md)
+- [Plano de experiência de calendário](PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md)
+- [Direção de arte sazonal](SEASONAL-ART-DIRECTION.md)
+- [Registro Responsive Shell V2](RESPONSIVE-SHELL-V2.md)
+
+## Operação
+
+- [Índice de operação e runbooks disponíveis](operations/README.md)
 - [Validação local](runbooks/validacao-local.md)
-- [Experiência sazonal: decisões de arte](SEASONAL-ART-DIRECTION.md)
-- [Responsive Shell V2: registro da integração](RESPONSIVE-SHELL-V2.md)
+- [Prova documental de infraestrutura gratuita](runbooks/prova-gratuita.md)
+- [Release](release/README.md)
 
-## Reference
+## Segurança
 
-- [Plano de evolução de calendário, notas e sazonalidade](PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md)
-- [Setup de agentes e plugins](AGENT-SETUP.md)
-- [Documentação especializada da Gika](gika/)
+- [Política e relato responsável](../SECURITY.md)
+- [Fontes e auditorias](security/README.md)
+- [Política específica da Gika](gika/SECURITY_AND_POLICY.md)
 
-## Operations
+## Decisões
 
-- [Runbooks](runbooks/)
-- [Prova de infraestrutura gratuita](runbooks/prova-gratuita.md)
-- [Validação local](runbooks/validacao-local.md)
-
-## Security
-
-- [Política de segurança e relato responsável](../SECURITY.md)
-- [Auditorias e evidências de hardening](security/)
-- [Segurança e política da Gika](gika/SECURITY_AND_POLICY.md)
-
-## Decisions
-
-- [ADRs do Leve](adr/)
-- [Registro de decisões da Gika](../.agent/GIKA_DECISIONS.md)
+- [Índice de ADRs](adr/README.md)
+- [Log cumulativo de decisões Gika](../.agent/GIKA_DECISIONS.md)
+- [Mapa de fontes e precedência](documentation/SOURCE_OF_TRUTH_MAP.md)
+- [Revisões D1/D3 e validação documental](documentation/VALIDATION.md)
 
 ## Gika
 
-- [Especificação de produto](gika/PRODUCT_SPEC.md)
-- [Arquitetura](gika/ARCHITECTURE.md)
-- [Segurança e políticas](gika/SECURITY_AND_POLICY.md)
-- [Evals e cenários](gika/EVALS.md)
-- [Estado atual](../.agent/GIKA_STATE.md)
+- [Especificação](gika/PRODUCT_SPEC.md), [arquitetura](gika/ARCHITECTURE.md), [segurança e política](gika/SECURITY_AND_POLICY.md), [evals](gika/EVALS.md)
+- [Estado](../.agent/GIKA_STATE.md), [tarefas](../.agent/GIKA_TASKS.yaml), [plano](../.agent/GIKA_EXECPLAN.md)
+- [Artefatos por milestone](gika/) e [guia de trabalho](guides/working-with-gika.md)
 
-## Release evidence
+## Evidências de release e auditoria
 
-- [Checkpoint M9](release/M9_FINAL.md)
-- [Reconciliação de branches](release/BRANCH_RECONCILIATION.md)
-- [Evidências por milestone Gika](gika/)
-- [Capturas visuais versionadas](evidence/)
+- [Checkpoint M9](release/M9_FINAL.md) e [reconciliação](release/BRANCH_RECONCILIATION.md)
+- [Índice de artefatos](evidence/README.md)
+- [Auditorias de segurança](security/README.md)
 
-## Archive
+## Arquivo
 
-Estes documentos preservam decisões ou etapas anteriores. Leia-os como histórico, não como estado operacional atual.
-
-- [Execução E00/E01](EXECUCAO.md)
-- [Retomada de 11/09/2026](RETOMADA-2026-09-11-edicao-persistente.md)
-- [Refinamento de aplicabilidade](REFINAMENTO-APLICABILIDADE.md)
-- [Pacote inicial de agentes Gika](../GIKA_START_HERE.md)
+- [Índice de histórico](archive/README.md)
+- [Registros gerais arquivados](archive/legacy/README.md)
+- [Retomada operacional](../CONTINUAR.md)
