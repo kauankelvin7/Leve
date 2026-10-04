@@ -22,6 +22,7 @@
     "test": "vitest run",
     "lint": "eslint . --max-warnings 0 && npm run check:boundaries",
     "check:boundaries": "node scripts/check-boundaries.mjs",
+    "docs:check": "node scripts/docs-check.mjs",
     "verify": "npm audit --omit=dev --audit-level=moderate && npm run lint && npm run build && npm test && npm run test:integration && npm run test:e2e:critical",
     "test:integration": "firebase emulators:exec --project demo-leve --only auth,firestore \"npm run test:integration:inside\"",
     "test:integration:inside": "vitest run --config vitest.integration.config.ts",
