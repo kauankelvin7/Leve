@@ -90,6 +90,10 @@ describe('current-turn semantic action grounding',()=>{
       requestExpression:'coloque', title:'academia', dateExpression:'amanhã', timeExpression:'às 19:30', dueDate:'2026-10-02', dueTime:'19:30'
     },
     {
+      sourceText:'marque academia pra amanhã às sete da noite',
+      requestExpression:'marque', title:'academia', dateExpression:'amanhã', timeExpression:'às sete da noite', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
       sourceText:'preciso agendar ir ao médico amanhã às oito da manhã',
       requestExpression:'preciso agendar', title:'ir ao médico', dateExpression:'amanhã', timeExpression:'às oito da manhã', dueDate:'2026-10-02', dueTime:'08:00'
     },
