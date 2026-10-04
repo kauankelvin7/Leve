@@ -1,56 +1,40 @@
 # Mapa de fontes de verdade
 
-Este mapa registra a árvore auditada desde a base `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`, incluindo as pastas de arquitetura e documentação criadas nas etapas D1/D3. Distingue caminhos reais nesta branch de destinos ainda propostos; não cria autoridade nova além das convenções descritas.
+Este mapa define onde consultar cada domínio e como resolver divergências. O [inventário](INVENTORY.md) é um snapshot D1 da árvore de base `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`; as reorganizações abaixo ocorreram depois daquele snapshot e não alteram sua contagem/classificação original.
 
-## Precedência para interpretar o estado
+## Precedência
 
 1. Pedido mais recente do usuário para o escopo autorizado.
-2. [AGENTS.md](../../AGENTS.md), que define a ordem e os limites globais.
-3. [CONTINUAR.md](../../CONTINUAR.md) para o ponto geral de retomada, lido por seção/domínio e data.
-4. Para Gika, o checkpoint mais recente em [.agent/GIKA_STATE.md](../../.agent/GIKA_STATE.md), conferido com [.agent/GIKA_TASKS.yaml](../../.agent/GIKA_TASKS.yaml) e a evidência de release [docs/release/M9_FINAL.md](../release/M9_FINAL.md).
-5. A especificação e ADRs aplicáveis ao domínio.
-6. Planos e evidências de etapas anteriores como registro histórico, sem sobrepor um checkpoint posterior.
+2. [AGENTS.md](../../AGENTS.md) para guardrails globais.
+3. [CONTINUAR.md](../../CONTINUAR.md) para retomada geral, lido por domínio e seção.
+4. Para Gika, [.agent/GIKA_STATE.md](../../.agent/GIKA_STATE.md), conferido com [.agent/GIKA_TASKS.yaml](../../.agent/GIKA_TASKS.yaml), [.agent/GIKA_EXECPLAN.md](../../.agent/GIKA_EXECPLAN.md) e a evidência [M9](../release/M9_FINAL.md).
+5. Arquitetura canônica, ADR aplicável e código atual do dono da responsabilidade.
+6. Planos, auditorias e evidências antigas como histórico identificado; não representam execução atual.
 
-Se duas fontes do mesmo nível parecerem conflitantes, prevalece a conclusão posterior e mais específica que tenha evidência identificada; registrar o conflito em vez de apagar o histórico.
+Se duas fontes do mesmo nível divergirem, use a mais recente e específica que tenha evidência identificável e registre o conflito sem apagar o histórico.
 
-Na base auditada, o estado de release Gika está em `M9_DONE_RC_READY`, com aprovação facial registrada. Glass e o RC/UAT consolidado aparecem como pendentes no checkpoint. Este mapa não declara a conclusão desses itens nem importa trabalho de outra branch. A Fase 7 do plano sazonal permanece não iniciada segundo AGENTS/CONTINUAR.
+A base documenta `M9_DONE_RC_READY / GIKA_V1_FACIAL_APPROVED`; Glass e o RC/UAT consolidado permanecem pendentes no checkpoint. A Fase 7 sazonal consta como não iniciada. Este mapa não importa conclusão ou trabalho de outra branch.
 
-## Mapa da árvore atual
+## Fonte canônica por assunto
 
-| Domínio | Fonte existente | Autoridade e uso |
+| Assunto | Fonte canônica | Precedência e limites |
 |---|---|---|
-| Arquitetura geral | [docs/architecture/README.md](../architecture/README.md), [contexto](../architecture/system-context.md), [containers](../architecture/containers.md), [fluxos](../architecture/runtime-flows.md), [docs/adr/001-fundacao.md](../adr/001-fundacao.md), [docs/adr/002-calendar-renderer.md](../adr/002-calendar-renderer.md) | `docs/architecture/` é a referência geral canônica do sistema. ADR 002 é a decisão vigente do renderer de calendário; ADR 001 é história da fundação. |
-| Decisões | [docs/adr/](../adr/), [.agent/GIKA_DECISIONS.md](../../.agent/GIKA_DECISIONS.md), [docs/gika/ADR_020_BATCH_COMPOSITION.md](../gika/ADR_020_BATCH_COMPOSITION.md) | ADRs gerais e Gika registram decisões por escopo. `GIKA_DECISIONS.md` é log cumulativo; use decisões mais recentes e específicas. |
-| Estado e tarefas | [.agent/GIKA_STATE.md](../../.agent/GIKA_STATE.md), [.agent/GIKA_TASKS.yaml](../../.agent/GIKA_TASKS.yaml), [.agent/GIKA_EXECPLAN.md](../../.agent/GIKA_EXECPLAN.md), [CONTINUAR.md](../../CONTINUAR.md) | `.agent` é a fonte operacional da Gika. CONTINUAR é o ponto de retomada geral e contém seções de épocas/domínios diferentes. |
-| Release | [docs/release/M9_FINAL.md](../release/M9_FINAL.md), [docs/release/BRANCH_RECONCILIATION.md](../release/BRANCH_RECONCILIATION.md) | M9_FINAL é checkpoint/evidência da base e documenta pendências explícitas. BRANCH_RECONCILIATION relata apenas sua entrada e auditoria histórica. |
-| Evidências | [docs/gika/](../gika/), [docs/security/](../security/), [docs/evidence/](../evidence/), [docs/runbooks/](../runbooks/) | Relatórios e capturas são específicos a tarefas, commits e gates; não usar total ou resultado passado como execução atual. `docs/evidence/` contém um README e cinco PNGs tracked. |
-| Segurança | [SECURITY.md](../../SECURITY.md), [AGENTS.md](../../AGENTS.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/security/](../security/), [docs/runbooks/validacao-local.md](../runbooks/validacao-local.md) | SECURITY.md descreve relato responsável; AGENTS define invariantes; SECURITY_AND_POLICY cobre Gika; docs/security contém auditorias/hardening datados. |
-| Histórico | [docs/EXECUCAO.md](../EXECUCAO.md), [docs/RETOMADA-2026-09-11-edicao-persistente.md](../RETOMADA-2026-09-11-edicao-persistente.md), [docs/REFINAMENTO-APLICABILIDADE.md](../REFINAMENTO-APLICABILIDADE.md), [docs/RESPONSIVE-SHELL-V2.md](../RESPONSIVE-SHELL-V2.md), checkpoints antigos em [docs/gika/](../gika/) | Preservar decisões, evidências, falhas e transições. São registros de épocas anteriores, não índice do estado atual. |
-| Especialização Gika | [docs/architecture/gika.md](../architecture/gika.md), [docs/gika/PRODUCT_SPEC.md](../gika/PRODUCT_SPEC.md), [docs/gika/ARCHITECTURE.md](../gika/ARCHITECTURE.md), [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md), [docs/gika/EVALS.md](../gika/EVALS.md), [docs/gika/character/](../gika/character/), [docs/gika/rig-master/](../gika/rig-master/) | `docs/architecture/gika.md` resume as fronteiras compartilhadas; `docs/gika/ARCHITECTURE.md` detalha a especialização e checkpoints. Não são mapas concorrentes: visão geral fica em `docs/architecture/`, contratos específicos em `docs/gika/`. Decisões de escopo posteriores prevalecem sobre specs de rig anteriores. |
-| Agentes e linguagem | [AGENTS.md](../../AGENTS.md), [docs/AGENT-SETUP.md](../AGENT-SETUP.md), [.agent/skills/humanizer-br/SKILL.md](../../.agent/skills/humanizer-br/SKILL.md), [.agent/PLANS.md](../../.agent/PLANS.md) | AGENTS rege o trabalho; setup e PLANS complementam. humanizer-br orienta textos de interface. |
-| Entrada humana atual | [README.md](../../README.md), [CONTRIBUTING.md](../../CONTRIBUTING.md), [docs/README.md](../README.md) | README é apresentação/quick start; CONTRIBUTING é contribuição; docs/README é índice parcial da documentação. O link `LICENSE` resolve para MIT e os quatro PNGs sob `docs/screenshots/` existem na árvore. |
+| Arquitetura geral | [docs/architecture/](../architecture/README.md) | Contexto, containers, fluxos e domínios técnicos gerais. Conferir código se comportamento mudou. |
+| Decisões gerais | [docs/adr/](../adr/README.md) | Índice de ADRs gerais; preserve decisões substituídas. |
+| Estado operacional Gika | [.agent/](../../.agent/GIKA_STATE.md) | Estado, tarefas, plano e log de decisões da Gika; checkpoint operacional mais recente prevalece sobre evidências anteriores. |
+| Release | [docs/release/](../release/README.md) | Registros de execução e reconciliação por escopo. M9 não prova deploy nem conclui pendências declaradas. |
+| Evidências | [docs/evidence/](../evidence/README.md), [docs/gika/](../gika/), [docs/security/](../security/README.md) | Artefatos e relatórios identificados; existência não equivale a aprovação atual. |
+| Segurança | [SECURITY.md](../../SECURITY.md), [docs/security/](../security/README.md), [autorização na arquitetura](../architecture/authentication-authorization.md) | SECURITY.md é política de relato; auditorias em docs/security são datadas; arquitetura descreve o código auditado. Política Gika em [docs/gika/SECURITY_AND_POLICY.md](../gika/SECURITY_AND_POLICY.md). |
+| Histórico | [docs/archive/](../archive/README.md), [CONTINUAR](../../CONTINUAR.md), registros por milestone | Arquivo preserva contexto; não funciona como status atual. Três documentos gerais movidos em D4 têm stubs nos caminhos anteriores para compatibilidade. |
+| Gika especializada | [docs/gika/](../gika/ARCHITECTURE.md) | Especificação, evidências, rig e política específicas. A visão compartilhada permanece em docs/architecture. |
+| Contribuição e documentação | [CONTRIBUTING](../../CONTRIBUTING.md), [portal](../README.md), [STYLE_GUIDE](../STYLE_GUIDE.md) | Orientação humana e navegação; AGENTS mantém guardrails de agentes. |
 
-## Destinos propostos, ainda inexistentes
+## Destinos e lacunas
 
-Os nomes abaixo são destinos de organização para etapas posteriores. Não existem como arquivos ou diretórios canônicos nesta base e nenhum link para eles deve ser apresentado como caminho funcional antes de sua criação.
+Os diretórios canônicos `architecture/`, `adr/`, `archive/legacy/`, `evidence/`, `getting-started/`, `guides/`, `operations/`, `reference/`, `release/` e `security/` estão presentes e indexados pelo [portal](../README.md). `docs/runbooks/` continua como caminho histórico dos dois runbooks existentes; `docs/operations/README.md` é seu índice operacional.
 
-| Destino proposto | Uso futuro sugerido | Situação nesta base |
-|---|---|---|
-| `docs/archive/` | Preservar documentos classificados para arquivo após atualizar links e navegação. | Diretório não existe. Candidatos permanecem em seus caminhos atuais; nenhum foi movido. |
-| `docs/adr/README.md` | Índice de ADRs gerais e convenção para novas decisões. | Diretório `docs/adr/` existe; o índice `README.md` não existe. |
-| `docs/guides/` e `docs/runbooks/` expandidos | Guias por tarefa e procedimentos operacionais atuais. | `docs/runbooks/` existe com dois documentos; `docs/guides/` não existe. |
+Não há um threat model independente nem runbooks autônomos de incidente ou rollback nesta árvore. Os índices apontam às políticas e procedimentos disponíveis sem preencher essas lacunas por inferência. O arquivo `05-capacidade-e-revisao.md` segue ausente nesta base; os limiares de `prova-gratuita.md` não podem ser verificados contra uma fonte versionada disponível.
 
-## Destinos existentes porém fora do índice central
+## Evidências visuais da base
 
-- `docs/gika/`, `docs/release/` e `docs/security/` existem, mas [docs/README.md](../README.md) não os apresenta como áreas de navegação.
-- `docs/adr/` existe e é indexado pelo `docs/README.md`, mas não tem índice próprio.
-- `docs/evidence/` existe com um README e cinco capturas PNG; a documentação do diretório não os enumera nem classifica.
-- `docs/documentation/` não existia na árvore base; foi criada pelo commit D1 para estes dois documentos. Uma centralização como portal ainda depende de etapa posterior.
-
-## Artefatos visuais existentes na base
-
-A árvore versionada contém os quatro arquivos referenciados no README — [desktop.png](../screenshots/desktop.png), [mobile-1.png](../screenshots/mobile-1.png), [mobile-2.png](../screenshots/mobile-2.png), [mobile-3.png](../screenshots/mobile-3.png) — e cinco capturas em `docs/evidence/`: [responsive-integration-desktop.png](../evidence/responsive-integration-desktop.png), [responsive-integration-tablet.png](../evidence/responsive-integration-tablet.png), [timer-detail-mobile.png](../evidence/timer-detail-mobile.png), [timer-floating-desktop.png](../evidence/timer-floating-desktop.png), [timer-floating-mobile.png](../evidence/timer-floating-mobile.png). A existência dos arquivos é factual; ela, por si só, não infere aprovação atual. O texto em [docs/evidence/README.md](../evidence/README.md) sobre capturas removidas diverge da árvore observada.
-
-## Referência ausente já citada
-
-`05-capacidade-e-revisao.md` não está presente no checkout. AGENTS, `docs/README.md`, `docs/EXECUCAO.md`, runbook gratuito e documentos Gika fazem referência a esse caminho. Os limiares operacionais citados em `docs/runbooks/prova-gratuita.md` não podem ser validados contra uma fonte versionada nesta base. O destino proposto é manter o tópico sob documentação operacional numa etapa futura, mas nome, localização e conteúdo permanecem indefinidos; este mapa não cria valores nem decide a política.
+O README usa [desktop](../screenshots/desktop.png), [mobile 1](../screenshots/mobile-1.png), [mobile 2](../screenshots/mobile-2.png) e [mobile 3](../screenshots/mobile-3.png). `docs/evidence/` contém as cinco imagens listadas em seu [índice](../evidence/README.md). Os registros e capturas Gika ficam em [docs/gika/](../gika/); evidências de auditorias em [docs/security/](../security/). Artefatos não indicam aprovação além do escopo do registro associado.

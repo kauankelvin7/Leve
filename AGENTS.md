@@ -15,7 +15,7 @@ Se fontes divergirem, prevalece o pedido mais recente do usuário, seguido pelo 
 
 ## Guardrails
 
-- Auth verificado, UID e associação ativa são obrigatórios para acesso a dados privados. Firestore Rules e servidor devem manter isolamento por conta.
+- O servidor exige identidade Firebase válida e associação ativa para operações privadas. As Rules têm exceções explícitas de bootstrap: `memberships/{uid}` permite ao usuário autenticado ler o próprio documento; não generalize essa exceção para outras coleções. Preserve isolamento por UID e confira [autorização](docs/architecture/authentication-authorization.md).
 - Alterações de domínio passam pela API e pelos comandos existentes. Não escreva diretamente nas coleções de domínio do cliente.
 - Preserve `operationId`, recibos/idempotência e `expectedRevision`; conflitos devem ser explícitos e preservar a intenção da pessoa usuária.
 - Não registre nem versione segredos, credenciais, tokens, cookies, conteúdo pessoal, prompts ou payloads privados.
@@ -26,6 +26,9 @@ Se fontes divergirem, prevalece o pedido mais recente do usuário, seguido pelo 
 ## Referências técnicas
 
 - [Arquitetura geral e fluxos](docs/architecture/README.md)
+- [Guias por tarefa](docs/guides/README.md) e [scripts disponíveis](docs/reference/scripts.md)
+- [Índice de documentação e fontes canônicas](docs/README.md) e [mapa de precedência](docs/documentation/SOURCE_OF_TRUTH_MAP.md)
+- [Histórico arquivado](docs/archive/README.md)
 - [Especialização arquitetural da Gika](docs/gika/ARCHITECTURE.md)
 - [ADRs](docs/adr/)
 - [Políticas de segurança da Gika](docs/gika/SECURITY_AND_POLICY.md)
