@@ -1,0 +1,15 @@
+# Glass RC/UAT — 4 de outubro de 2026
+
+A correção de `UNMEASURED_CONTRAST` foi integrada localmente em `feat/gika-integration`. O harness agora respeita `<dialog>` modal na top layer e limita clipping ao próprio modal; o fallback de carregamento/error é portalizado separadamente para receber clique sem mudar o contexto CSS do painel.
+
+A verificação final da Gika em 853px passou em light e dark, sem captura, com os prazos originais: welcome mediu 12/12 alvos em cada tema; chat mediu 10/10. O pior contraste foi 5.48:1 em light e 6.19:1 em dark (mínimo requerido 4.5:1). Zero erros do probe, violações Axe ou overflow horizontal. Capturas viewport/full-page existentes em `.cache/glass/after` foram inspecionadas em light/dark; são sintéticas, locais e ignoradas pelo Git. Recaptura integral com screenshots expirou em 60s antes da fase Gika; os focais sem screenshot passaram em 57.9s e 57.2s. Não alteramos timeout ou retries.
+
+`npm run verify` passou depois do ajuste final: audit de produção sem vulnerabilidades, lint e limites de arquitetura, typecheck client/server, build, 545 unitários, 252 integração e 8 E2E críticos. `npm run glass:selftest` e `npm run glass:check` passaram (`errors:0`, blur máximo24px). Entry inicial permanece 34.39 kB bruto/25.26 kB gzip menor que antes da separação de estado do retrato. Build ainda emite o aviso conhecido de chunk >500 kB.
+
+A regressão E2E final executou 141 testes em série e terminou 140/141. A única falha foi o caso de timer sintético no teste final de sessão, ao aguardar a atividade recém-criada; a repetição isolada passou em 6.5s sem alteração do teste. Seis focais também passaram (loading cancel/error, launcher no nav, não sobreposição com timer/calendário, reflow200%). Uma rodada completa anterior teve cinco falhas antes da correção do fallback e da atualização de asserções históricas de posição flutuante; a primeira observação está preservada em `.agent/GIKA_STATE.md` e nos logs locais. Todas as 141 identidades passaram ao menos uma vez em runs completos/segmentados, porém a execução completa final conserva uma falha; portanto UAT está aprovada por evidências segmentadas e pronta para revisão, sem afirmar um único run 141/141 verde.
+
+Integração local: `feat/gika-integration`. A branch principal `main` não foi mesclada e não houve deploy.
+
+## Verificação consolidada final
+
+Antes do encerramento, o remoto `feat/gika-integration` foi encontrado dois commits à frente do snapshot inicial (`a92b334`, `78283de`, hardening quota/headers). Ambos foram preservados por merge regular sobre o mesmo checkpoint congelado. Na ponta combinada: `npm run verify` PASS (audit prod0, lint/boundaries, typecheck web/server, build, 546 unit, 257 integração, 8 E2E críticos); `glass:selftest` e `glass:check` PASS; Gika Glass 853 light/dark PASS sem captura em58.3s/58.6s, medições acima preservadas; `npm run test:e2e:local` PASS141/141 em21.0min. Esse é o resultado final RC/UAT e supersede a falha intermitente descrita na rodada anterior. Nenhuma alteração em `main`, sem deploy.

@@ -428,3 +428,13 @@ Forced colors focal anterior1/1PASS39.6s; selftests/lintAST47/ambosTS/build/stri
 Pendências exatas: diagnosticar contraste não medido no painel Gika853; imagem estática da nav atualmente reutiliza GikaPortrait e antecipa rest/offline inline no bootstrap (entry1210129→1277239bytes, medição bruta; otimização ainda NÃO aplicada); concluir Glass ampla/capturas/QA/performance; somente depois integrar e executar regressão final/RC-UAT. Nenhum asset/controller/contrato/backend alterado.
 
 Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9 congelado b0e7bae preservado. Estado: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`. Parar aqui; não continuar investigação automaticamente.
+
+## Encerramento técnico da retomada Glass
+
+Integração local concluída em `feat/gika-integration`. O fallback suspenso/erro agora usa portal do `document.body`, evitando que a sidebar/stacking context tape o clique; o `<dialog>` da Gika continua no DOM do app para preservar variáveis/cascata visuais. Testes M1 de geometria foram adaptados à célula da navegação atual e ainda exigem contenção e ausência de sobreposição com pares; o timer continua explicitamente sem interseção com a launcher.
+
+Gates: `npm run verify` PASS (audit prod0/lint/boundaries/client+server TS/build/545unit/252integration/8 critical); `glass:selftest` e `glass:check` PASS; foco Gika 853 light/dark sem capture PASS. Ampla UAT final 140/141 mais repetição isolada do único caso de timer PASS. Não declare a última invocação ampla totalmente verde; reporte como resultados segmentados. Glass ampla com captura anterior 48/55 e sete timeouts originais, todos sete repetidos isoladamente PASS sem capture; as capturas e o contexto estão no relatório Glass. Não aumentar prazos/retries/thresholds.
+
+### Confirmação na ponta remota atual
+
+Foi detectado avanço remoto `a92b334` + `78283de` (hardening de quota/headers) sobre o checkpoint congelado. Preservados por merge normal na branch integrada antes da última validação; os arquivos de quota não se sobrepõem à Glass. `npm run verify` final PASS (audit0/lint/boundaries/TS web+server/build/546unit/257integration/8critical), Glass selftest/check PASS; focal contrast 853 light/dark PASS58.3/58.6s sem capture. `npm run test:e2e:local` PASS141/141 em21min. RC/UAT integral aprovada nessa ponta; screenshots/traces sintéticos continuam locais/ignorados. Próximo encerramento: registrar commit local, conferir remoto ancestral atualizado e publicar somente feat/gika-integration; main/deploy fora do escopo.

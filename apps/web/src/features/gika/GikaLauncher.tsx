@@ -1,4 +1,5 @@
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { GikaPortrait } from './character/GikaPortrait';
 import { useAuth } from '../identity/AuthProvider';
 import { firebaseAuth } from '../../platform/firebase';
@@ -9,16 +10,17 @@ export function requestDayOrganization(uid: string) {
   window.dispatchEvent(new CustomEvent(DAY_DRAFT_EVENT, { detail: uid }));
 }
 
+function GikaLoadError({ children, label, onAction, role }: { children: string; label: string; onAction: () => void; role: 'alert' | 'status' }) {
+  return createPortal(<div className="gika-load-error" role={role}><p>{children}</p><button type="button" onClick={onAction}>{label}</button></div>, document.body);
+}
+
 const loadPanel = () => import('./GikaPanel').then(module => ({ default: module.GikaPanel }));
 
 class GikaBoundary extends Component<{ children: ReactNode; onClose: () => void }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
   render() {
-    if (this.state.failed) return <div className="gika-load-error" role="alert">
-      <p>Não consegui abrir a Gika agora. Sua agenda continua disponível.</p>
-      <button type="button" onClick={this.props.onClose}>Fechar e tentar novamente</button>
-    </div>;
+    if (this.state.failed) return <GikaLoadError role="alert" label="Fechar e tentar novamente" onAction={this.props.onClose}>Não consegui abrir a Gika agora. Sua agenda continua disponível.</GikaLoadError>;
     return this.props.children;
   }
 }
@@ -52,7 +54,7 @@ export function GikaLauncher() {
       <span className="gika-nav-avatar" aria-hidden="true"><GikaPortrait state="rest" /></span><span className="nav-label">Gika</span>
     </button>
     {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setLoaded(false); setAttempt(value => value + 1); }}>
-      <Suspense fallback={open ? <div className="gika-load-error" role="status"><p>Abrindo a conversa…</p><button type="button" onClick={close}>Cancelar</button></div> : null}>
+      <Suspense fallback={open ? <GikaLoadError role="status" label="Cancelar" onAction={close}>Abrindo a conversa…</GikaLoadError> : null}>
         <GikaPanel open={open} onClose={close} dayDraftRequest={dayDraftRequest} />
       </Suspense>
     </GikaBoundary>}

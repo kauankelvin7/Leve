@@ -430,3 +430,13 @@ m5_closure_r2:
   gates: "Primeira ampla76PASS/0FAIL preservada; sete originais isolados fresh7PASS/0FAIL. Auditprodução0critical/high/moderate/lint/doisTS/build/480unit/243integração PASS. Ampla final76PASS/0FAIL e sete originais fresh finais7PASS/0FAIL, sem deadlines/asserções/fixtures/seletores/retries alterados, nenhum rerun oculto.248arquivos fonte/config idênticos. Somente documentação, sem Gemini live/dependência/closure final/M6."
   diagnosis: "Sete históricos NOT_REPRODUCED_IN_R2, causa física não atribuída; nenhuma correção especulativa de Auth/produto/harness. Histórico anterior reprovado permanece na evidência original."
   next_action: "Parar para revisão após checkpoint/push feat e igualdade HEAD local/origin/worktree limpo; não reexecutar closure final ainda, M6 todo."
+
+# Continuação Glass autorizada após checkpoint 1ec7edc; não reabre nem altera o M9 congelado.
+glass_rc_uat_continuation:
+  entry_checkpoint: "1ec7edc74fbc575a6e394251e8618102e99fd748"
+  m9_frozen: "b0e7bae753ec93374a3ebe3ec2b1a5ac07298046"
+  branch: feat/gika-integration
+  integration: merged_remote_security_updates_locally
+  status: final_uat_passed
+  evidence: docs/release/GLASS_RC_UAT.md
+  gates: "Na ponta combinada: verify PASS auditprod0/lint/boundaries/typecheck web+server/build/546unit/257integration/8critical; glass:selftest/check PASS; 853 light/dark focais PASS58.3s/58.6s, welcome12/chat10 targets/theme, min chat5.48:1/6.19:1, Axe0/errors0/overflowfalse; E2E local ampla PASS141/141 em21.0min. Histórico de execuções anteriores/timeouts preservado em docs e estado, sem relaxar guardas. Main/deploy proibidos pelo pedido."

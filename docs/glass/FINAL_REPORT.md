@@ -53,3 +53,19 @@ Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9
 **Performance do primeiro bundle:** separar `GikaPortrait` do módulo que contém todos os estados manteve rest inline no launcher e passou offline/listening/thinking/clarify/error ao painel lazy. Build antes/depois: 1,277.23→1,242.84 kB bruto; 415.47→390.21 kB gzip. O chunk lazy da Gika recebeu o PNG offline, aumentando de 55.15/14.82 kB para 90.15/40.72 kB bruto/comprimido. Lint, typecheck, build, 545 unitários, 2 E2E do launcher e focais Gika passaram. Nenhum asset/controller/contrato/servidor alterado.
 
 Estado deste relatório: Glass implementado e validado com as execuções segmentadas acima; integração em `feat/gika-integration`, regressão absoluta após integração e RC/UAT ainda pendentes. `main` e produção não foram alteradas.
+
+## Integração e regressão de encerramento
+
+O trabalho foi integrado localmente em `feat/gika-integration`. Para manter a cascata CSS e as variáveis do painel, o modal continua sob o `.app-shell`; somente o aviso Suspense/ErrorBoundary usa portal para `document.body`, corrigindo a interceptação de clique pelo conteúdo principal. Os testes de geometria legados agora verificam que a launcher tem célula contida no nav e não cobre itens, timer ou calendário.
+
+Gates finais após a mudança: audit de produção sem vulnerabilidades; lint/boundaries, typechecks web/server, build, 545 unitários, 252 integração e 8 E2E críticos PASS. `glass:selftest` e `glass:check` PASS. Focais finais authenticated 853 light/dark sem captura PASS em 57.9s/57.2s: welcome 12 alvos por tema, chat 10; mínimos medidos no chat 5.48:1 light e 6.19:1 dark; erros0, Axe0, overflow horizontal false. Capturas viewport/full-page anteriores à mudança apenas no tratamento do fallback permanecem válidas para o painel normal e foram revisadas. A tentativa de recaptura com screenshot habilitado expirou a 60s antes da fase Gika no percurso serial de superfícies; não relaxamos timeout.
+
+A UAT completa final teve 140/141; só o último teste, de criação de atividade sintética usada para verificar o timer, expirou aguardando o item. Repetição isolada passou em 6.5s. As seis focais após a correção do portal passaram, incluindo reflow 200%, loading error/cancel e geometria da launcher. Uma execução completa anterior preserva cinco falhas observadas antes da correção/atualização das asserções; quatro comparavam o layout atual integrado ao nav com a antiga posição flutuante, e os dois fluxos de fallback sofreram interceptação corrigida. Esses históricos não são apagados. Assim, todos os 141 casos passaram ao menos uma vez entre runs, mas nenhuma invocação completa final terminou 141/141; classificar como UAT segmentada aprovada para revisão.
+
+Bundle mantém a redução de 34.39 kB bruto/25.26 kB gzip no entry inicial; warning de chunk >500 kB continua. Estado RC/UAT detalhado em `docs/release/GLASS_RC_UAT.md`. Sem merge em `main`, deploy ou publicação de produção.
+
+## Ponta consolidada e UAT integral final
+
+Durante a finalização, o remoto de `feat/gika-integration` havia avançado com dois commits de segurança sobre a base congelada (`a92b334`, `78283de`). Eles foram integrados por merge comum em `feat/gika-integration` antes da validação final; nenhuma alteração de quota sobrepôs arquivos Glass.
+
+Na ponta consolidada, `npm run verify` passou com audit de produção0, lint/boundaries, TS web/server, build, 546 unit, 257 integração e 8 E2E críticos. `glass:selftest` e `glass:check` passaram. Focais 853 light/dark sem captura passaram em58.3s/58.6s; 12 alvos do welcome e10 do chat por tema, chat mínimo5.48:1/6.19:1, Axe0/errors0/overflowfalse. A regressão UAT completa finalmente passou 141/141 em21.0min, encerrando a falha transitória do timer registrada acima. A otimização do entry inicial continua em -34.39kB bruto/-25.26kB gzip; o aviso de chunk >500kB é preservado.

@@ -101,3 +101,13 @@ Forced colors focal anterior1/1PASS39.6s; selftests/lintAST47/ambosTS/build/stri
 O parágrafo de pendências acima deste registro descreve o estado congelado em `1ec7edc`; a medição Gika e a otimização foram resolvidas nesta retomada. Integração em `feat/gika-integration` e regressão final/RC-UAT continuam pendentes.
 
 Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9 congelado b0e7bae preservado. Estado: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`. Parar aqui; não continuar investigação automaticamente.
+
+## Fechamento Glass integrado — 04/10/2026
+
+Mantivemos `<dialog>` da Gika no contexto do `.app-shell` porque portar o painel inteiro alterou o teste de reflow200%; portal é aplicado somente ao fallback. A causa dos avisos inacessíveis era o contexto visual/stacking da sidebar interceptar o botão fixed. Seis focais finais passaram (loading cancel/error, geometria nav/timer/calendário, zoom200%). O timer sintético amplo falhou uma vez por espera do item e passou em run isolado, sem mudança de seletor/deadline. Capturas 853 anteriores retratam o painel normal sem fallback; a recaptura no modo screenshot do percurso serial autenticado bateu 60s antes da fase Gika, enquanto light/dark sem capture passaram.
+
+Não apagar classificações históricas: execução Glass capturada 48/55 +7 timeout, sete repeats isolados PASS sem captura; execução UAT final 140/141 +1 repetição isolada PASS. `verify`, static/selftests Glass e focais atuais verdes. Não declarar uma única suíte Glass ampla nem uma única UAT ampla integralmente PASS.
+
+### Regressão integral pós merge do remoto
+
+Depois de incorporar `a92b334` e `78283de` sobre a mesma base M9, os gates combinados passaram: verify 546 unit/257 integração/8critical, audit0, lint/TS/build; Glass selftest/check; focais 853 light/dark sem capture58.3s/58.6s; UAT serial completa141/141 em21min. A execução anterior140/141 e rerun isolado do timer ficam preservados como histórico, não como resultado atual. Captura no percurso Glass com screenshots pode exceder60s; contrastes e capturas sintéticas existentes seguem válidos e revisados.

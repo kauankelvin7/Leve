@@ -218,14 +218,24 @@ test('paletas, viewports, contraste, movimento reduzido e reflow mantêm o paine
   await page.screenshot({ path: 'docs/gika/evidence/m1-desktop-light.png' });
 });
 
-test('painel cabe em mobile e botão não cobre navegação', async ({ page }) => {
+test('painel cabe em mobile e launcher tem célula própria na navegação', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await enterLocalAgenda(page);
   const launcher = page.getByRole('button', { name: 'Pergunte à Gika' });
   const button = await launcher.boundingBox();
-  const nav = await page.locator('.sidebar').boundingBox();
-  expect(button).not.toBeNull(); expect(nav).not.toBeNull();
-  expect(button!.y + button!.height).toBeLessThanOrEqual(nav!.y);
+  const nav = page.getByRole('navigation', { name: 'Principal', exact: true });
+  const navBox = await nav.boundingBox();
+  expect(button).not.toBeNull(); expect(navBox).not.toBeNull();
+  expect(await launcher.evaluate(element => element.parentElement === document.querySelector('nav[aria-label="Principal"]'))).toBe(true);
+  expect(button!.x).toBeGreaterThanOrEqual(navBox!.x);
+  expect(button!.y).toBeGreaterThanOrEqual(navBox!.y);
+  expect(button!.x + button!.width).toBeLessThanOrEqual(navBox!.x + navBox!.width);
+  expect(button!.y + button!.height).toBeLessThanOrEqual(navBox!.y + navBox!.height);
+  for (const item of await nav.locator(':scope > a').all()) {
+    const itemBox = await item.boundingBox();
+    expect(itemBox).not.toBeNull();
+    expect(button!.x + button!.width <= itemBox!.x || itemBox!.x + itemBox!.width <= button!.x || button!.y + button!.height <= itemBox!.y || itemBox!.y + itemBox!.height <= button!.y).toBe(true);
+  }
   await launcher.click();
   const dialog = page.getByRole('dialog', { name: 'Gika', exact: true });
   await expect(dialog).toBeVisible();
@@ -270,7 +280,7 @@ test('falha de carregamento da Gika não desmonta a agenda', async ({ page }) =>
   await expect(page.locator('#page-title')).toHaveText('Calendário');
 });
 
-test('botão respeita cronômetro real em desktop e mobile', async ({ page }) => {
+test('launcher não cobre cronômetro real em desktop e mobile', async ({ page }) => {
   await enterLocalAgenda(page);
   await page.getByRole('button', { name: 'Nova atividade', exact: true }).click();
   const title = `Timer Gika ${Date.now()}`;
@@ -285,7 +295,7 @@ test('botão respeita cronômetro real em desktop e mobile', async ({ page }) =>
     await page.setViewportSize({ width, height: 900 });
     await expect.poll(async () => {
       const button = await launcher.boundingBox(); const bar = await timer.boundingBox();
-      return button!.y + button!.height <= bar!.y;
+      return button!.x + button!.width <= bar!.x || bar!.x + bar!.width <= button!.x || button!.y + button!.height <= bar!.y || bar!.y + bar!.height <= button!.y;
     }).toBe(true);
   }
   await page.screenshot({ path: 'docs/gika/evidence/m1-timer-mobile.png' });
@@ -384,7 +394,7 @@ test('conversa tem scroll independente, composer expansível e cards apenas simu
 });
 
 
-test('launcher no calendário fica fora do grid e da navegação desktop', async ({ page }) => {
+test('launcher no calendário permanece na navegação, fora do grid desktop', async ({ page }) => {
   await enterLocalAgenda(page);
   await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
   const launcher = page.getByRole('button', { name: 'Pergunte à Gika' });
@@ -394,7 +404,7 @@ test('launcher no calendário fica fora do grid e da navegação desktop', async
       const entry = (await launcher.boundingBox())!;
       const sidebar = (await page.locator('.sidebar').boundingBox())!;
       const grid = (await page.locator('.calendar-time-view, .calendar-grid').first().boundingBox())!;
-      return entry.y >= sidebar.y + sidebar.height && entry.x + entry.width < grid.x;
+      return entry.x >= sidebar.x && entry.y >= sidebar.y && entry.x + entry.width <= sidebar.x + sidebar.width && entry.y + entry.height <= sidebar.y + sidebar.height && sidebar.x + sidebar.width < grid.x;
     }).toBe(true);
   }
 });
