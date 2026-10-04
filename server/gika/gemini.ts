@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { backendLog } from '../logger.ts';
+import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 import { bounded, GikaFault, type ModelAdapter, type ModelInput } from './model.ts';
 
 export const GEMINI_MODEL = 'gemini-3.5-flash-lite';
@@ -33,12 +33,19 @@ export function geminiPayload(input: ModelInput) {
     generationConfig: { maxOutputTokens: 1024, thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL.toUpperCase() } },
   };
 }
-export type GeminiTransport = (payload: ReturnType<typeof geminiPayload>, signal: AbortSignal) => Promise<Response>;
-const transport: GeminiTransport = async (payload, signal) => {
+export type GeminiTransport = (payload: ReturnType<typeof geminiPayload>, signal: AbortSignal,
+  onStage?: (stage: 'config_error' | 'payload' | 'request_started', keyPresent?: boolean) => void) => Promise<Response>;
+const transport: GeminiTransport = async (payload, signal, onStage) => {
   const key = process.env.GEMINI_API_KEY?.trim();
+  onStage?.('config_error', Boolean(key));
   if (!key) throw new GikaFault('GIKA_NOT_CONFIGURED');
+  onStage?.('payload');
+  const body = JSON.stringify(payload);
+  onStage?.('config_error');
+  const headers = new Headers({ 'Content-Type': 'application/json', 'x-goog-api-key': key });
   // Header only. Never include the secret in URLs, logs or error causes.
-  return fetch(GEMINI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(payload), signal });
+  onStage?.('request_started');
+  return fetch(GEMINI_ENDPOINT, { method: 'POST', headers, body, signal });
 };
 const callSchema = z.object({ name: z.string().min(1).max(100), args: z.record(z.string(), z.unknown()).default({}), id: z.string().max(128).optional() }).strict();
 const envelopeSchema = z.object({ candidates: z.array(z.object({
@@ -63,35 +70,64 @@ export function parseGeminiResponse(body: unknown) {
   return calls;
 }
 export function createGeminiAdapter(http: GeminiTransport = transport, deadlineMs = 10_000): ModelAdapter {
-  return { async interpret(input, signal, diagnostics) {
-    return bounded(async active => {
-      try {
-        const response = await http(geminiPayload(input), active);
-        backendLog('info', 'gika.upstream.response', { upstreamStatus: response.status, correlationId: diagnostics?.correlationId, model: GEMINI_MODEL });
-        if (response.status === 429) throw new GikaFault('GIKA_QUOTA');
-        if (response.status === 503) throw new GikaFault('GIKA_UNAVAILABLE');
-        if (!response.ok) throw new GikaFault('GIKA_UNAVAILABLE');
-        // Stream with a cap rather than buffering an unbounded upstream body.
-        const reader = response.body?.getReader();
-        if (!reader) throw new GikaFault('GIKA_INVALID_RESPONSE');
-        let size = 0; let json = ''; const decoder = new TextDecoder();
+  return { diagnosticModel: GEMINI_MODEL, async interpret(input, signal, diagnostics) {
+    let stage: GikaStage = 'payload';
+    let upstreamStatus: number | undefined, keyPresent: boolean | undefined;
+    let failureLogged = false;
+    const log = (current: GikaStage, error?: unknown) => gikaDiagnostic(current, {
+      correlationId: diagnostics?.correlationId, model: GEMINI_MODEL,
+      upstreamStatus, apiKeyPresent: keyPresent, error,
+    });
+    log('payload');
+    try {
+      return await bounded(async active => {
         try {
-          while (true) {
-            const chunk = await reader.read();
-            if (chunk.done) break;
-            size += chunk.value.byteLength;
-            if (size > 65_536) throw new GikaFault('GIKA_INVALID_RESPONSE');
-            json += decoder.decode(chunk.value, { stream: true });
+          const payload = geminiPayload(input);
+          if (http !== transport) { stage = 'request_started'; log(stage); }
+          const response = await http(payload, active, (current, present) => {
+            stage = current;
+            if (present !== undefined) keyPresent = present;
+            if (current === 'request_started') log(current);
+          });
+          stage = 'upstream_response'; upstreamStatus = response.status; log(stage);
+          if (response.status === 429) throw new GikaFault('GIKA_QUOTA');
+          if (response.status === 503) throw new GikaFault('GIKA_UNAVAILABLE');
+          if (!response.ok) throw new GikaFault('GIKA_UNAVAILABLE');
+          stage = 'parse_error';
+          // Stream with a cap rather than buffering an unbounded upstream body.
+          const reader = response.body?.getReader();
+          if (!reader) throw new GikaFault('GIKA_INVALID_RESPONSE');
+          let size = 0; let json = ''; const decoder = new TextDecoder();
+          try {
+            while (true) {
+              const chunk = await reader.read();
+              if (chunk.done) break;
+              size += chunk.value.byteLength;
+              if (size > 65_536) throw new GikaFault('GIKA_INVALID_RESPONSE');
+              json += decoder.decode(chunk.value, { stream: true });
+            }
+            json += decoder.decode();
+          } finally { await reader.cancel().catch(() => {}); }
+          let body: unknown;
+          try { body = JSON.parse(json); } catch (error) {
+            log('parse_error', error); failureLogged = true;
+            throw new GikaFault('GIKA_INVALID_RESPONSE');
           }
-          json += decoder.decode();
-        } finally { await reader.cancel().catch(() => {}); }
-        let body: unknown;
-        try { body = JSON.parse(json); } catch { throw new GikaFault('GIKA_INVALID_RESPONSE'); }
-        return parseGeminiResponse(body);
-      } catch (error) {
-        if (error instanceof GikaFault) throw error;
-        throw new GikaFault(active.aborted ? 'GIKA_TIMEOUT' : 'GIKA_UNAVAILABLE');
-      }
-    }, signal, deadlineMs);
+          return parseGeminiResponse(body);
+        } catch (error) {
+          const failureStage = active.aborted ? 'timeout'
+            : stage === 'request_started' ? 'fetch_exception' : stage;
+          if (!failureLogged && failureStage !== 'upstream_response') log(failureStage, error);
+          failureLogged = true;
+          if (error instanceof GikaFault) throw error;
+          throw new GikaFault(active.aborted ? 'GIKA_TIMEOUT' : 'GIKA_UNAVAILABLE');
+        }
+      }, signal, deadlineMs);
+    } catch (error) {
+      // The deadline may win even when an injected transport ignores AbortSignal.
+      if (!failureLogged) log(error instanceof GikaFault && error.code === 'GIKA_TIMEOUT' ? 'timeout' : stage, error);
+      failureLogged = true;
+      throw error;
+    }
   } };
 }

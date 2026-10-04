@@ -22,6 +22,7 @@ import { readRange } from './policy.ts';
 import { resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { consumeGikaQuota } from './quota.ts';
+import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
 export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
   const router = Router();
@@ -75,13 +76,16 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
     const controller = new AbortController();
     const close = () => { if (!response.writableEnded) controller.abort(); };
     response.once('close', close);
+    let stage: GikaStage = 'authorize_receipt';
     try {
       const result = await bounded(async signal => {
         const identity = response.locals.identity;
         await repository.authorize(identity, 'receipt');
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+        stage = 'recover_batch';
         const recoveredBatch = await repository.recoverBatch?.(identity.uid,input);
         if(recoveredBatch){await repository.authorize(identity,'receipt');return gikaInterpretationSchema.parse({text:'Confira as alterações deste pedido.',simulated:false,reads:[],batchConfirmation:recoveredBatch.confirmation});}
+        stage = 'recover_mutation';
         const recovered = await repository.recoverMutation(identity.uid, input);
         if (recovered) {
           if (recovered.kind === 'recurrence') {
@@ -95,12 +99,14 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({ text: recovered.kind === 'create' ? 'Preparando a tarefa…' : recovered.kind === 'complete' ? 'Preparando a conclusão…' : 'Preparando a alteração…', simulated: false, reads: [],
             ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task, ...(recovered.confirmation ? { confirmation: recovered.confirmation } : {}) } : { updateTask: recovered.task }) });
         }
+        stage = 'authorization';
         const context = await repository.authorize(identity);
         const period = organizationPeriod(input.text);
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
           // Daily reads today; weekly reads the existing civil week. No history expansion.
           const source = period==='week' ? range : {...range,startDate:context.today,endDate:context.today};
+          stage = 'read';
           const read = readResultSchema.parse(await repository.read(identity.uid,source));
           const beforeProvider=await repository.authorize(identity);
           if(JSON.stringify(beforeProvider)!==JSON.stringify(context)||signal.aborted)throw new GikaFault('GIKA_POLICY');
@@ -111,8 +117,12 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(scope==='future'||scope==='all')return gikaInterpretationSchema.parse({text:'Não posso organizar próximas ocorrências ou séries em grupo. Use sua agenda para esse escopo.',simulated:false,reads:[],organizationResolution:{status:'unsupported_scope'}});
           const planning = planningContext(read,context);
           if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[],organizationResolution:{status:'empty'}});
+          stage = 'quota';
           await consumeQuota(identity.uid);
-          const calls = validateToolCalls(await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal,{correlationId:response.locals.correlationId}));
+          stage = 'model';
+          const interpreted = await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal,{correlationId:response.locals.correlationId});
+          stage = 'policy';
+          const calls = validateToolCalls(interpreted);
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
@@ -130,8 +140,12 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({text:plan?`Sugestão para ${period==='week'?'sua semana':'o seu dia'}. Confira as mudanças antes de confirmar.`:'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
+        stage = 'quota';
         await consumeQuota(identity.uid);
-        const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal, { correlationId: response.locals.correlationId }));
+        stage = 'model';
+        const interpreted = await model.interpret({ text: input.text, context }, signal, { correlationId: response.locals.correlationId });
+        stage = 'policy';
+        const calls = validateToolCalls(interpreted);
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
@@ -271,6 +285,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         // Validate policy for ALL calls before ANY agenda reads.
         const ranges = calls.map(call => { if (call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
+        stage = 'read';
         for (const range of ranges) {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -286,6 +301,10 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
       }, controller.signal, 15_000);
       if (!controller.signal.aborted) response.json(result);
     } catch (error) {
+      gikaDiagnostic(error instanceof GikaFault && error.diagnosticClass?.startsWith('ServiceControls') ? 'config_error'
+        : error instanceof GikaFault && error.code === 'GIKA_TIMEOUT' ? 'timeout' : stage, {
+        correlationId: response.locals.correlationId, model: model.diagnosticModel ?? 'unavailable', error,
+      });
       if (error instanceof AppError) throw error;
       const code = error instanceof GikaFault ? error.code : 'GIKA_UNAVAILABLE';
       const status = code === 'GIKA_QUOTA' ? 429 : code === 'GIKA_TIMEOUT' ? 504 : code === 'GIKA_POLICY' || code === 'GIKA_MALFORMED_CALL' ? 422 : 503;

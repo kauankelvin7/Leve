@@ -2,11 +2,14 @@
 export type ModelContext = { today: string; timeZone: string; weekStartsOn: 0 | 1 };
 export type ModelInput = { text: string; context: ModelContext; planning?: { startDate: string; endDate: string; tasks: {ref:number;title:string;status:string;dueDate:string;dueTime:string|null;timeZone:string;recurring:boolean}[] } };
 export type ModelCall = { name: string; args: Record<string, unknown> };
-export interface ModelAdapter { interpret(input: ModelInput, signal: AbortSignal, diagnostics?: { correlationId: string }): Promise<ModelCall[]> }
+export interface ModelAdapter {
+  readonly diagnosticModel?: string;
+  interpret(input: ModelInput, signal: AbortSignal, diagnostics?: { correlationId: string }): Promise<ModelCall[]>;
+}
 export type GikaFaultCode = 'GIKA_NOT_CONFIGURED' | 'GIKA_QUOTA' | 'GIKA_UNAVAILABLE' | 'GIKA_TIMEOUT' | 'GIKA_INVALID_RESPONSE' | 'GIKA_MALFORMED_CALL' | 'GIKA_POLICY';
 export class GikaFault extends Error {
   readonly code: GikaFaultCode;
-  constructor(code: GikaFaultCode) { super(code); this.code = code; }
+  constructor(code: GikaFaultCode, readonly diagnosticClass?: 'ServiceControlsMissing' | 'ServiceControlsRestricted' | 'ServiceControlsInvalid' | 'QuotaStateInvalid') { super(code); this.code = code; }
 }
 
 /** Deadline also bounds transports/repositories that ignore AbortSignal. */

@@ -4,6 +4,13 @@ import { createGeminiAdapter, geminiPayload, GEMINI_ENDPOINT, parseGeminiRespons
 const input = { text: 'O que tenho hoje?', context: { today: '2026-09-30', timeZone: 'America/Sao_Paulo', weekStartsOn: 1 as const } };
 const signal = () => new AbortController().signal;
 const body = (parts: unknown[], finishReason = 'STOP') => ({ candidates: [{ finishReason, content: { parts } }] });
+const correlationId = '25d826a4-045f-45c7-9884-d141aceb06d5';
+function captureDiagnostics() {
+  const info = vi.spyOn(console, 'info').mockImplementation(() => undefined);
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+  return () => [...info.mock.calls, ...warn.mock.calls]
+    .map(([line]) => JSON.parse(line as string) as Record<string, unknown>);
+}
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 describe('Gemini Developer adapter, sem credenciais fictícias', () => {
   it('fixa modelo, medium e registro fechado de tools atuais', () => {
@@ -38,17 +45,125 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
       : new Response('PRIVATE_PROVIDER_BODY Authorization: Bearer PRIVATE_SECRET', { status }));
     const adapter = createGeminiAdapter(http);
     await adapter.interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId }).catch(() => undefined);
-    expect(log).toHaveBeenCalledTimes(1);
-    const record = JSON.parse(log.mock.calls[0]![0] as string);
-    expect(record).toEqual({ timestamp: expect.any(String), level: 'info', service: 'leve-backend',
-      event: 'gika.upstream.response', upstreamStatus: status, correlationId, model: 'gemini-3.5-flash-lite' });
-    expect(log.mock.calls[0]![0]).not.toContain('PRIVATE_');
+    const upstream = log.mock.calls.map(([line]) => JSON.parse(line as string))
+      .filter(record => record.event === 'gika.upstream.response');
+    expect(upstream).toEqual([{ timestamp: expect.any(String), level: 'info', service: 'leve-backend',
+      event: 'gika.upstream.response', stage: 'upstream_response', upstreamStatus: status, correlationId, model: 'gemini-3.5-flash-lite' }]);
+    expect(JSON.stringify(log.mock.calls)).not.toContain('PRIVATE_');
     expect(JSON.stringify(http.mock.calls[0])).not.toContain(correlationId);
   });
-  it('variável ausente impede qualquer HTTP', async () => {
-    vi.stubEnv('GEMINI_API_KEY', ''); const http = vi.spyOn(globalThis, 'fetch');
-    await expect(createGeminiAdapter().interpret(input, signal())).rejects.toMatchObject({ code: 'GIKA_NOT_CONFIGURED' });
+  it.each([
+    ['missing key', '', 'GIKA_NOT_CONFIGURED', false, 'GikaFault'],
+    ['invalid header', 'PRIVATE_KEY\nPRIVATE_VALUE', 'GIKA_UNAVAILABLE', true, 'TypeError'],
+    ['non-byte header', 'PRIVATE_KEY_\u2603', 'GIKA_UNAVAILABLE', true, 'TypeError'],
+  ])('logs %s as config_error before any fetch', async (_case, key, code, keyPresent, errorClass) => {
+    const records = captureDiagnostics();
+    vi.stubEnv('GEMINI_API_KEY', key);
+    const http = vi.spyOn(globalThis, 'fetch').mockResolvedValue(Response.json(body([])));
+
+    await expect(createGeminiAdapter().interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId }))
+      .rejects.toMatchObject({ code });
+
     expect(http).not.toHaveBeenCalled();
+    expect(records().filter(record => record.level === 'warn')).toEqual([{
+      timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
+      event: 'gika.diagnostic', stage: 'config_error', correlationId,
+      model: 'gemini-3.5-flash-lite', keyPresent, errorClass,
+    }]);
+    expect(records().some(record => record.stage === 'request_started' || record.event === 'gika.upstream.response')).toBe(false);
+    expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
+    expect(JSON.stringify(records())).not.toContain('PRIVATE');
+  });
+  it('logs a default-transport network failure with safe classes and no upstream status', async () => {
+    const records = captureDiagnostics();
+    vi.stubEnv('GEMINI_API_KEY', 'PRIVATE_TEST_KEY');
+    const cause = Object.assign(new Error('PRIVATE_CAUSE_MESSAGE'), {
+      name: 'PRIVATE_CAUSE_NAME', stack: 'PRIVATE_CAUSE_STACK', code: 'ENOTFOUND',
+    });
+    const error = Object.assign(new TypeError('PRIVATE_ERROR_MESSAGE', { cause }), {
+      name: 'PRIVATE_ERROR_NAME', stack: 'PRIVATE_ERROR_STACK', payload: 'PRIVATE_PAYLOAD',
+    });
+    const http = vi.spyOn(globalThis, 'fetch').mockRejectedValue(error);
+
+    const failure = await createGeminiAdapter().interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId })
+      .catch(error => error);
+
+    expect(failure).toMatchObject({ code: 'GIKA_UNAVAILABLE' });
+    expect(failure).not.toHaveProperty('cause');
+    expect(http).toHaveBeenCalledTimes(1);
+    expect(records().map(record => record.stage)).toEqual(['payload', 'request_started', 'fetch_exception']);
+    expect(records().filter(record => record.level === 'warn')).toEqual([{
+      timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
+      event: 'gika.diagnostic', stage: 'fetch_exception', correlationId,
+      model: 'gemini-3.5-flash-lite', keyPresent: true,
+      errorClass: 'TypeError', causeClass: 'DnsResolutionError',
+    }]);
+    expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
+    expect(JSON.stringify(records())).not.toContain('PRIVATE');
+  });
+  it('logs timeout when the default fetch ignores cancellation without inventing an upstream status', async () => {
+    const records = captureDiagnostics();
+    vi.stubEnv('GEMINI_API_KEY', 'PRIVATE_TEST_KEY');
+    const http = vi.spyOn(globalThis, 'fetch').mockImplementation(() => new Promise(() => undefined));
+
+    await expect(createGeminiAdapter(undefined, 5).interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId }))
+      .rejects.toMatchObject({ code: 'GIKA_TIMEOUT' });
+
+    expect(http).toHaveBeenCalledTimes(1);
+    expect(records().map(record => record.stage)).toEqual(['payload', 'request_started', 'timeout']);
+    expect(records().filter(record => record.level === 'warn')).toEqual([{
+      timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
+      event: 'gika.diagnostic', stage: 'timeout', correlationId,
+      model: 'gemini-3.5-flash-lite', keyPresent: true, errorClass: 'GikaFault',
+    }]);
+    expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
+    expect(JSON.stringify(records())).not.toContain('PRIVATE');
+  });
+  it('logs exactly one timeout when fetch rejects after the deadline has already won', async () => {
+    const records = captureDiagnostics();
+    vi.stubEnv('GEMINI_API_KEY', 'PRIVATE_TEST_KEY');
+    let rejectFetch!: (reason: unknown) => void;
+    const deferred = new Promise<Response>((_resolve, reject) => { rejectFetch = reject; });
+    const http = vi.spyOn(globalThis, 'fetch').mockReturnValue(deferred);
+
+    await expect(createGeminiAdapter(undefined, 5).interpret(input, signal(), { correlationId }))
+      .rejects.toMatchObject({ code: 'GIKA_TIMEOUT' });
+
+    rejectFetch(new DOMException('PRIVATE_LATE_ABORT_MESSAGE', 'AbortError'));
+    // Drain the late transport rejection and its nested async catch before checking diagnostics.
+    await new Promise<void>(resolve => setImmediate(resolve));
+
+    expect(http).toHaveBeenCalledTimes(1);
+    expect(records().filter(record => record.level === 'warn')).toEqual([{
+      timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
+      event: 'gika.diagnostic', stage: 'timeout', correlationId,
+      model: 'gemini-3.5-flash-lite', keyPresent: true, errorClass: 'GikaFault',
+    }]);
+    expect(records().filter(record => record.stage === 'timeout')).toHaveLength(1);
+    expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
+    expect(JSON.stringify(records())).not.toContain('PRIVATE');
+  });
+  it.each([
+    ['PRIVATE_INVALID_JSON', 'GIKA_INVALID_RESPONSE', 'SyntaxError'],
+    [JSON.stringify(body([{ functionCall: { name: 'get_day', args: 'PRIVATE_INVALID_ARGS' } }])), 'GIKA_MALFORMED_CALL', 'GikaFault'],
+  ])('logs parse_error after an actual upstream response without private provider content', async (providerBody, code, errorClass) => {
+    const records = captureDiagnostics();
+    vi.stubEnv('GEMINI_API_KEY', 'PRIVATE_TEST_KEY');
+    const http = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(providerBody, { status: 200 }));
+
+    await expect(createGeminiAdapter().interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId }))
+      .rejects.toMatchObject({ code });
+
+    expect(http).toHaveBeenCalledTimes(1);
+    expect(records().map(record => record.stage)).toEqual(['payload', 'request_started', 'upstream_response', 'parse_error']);
+    expect(records().filter(record => record.level === 'warn')).toEqual([{
+      timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
+      event: 'gika.diagnostic', stage: 'parse_error', correlationId,
+      model: 'gemini-3.5-flash-lite', keyPresent: true,
+      upstreamStatus: 200, errorClass,
+    }]);
+    expect(records().filter(record => record.event === 'gika.upstream.response')).toHaveLength(1);
+    expect(JSON.stringify(records())).not.toContain('PRIVATE');
   });
   it('normaliza tool call e ignora narrativa sem ferramentas', () => {
     expect(parseGeminiResponse(body([{ functionCall: { name: 'get_today', args: {} }, thoughtSignature: 'opaque' }]))).toEqual([{ name: 'get_today', args: {} }]);

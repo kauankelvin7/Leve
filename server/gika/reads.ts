@@ -111,7 +111,8 @@ export const firestoreReads: ReadRepository = {
     if (member?.data()?.state !== 'active' || !parsed.success || parsed.data.uid !== uid) throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     // Completed receipts are reconcilable while new writes/provider calls are restricted,
     // just like contentCommand's existing receipt branch. Account permissions still apply.
-    if (purpose !== 'receipt' && controls?.data()?.mode !== 'normal') throw new GikaFault('GIKA_UNAVAILABLE');
+    if (purpose !== 'receipt' && controls?.data()?.mode !== 'normal') throw new GikaFault('GIKA_UNAVAILABLE',
+      !controls?.exists ? 'ServiceControlsMissing' : controls.data()?.mode === 'restricted' ? 'ServiceControlsRestricted' : 'ServiceControlsInvalid');
     return { today: Temporal.Now.instant().toZonedDateTimeISO(parsed.data.timeZone).toPlainDate().toString(), timeZone: parsed.data.timeZone, weekStartsOn: parsed.data.weekStartsOn };
   },
   async read(uid, range) {

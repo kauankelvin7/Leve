@@ -347,3 +347,13 @@ Na ponta combinada: `npm run verify` PASS com audit prod0, lint/boundaries, type
 Resultado final: regressão RC/UAT passa na ponta integrada com commits remotos atuais. Push somente `feat/gika-integration` após commit local/documentação e nova verificação da ponta remota; nenhum merge main ou deploy.
 
 Publicação concluída: `feat/gika-integration` remoto == local no commit de produto `61ffa4cda11f596a8a3e6fe45bdb74c68297028c`; worktree limpo após publicação. O snapshot de onboarding declara este checkout em `/workspace/Leve`, host `github.com`, mount path `Leve`. O draft de configuração foi salvo e requer revisão/salvamento/publicação nas configurações do ambiente; salvar o draft não aplica nem publica a configuração.
+
+## Diagnóstico focal do Preview — 2026-10-04
+
+Entrada `ce28348f265c8cf738d5fa2d6beb06dd6aad5b87`, somente `feat/gika-integration`. A ausência de `gika.upstream.response` no request `25d826a4-045f-45c7-9884-d141aceb06d5` não prova erro HTTP do Gemini. Leitura administrativa de `leve-preview/serviceControls/global` retornou 404; a autorização da Gika rejeita controles ausentes antes de quota/modelo/fetch. Criado somente esse documento no Preview por operação create-only, com `mode: normal`; nenhuma guarda foi relaxada e Production não foi alterada.
+
+Após provisionamento, leitura hospedada real passou no Preview ce28348. Criação ainda retornou 503 `GIKA_UNAVAILABLE`, correlation ID `25774e86-d7e1-465c-96c1-cd78224cd7c8`; causa desse segundo request ainda pendente. Primeiras falhas preservadas nos artefatos locais ignorados `.cache/preflight/hosted/`. Instrumentação focal registra estágio/modelo/correlation ID, presença booleana de chave e status HTTP somente quando existe, com classes técnicas fechadas; nenhum prompt, token, chave, header secreto, mensagem/stack privada ou resposta Gemini é registrado. Modelo, thinking, limites, política, ferramentas e mensagens públicas preservados.
+
+Gates deste ajuste: lint/boundaries, typecheck cliente/servidor e build PASS; 77/77 unit focais (Gemini, diagnósticos, organização, logger e confirmação), 100/100 integração Gika com Auth/Firestore Emulator `demo-leve`. Incluem configuração inválida sem fetch, DNS/TLS sanitizado, timeout/rejeição tardia sem duplicação, parse error e falha fechada por controle ausente. Sem mudança de dependências/Rules/CSP/contrato de comandos.
+
+Retomada: validar somente READ, CREATE e confirmação/HMAC no Preview do novo checkpoint; se falhar, usar os novos estágios para isolar a causa. Não reabrir milestones, auditoria geral, Character, Glass ou Security; nenhum main/Production.

@@ -156,6 +156,29 @@ it('fails closed before Gemini when the Firestore quota transaction fails or sto
   expect(state.inputs).toHaveLength(0);
 });
 describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators', () => {
+  it('missing service controls fail closed before quota/Gemini with a precise sanitized diagnostic', async () => {
+    const user = await account();
+    await db.doc('serviceControls/global').delete();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const info = vi.spyOn(console, 'info').mockImplementation(() => {});
+    try {
+      const response = await ask(user.token).expect(503);
+      expect(response.body.code).toBe('GIKA_UNAVAILABLE');
+      expect(state.inputs).toHaveLength(0);
+      expect((await db.doc(`usageBuckets/${user.uid}_gika`).get()).exists).toBe(false);
+      const records = [...warn.mock.calls, ...info.mock.calls].map(call => JSON.parse(call[0] as string));
+      const diagnostic = records.find(record => record.event === 'gika.diagnostic');
+      expect(diagnostic).toMatchObject({ stage: 'config_error', errorClass: 'ServiceControlsMissing', correlationId: response.body.correlationId });
+      expect(diagnostic).not.toHaveProperty('upstreamStatus');
+      expect(records.some(record => record.event === 'gika.upstream.response')).toBe(false);
+      expect(JSON.stringify(records)).not.toContain(user.token);
+
+      // Provisioning the explicit control restores access; a missing control is never implicitly normal.
+      await db.doc('serviceControls/global').set({ mode: 'normal' });
+      await ask(user.token).expect(200);
+      expect(state.inputs).toHaveLength(1);
+    } finally { warn.mockRestore(); info.mockRestore(); }
+  });
   it('nega sem token/inválido, e conta não verificada/suspensa antes do modelo', async () => {
     await request(app).post('/api/gika/respond').send({ requestId: id, text: 'hoje' }).expect(401);
     await ask('invalid').expect(401);

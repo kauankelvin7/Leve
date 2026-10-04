@@ -2,6 +2,11 @@ version: 1
 project: gika
 source_of_truth: true
 
+# Continuação focal do smoke Preview em 2026-10-04, entrada ce28348.
+# Controle ausente em leve-preview provisionado create-only; fail-closed preservado.
+# Diagnóstico por estágio e regressões focais: .agent/GIKA_STATE.md (sem nova milestone).
+# Leitura real PASS; criação/confirmacão aguardam smoke no novo Preview instrumentado.
+
 # Integração responsiva aprovada consolidada por fast-forward em feat/gika-integration.
 # Evidência: docs/RESPONSIVE-SHELL-V2.md; base c840492 para M6 sequencial autorizado.
 # Nenhuma tarefa/milestone adicional ou alteração ao grafo M5/M6.
