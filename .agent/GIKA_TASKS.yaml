@@ -6,6 +6,9 @@ source_of_truth: true
 # Controle ausente em leve-preview provisionado create-only; fail-closed preservado.
 # Diagnóstico por estágio e regressões focais: .agent/GIKA_STATE.md (sem nova milestone).
 # Leitura real PASS; criação/confirmacão aguardam smoke no novo Preview instrumentado.
+# Preview 42771a1: upstream200 seguido de policy/GIKA_POLICY; parser de artigo/aspas
+# da criação corrigido com regressão antes/depois. Policy Engine global preservada.
+# Smoke READ/CREATE/CONFIRMATION do reparo pendente, sem nova fase/milestone.
 
 # Integração responsiva aprovada consolidada por fast-forward em feat/gika-integration.
 # Evidência: docs/RESPONSIVE-SHELL-V2.md; base c840492 para M6 sequencial autorizado.

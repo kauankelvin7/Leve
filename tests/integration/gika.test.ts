@@ -70,6 +70,19 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
+  it('quoted title with the explicit creation article reaches the existing command without weakening intent checks', async () => {
+    const user = await account();
+    let today = '';
+    state.model = { interpret: async input => {
+      today = input.context.today;
+      return [{ name: 'create_task', args: { title: 'Smoke Gika 123', dueDate: today, dueTime: null } }];
+    } };
+    const response = await ask(user.token, { requestId: id, text: 'Crie a tarefa "Smoke Gika 123" para hoje' }).expect(200);
+    expect(response.body.createTask).toMatchObject({ title: 'Smoke Gika 123', dueDate: today });
+    const command = creationCommand(response.body);
+    await request(app).post('/api/commands').set('Authorization', `Bearer ${user.token}`).send(command).expect(200);
+    expect((await db.doc(`users/${user.uid}/activities/${command.entityId}`).get()).data()?.title).toBe('Smoke Gika 123');
+  });
   it.each([{ name: 'create_task', args: { dueDate: null, dueTime: null } }, { name: 'create_task', args: { title: 'Academia', dueDate: null, dueTime: null, owner: 'someone-else' } }, { name: 'complete_task', args: {} }, { name: 'undo_create_task', args: { entityId: id } }])('malformed/unknown tool never writes %j', async call => {
     const user = await account(); state.model = { interpret: async () => [call] };
     await ask(user.token, { requestId: id, text: 'Academia amanhã' }).expect(422);

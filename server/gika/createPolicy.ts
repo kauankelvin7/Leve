@@ -5,7 +5,7 @@ import { civilDateSchema } from '../../packages/domain/src/content.ts';
 import { createTaskArgsSchema, createTaskDescriptorSchema, toolCallSchema, type CreateTaskDescriptor, type ToolCall } from '../../packages/domain/src/gika.ts';
 import { GikaFault, type ModelCall, type ModelContext } from './model.ts';
 const normalized = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').replace(/\s+/g, ' ').trim();
-const prefix = /^(?:por favor[, ]+)?(?:pode\s+)?(?:adiciona(?:r)?|adicione|cria(?:r)?|crie)(?:\s+(?:uma\s+)?tarefa)?(?:\s+para)?(?:\s+|$)/i;
+const prefix = /^(?:por favor[, ]+)?(?:pode\s+)?(?:adiciona(?:r)?|adicione|cria(?:r)?|crie)(?:\s+(?:(?:uma|a)\s+)?tarefa)?(?:\s+para)?(?:\s+|$)/i;
 const datePattern = /\b(depois de amanha|amanha|hoje|segunda(?:-feira)?|terca(?:-feira)?|quarta(?:-feira)?|quinta(?:-feira)?|sexta(?:-feira)?|sabado|domingo|\d{4}-\d{2}-\d{2}|\d{2}\/\d{2}\/\d{4})\b/g;
 const weekdays: Record<string, number> = { segunda: 1, terca: 2, quarta: 3, quinta: 4, sexta: 5, sabado: 6, domingo: 7 };
 export type CreationIntent = { task: CreateTaskDescriptor; clarification?: never } | { task?: never; clarification: string };
@@ -28,6 +28,7 @@ export function resolveCreationIntent(text: string, context: ModelContext): Crea
   if (verb) remaining = remaining.slice(verb[0].length);
   remaining = remaining.replace(/\b(?:sem data|para o dia|no dia)\b/gi, '').replace(/\s+/g, ' ').replace(/^[\s,.;!?]+|[\s,.;!?]+$/g, '');
   if (dates.length) remaining = remaining.replace(/\s+(?:em|para|no|na)$/i, '').trim();
+  remaining = remaining.replace(/^"(.*)"$/, '$1').trim();
   if (!remaining || /^(?:uma )?tarefa$/.test(normalized(remaining))) return { clarification: 'Qual tarefa você quer adicionar?' };
   if (!verb && !dates.length) return { clarification: 'Para qual dia você quer adicionar essa tarefa?' };
   let date: string | null = null;

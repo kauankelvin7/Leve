@@ -357,3 +357,11 @@ Após provisionamento, leitura hospedada real passou no Preview ce28348. Criaç�
 Gates deste ajuste: lint/boundaries, typecheck cliente/servidor e build PASS; 77/77 unit focais (Gemini, diagnósticos, organização, logger e confirmação), 100/100 integração Gika com Auth/Firestore Emulator `demo-leve`. Incluem configuração inválida sem fetch, DNS/TLS sanitizado, timeout/rejeição tardia sem duplicação, parse error e falha fechada por controle ausente. Sem mudança de dependências/Rules/CSP/contrato de comandos.
 
 Retomada: validar somente READ, CREATE e confirmação/HMAC no Preview do novo checkpoint; se falhar, usar os novos estágios para isolar a causa. Não reabrir milestones, auditoria geral, Character, Glass ou Security; nenhum main/Production.
+
+### Criação rejeitada após upstream 200 — contrato de parsing corrigido
+
+No Preview `42771a10bfeb9beee555aa50531f6ff4100be0c0`, READ real PASS. CREATE retornou 422 `GIKA_POLICY`, correlation ID `59c14ffd-8965-44c5-9a5a-d2db01bbff27`; usuário confirmou Runtime Logs `upstream_response/200`, modelo `gemini-3.5-flash-lite`, seguido por `policy/GikaFault`. Não é falha do Gemini/configuração. Para `Crie a tarefa "Smoke Gika …" para hoje`, `resolveCreationIntent` preservava o artigo `a tarefa` e as aspas externas no título; `validateCreation` rejeitava o título simples da proposta por desigualdade, antes de `assessCreation`. A política vigente para criação simples completa/verificada é `allow`, não foi modificada.
+
+Prova antes: 4 regressões unitárias FAIL (18 PASS) e integração focal retornando 422 em vez de 200; log original `.cache/preflight/hosted/gika-quoted-before.log` preservado. Correção mínima de duas linhas: reconhecer `a tarefa` após verbo explícito e retirar somente aspas duplas delimitadoras externas, preservando aspas internas. Depois: 91 unit focais PASS, teste adicional de contrato Gemini→tools/schema→descritor→policy com criação allow/título inventado rejeitado; arquivo de criação 23/23 PASS; integração Gika 101/101 PASS, lint/boundaries/typecheck web+server/build PASS. Ferramentas, modelo, env, Firebase, infraestrutura e política global intactos neste ajuste.
+
+Smoke READ/CREATE/CONFIRMATION-HMAC do Preview desse reparo ainda pendente; publicar somente `feat/gika-integration` e validar esses três, sem main/Production/nova fase.
