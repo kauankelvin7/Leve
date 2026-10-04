@@ -97,6 +97,19 @@ describe('M3-T1 create_task descriptor → existing authenticated activity.creat
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0); expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
 });
+
+it('applies the Gika minute quota across distinct requests using durable emulator state', async () => {
+  const user = await account();
+  for (let index = 0; index < 3; index++) {
+    await ask(user.token, { requestId: crypto.randomUUID(), text: 'O que tenho hoje?' }).expect(200);
+  }
+  const limited = await ask(user.token, { requestId: crypto.randomUUID(), text: 'O que tenho hoje?' }).expect(429);
+  expect(limited.body.code).toBe('GIKA_QUOTA');
+  expect(state.inputs).toHaveLength(3);
+  const buckets = await db.collection('usageBuckets').where('gikaCount', '>', 0).get();
+  expect(buckets.size).toBe(1);
+  expect(buckets.docs[0]?.data()).toMatchObject({ gikaCount: 3, gikaMinuteCount: 3 });
+});
 describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators', () => {
   it('nega sem token/inválido, e conta não verificada/suspensa antes do modelo', async () => {
     await request(app).post('/api/gika/respond').send({ requestId: id, text: 'hoje' }).expect(401);
@@ -122,7 +135,8 @@ describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators',
     expect(JSON.stringify(state.inputs)).not.toMatch(/apague|PRIVATE_DESCRIPTION|OTHER_ACCOUNT_SECRET/);
     expect(state.inputs[0]).toEqual({ text: 'O que tenho hoje?', context: { today, timeZone: zone, weekStartsOn: 1 } });
     expect((await db.doc(`users/${user.uid}/activities/mine`).get()).data()).toEqual(before);
-    for (const collection of ['commandReceipts', 'usageBuckets']) expect((await db.collection(collection).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+    expect((await db.collection('usageBuckets').where('gikaCount', '>', 0).get()).size).toBe(1);
   });
   it('E02 e get_week: data civil/fuso trusted e eventos multi-dia deduplicados', async () => {
     const user = await account(true, 'active', 'Pacific/Kiritimati');

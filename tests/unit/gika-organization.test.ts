@@ -53,7 +53,7 @@ function fixture() {
   const data={...read(),endDate:context.today};
   const repository={authorize:vi.fn().mockResolvedValue(context),read:vi.fn().mockResolvedValue(data),recoverMutation:vi.fn().mockResolvedValue(null),recoverBatch:vi.fn().mockResolvedValue(null)};
   const model={interpret:vi.fn().mockResolvedValue([call()])};
-  const app=express();app.use((_req,res,next)=>{res.locals.identity={uid:'test-user'};next();});app.use('/gika',createGikaRouter(model,repository));
+  const app=express();app.use((_req,res,next)=>{res.locals.identity={uid:'test-user'};next();});app.use('/gika',createGikaRouter(model,repository,async()=>{}));
   app.use((error:AppError,_req:express.Request,res:express.Response,_next:express.NextFunction)=>res.status(error.status??422).json({code:error.code}));
   return {model,repository,http:request(app)};
 }

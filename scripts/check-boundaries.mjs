@@ -16,7 +16,7 @@ for (const root of roots) for (const path of readdirSync(root, { recursive: true
     source = source.replaceAll('\\', '/');
     const persistence = /^(?:firebase(?:-admin)?(?:$|\/(?:compat\/)?firestore)|@firebase\/firestore|@google-cloud\/firestore)|(?:^|\/)commands(?:\/|(?:\.ts)?$)/.test(source);
     const firebasePlatform = /platform\/firebase(?:\.ts)?$/.test(source);
-    const readOwner = ['server/gika/reads.ts', 'server/gika/batchGuard.ts'].includes(file);
+    const readOwner = ['server/gika/reads.ts', 'server/gika/batchGuard.ts', 'server/gika/quota.ts'].includes(file);
     const conventionalRead = readOwner && names.length > 0 && ((source === '../platform/firebase.ts' && names.every(name => name === 'db')) || (source === '../commands/identity.ts' && names.every(name => name === 'commandHash')));
     const localOnly = /(?:^|\/)(?:proactivity\.ts|GikaSuggestion\.tsx|useVoiceInput\.ts)$/.test(file) || file.includes('/character/');
     const privateImport = localOnly && /firebase|(?:^|\/)(?:api|model|gemini|.*Adapter|.*Bridge)(?:\.tsx?)?$|commands/i.test(source);

@@ -21,8 +21,9 @@ import { bounded, GikaFault, type ModelAdapter } from './model.ts';
 import { createReadLimiter, readRange } from './policy.ts';
 import { resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
+import { consumeGikaQuota } from './quota.ts';
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
-export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads) {
+export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
   const router = Router(); const acquire = createReadLimiter();
   router.use(express.json({ limit: '12kb', strict: true }));
   const bodyError: ErrorRequestHandler = (error, _request, _response, next) => {
@@ -97,6 +98,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         const context = await repository.authorize(identity);
         release = acquire(identity.uid);
+        await consumeQuota(identity.uid);
         const period = organizationPeriod(input.text);
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
