@@ -112,7 +112,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           const planning = planningContext(read,context);
           if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[],organizationResolution:{status:'empty'}});
           await consumeQuota(identity.uid);
-          const calls = validateToolCalls(await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal));
+          const calls = validateToolCalls(await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal,{correlationId:response.locals.correlationId}));
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
@@ -131,7 +131,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({text:plan?`Sugestão para ${period==='week'?'sua semana':'o seu dia'}. Confira as mudanças antes de confirmar.`:'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
         await consumeQuota(identity.uid);
-        const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
+        const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal, { correlationId: response.locals.correlationId }));
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');

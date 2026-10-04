@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { ModelInput } from '../../server/gika/model';
 import { createGeminiAdapter, geminiPayload, GEMINI_ENDPOINT, parseGeminiResponse } from '../../server/gika/gemini';
 const input = { text: 'O que tenho hoje?', context: { today: '2026-09-30', timeZone: 'America/Sao_Paulo', weekStartsOn: 1 as const } };
 const signal = () => new AbortController().signal;
 const body = (parts: unknown[], finishReason = 'STOP') => ({ candidates: [{ finishReason, content: { parts } }] });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 describe('Gemini Developer adapter, sem credenciais fictícias', () => {
-  it('fixa modelo, medium, uma candidate e registro fechado de tools atuais', () => {
+  it('fixa modelo, medium e registro fechado de tools atuais', () => {
     const payload = geminiPayload(input);
     expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
     expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
@@ -18,6 +19,31 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
       for (const field of ['uid', 'entityId', 'revision', 'operationId']) expect(declaration!.properties).not.toHaveProperty(field);
     }
     expect(payload.contents[0]!.parts).toEqual([{ text: input.text }]);
+  });
+  it.each([
+    ['normal', input],
+    ['organization', { ...input, planning: { startDate: input.context.today, endDate: input.context.today, tasks: [] } }],
+  ] satisfies [string, ModelInput][])('Gemini 3.x %s omits unsupported candidate counts', (_flow, value) => {
+    const payload = geminiPayload(value);
+    expect(payload.generationConfig).not.toHaveProperty('candidateCount');
+    expect(payload.generationConfig).not.toHaveProperty('candidate_count');
+    expect(payload.generationConfig.thinkingConfig.thinkingLevel).toBe('MEDIUM');
+    expect(GEMINI_ENDPOINT).toContain('gemini-3.5-flash-lite:generateContent');
+  });
+  it.each([200, 400, 403, 429, 503])('logs only technical upstream context for HTTP %s', async status => {
+    const log = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const correlationId = 'a8dc363c-05f5-49b0-a40c-9c6637825743';
+    const http = vi.fn(async () => status === 200
+      ? Response.json(body([{ functionCall: { name: 'get_today', args: {} } }]))
+      : new Response('PRIVATE_PROVIDER_BODY Authorization: Bearer PRIVATE_SECRET', { status }));
+    const adapter = createGeminiAdapter(http);
+    await adapter.interpret({ ...input, text: 'PRIVATE_USER_TEXT' }, signal(), { correlationId }).catch(() => undefined);
+    expect(log).toHaveBeenCalledTimes(1);
+    const record = JSON.parse(log.mock.calls[0]![0] as string);
+    expect(record).toEqual({ timestamp: expect.any(String), level: 'info', service: 'leve-backend',
+      event: 'gika.upstream.response', upstreamStatus: status, correlationId, model: 'gemini-3.5-flash-lite' });
+    expect(log.mock.calls[0]![0]).not.toContain('PRIVATE_');
+    expect(JSON.stringify(http.mock.calls[0])).not.toContain(correlationId);
   });
   it('variável ausente impede qualquer HTTP', async () => {
     vi.stubEnv('GEMINI_API_KEY', ''); const http = vi.spyOn(globalThis, 'fetch');
