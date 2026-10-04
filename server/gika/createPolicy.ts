@@ -191,16 +191,31 @@ function groundedTitle(title: string, text: string) {
   const titleTokens = titlePlain.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(token => token && !semanticGlue.has(token) && !temporalTitleTokens.has(token) && !/^\d+$/.test(token));
   return titleTokens.length > 0 && titleTokens.every(token => sourceTokens.has(token));
 }
+function hasSpecificTitleEvidence(text: string) {
+  let plain = normalized(text).replace(datePattern, ' ');
+  plain = plain.replace(semanticTimeEvidencePattern, match => timeEvidenceHasCue(match) ? ' ' : match);
+  const tokens = plain.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+  return tokens.some(token =>
+    !semanticGlue.has(token)
+    && !temporalTitleTokens.has(token)
+    && !/^(?:tarefa|evento|compromisso|atividade)$/.test(token)
+    && !/^\d+$/.test(token)
+    && !/^(?:adicion|cri|agend|marc|marqu|coloc|coloqu|inclu|anot|bot|ponh|consegu)\w*$/.test(token)
+  );
+}
 function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext): CreationIntent {
   const whole = normalized(text);
-  if (!createCue.test(whole)) return { clarification: 'O que você quer adicionar à sua agenda?' };
+  if (!createCue.test(whole)) return { clarification: 'Qual tarefa, data e horário você quer usar na sua agenda?' };
   if (unsupportedSemanticAction.test(whole) || recurringOrBatchSemanticAction.test(whole) || /\b(?:e|tambem|depois)\s+(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|conclu\w*|renome\w*|move\w*|reagend\w*)\b/.test(whole)) {
     return { clarification: 'Posso adicionar uma tarefa simples por vez. Qual única tarefa você quer colocar na agenda?' };
   }
   if (/\bnao\s+(?:quero|queria|gostaria|preciso|adicion\w*|cri\w*|agend\w*|marc\w*|coloc\w*|inclu\w*|anot\w*|bot\w*|ponh\w*)\b/.test(whole) || /\b(?:talvez|se)\b/.test(whole)) {
     return { clarification: 'Você quer mesmo adicionar essa tarefa? Diga a tarefa de forma direta para eu preparar a criação.' };
   }
-  if (!groundedTitle(parsed.title, text)) throw new GikaFault('GIKA_POLICY');
+  if (!groundedTitle(parsed.title, text)) {
+    if (!hasSpecificTitleEvidence(text)) return { clarification: 'Qual tarefa você quer adicionar?' };
+    throw new GikaFault('GIKA_POLICY');
+  }
 
   const date = groundedDateEvidence(text, context);
   if (date.ambiguous) return { clarification: 'Você mencionou mais de uma data. Qual dia devo usar?' };
