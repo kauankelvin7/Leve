@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-- Status global: `LIQUID_GLASS_FINALIZATION_IN_PROGRESS`; M9_DONE_RC_READY congelado emb0e7bae753ec93374a3ebe3ec2b1a5ac07298046, final RC ainda pendente.
+- Status global: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`; M9_DONE_RC_READY congelado emb0e7bae753ec93374a3ebe3ec2b1a5ac07298046, final RC ainda pendente.
 - Aprovação humana vigente: `GIKA_V1_FACIAL_HUMAN_APPROVED`; v1 facial aceitável na versão gratuita, KEEP rest/idle/blink/listening/thinking/clarify/error/offline, FALLBACK success→idle visual/master. Sucesso semântico continua exclusivamente após ACK real.
 - `FULL_BODY_CHARACTER_RIG_DEFERRED` e `RIG_READY_MASTER_ART_SOURCE_BLOCKED_IS_NOT_RELEASE_BLOCKER` definitivos para v1; histórico preservado, sem reabrir autoria corporal.
 - Decisão vigente: `GIKA_V1_FACIAL_SCOPE_APPROVED` / `FULL_BODY_CHARACTER_RIG_DEFERRED`. Corpo/meia-altura/gestos e novo master não são requisitos de release v1; o bloqueio histórico de Gate A não é mais release blocker. Histórico preservado abaixo.
@@ -305,3 +305,15 @@ Gika migra para nav existente com portrait master44px (mesmo panel lazy, key UID
 Lote nav/calendário/Gika validado:3/3GlassfocalPASS2.6min, sólido/forced/Axe sem violações/overflow/nested; foto390 revisada. Panel recebe primitivo central, mobile sólido/desktopstrong. Manifesto7 exclui fixedlauncher. Restantes overlays/dock/ampla/final RC pendentes.
 
 Lote final4 superfícies (confirm/recurrence/sheet/timer) usa somente primitivo. Selftests/lint/AST/doisTS/build/strictcheck PASS; timer1/1, recurrence1/1, sheet+matrizseis1/1PASS19.6s. Captura viewport real revisada; captura fullPage na origem/restauração corrige artefato Chromium sem mudar CSS/foco. Primeira seleção de teste por nome inglês não encontrou caso; execução semântica PT-BR passou. Ampla Glass fresh e regressão final ainda pendentes.
+
+## Interrupção solicitada pelo usuário — checkpoint atual
+
+Implementação preservada em `c8620e2af48fa3c6f4ef997923991fe63644b9cb`, branch `feat/liquid-glass-system`. Suíte `GLASS_CAPTURE=1 TMPDIR=/workspace/leve-glass-tmp npm run glass:verify` interrompida por SIGINT após pedido explícito, exit130. Resultado observado:16PASS/2FAIL/1interrompido/36não executados,7.3min. Falhas reais desta rodada: authenticated853light55.5s e853dark (duração no log original), welcome/chat retornam `UNMEASURED_CONTRAST`, razão `NO_VISIBLE_TEXT_RECTS`; zero violações Axe nesses snapshots. Causa ainda NÃO diagnosticada; desconhecido não é PASS.1024light foi interrompido em auth/bootstrap, não classificado como regressão.
+
+Log local preservado `.cache/final-run/resume-glass-full-first.log`, SHA256 `685a7c30b20ad6b29b5193f4687e8b0d181a4e8fb847dcae29188a1e8442e854`; JSON/capturas/traces em `.cache/glass/after`. Logs e traces brutos não versionados/publicados por poderem conter autenticação sintética. Não houve repetição desta ampla nem aumento de timeout/retry/assertion.
+
+Forced colors focal anterior1/1PASS39.6s; selftests/lintAST47/ambosTS/build/strictstatic e focais nav/Calendar/sheet/timer/recurrence passaram. Isso não substitui a ampla incompleta. Commits funcionais desta retomada:3be88f8 (forced colors),0e77d9c (nav/reflow),c8620e2 (quatro overlays/capture).
+
+Pendências exatas: diagnosticar contraste não medido no painel Gika853; imagem estática da nav atualmente reutiliza GikaPortrait e antecipa rest/offline inline no bootstrap (entry1210129→1277239bytes, medição bruta; otimização ainda NÃO aplicada); concluir Glass ampla/capturas/QA/performance; somente depois integrar e executar regressão final/RC-UAT. Nenhum asset/controller/contrato/backend alterado.
+
+Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9 congelado b0e7bae preservado. Estado: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`. Parar aqui; não continuar investigação automaticamente.

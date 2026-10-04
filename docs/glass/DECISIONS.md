@@ -81,3 +81,15 @@ Sheet após seletor semântico1PASS18.1s/27.1s total: seis viewports Mês/Semana
 Primeiro build após captura: typecheck rejeitou acesso ao grupo opcional do RegExp (TS2532). Conversão explícita Number mantém comparação24px e semântica; lint/selftests anteriores PASS. Revalidar build antes dos servidores.
 
 Capture fix focal: primeiro filtro inglês não encontrou testes (não é PASS); selecionar nome PT-BR existente,1/1PASS19.6s/29s total. Viewport real e fullPage origin inspecionados; skip-link corretamente oculto, sheet utilizável. Selftests/lint/AST/ambosTS/build/strictstatic PASS; warning de bundle histórico registrado.
+
+## Interrupção solicitada pelo usuário — checkpoint atual
+
+Implementação preservada em `c8620e2af48fa3c6f4ef997923991fe63644b9cb`, branch `feat/liquid-glass-system`. Suíte `GLASS_CAPTURE=1 TMPDIR=/workspace/leve-glass-tmp npm run glass:verify` interrompida por SIGINT após pedido explícito, exit130. Resultado observado:16PASS/2FAIL/1interrompido/36não executados,7.3min. Falhas reais desta rodada: authenticated853light55.5s e853dark (duração no log original), welcome/chat retornam `UNMEASURED_CONTRAST`, razão `NO_VISIBLE_TEXT_RECTS`; zero violações Axe nesses snapshots. Causa ainda NÃO diagnosticada; desconhecido não é PASS.1024light foi interrompido em auth/bootstrap, não classificado como regressão.
+
+Log local preservado `.cache/final-run/resume-glass-full-first.log`, SHA256 `685a7c30b20ad6b29b5193f4687e8b0d181a4e8fb847dcae29188a1e8442e854`; JSON/capturas/traces em `.cache/glass/after`. Logs e traces brutos não versionados/publicados por poderem conter autenticação sintética. Não houve repetição desta ampla nem aumento de timeout/retry/assertion.
+
+Forced colors focal anterior1/1PASS39.6s; selftests/lintAST47/ambosTS/build/strictstatic e focais nav/Calendar/sheet/timer/recurrence passaram. Isso não substitui a ampla incompleta. Commits funcionais desta retomada:3be88f8 (forced colors),0e77d9c (nav/reflow),c8620e2 (quatro overlays/capture).
+
+Pendências exatas: diagnosticar contraste não medido no painel Gika853; imagem estática da nav atualmente reutiliza GikaPortrait e antecipa rest/offline inline no bootstrap (entry1210129→1277239bytes, medição bruta; otimização ainda NÃO aplicada); concluir Glass ampla/capturas/QA/performance; somente depois integrar e executar regressão final/RC-UAT. Nenhum asset/controller/contrato/backend alterado.
+
+Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9 congelado b0e7bae preservado. Estado: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`. Parar aqui; não continuar investigação automaticamente.
