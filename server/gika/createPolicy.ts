@@ -80,7 +80,9 @@ function parseGroundedTime(expression: string): string | null {
   let period: 'manha' | 'tarde' | 'noite' | null = null;
   const periodMatch = value.match(/\s+(?:da|de)\s+(manha|tarde|noite)$/);
   if (periodMatch) {
-    period = periodMatch[1] as typeof period;
+    const periodValue = periodMatch[1];
+    if (periodValue !== 'manha' && periodValue !== 'tarde' && periodValue !== 'noite') return null;
+    period = periodValue;
     value = value.slice(0, periodMatch.index).trim();
   }
 
