@@ -160,6 +160,65 @@ export function normalizeCurrentAction(action: z.infer<typeof gikaCurrentActionS
   return `Move "${title}" para ${dateExpression ?? ''}${time ? ` às ${time}` : ''}`.replace(/\s+/g,' ').trim();
 }
 export function isCreationRequest(text: string) { return prefix.test(normalized(text)); }
+
+const semanticTimeEvidencePattern = /\b(?:as\s+)?(?:meio dia|meia noite|(?:\d{1,2}(?::[0-5]\d|h(?:[0-5]\d)?)?|uma|um|duas|dois|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|catorze|quatorze|quinze|dezesseis|dezessete|dezoito|dezenove|vinte|vinte e uma|vinte e um|vinte e duas|vinte e dois|vinte e tres)(?:\s+horas?)?(?:\s+e\s+(?:meia|quinze|trinta|quarenta e cinco))?(?:\s+(?:da|de)\s+(?:manha|tarde|noite))?)\b/g;
+const temporalTitleTokens = new Set(['hoje','amanha','depois','segunda','terca','quarta','quinta','sexta','sabado','domingo','feira','hora','horas','manha','tarde','noite','meio','meia']);
+
+function timeEvidenceHasCue(value: string) {
+  return /^as\s/.test(value) || /\d:\d|\dh\b/.test(value) || /\bhoras?\b/.test(value) || /\b(?:manha|tarde|noite)\b/.test(value) || /^(?:meio dia|meia noite)$/.test(value);
+}
+function groundedDateEvidence(text: string, context: ModelContext): { value: string | null; ambiguous: boolean } {
+  const expressions = [...normalized(text).matchAll(datePattern)].map(match => match[0]);
+  const values = expressions.map(expression => resolveCreationIntent(`Adiciona Referência temporal ${expression}`, context).task?.dueDate ?? null);
+  if (values.some(value => value === null)) return { value: null, ambiguous: true };
+  const unique = [...new Set(values.filter((value): value is string => Boolean(value)))];
+  return { value: unique[0] ?? null, ambiguous: unique.length > 1 };
+}
+function groundedTimeEvidence(text: string): { value: string | null; ambiguous: boolean; mentioned: boolean } {
+  const plain = normalized(text);
+  const expressions = [...plain.matchAll(semanticTimeEvidencePattern)].map(match => match[0]).filter(timeEvidenceHasCue);
+  const parsed = expressions.map(parseGroundedTime);
+  const invalid = parsed.some(value => value === null);
+  const unique = [...new Set(parsed.filter((value): value is string => Boolean(value)))];
+  return { value: unique[0] ?? null, ambiguous: invalid || unique.length > 1, mentioned: expressions.length > 0 || /\b(?:horario|horarios|hora|horas|manha|tarde|noite|meio dia|meia noite)\b/.test(plain) };
+}
+function groundedTitle(title: string, text: string) {
+  const titlePlain = normalized(title);
+  if (/^(?:tarefa|evento|compromisso|atividade)$/.test(titlePlain)) return false;
+  if ([...titlePlain.matchAll(datePattern)].length) return false;
+  if ([...titlePlain.matchAll(semanticTimeEvidencePattern)].some(match => timeEvidenceHasCue(match[0]))) return false;
+  const sourceTokens = new Set(normalized(text).replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean));
+  const titleTokens = titlePlain.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(token => token && !semanticGlue.has(token) && !temporalTitleTokens.has(token) && !/^\d+$/.test(token));
+  return titleTokens.length > 0 && titleTokens.every(token => sourceTokens.has(token));
+}
+function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext): CreationIntent {
+  const whole = normalized(text);
+  if (!createCue.test(whole)) return { clarification: 'O que você quer adicionar à sua agenda?' };
+  if (unsupportedSemanticAction.test(whole) || recurringOrBatchSemanticAction.test(whole) || /\b(?:e|tambem|depois)\s+(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|conclu\w*|renome\w*|move\w*|reagend\w*)\b/.test(whole)) {
+    return { clarification: 'Posso adicionar uma tarefa simples por vez. Qual única tarefa você quer colocar na agenda?' };
+  }
+  if (/\bnao\s+(?:quero|queria|gostaria|preciso|adicion\w*|cri\w*|agend\w*|marc\w*|coloc\w*|inclu\w*|anot\w*|bot\w*|ponh\w*)\b/.test(whole) || /\b(?:talvez|se)\b/.test(whole)) {
+    return { clarification: 'Você quer mesmo adicionar essa tarefa? Diga a tarefa de forma direta para eu preparar a criação.' };
+  }
+  if (!groundedTitle(parsed.title, text)) throw new GikaFault('GIKA_POLICY');
+
+  const date = groundedDateEvidence(text, context);
+  if (date.ambiguous) return { clarification: 'Você mencionou mais de uma data. Qual dia devo usar?' };
+  if ((parsed.dueDate ?? null) !== date.value) {
+    if (date.value === null && parsed.dueDate !== null) throw new GikaFault('GIKA_POLICY');
+    throw new GikaFault('GIKA_POLICY');
+  }
+
+  const time = groundedTimeEvidence(text);
+  if (time.ambiguous) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };
+  if ((parsed.dueTime ?? null) !== time.value) {
+    if (time.value === null && parsed.dueTime !== null && time.mentioned) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };
+    throw new GikaFault('GIKA_POLICY');
+  }
+
+  const task = createTaskDescriptorSchema.safeParse({ title: parsed.title, dueDate: parsed.dueDate, dueTime: parsed.dueTime, timeZone: context.timeZone });
+  return task.success ? { task: task.data } : { clarification: 'Confira o título, a data e o horário da tarefa.' };
+}
 export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
   if (calls.length > 3) throw new GikaFault('GIKA_POLICY');
   const tools = calls.map(call => {
@@ -184,8 +243,11 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
   return tools;
 }
 export function validateCreation(args: unknown, text: string, context: ModelContext): CreationIntent {
-  const parsed = createTaskArgsSchema.parse(args); const intent = resolveCreationIntent(text, context);
-  if (!intent.task) return intent;
-  if (normalized(parsed.title) !== normalized(intent.task.title) || parsed.dueDate !== intent.task.dueDate || parsed.dueTime !== intent.task.dueTime) throw new GikaFault('GIKA_POLICY');
-  return intent;
+  const parsed = createTaskArgsSchema.parse(args);
+  const intent = resolveCreationIntent(text, context);
+  if (intent.task) {
+    if (normalized(parsed.title) !== normalized(intent.task.title) || parsed.dueDate !== intent.task.dueDate || parsed.dueTime !== intent.task.dueTime) throw new GikaFault('GIKA_POLICY');
+    return intent;
+  }
+  return validateSemanticCreation(parsed, text, context);
 }
