@@ -1,21 +1,27 @@
 import { db } from '../platform/firebase.ts';
 import { GikaFault } from './model.ts';
+import { parseGikaDailyLimit } from './quotaPolicy.ts';
+export { parseGikaDailyLimit } from './quotaPolicy.ts';
 
 const PER_MINUTE = 3;
-const PER_DAY = 10;
 
-/** Durable per-account budget for model-backed interpretation across serverless instances. */
-export async function consumeGikaQuota(uid: string, now = Date.now()) {
+/** Durable, rolling per-account burst quota for model-backed interpretation. */
+export async function consumeGikaQuota(uid: string, now = Date.now(), dailyLimit = parseGikaDailyLimit()) {
   const instant = new Date(now);
   const day = instant.toISOString().slice(0, 10);
-  const minute = instant.toISOString().slice(0, 16);
-  const dayRef = db.doc(`usageBuckets/${uid}_${day}`);
+  const quotaRef = db.doc(`usageBuckets/${uid}_gika`);
   await db.runTransaction(async transaction => {
-    const daily = await transaction.get(dayRef);
-    const data = daily.data();
-    const dailyCount = data?.gikaCount ?? 0;
-    const minuteCount = data?.gikaMinuteKey === minute ? data.gikaMinuteCount ?? 0 : 0;
-    if (dailyCount >= PER_DAY || minuteCount >= PER_MINUTE) throw new GikaFault('GIKA_QUOTA');
-    transaction.set(dayRef, { gikaCount: dailyCount + 1, gikaMinuteKey: minute, gikaMinuteCount: minuteCount + 1 }, { merge: true });
+    const quota = await transaction.get(quotaRef);
+    const data = quota.data();
+    const storedTimes = data?.gikaRequestTimesMs ?? [];
+    if (!Array.isArray(storedTimes) || storedTimes.length > PER_MINUTE || storedTimes.some(timestamp => !Number.isSafeInteger(timestamp))) throw new GikaFault('GIKA_UNAVAILABLE');
+    const recentTimes = (storedTimes as number[]).filter(timestamp => timestamp > now - 60_000);
+    const dailyCount = data?.gikaDayKey === day ? data.gikaDayCount ?? 0 : 0;
+    if (dailyLimit !== null && data?.gikaDayKey === day && (!Number.isSafeInteger(dailyCount) || dailyCount < 0)) throw new GikaFault('GIKA_UNAVAILABLE');
+    if (recentTimes.length >= PER_MINUTE || (dailyLimit !== null && dailyCount >= dailyLimit)) throw new GikaFault('GIKA_QUOTA');
+    transaction.set(quotaRef, {
+      gikaRequestTimesMs: [...recentTimes, now],
+      ...(dailyLimit === null ? {} : { gikaDayKey: day, gikaDayCount: dailyCount + 1 }),
+    }, { merge: true });
   });
 }

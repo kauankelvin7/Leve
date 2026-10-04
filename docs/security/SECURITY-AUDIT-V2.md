@@ -20,13 +20,25 @@ Escopo: API Express/Vercel, Firebase Auth/Admin e Firestore, comandos, Gika, imp
 
 ## Findings e prioridade
 
-### MEDIUM — orçamento de Gika dependia da memória da instância
+### MEDIUM — abuso de chamadas Gika e cotas locais ineficazes em serverless
 
-O limitador anterior guardava cotas por UID e totais globais apenas em um `Map` local. Reinícios e instâncias paralelas de funções serverless podiam reiniciar ou dividir esses contadores, permitindo mais chamadas pagas ao modelo e mais leituras Firestore que o limite de 3/minuto e 10/dia sugeria. Corrigido com contadores transacionais de minuto e dia em `usageBuckets`, compartilhados entre instâncias. O teste de integração comprova que três pedidos distintos passam e o quarto é negado antes de invocar o modelo. O limitador local permanece como contenção adicional por instância.
+O limitador inicial foi adicionado no commit `ac27289` junto à primeira integração da Gika. A árvore, as decisões e as evidências disponíveis apenas repetiam `3/minuto` e `10/dia`; não foi encontrada justificativa de produto, medição de uso, cálculo de custo ou cota oficial do provedor por UID que fundamentasse esses números. O Free Tier do provedor tem cotas do projeto, não uma relação documentada que torne 10 pedidos diários por usuário um limite correto. O `10/dia` era arbitrário. O limite global `120/dia/instância` também era efêmero e sem base operacional.
+
+Uma interação que chega à interpretação realiza uma chamada HTTP ao Gemini. Leitura simples, consulta semanal e proposta de organização têm custo diferente de leituras Firestore, mas todas usam uma chamada do modelo e eram cobradas como uma unidade diária. Em organização, o servidor pode fazer leituras de preparação e revalidação antes/depois do modelo. Confirmação de comando e recuperação de receipt não chamam o modelo. A cota anterior também era consumida antes de alguns retornos de pré-validação que não chamavam o modelo, e dez interações legítimas no dia esgotavam a Gika independentemente do tipo.
+
+O limite diário fixo e os limites diários locais foram removidos. `GIKA_DAILY_LIMIT` agora é um teto opcional explícito, inteiro positivo, aplicado por UID e dia UTC; vazio/ausente significa sem teto diário. O burst de 3 chamadas foi preservado e reforçado para uma janela móvel de 60 segundos. O número 3 veio da mesma escolha histórica, sem telemetria que prove ser ótimo; foi mantido como proteção proporcional contra rajadas e conforme a instrução de não enfraquecer o burst. Uma pergunta normal consome uma chamada do limite curto. Não há dado de produção suficiente nesta auditoria para calibrar melhor esse número.
+
+### Persistência e propriedades da cota Gika
+
+O estado usa `usageBuckets/{uid}_gika`, com UID derivado do token verificado. Cada requisição faz uma transação que lê um documento e escreve o array de até três timestamps recentes; com cota diária configurada, o mesmo documento recebe chave do dia UTC e contagem. Excesso faz uma leitura e nenhuma escrita. Contenção concorrente causa retries transacionais e pode acrescentar leituras, mas os retries internos não duplicam a gravação confirmada. Chamadas HTTP repetidas sem receipt de comando são requisições distintas e consomem cada uma; replay que é resolvido por receipt retorna antes da cota e do modelo.
+
+As transações concorrentes no mesmo documento serializam a verificação e incremento: o teste adversarial dispara seis solicitações simultâneas com mesmo UID e comprova exatamente três admissões; outro UID mantém cota independente. A janela móvel elimina a duplicação de chamadas na virada de minuto. Não há rollover relevante para o burst na virada do dia; a cota diária opcional troca a chave na meia-noite UTC. Falha de leitura/escrita aborta antes da chamada do modelo e retorna indisponibilidade genérica (fail-closed). Regras negam leitura e escrita cliente de `usageBuckets`. Nenhum conteúdo da pergunta ou dado de agenda é armazenado no contador.
+
+O documento é estável por UID: não cria um documento a cada dia ou minuto e, portanto, o contador Gika não cresce com o tempo. Ele permanece até a exclusão da conta; o job de exclusão existente apaga todos os documentos com prefixo `${uid}_`. TTL não é usado porque requer billing neste projeto. Para cada interpretação admitida, o orçamento consome uma leitura e uma escrita Firestore; uma tentativa negada consome uma leitura. Contenção pode aumentar leituras por retries do Firestore.
 
 ### LOW — HSTS ausente na configuração de resposta do host
 
-As respostas já definiam CSP, `frame-ancestors`, `X-Frame-Options`, `nosniff`, `Referrer-Policy` e `Permissions-Policy`; não havia HSTS. Adicionado `Strict-Transport-Security: max-age=31536000` na configuração Vercel. Sem `includeSubDomains` ou `preload`, pois a propriedade de todos os subdomínios/preload não foi demonstrada.
+As respostas já definiam CSP, `frame-ancestors`, `X-Frame-Options`, `nosniff`, `Referrer-Policy` e `Permissions-Policy`; não havia HSTS. Adicionado `Strict-Transport-Security: max-age=31536000` na configuração Vercel. Sem `includeSubDomains` ou `preload`, pois a propriedade de todos os subdomínios/preload não foi demonstrada. A regra é aplicada pelo host Vercel em deployments HTTPS, inclusive preview HTTPS; `npm run dev` e `vite preview` locais não leem headers Vercel e continuam HTTP local sem HSTS. A configuração/compatibilidade foi coberta pelo teste focal de headers; nenhum preview ou deploy foi feito nesta revisão.
 
 ### INFO — skills de cybersecurity registradas no lockfile não estavam acessíveis no harness
 
@@ -50,7 +62,7 @@ Instalação reproduzida pelo lockfile; sem atualização em massa. `npm audit -
 
 ## Riscos residuais
 
-- Limites locais não mitigam DDoS volumétrico nem floods distribuídos que atinjam a função antes do código.
+- A cota por UID não mitiga DDoS volumétrico nem floods distribuídos que atinjam a função antes do código; o rate limit por IP precisa ser aplicado no edge.
 - Cotas por UID podem ser contornadas por criação distribuída de contas; Firebase Auth, políticas antiabuso do provedor, limites Gemini e budgets/alertas Firebase são necessários para controlar esse vetor/custo.
 - App Check não é verificado por esta API; adicionar validação exige configuração coordenada de clientes, tokens e enforcement para evitar indisponibilidade. A autenticação Firebase e autorização server-side continuam obrigatórias.
 - A validação de HSTS e regras WAF no domínio requer preview no provedor; não houve alteração remota.
@@ -60,12 +72,10 @@ Ver ações externas concretas em `EDGE-PROTECTION.md`.
 ## Evidência de gates
 
 - `npm audit --omit=dev --audit-level=moderate` — 0 vulnerabilidades de produção.
-- `npm run lint` — passou, incluindo verificação de fronteiras arquiteturais.
-- `npm run typecheck` — passou.
-- `npm run build` — passou com source maps desativados.
-- `npm test` — 546 testes em 56 arquivos passaram.
-- `npm run test:integration` — 253 testes em 8 arquivos passaram com Auth/Firestore Emulator e dados sintéticos.
-- Teste novo de cota: três interpretações por UID/minuto passam; a quarta retorna 429 antes do modelo e persiste o contador em um documento diário compartilhado entre instâncias.
-- Teste novo de headers: valida as políticas configuradas no host, incluindo HSTS.
+- No checkpoint inicial `a92b334`: `npm audit --omit=dev --audit-level=moderate` retornou 0 vulnerabilidades; lint, typecheck e build passaram; 546 testes unitários e 253 integrações passaram.
+- Após esta revisão focal: lint, typecheck e build passaram; os testes unitários direcionados passaram (11 testes em 2 arquivos).
+- Integração focal: 126 testes em 3 arquivos passaram no Auth/Firestore Emulator, incluindo a remoção do contador na exclusão da conta. Após o limite do array ser endurecido, Gika e Rules foram repetidos: 104/104 passaram.
+- O teste focal de headers passou e confirma HSTS no host Vercel; nenhum preview ou deploy foi iniciado.
+- Não houve mudança em dependências ou lockfile desde o `npm audit` do checkpoint inicial.
 
 O build emitiu apenas o aviso já esperado de chunk JavaScript acima de 500 kB. O npm reportou pacotes de desenvolvimento depreciados durante a instalação, mas nenhum advisory de dependência de produção. Nenhum teste ou scan foi executado contra produção.

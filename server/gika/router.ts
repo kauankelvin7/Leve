@@ -18,13 +18,13 @@ import { gikaRequestSchema, gikaInterpretationSchema, readResultSchema } from '.
 import { AppError } from '../errors.ts';
 import { createGeminiAdapter } from './gemini.ts';
 import { bounded, GikaFault, type ModelAdapter } from './model.ts';
-import { createReadLimiter, readRange } from './policy.ts';
+import { readRange } from './policy.ts';
 import { resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { consumeGikaQuota } from './quota.ts';
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
 export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
-  const router = Router(); const acquire = createReadLimiter();
+  const router = Router();
   router.use(express.json({ limit: '12kb', strict: true }));
   const bodyError: ErrorRequestHandler = (error, _request, _response, next) => {
     if (error?.type === 'entity.too.large') { next(new AppError(413, 'PAYLOAD_TOO_LARGE', 'Conteúdo acima do limite permitido.')); return; }
@@ -75,7 +75,6 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
     const controller = new AbortController();
     const close = () => { if (!response.writableEnded) controller.abort(); };
     response.once('close', close);
-    let release: (() => void) | undefined;
     try {
       const result = await bounded(async signal => {
         const identity = response.locals.identity;
@@ -97,8 +96,6 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(recovered.kind === 'create' ? { createTask: recovered.task } : recovered.kind === 'complete' ? { completeTask: recovered.task } : recovered.kind === 'reschedule' ? { rescheduleTask: recovered.task, ...(recovered.confirmation ? { confirmation: recovered.confirmation } : {}) } : { updateTask: recovered.task }) });
         }
         const context = await repository.authorize(identity);
-        release = acquire(identity.uid);
-        await consumeQuota(identity.uid);
         const period = organizationPeriod(input.text);
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
@@ -114,6 +111,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(scope==='future'||scope==='all')return gikaInterpretationSchema.parse({text:'Não posso organizar próximas ocorrências ou séries em grupo. Use sua agenda para esse escopo.',simulated:false,reads:[],organizationResolution:{status:'unsupported_scope'}});
           const planning = planningContext(read,context);
           if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[],organizationResolution:{status:'empty'}});
+          await consumeQuota(identity.uid);
           const calls = validateToolCalls(await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal));
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
@@ -132,6 +130,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(signal.aborted)throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({text:plan?`Sugestão para ${period==='week'?'sua semana':'o seu dia'}. Confira as mudanças antes de confirmar.`:'Sugiro manter essas tarefas como estão. Nenhuma tarefa foi alterada.',simulated:false,reads:[],...(plan?{batchConfirmation:issueBatchConfirmation(identity.uid,input,plan)}:{organizationPreview:preview})});
         }
+        await consumeQuota(identity.uid);
         const calls = validateToolCalls(await model.interpret({ text: input.text, context }, signal));
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = calls.length ? await repository.authorize(identity) : context;
@@ -291,7 +290,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
       const code = error instanceof GikaFault ? error.code : 'GIKA_UNAVAILABLE';
       const status = code === 'GIKA_QUOTA' ? 429 : code === 'GIKA_TIMEOUT' ? 504 : code === 'GIKA_POLICY' || code === 'GIKA_MALFORMED_CALL' ? 422 : 503;
       throw new AppError(status, code, code === 'GIKA_QUOTA' ? 'O limite de consultas foi atingido por agora. Sua agenda continua disponível.' : fallback);
-    } finally { release?.(); response.removeListener('close', close); }
+    } finally { response.removeListener('close', close); }
   });
   return router;
 }

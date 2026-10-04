@@ -106,9 +106,54 @@ it('applies the Gika minute quota across distinct requests using durable emulato
   const limited = await ask(user.token, { requestId: crypto.randomUUID(), text: 'O que tenho hoje?' }).expect(429);
   expect(limited.body.code).toBe('GIKA_QUOTA');
   expect(state.inputs).toHaveLength(3);
-  const buckets = await db.collection('usageBuckets').where('gikaCount', '>', 0).get();
-  expect(buckets.size).toBe(1);
-  expect(buckets.docs[0]?.data()).toMatchObject({ gikaCount: 3, gikaMinuteCount: 3 });
+  const bucket = await db.doc(`usageBuckets/${user.uid}_gika`).get();
+  expect(bucket.data()?.gikaRequestTimesMs).toHaveLength(3);
+});
+
+it('serializes concurrent quota claims, isolates UIDs, and expires the rolling burst exactly after 60 seconds', async () => {
+  const { consumeGikaQuota } = await import('../../server/gika/quota');
+  const firstUid = `quota-a-${crypto.randomUUID()}`;
+  const secondUid = `quota-b-${crypto.randomUUID()}`;
+  const start = Date.UTC(2026, 9, 4, 23, 59, 59);
+  const concurrent = await Promise.allSettled(Array.from({ length: 6 }, () => consumeGikaQuota(firstUid, start, null)));
+  expect(concurrent.filter(result => result.status === 'fulfilled')).toHaveLength(3);
+  expect(concurrent.filter(result => result.status === 'rejected')).toHaveLength(3);
+  await consumeGikaQuota(secondUid, start, null);
+  await expect(consumeGikaQuota(firstUid, start + 1, null)).rejects.toMatchObject({ code: 'GIKA_QUOTA' });
+  await consumeGikaQuota(firstUid, start + 60_000, null);
+  const first = (await db.doc(`usageBuckets/${firstUid}_gika`).get()).data();
+  const second = (await db.doc(`usageBuckets/${secondUid}_gika`).get()).data();
+  expect(first?.gikaRequestTimesMs).toEqual([start + 60_000]);
+  expect(second?.gikaRequestTimesMs).toEqual([start]);
+  expect(first?.gikaDayKey).toBeUndefined();
+});
+
+it('enforces an explicitly configured daily cap without adding dated counter documents', async () => {
+  const { consumeGikaQuota } = await import('../../server/gika/quota');
+  const uid = `quota-daily-${crypto.randomUUID()}`;
+  const start = Date.UTC(2026, 9, 4, 12);
+  await consumeGikaQuota(uid, start, 2);
+  await consumeGikaQuota(uid, start + 60_000, 2);
+  await expect(consumeGikaQuota(uid, start + 120_000, 2)).rejects.toMatchObject({ code: 'GIKA_QUOTA' });
+  const matches = await db.collection('usageBuckets').where('gikaDayKey', '==', '2026-10-04').get();
+  expect(matches.docs.filter(item => item.id === `${uid}_gika`)).toHaveLength(1);
+  expect((await db.doc(`usageBuckets/${uid}_gika`).get()).data()).toMatchObject({ gikaDayCount: 2, gikaDayKey: '2026-10-04' });
+});
+
+it('fails closed before Gemini when the Firestore quota transaction fails or stored counter is malformed', async () => {
+  const unavailable = await account();
+  const spy = vi.spyOn(db, 'runTransaction').mockRejectedValueOnce(new Error('Synthetic quota store outage'));
+  try {
+    const response = await ask(unavailable.token, { requestId: crypto.randomUUID(), text: 'O que tenho hoje?' }).expect(503);
+    expect(response.body.code).toBe('GIKA_UNAVAILABLE');
+    expect(state.inputs).toHaveLength(0);
+  } finally { spy.mockRestore(); }
+
+  const malformed = await account();
+  await db.doc(`usageBuckets/${malformed.uid}_gika`).set({ gikaRequestTimesMs: ['invalid timestamp'] });
+  const rejected = await ask(malformed.token, { requestId: crypto.randomUUID(), text: 'O que tenho hoje?' }).expect(503);
+  expect(rejected.body.code).toBe('GIKA_UNAVAILABLE');
+  expect(state.inputs).toHaveLength(0);
 });
 describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators', () => {
   it('nega sem token/inválido, e conta não verificada/suspensa antes do modelo', async () => {
@@ -136,7 +181,7 @@ describe('M2 authenticated read-only boundary, actual Auth/Firestore emulators',
     expect(state.inputs[0]).toEqual({ text: 'O que tenho hoje?', context: { today, timeZone: zone, weekStartsOn: 1 } });
     expect((await db.doc(`users/${user.uid}/activities/mine`).get()).data()).toEqual(before);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
-    expect((await db.collection('usageBuckets').where('gikaCount', '>', 0).get()).size).toBe(1);
+    expect((await db.doc(`usageBuckets/${user.uid}_gika`).get()).exists).toBe(true);
   });
   it('E02 e get_week: data civil/fuso trusted e eventos multi-dia deduplicados', async () => {
     const user = await account(true, 'active', 'Pacific/Kiritimati');

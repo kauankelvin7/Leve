@@ -137,6 +137,7 @@ describe('API autenticada', () => {
     await Promise.all([
       db.doc(`users/${user.uid}/imports/${importId}`).set({ state: 'prepared', digest: 'digest', cursor: 0 }),
       db.doc(`users/${user.uid}/internal/counts`).set({ activeImportId: importId, reserved_activities: 10 }),
+      db.doc(`usageBuckets/${user.uid}_gika`).set({ gikaRequestTimesMs: [Date.now()] }),
       db.doc('serviceControls/global').update({ activeImports: 1 }),
     ]);
     const deletion = contentCommand('account.delete', user.uid, '93000000-0000-4000-8000-000000000002', 1, { confirmation: 'EXCLUIR' });
@@ -144,6 +145,7 @@ describe('API autenticada', () => {
     expect((await db.doc('serviceControls/global').get()).data()?.activeImports).toBe(0);
     expect((await db.doc(`accountDeletionJobs/${user.uid}`).get()).data()?.state).toBe('completed');
     expect((await db.doc(`users/${user.uid}`).get()).exists).toBe(false);
+    expect((await db.doc(`usageBuckets/${user.uid}_gika`).get()).exists).toBe(false);
   });
   it('mantém health público e rejeita sessão sem token ou com token inválido', async () => {
     const health = await request(app).get('/api/health').expect(200);
