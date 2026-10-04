@@ -1,8 +1,16 @@
 /* Vidro & Papel: translucent structure, opaque reading surfaces. */
 :root {
-  --glass-surface: color-mix(in srgb, var(--color-solid) 76%, transparent);
-  --glass-edge: #ffffffd9;
-  --glass-shadow: 0 12px 36px #26382e09, inset 0 1px 0 #fff;
+  --glass-bg: var(--color-solid);
+  --glass-bg-strong: var(--color-solid);
+  --glass-border: color-mix(in srgb, var(--color-text) 14%, var(--color-solid));
+  --glass-shadow: 0 12px 36px color-mix(in srgb, var(--color-text) 10%, transparent), inset 0 1px 0 var(--glass-border);
+  --glass-blur: 16px;
+  --glass-blur-strong: 22px;
+  --glass-blur-subtle: 12px;
+  --glass-saturation: 125%;
+  /* Existing paper/layout consumers retain their semantic aliases. */
+  --glass-surface: var(--glass-bg);
+  --glass-edge: var(--glass-border);
 }
 html {
   min-height: 100%;
@@ -15,7 +23,7 @@ html {
 body, #root { min-height: 100svh; }
 body { background: transparent; }
 .app-shell { gap: 36px; }
-.sidebar { background: var(--glass-surface); border-color: var(--glass-edge); backdrop-filter: blur(32px) saturate(145%); -webkit-backdrop-filter: blur(32px) saturate(145%); box-shadow: var(--glass-shadow); border-radius: 30px; }
+.sidebar { background: var(--glass-surface); border-color: var(--glass-edge); box-shadow: var(--glass-shadow); border-radius: 30px; }
 .sidebar nav a { border-radius: 16px; }
 .sidebar nav a.active { box-shadow: inset 0 1px 0 #ffffffb0, 0 3px 10px #26382e08; }
 .sidebar nav svg { flex-shrink: 0; }
@@ -29,7 +37,7 @@ body { background: transparent; }
 .page-heading > h1 { letter-spacing: -.025em; }
 .page-heading > p:not(.eyebrow) { margin-bottom: 0; font-size: .9375rem; }
 .page-heading > .primary { grid-column: 2; grid-row: 2 / 4; }
-.panel { background: var(--glass-surface); border-color: var(--glass-edge); box-shadow: var(--glass-shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.panel { background: var(--color-solid); border-color: var(--glass-edge); box-shadow: var(--glass-shadow); }
 button, .button { border-radius: 13px; box-shadow: inset 0 1px 0 #ffffff65; transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
 button:active:not(:disabled), .button:active { transform: translateY(1px); }
 .primary { box-shadow: inset 0 1px 0 #ffffff30, 0 5px 12px color-mix(in srgb, var(--color-action-primary) 18%, transparent); }
@@ -100,10 +108,6 @@ input::file-selector-button { font: inherit; border: 0; padding: 8px 12px; margi
 .danger-zone summary::after { content: '+'; font-size: 1.25rem; }
 .danger-zone[open] summary::after { content: '−'; }
 .danger-zone > p { margin-top: 16px; }
-.solid { --glass-surface: var(--color-solid); }
-.solid .panel, .solid .sidebar { backdrop-filter: none; -webkit-backdrop-filter: none; }
-@supports not (backdrop-filter: blur(1px)) { :root { --glass-surface: var(--color-solid); } }
-@media (prefers-reduced-transparency: reduce) { :root { --glass-surface: var(--color-solid); } .panel, .sidebar { backdrop-filter: none; -webkit-backdrop-filter: none; } }
 @media (min-width: 1400px) { .note-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 1199px) { .app-shell { gap: 24px; } }
 @media (max-width: 739px) {
@@ -123,3 +127,59 @@ input::file-selector-button { font: inherit; border: 0; padding: 8px 12px; margi
   .note-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { button, .button { transition: none; } button:active:not(:disabled), .button:active { transform: none; } }
+
+/* One progressive-enhancement primitive. Layout stays in each component. */
+.glass.glass,
+.glass.glass-strong,
+.glass.glass-pressable {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.glass.glass-strong { background: var(--glass-bg-strong); }
+.glass-pressable { min-width: 44px; min-height: 44px; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass-bg: color-mix(in srgb, var(--color-solid) 92%, transparent);
+    --glass-bg-strong: color-mix(in srgb, var(--color-solid) 97%, transparent);
+  }
+  .glass.glass {
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  }
+  .glass.glass-strong {
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturation));
+  }
+  .glass.glass-pressable {
+    backdrop-filter: blur(var(--glass-blur-subtle)) saturate(var(--glass-saturation));
+    -webkit-backdrop-filter: blur(var(--glass-blur-subtle)) saturate(var(--glass-saturation));
+  }
+}
+/* Opaque ink remains the desktop/rail identity; sheets need actual space behind. */
+@media (min-width: 740px) {
+  .app-shell .sidebar.glass { background: var(--ink-surface); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .app-shell .calendar-agenda.glass { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (max-width: 739px) {
+  .gika-panel.glass.glass-strong { background: var(--color-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+/* Root bridge also reaches body portals such as the timer dock. */
+:root:has(.app-shell.solid),
+:root:has(.app-shell.high-contrast) { --glass-bg: var(--color-solid); --glass-bg-strong: var(--color-solid); --glass-shadow: none; }
+:root:has(.app-shell.solid) :is(.glass, .gika-panel, .gika-launcher, .active-timer-bar),
+:root:has(.app-shell.high-contrast) :is(.glass, .gika-panel, .gika-launcher, .active-timer-bar),
+.glass.is-solid { backdrop-filter: none; -webkit-backdrop-filter: none; }
+:root:has(.app-shell.reduce-motion) :is(.active-timer-bar, .active-timer-state > span) { animation: none; }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root { --glass-bg: var(--color-solid); --glass-bg-strong: var(--color-solid); --glass-shadow: none; }
+  .glass.glass, :root :is(.gika-panel, .gika-launcher, .active-timer-bar),
+  :root :is(.gika-panel, .confirm-dialog, .calendar-recurrence-dialog)::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (forced-colors: active) {
+  :root { --glass-bg: Canvas; --glass-bg-strong: Canvas; --glass-border: CanvasText; --glass-shadow: none; }
+  .glass.glass, :root :is(.gika-panel, .gika-launcher, .active-timer-bar),
+  :root :is(.gika-panel, .confirm-dialog, .calendar-recurrence-dialog)::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

@@ -1,3 +1,6 @@
+:root { --color-danger: #8a3f3b !important; }
+:root[data-appearance='dark'] { --color-danger: #F0ADA7 !important; }
+
 /* Runtime appearance bridge.
    Loaded after the legacy style layers so appearance always wins over
    theme-specific light tokens. These dark blocks mirror the shared theme
@@ -191,7 +194,6 @@
 /* Authentication surfaces must consume semantic tokens in both appearances. */
 .auth-page .auth-entry {
   color: var(--color-text);
-  background: color-mix(in srgb, var(--color-solid) 94%, transparent);
   box-shadow:
     var(--shadow-xl),
     inset 0 1px 0 color-mix(in srgb, var(--color-text) 10%, transparent);
@@ -226,7 +228,6 @@
 :root[data-appearance='dark'] .app-shell .day-overview :is(.eyebrow, p),
 :root[data-appearance='dark'] .app-shell .shopping-overview :is(strong, small) { color: var(--color-text); }
 
-:root[data-appearance='dark'] .auth-page .auth-entry { background: color-mix(in srgb, var(--color-solid) 94%, transparent); }
 :root[data-appearance='dark'] .auth-page .auth-switch a:hover { background: color-mix(in srgb, var(--color-action-primary) 18%, transparent); }
 :root[data-appearance='dark'] .auth-page .auth-switch a[aria-current='page'] { background: var(--color-solid); color: var(--color-text); }
 :root[data-appearance='dark'] .auth-page .google-button { background: var(--color-solid); color: var(--color-text); border-color: var(--color-border); }

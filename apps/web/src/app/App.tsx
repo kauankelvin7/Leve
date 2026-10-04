@@ -57,7 +57,7 @@ function Shell() {
   const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
   return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
-    <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
+    <aside className="sidebar glass"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}</nav>
       <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small style={{ color: 'var(--ink-surface)' }}>Conta e preferências</small></span></NavLink></div>
     </aside>

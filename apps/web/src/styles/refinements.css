@@ -585,7 +585,7 @@ textarea {
   border-radius: calc(var(--radius-panel) + 2px);
   background: color-mix(in srgb, var(--color-surface) 76%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, white 62%, transparent), var(--shadow-soft);
-  backdrop-filter: blur(18px) saturate(1.08);
+
 }
 
 .shopping-overview > span {
@@ -881,7 +881,7 @@ textarea {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(115deg, color-mix(in srgb, white 32%, transparent), transparent 42%);
+  background: linear-gradient(115deg, color-mix(in srgb, var(--color-solid) 32%, transparent), transparent 42%);
 }
 
 .review-hero-copy { position: relative; display: grid; gap: 8px; }
@@ -1177,7 +1177,7 @@ textarea {
 
 .settings-nav {
   scrollbar-width: none;
-  backdrop-filter: blur(18px) saturate(1.08);
+
 }
 
 .settings-nav::-webkit-scrollbar { display: none; }
@@ -1438,13 +1438,13 @@ button svg,
 }
 
 .text-button.danger {
-  color: #8a3f3b;
+  color: var(--color-danger);
   background: transparent;
   border-color: transparent;
 }
 
 .text-button.danger:hover:not(:disabled) {
-  color: #6f2f2c;
+  color: var(--color-danger);
   background: color-mix(in srgb, #a34f48 10%, transparent);
   border-color: color-mix(in srgb, #a34f48 20%, transparent);
 }

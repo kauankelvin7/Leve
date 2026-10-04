@@ -78,10 +78,10 @@
 .app-shell .timer-panel { position: relative; overflow: hidden; padding: 30px 34px 26px; border: 0; background: #fffdf8; box-shadow: 0 10px 0 color-mix(in srgb, var(--ink-surface) 12%, transparent), 0 22px 45px color-mix(in srgb, var(--ink-surface) 10%, transparent); }
 .app-shell .timer-panel::before { content: ''; position: absolute; inset: 0 0 auto; height: 5px; background: var(--ink-surface); }
 .app-shell .timer-heading { align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--editorial-line); }
-.app-shell .timer-heading-copy .eyebrow { margin-bottom: 10px; color: var(--ink-surface); }
-.app-shell .timer-display { margin: 0 0 9px; font-size: clamp(3.5rem, 9vw, 6.5rem); letter-spacing: -.075em; color: var(--ink-surface); }
+.app-shell .timer-heading-copy .eyebrow { margin-bottom: 10px; color: var(--color-text-muted); }
+.app-shell .timer-display { margin: 0 0 9px; font-size: clamp(3.5rem, 9vw, 6.5rem); letter-spacing: -.075em; color: var(--color-text); }
 .app-shell .timer-total { font-size: .9rem; }
-.app-shell .timer-total strong { color: var(--ink-surface); font-size: 1.05rem; }
+.app-shell .timer-total strong { color: var(--color-text); font-size: 1.05rem; }
 .app-shell .timer-state { align-self: start; margin-top: 4px; background: #f8f5ee; font-weight: 700; }
 .app-shell .timer-state.is-running { background: #e6efe9; }
 .app-shell .timer-actions { margin-top: 22px; }
@@ -166,4 +166,11 @@
 
 @media (min-width: 1600px) {
   .today-page .agenda-layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: clamp(30px, 2vw, 42px); }
+}
+
+@media (forced-colors: active) {
+  .day-overview, .day-overview :is(.eyebrow, p, h2), .day-overview-date span { color: CanvasText; }
+  .day-shortcuts a { color: LinkText; border-color: ButtonBorder; }
+  .shopping-overview small { color: CanvasText; }
+  .count-badge { color: CanvasText; background: Canvas; border-color: ButtonBorder; }
 }
