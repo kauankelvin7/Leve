@@ -1,0 +1,40 @@
+{
+  "checkpoint": "a9aff2f2009c36c23cc70ae380b642e12bc697a8",
+  "shell": {
+    "current": "Final:12 PASS /1 FAIL; build/two typechecks/184 unit PASS",
+    "baselineRun": "same shell accessibility case on isolated archive and production build",
+    "baseline": "FAIL, color-contrast, demo Compras (eyebrow 3.25:1; muted 3.88:1)",
+    "classification": "PREEXISTING demo contrast/initialization timing; unchanged demo/styles/harness; failing route varies",
+    "proofFiles": "m3-t2-baseline-files.json",
+    "firstCurrentFailure": "color-contrast, demo Configurações (muted 2.79:1)",
+    "finalFailureCategory": "color-contrast demo; same case reexecuted, route/timing variable"
+  },
+  "productionAudit": {
+    "current": "FAIL, 13 vulnerabilities: 9 moderate / 4 high",
+    "baseline": "FAIL, 13 vulnerabilities: 9 moderate / 4 high",
+    "reportsIdentical": true,
+    "packageLockUnchanged": true,
+    "classification": "PREEXISTING dependency graph; no package/version changes in M3-T2"
+  },
+  "authenticatedSuite": {
+    "executed": 58,
+    "passed": 46,
+    "failed": 12,
+    "gikaPassed": 27,
+    "failedCases": [
+      "planner cria, move, redimensiona e preserva o fluxo de comando",
+      "planner pede escopo e cancelar mantém a ocorrência intacta",
+      "escopos recorrentes separam ocorrência e futuro corretamente",
+      "paletas acompanham navegação e calendário funciona em desktop e celular",
+      "cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+      "login, ativação e atividade sobrevivem ao reload",
+      "compromisso de dia inteiro salva tempo e pode ser concluído",
+      "conflito de nota entre abas preserva as duas versões",
+      "teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+      "exportação pessoal volta pela importação sem substituir os dados atuais",
+      "tutorial, cores persistentes, unidade condicional e lixeira móvel",
+      "cronômetro continua contando fora do detalhe da atividade"
+    ],
+    "classification": "Same 12 cases/categories as M3-T1; conventional harness/styles unchanged (byte comparison), executable baseline proof in M3_T1_EVIDENCE.md"
+  }
+}

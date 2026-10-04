@@ -1,0 +1,542 @@
+{
+  "sourceSha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+  "method": "Approved polygon-limited features, nearest donor skin matte, translation only at native scale; no master skin/hair changes",
+  "features": [
+    {
+      "name": "thinking_eye_L",
+      "sourceBox": [
+        828,
+        417,
+        947,
+        534
+      ],
+      "sourceCenter": [
+        80,
+        53
+      ],
+      "neutralAnchor": [
+        81,
+        55
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          70,
+          44
+        ],
+        [
+          77,
+          42
+        ],
+        [
+          84,
+          44
+        ],
+        [
+          89,
+          49
+        ],
+        [
+          89,
+          58
+        ],
+        [
+          84,
+          63
+        ],
+        [
+          73,
+          62
+        ],
+        [
+          70,
+          56
+        ]
+      ],
+      "nontransparentPixels": 210
+    },
+    {
+      "name": "thinking_eye_R",
+      "sourceBox": [
+        828,
+        417,
+        947,
+        534
+      ],
+      "sourceCenter": [
+        51,
+        58
+      ],
+      "neutralAnchor": [
+        52,
+        60
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 2,
+      "sourcePolygon": [
+        [
+          38,
+          56
+        ],
+        [
+          43,
+          51
+        ],
+        [
+          50,
+          50
+        ],
+        [
+          57,
+          52
+        ],
+        [
+          62,
+          57
+        ],
+        [
+          62,
+          62
+        ],
+        [
+          57,
+          66
+        ],
+        [
+          43,
+          65
+        ],
+        [
+          38,
+          61
+        ]
+      ],
+      "nontransparentPixels": 184
+    },
+    {
+      "name": "thinking_brow_L",
+      "sourceBox": [
+        828,
+        417,
+        947,
+        534
+      ],
+      "sourceCenter": [
+        77,
+        40
+      ],
+      "neutralAnchor": [
+        78,
+        43
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 5,
+      "sourcePolygon": [
+        [
+          68,
+          39
+        ],
+        [
+          74,
+          35
+        ],
+        [
+          80,
+          35
+        ],
+        [
+          85,
+          39
+        ],
+        [
+          85,
+          44
+        ],
+        [
+          78,
+          41
+        ],
+        [
+          70,
+          44
+        ]
+      ],
+      "nontransparentPixels": 58
+    },
+    {
+      "name": "thinking_brow_R",
+      "sourceBox": [
+        828,
+        417,
+        947,
+        534
+      ],
+      "sourceCenter": [
+        51,
+        43
+      ],
+      "neutralAnchor": [
+        52,
+        48
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          42,
+          43
+        ],
+        [
+          48,
+          39
+        ],
+        [
+          55,
+          39
+        ],
+        [
+          59,
+          42
+        ],
+        [
+          59,
+          46
+        ],
+        [
+          52,
+          44
+        ],
+        [
+          44,
+          47
+        ]
+      ],
+      "nontransparentPixels": 60
+    },
+    {
+      "name": "attentive_eye_L",
+      "sourceBox": [
+        946,
+        417,
+        1065,
+        534
+      ],
+      "sourceCenter": [
+        77,
+        51
+      ],
+      "neutralAnchor": [
+        81,
+        55
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          67,
+          46
+        ],
+        [
+          70,
+          41
+        ],
+        [
+          76,
+          40
+        ],
+        [
+          82,
+          43
+        ],
+        [
+          87,
+          49
+        ],
+        [
+          85,
+          57
+        ],
+        [
+          79,
+          61
+        ],
+        [
+          69,
+          58
+        ],
+        [
+          66,
+          52
+        ]
+      ],
+      "nontransparentPixels": 218
+    },
+    {
+      "name": "attentive_eye_R",
+      "sourceBox": [
+        946,
+        417,
+        1065,
+        534
+      ],
+      "sourceCenter": [
+        47,
+        57
+      ],
+      "neutralAnchor": [
+        52,
+        60
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          35,
+          56
+        ],
+        [
+          39,
+          50
+        ],
+        [
+          46,
+          49
+        ],
+        [
+          53,
+          51
+        ],
+        [
+          57,
+          56
+        ],
+        [
+          57,
+          62
+        ],
+        [
+          51,
+          66
+        ],
+        [
+          39,
+          64
+        ],
+        [
+          35,
+          60
+        ]
+      ],
+      "nontransparentPixels": 179
+    },
+    {
+      "name": "curious_brow_L",
+      "sourceBox": [
+        946,
+        417,
+        1065,
+        534
+      ],
+      "sourceCenter": [
+        74,
+        38
+      ],
+      "neutralAnchor": [
+        78,
+        43
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 9,
+      "sourcePolygon": [
+        [
+          65,
+          37
+        ],
+        [
+          70,
+          33
+        ],
+        [
+          77,
+          33
+        ],
+        [
+          82,
+          37
+        ],
+        [
+          83,
+          42
+        ],
+        [
+          76,
+          39
+        ],
+        [
+          68,
+          42
+        ]
+      ],
+      "nontransparentPixels": 69
+    },
+    {
+      "name": "curious_mouth",
+      "sourceBox": [
+        946,
+        417,
+        1065,
+        534
+      ],
+      "sourceCenter": [
+        64,
+        73
+      ],
+      "neutralAnchor": [
+        66,
+        75
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          55,
+          71
+        ],
+        [
+          62,
+          67
+        ],
+        [
+          69,
+          68
+        ],
+        [
+          74,
+          72
+        ],
+        [
+          70,
+          77
+        ],
+        [
+          60,
+          79
+        ],
+        [
+          55,
+          76
+        ]
+      ],
+      "nontransparentPixels": 24
+    },
+    {
+      "name": "concern_mouth",
+      "sourceBox": [
+        828,
+        417,
+        947,
+        534
+      ],
+      "sourceCenter": [
+        68,
+        73
+      ],
+      "neutralAnchor": [
+        66,
+        75
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          60,
+          75
+        ],
+        [
+          65,
+          70
+        ],
+        [
+          71,
+          69
+        ],
+        [
+          76,
+          71
+        ],
+        [
+          73,
+          74
+        ],
+        [
+          67,
+          74
+        ],
+        [
+          61,
+          78
+        ]
+      ],
+      "nontransparentPixels": 8
+    },
+    {
+      "name": "smile_mouth",
+      "sourceBox": [
+        594,
+        417,
+        713,
+        534
+      ],
+      "sourceCenter": [
+        67,
+        71
+      ],
+      "neutralAnchor": [
+        66,
+        75
+      ],
+      "scale": 1,
+      "occludedOutsideMasterFace": 0,
+      "sourcePolygon": [
+        [
+          53,
+          65
+        ],
+        [
+          59,
+          65
+        ],
+        [
+          70,
+          61
+        ],
+        [
+          80,
+          57
+        ],
+        [
+          79,
+          70
+        ],
+        [
+          76,
+          77
+        ],
+        [
+          68,
+          82
+        ],
+        [
+          59,
+          79
+        ],
+        [
+          54,
+          73
+        ]
+      ],
+      "nontransparentPixels": 155
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "entry": "aa7690ffdb8eb81c5aa5ececcb65d6e1fecae125",
+  "rig": {
+    "nativeFrames": 144,
+    "smallFrames": 108,
+    "states": [
+      "rest",
+      "idle",
+      "blink",
+      "listening",
+      "thinking",
+      "clarify",
+      "success",
+      "error",
+      "offline"
+    ],
+    "sizes": [
+      24,
+      32,
+      48,
+      56,
+      64,
+      72
+    ],
+    "restFidelity": {
+      "light": {
+        "maxRgbError": 2,
+        "meanRgbError": 0.03896778984498283
+      },
+      "dark": {
+        "maxRgbError": 2,
+        "meanRgbError": 0.0303536619326093
+      }
+    },
+    "curlCentroidWidthFraction": [
+      0.7440476190476191,
+      0.7638176638176638
+    ],
+    "faceAndNeckExposureHoles": 0,
+    "distinctAnimatedStates": 5,
+    "anatomicalSide": "LEFT / viewer RIGHT frontal",
+    "rigBytes": 51586,
+    "rigSha256": "18295a0cc8a4b9095d235209ae20ca4c35cb796605aa48828fe9c28c0668dc0e",
+    "limitations": [
+      "Small119x117native bust only; not HD240/fullbody.",
+      "Headless motion proof requires product/browser integration and human review.",
+      "Local unsigned scriptless build, not final signed production export/licensing proof."
+    ]
+  },
+  "productionCspNativeWasm": "PASS",
+  "browserModeTransitions": [
+    {
+      "mode": 0,
+      "hash": "723ec46bcc726a9d523c3583c8d4ae9c61f1f4b8a61c42104f5e11efd1720cb9",
+      "painted": 10480
+    },
+    {
+      "mode": 1,
+      "hash": "9e2723e22618cdb955cc8f75be4506cde426b9d8cd660524f8607cd71645a506",
+      "painted": 10796
+    },
+    {
+      "mode": 2,
+      "hash": "503030b0ac9a73c87c095ddc6fc35f11206cf43243774581ff7d14744282aae0",
+      "painted": 10480
+    },
+    {
+      "mode": 3,
+      "hash": "166b936b35d21e56d5d3984c5ab3d00a8ca602617a5b1d5f5e89021c5aa9c4d3",
+      "painted": 10802
+    },
+    {
+      "mode": 4,
+      "hash": "2c3795277adc6230be016b160eb635a85e7538b679ff9dfbcb5f327586d50d80",
+      "painted": 10792
+    },
+    {
+      "mode": 5,
+      "hash": "662dfa8b39413fad7ff4ab73f705898b4fe8397beb9393aa22866d7c21f321a6",
+      "painted": 10800
+    },
+    {
+      "mode": 6,
+      "hash": "d836c258afd9301d19cefffe30751ce144322097453f6f1a7ac7355cc36db692",
+      "painted": 10750
+    },
+    {
+      "mode": 7,
+      "hash": "daf456346c9f24bb715c271bdfc01baedbd41dc5448ddc1bdf812f51887b7e9c",
+      "painted": 10771
+    },
+    {
+      "mode": 8,
+      "hash": "723ec46bcc726a9d523c3583c8d4ae9c61f1f4b8a61c42104f5e11efd1720cb9",
+      "painted": 10480
+    }
+  ],
+  "limits": [
+    "Local Chromium/emulators/synthetic account; no physical Safari/mobile or live Gemini.",
+    "Free development artifact; final licensed no-splash export awaits integral rig review."
+  ],
+  "firstSerialGika": {
+    "total": 104,
+    "passed": 95,
+    "failed": 9,
+    "durationMinutes": 21.3,
+    "failures": [
+      {
+        "group": "M8 proactivity",
+        "count": 7,
+        "stage": "fixture before panel",
+        "observed": "six pending tasks, suggestion correctly absent above cap5"
+      },
+      {
+        "group": "M4 update logout",
+        "count": 1,
+        "stage": "conventional footer click",
+        "observed": "fixed existing launcher intercepts logout pointer"
+      },
+      {
+        "group": "M7 voice offline/reconnect",
+        "count": 1,
+        "stage": "reconnect UI",
+        "observed": "voice button remained disabled; not classified without comparison"
+      }
+    ]
+  },
+  "visualDecision": "COMPOSITION_NOT_APPROVED_ADAPTIVE_PRESENCE_QA_REQUIRED",
+  "browserBeforeSinglePresence": {
+    "usageAfter": {
+      "usedSize": 32887540,
+      "totalSize": 34549760,
+      "embedderHeapUsedSize": 3722336,
+      "backingStorageSize": 23498407
+    },
+    "additionalMemory": [
+      {
+        "usedSize": 33039712,
+        "totalSize": 34549760,
+        "embedderHeapUsedSize": 3837712,
+        "backingStorageSize": 23498407
+      },
+      {
+        "usedSize": 32840964,
+        "totalSize": 34549760,
+        "embedderHeapUsedSize": 3539176,
+        "backingStorageSize": 23498354
+      }
+    ],
+    "assetsBeforePanelOpen": 0,
+    "firstOpenReadyMs": 504,
+    "fallbackBounds": {
+      "x": 905,
+      "y": 53,
+      "width": 56,
+      "height": 56
+    },
+    "readyBounds": {
+      "x": 905,
+      "y": 53,
+      "width": 56,
+      "height": 56
+    },
+    "snapshots": [
+      {
+        "theme": "light",
+        "viewport": [
+          390,
+          844
+        ],
+        "overflow": false,
+        "portrait": [
+          48,
+          48
+        ],
+        "composerBottom": 844,
+        "conversationHeight": 654
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          853,
+          1280
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 989,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1024,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1366,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 889,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          2560,
+          1440
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 1069,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          390,
+          844
+        ],
+        "overflow": false,
+        "portrait": [
+          48,
+          48
+        ],
+        "composerBottom": 844,
+        "conversationHeight": 654
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          853,
+          1280
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 989,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1024,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1366,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 889,
+        "conversationHeight": 472
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          2560,
+          1440
+        ],
+        "overflow": false,
+        "portrait": [
+          56,
+          56
+        ],
+        "composerBottom": 1069,
+        "conversationHeight": 472
+      }
+    ],
+    "zoom": {
+      "overflow": false,
+      "conversationHeight": 451
+    },
+    "hiddenFrameDelta": 0,
+    "closedFrameDelta": 0,
+    "openCloseCycles": 20,
+    "heapBefore": 31961608,
+    "heapAfter": 32887540,
+    "heapDelta": 925932,
+    "reducedState": "rest",
+    "pageErrorNames": []
+  },
+  "browser": {
+    "usageAfter": {
+      "usedSize": 32880032,
+      "totalSize": 34025472,
+      "embedderHeapUsedSize": 3314944,
+      "backingStorageSize": 23499516
+    },
+    "additionalMemory": [
+      {
+        "usedSize": 33335432,
+        "totalSize": 34549760,
+        "embedderHeapUsedSize": 3909200,
+        "backingStorageSize": 23499572
+      },
+      {
+        "usedSize": 33422248,
+        "totalSize": 34811904,
+        "embedderHeapUsedSize": 4021640,
+        "backingStorageSize": 23499572
+      }
+    ],
+    "assetsBeforePanelOpen": 0,
+    "firstOpenReadyMs": 1411,
+    "fallbackBounds": {
+      "x": 1072.5,
+      "y": 241,
+      "width": 64,
+      "height": 64
+    },
+    "readyBounds": {
+      "x": 1072.5,
+      "y": 241,
+      "width": 64,
+      "height": 64
+    },
+    "snapshots": [
+      {
+        "theme": "light",
+        "viewport": [
+          390,
+          844
+        ],
+        "overflow": false,
+        "portrait": [
+          52,
+          52
+        ],
+        "composerBottom": 768,
+        "conversationHeight": 582
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          853,
+          1280
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 989,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1024,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1366,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 889,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "light",
+        "viewport": [
+          2560,
+          1440
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 1069,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          390,
+          844
+        ],
+        "overflow": false,
+        "portrait": [
+          52,
+          52
+        ],
+        "composerBottom": 844,
+        "conversationHeight": 658
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          853,
+          1280
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 989,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1024,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1366,
+          768
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 733,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 889,
+        "conversationHeight": 484
+      },
+      {
+        "theme": "dark",
+        "viewport": [
+          2560,
+          1440
+        ],
+        "overflow": false,
+        "portrait": [
+          64,
+          64
+        ],
+        "composerBottom": 1069,
+        "conversationHeight": 484
+      }
+    ],
+    "zoom": {
+      "overflow": false,
+      "conversationHeight": 451
+    },
+    "hiddenFrameDelta": 0,
+    "closedFrameDelta": 0,
+    "openCloseCycles": 20,
+    "heapBefore": 32294432,
+    "heapAfter": 32880032,
+    "heapDelta": 585600,
+    "reducedState": "rest",
+    "pageErrorNames": []
+  },
+  "regressionClassification": {
+    "proactivity": "ENTRY_REPRODUCED_SHARED_FIXTURE_CAP6",
+    "footerLogout": "ENTRY_REPRODUCED_LAUNCHER_HIT_TEST_26_TASKS",
+    "voiceReconnect": "NOT_REPRODUCED_IN_FRESH_CURRENT_AND_ENTRY"
+  },
+  "gates": {
+    "auditProduction": {
+      "critical": 0,
+      "high": 0,
+      "moderate": 0
+    },
+    "lint": true,
+    "architectureSources": 47,
+    "typechecks": 2,
+    "build": true,
+    "unitPassed": 545,
+    "integrationPassed": 252,
+    "freshCharacterM8LogoutVoice": {
+      "passed": 13,
+      "failed": 0
+    },
+    "afterSinglePresence": {
+      "passed": 9,
+      "failed": 0
+    },
+    "scrollComposer": {
+      "passed": 1,
+      "failed": 0
+    },
+    "shell": {
+      "passed": 17,
+      "failed": 0
+    },
+    "rigCaptures": 252,
+    "axeAffectedSurfacesViolations": 0
+  }
+}

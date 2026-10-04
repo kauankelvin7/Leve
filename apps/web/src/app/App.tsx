@@ -15,6 +15,7 @@ import { ActiveTimerBar } from '../features/activities/ActiveTimerBar';
 import { Avatar } from '../components/ui/Avatar';
 import { RouteMetadata } from './RouteMetadata';
 import { Privacy } from '../features/content/Privacy';
+import { GikaLauncher } from '../features/gika/GikaLauncher';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -56,8 +57,8 @@ function Shell() {
   const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
   return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
-    <aside className="sidebar"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
-      <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}</nav>
+    <aside className="sidebar glass"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
+      <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}<GikaLauncher key={session?.uid} /></nav>
       <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small style={{ color: 'var(--ink-surface)' }}>Conta e preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>

@@ -1,0 +1,89 @@
+{
+  "source": "docs/gika/character/reference/gika-approved-reference.jpg",
+  "sourceSha256": "f2fd8858087f663c473586e79445af8d837fc00296b88215e6975941828b8b05",
+  "sourceBox": [
+    365,
+    377,
+    454,
+    481
+  ],
+  "nativeSize": [
+    89,
+    104
+  ],
+  "rgbModifiedPixels": 0,
+  "layers": {
+    "eye_L": 176,
+    "eye_R": 152,
+    "brow_L": 85,
+    "brow_R": 87,
+    "mouth_neutral": 141,
+    "signature_purple_curl": 264,
+    "face_visible": 939,
+    "neck_shoulders_visible": 1154,
+    "hair_front_visible": 1086,
+    "side_curls_L_visible": 494,
+    "side_curls_R_visible": 1056,
+    "hair_back_visible": 1224
+  },
+  "signatureSide": "anatomical LEFT / viewer RIGHT",
+  "missing": [
+    "face_base_clean_under_eyes_brows_mouth",
+    "closed_lids_same_neutral_pose",
+    "hair_padding_under_independent_curl",
+    "neck_overlap_under_head",
+    "upper_arms_same_bust_pose"
+  ],
+  "purpose": "diagnostic source layers, not production-ready character",
+  "layerFiles": {
+    "eye_L": {
+      "path": "layers/eye_L.png",
+      "sha256": "0ef6772d50b9d850a85f67c7b93fea9d565aa415da86d213c7a63cce67e59016"
+    },
+    "eye_R": {
+      "path": "layers/eye_R.png",
+      "sha256": "b0cff6707226ca16ee3d3af793bd2071ddcd543098b8e62eff6592022b9336bd"
+    },
+    "brow_L": {
+      "path": "layers/brow_L.png",
+      "sha256": "1ea5c11975daf92cc87ae51dc980bd74ad2fef94139e94e31222adf9dcdcab23"
+    },
+    "brow_R": {
+      "path": "layers/brow_R.png",
+      "sha256": "0902ab5554a91ebd7e74503b3d6639e5ff42ae115377aeb9e5b5c10e886c83b2"
+    },
+    "mouth_neutral": {
+      "path": "layers/mouth_neutral.png",
+      "sha256": "8e1f57c0c8f888298a7da4eddeb93aad3787d6dca990c5fd448babc5b7b9a70b"
+    },
+    "signature_purple_curl": {
+      "path": "layers/signature_purple_curl.png",
+      "sha256": "afaa46509b791e5b68dabea56e6d8430610340eaa014ecd5ab81aaa5d508aa02"
+    },
+    "face_visible": {
+      "path": "layers/face_visible.png",
+      "sha256": "3a4040eb56a64647c7d4832a0a691d54e1d36472c8f48dce80ec089f6f1f2364"
+    },
+    "neck_shoulders_visible": {
+      "path": "layers/neck_shoulders_visible.png",
+      "sha256": "d37d52bcd1229ffb74840ba81d905b542cacafaff21ad1e3f43d6fb84f758477"
+    },
+    "hair_front_visible": {
+      "path": "layers/hair_front_visible.png",
+      "sha256": "c861fceb9fe292fcd1938dd930c15d16eb401c7277f61f82851706ac4326f13b"
+    },
+    "side_curls_L_visible": {
+      "path": "layers/side_curls_L_visible.png",
+      "sha256": "6dd075d616a8c818faa1ed2dfe3575a4708f8c275ed6a6b9a5cbc295ee17ed9c"
+    },
+    "side_curls_R_visible": {
+      "path": "layers/side_curls_R_visible.png",
+      "sha256": "eba05ce0a773e99e99f2c3f4726687caca16d281d19535661c8557a73b445502"
+    },
+    "hair_back_visible": {
+      "path": "layers/hair_back_visible.png",
+      "sha256": "02e3db57127ecaa7e27a3850e5233c404b824e261edbae60278050d980815a5c"
+    }
+  },
+  "extraction": "Manual visible-region masks partition the cropped portrait. Original visible RGB preserved; RGB of fully transparent pixels cleared. No tracing, synthesis, inpainting or hidden-pixel invention. Alpha derived from flattened JPEG, not original author alpha."
+}

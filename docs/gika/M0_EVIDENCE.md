@@ -1,0 +1,40 @@
+# Evidências M0
+
+Data: 2026-09-30. Base verificada: f6b21b6695f4953e28daace00edb05b2dd4bfde1.
+
+## M0-T1
+
+- Clone HTTPS concluído; main; `git status --short` vazio antes da extração.
+- Nova branch feat/gika-integration criada. Pacote integrado; AGENTS.md original preservado.
+- Scripts e entradas conferidos diretamente no package.json e configs, sem assumir README como prova de teste.
+- `node --version`: v24.19.0; `npx --yes npm@11.19.1 --version`: 11.19.1; Java 21.0.12.1.
+- Instalação exata concluída: 1125 pacotes; warnings preexistentes de pacotes deprecated e install scripts não autorizados pelo npm. Nenhum lockfile ou dependência alterado.
+- `npm run lint`: PASS (exit 0).
+- `npm run build`: PASS (exit 0), incluindo os dois typechecks. Aviso baseline de chunks >500 kB; index JS 1.200,56 kB (gzip 360,16 kB), Three 522,06 kB (gzip 129,57 kB).
+- `npm test`: PASS, 25 arquivos / 93 testes.
+- Nenhum código de produção alterado. Integração baseline concluída: `npm run test:integration` PASS (exit 0), 3 arquivos / 28 testes, Auth e Firestore demo-leve. MetadataLookupWarning 403 do SDK apareceu; não impediu emuladores/testes. Nenhum acesso a conta de produção.
+- Ownership do orquestrador: AGENTS.md, GIKA_START_HERE.md, .agent/*, docs/gika/* e checkpoint em CONTINUAR.md. Nenhum subagente altera estado global.
+
+## Convenção de SHA do checkpoint
+
+O SHA dentro de um arquivo versionado não pode ser o SHA do próprio commit que contém esse arquivo. Cada checkpoint registra o HEAD verificado antes do commit e o identificador da tarefa/assunto do commit. O checkpoint seguinte registra o SHA da tarefa anterior. O checkpoint final registra o SHA do último commit de tarefa. Na retomada, comparar também `git log -1`, ancestry e diff dos commits posteriores; não tratar uma diferença como autorização para ignorar o histórico.
+
+## M0-T2
+
+Rastreio direto de content.ts, identity.ts, server/commands/content.ts, server/reminders.ts, Today.tsx, ActivityDetail.tsx, calendarCommandModel.ts e useCalendarRange.ts. Schemas, recorrência, categorias e todos os fluxos solicitados documentados na arquitetura. Nenhuma entidade fictícia ou alteração de produção. Gates baseline de M0-T1 continuam aplicáveis ao diff documental.
+
+## M0-T3
+
+Rastreio de AuthProvider, platform/firebase, api, outbox, outboxPolicy, localData, server/app, server/commands/identity e content, server/platform/firebase, firestore.rules, sw.js. Autorização, isolamento, receipts/revisões, fila local e divergências de handlers de série documentados. Baseline integração: 28 testes PASS.
+
+## M0-T4
+
+Rastreio de App.tsx, main.tsx, design-tokens.json, theme.ts/themes.ts, CSS carregado, ConfirmDialog, ActiveTimerBar, sw.js e vercel.json. Rotas, componentes reutilizáveis, fontes, tokens, safe area, modal, PWA e conflito timer/botão documentados. Sem alteração visual; screenshot/E2E não executados nesta tarefa documental.
+
+## M0-T5
+
+Arquitetura de integração e contratos de tools delimitados em ARCHITECTURE.md; matriz concreta em SECURITY_AND_POLICY.md; ADRs 004–007 e ExecPlan atualizado com ownership, sequência, gates e rollback. Riscos de séries, partial, batch, voz e provedor/gratuidade explicitados. Nenhuma feature ou dependência nova. Revisão dos cinco entregáveis M0 contra os critérios YAML concluída.
+
+## Gate M0 final
+
+Cinco tarefas documentais cumpridas em commits separados. Todos os schemas/rotas/arquivos existentes mencionados foram rastreados; caminhos Gika novos estão explicitamente marcados como planejados. AGENTS original preservado integralmente (comparação programática com git show da base). Diff contra a base contém apenas AGENTS/CONTINUAR, pacote .agent e docs/gika, sem mudanças em produção/package-lock/Rules. E2E e screenshots não executados pois nenhuma UI mudou; obrigatórios no M1. Estado/histórico contém SHAs reais dos cinco commits. M1 blocked por skill ausente e pergunta pendente, sem avanço com dependência externa não satisfeita.

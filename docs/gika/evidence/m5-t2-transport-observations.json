@@ -1,0 +1,93 @@
+{
+  "entry": "9c2c6fb",
+  "observations": [
+    {
+      "case": "rename_conflict",
+      "requests": [
+        {
+          "path": "/api/commands",
+          "method": "POST",
+          "status": 200,
+          "duration_ms": 9810.057999999999,
+          "start_monotonic": 660143.456
+        },
+        {
+          "path": "/api/gika/respond",
+          "method": "POST",
+          "status": -1,
+          "duration_ms": -1,
+          "start_monotonic": 670606.169
+        },
+        {
+          "path": "/api/commands",
+          "method": "POST",
+          "status": -1,
+          "duration_ms": -1,
+          "start_monotonic": 670690.576
+        }
+      ],
+      "failed_assertions": [
+        {
+          "method": "expect",
+          "start_monotonic": 670694.956,
+          "end_monotonic": 680708.172,
+          "original_deadline_ms": 10000
+        }
+      ]
+    },
+    {
+      "case": "rename_lost_ack",
+      "requests": [
+        {
+          "path": "/api/commands",
+          "method": "POST",
+          "status": 200,
+          "duration_ms": 8854.18,
+          "start_monotonic": 626895.08
+        },
+        {
+          "path": "/api/gika/respond",
+          "method": "POST",
+          "status": 200,
+          "duration_ms": 4.568,
+          "start_monotonic": 636296.371
+        },
+        {
+          "path": "/api/commands",
+          "method": "POST",
+          "status": -1,
+          "duration_ms": 9888.761000000057,
+          "start_monotonic": 636348.578
+        },
+        {
+          "path": "/api/commands",
+          "method": "POST",
+          "status": 200,
+          "duration_ms": 9754.676000000094,
+          "start_monotonic": 636354.833
+        }
+      ],
+      "failed_assertions": [
+        {
+          "method": "expect",
+          "start_monotonic": 636305.368,
+          "end_monotonic": 646320.595,
+          "original_deadline_ms": 10000
+        }
+      ]
+    }
+  ],
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "comparison": {
+    "entry_originals_pass": 2,
+    "current_originals_pass": 2,
+    "entry_probes_pass": 2,
+    "current_probes_pass": 2,
+    "probe_delay_ms": 10200,
+    "original_deadline_ms": 10000,
+    "lost_response_replay_safe_both": true,
+    "later_edit_preserved_both": true,
+    "original_tests_unchanged": true,
+    "probe_is_artificial_delay_not_claim_about_infrastructure_root_cause": true
+  }
+}

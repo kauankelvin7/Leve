@@ -1,0 +1,30 @@
+{
+  "baseSha": "f6b21b6695f4953e28daace00edb05b2dd4bfde1",
+  "beforeFixSha": "d8ee3f0716df0e89d471f4aba0eb53ff676453d7",
+  "sameAccountAndData": true,
+  "beforeFix": {
+    "handle": {
+      "x": 1334.03125,
+      "y": 844.828125,
+      "width": 12,
+      "height": 12
+    },
+    "launcher": {
+      "x": 1323.265625,
+      "y": 831.609375,
+      "width": 92.734375,
+      "height": 44.390625
+    },
+    "elementReceivingPointer": "gika-launcher"
+  },
+  "base": {
+    "handle": {
+      "x": 1334.03125,
+      "y": 838.984375,
+      "width": 12,
+      "height": 12
+    },
+    "launcher": null,
+    "elementReceivingPointer": "calendar-time-move-handle"
+  }
+}

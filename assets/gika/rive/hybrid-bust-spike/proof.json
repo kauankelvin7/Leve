@@ -1,0 +1,78 @@
+{
+  "entryCheckpoint": "1ec660b91da296bd15b021207de78815fe6c7bbb",
+  "riveCli": "1.3.0",
+  "artifactBytes": 71651,
+  "artifactSha256": "ca9bba7320cb6bce8f0aba041be68a3178061a178d308726fb2222e17a580bbc",
+  "inspectProblems": [],
+  "artboards": 8,
+  "diagnosticStatesPerTheme": [
+    "Rest",
+    "Idle",
+    "BlinkProbe",
+    "OcclusionStress"
+  ],
+  "themes": 2,
+  "perArtboard": {
+    "images": 12,
+    "bones": 8,
+    "meshes": 12,
+    "vertices": 108,
+    "triangles": 96
+  },
+  "restVsSource": {
+    "foregroundRgbMeanAbsoluteError": 0.034217944979099836,
+    "maxRgbError": 1,
+    "scale": "0..255",
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "skinningControl": {
+    "noSkin_vs_rest_changedPixelsOver1": 0,
+    "skin_vs_noSkin_changedPixelsOver1": 4649
+  },
+  "blinkProbe": {
+    "frame": 48,
+    "backgroundExposedPixels": {
+      "eye_L": 176,
+      "eye_R": 152
+    },
+    "result": "FAIL: clean face backing missing; not a finished blink"
+  },
+  "stressProbe": {
+    "frame": 60,
+    "interiorBackgroundExposedPixels": 77,
+    "localBoundingBox": [
+      13,
+      10,
+      77,
+      96
+    ],
+    "result": "FAIL above intended idle motion; missing occlusion padding"
+  },
+  "curlHueRoiCentroidX": {
+    "Rest": 70.30208333333333,
+    "Idle": 70.28311688311689,
+    "Blink": 70.30809399477806,
+    "Stress": 69.36147757255937
+  },
+  "faceAxisX": 50,
+  "nativeHeadlessBenchmark": {
+    "frames": 600,
+    "viewport": [
+      89,
+      104
+    ],
+    "advanceMeanMs": 0.012,
+    "advanceP95Ms": 0.022,
+    "renderMeanMs": 1.997,
+    "renderP95Ms": 2.354,
+    "renderMaxMs": 18.319,
+    "limitation": "Native CLI only; no browser heap, React lifecycle, final player or production performance claim"
+  },
+  "firstAttempts": [
+    "Initial inspect: 14 editor-only warnings (overlapping artboards/states and missing layout styles); source placement/styles corrected, final inspect zero.",
+    "First repository verify: 12 missing ImageAsset files after relocation; file attributes corrected, verify/build then passed."
+  ]
+}

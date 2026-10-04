@@ -51,7 +51,8 @@ async function chooseAppearance(page: Page, label: 'Claro' | 'Escuro' | 'Sistema
 }
 
 async function setSeasonalPreference(page: Page, enabled: boolean) {
-  await page.goto('/configuracoes');
+  await page.getByRole('link', { name: 'Perfil e preferências', exact: true }).click();
+  await expect(page).toHaveURL(/\/configuracoes$/);
   const toggle = page.getByLabel('Detalhes sazonais', { exact: true });
   await expect(toggle).toBeVisible();
   if ((await toggle.isChecked()) === enabled) return;
@@ -109,19 +110,19 @@ test('preferência desligada remove toda a experiência e persiste no perfil', a
   await freezeAtChristmas(page);
   await login(page);
   await setSeasonalPreference(page, true);
-  await page.goto('/hoje');
+  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
 
   try {
     await setSeasonalPreference(page, false);
     await expect(page.locator('.seasonal-layer')).toHaveCount(0);
 
-    await page.goto('/calendario');
+    await page.getByRole('link', { name: 'Calendário', exact: true }).click();
     await page.getByRole('button', { name: 'Mês', exact: true }).click();
     await expect(page.locator('[data-seasonal-calendar-event]')).toHaveCount(0);
 
     await page.reload();
-    await page.goto('/configuracoes');
+    await page.getByRole('link', { name: 'Perfil e preferências', exact: true }).click();
     await expect(page.getByLabel('Detalhes sazonais', { exact: true })).not.toBeChecked();
     await expect(page.locator('.seasonal-layer')).toHaveCount(0);
   } finally {
@@ -194,11 +195,11 @@ test('Meu dia e Calendário preservam reflow e marcador sazonal nas larguras ofi
 
   for (const viewport of VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await page.goto('/hoje');
+    await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Meu dia', exact: true }).click();
     await expect(page.locator('.seasonal-surface-today')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `overflow em Meu dia a ${viewport.width}px`).toBe(true);
 
-    await page.goto('/calendario');
+    await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Calendário', exact: true }).click();
     await expect(page.locator('.seasonal-surface-calendar')).toBeVisible();
     const currentDay = page.locator('.calendar-time-date[aria-current="date"], .calendar-day[aria-current="date"]');
     await expect(currentDay.first()).toBeVisible();

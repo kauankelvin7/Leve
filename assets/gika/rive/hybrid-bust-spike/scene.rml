@@ -1,0 +1,3752 @@
+<Rive version="1" kind="fragment">
+  <Artboard width="89" height="104" name="GikaHybridRestLight" id="0:10" defaultStateMachineId="0:11" x="0" y="0" styleId="0:14">
+    <LayoutComponentStyle id="0:14" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FFFFF9F3" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:15">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:16">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:17">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:18" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:19" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:20" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:21" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:22" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:23">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:24">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:19" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:25">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:26">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:20" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:27">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:28">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:29">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:30">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:31">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:32">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:33">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:34">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:18" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:35">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:36">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:37">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:38">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:16" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:39">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:40">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:41">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:42">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:21" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:43">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:44">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:22" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:45">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:46">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:17" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:15" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:11">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:13" />
+        </EntryState>
+        <AnimationState animationId="0:12" id="0:13" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="Rest" id="0:12" />
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridRestDark" id="0:1010" defaultStateMachineId="0:1011" x="109" y="0" styleId="0:1014">
+    <LayoutComponentStyle id="0:1014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FF24212D" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:1015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:1016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:1017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:1018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:1019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:1020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:1021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:1022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:1023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:1024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:1019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:1025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:1026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:1020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:1027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:1028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:1029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:1030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:1031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:1032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:1033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:1034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:1018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:1035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:1036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:1037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:1038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:1016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:1039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:1040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:1041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:1042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:1021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:1043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:1044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:1022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:1045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:1046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:1017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:1015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:1011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:1013" />
+        </EntryState>
+        <AnimationState animationId="0:1012" id="0:1013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="Rest" id="0:1012" />
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridIdleLight" id="0:2010" defaultStateMachineId="0:2011" x="218" y="0" styleId="0:2014">
+    <LayoutComponentStyle id="0:2014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FFFFF9F3" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:2015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:2016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:2017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:2018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:2019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:2020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:2021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:2022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:2023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:2024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:2019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:2025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:2026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:2020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:2027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:2028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:2029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:2030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:2031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:2032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:2033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:2034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:2018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:2035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:2036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:2037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:2038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:2016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:2039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:2040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:2041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:2042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:2021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:2043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:2044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:2022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:2045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:2046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:2017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:2015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:2011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:2013" />
+        </EntryState>
+        <AnimationState animationId="0:2012" id="0:2013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="Idle" id="0:2012">
+      <KeyedObject objectId="0:2017">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.0075" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.0075" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:2016">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="86" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="85.75" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="86" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:2018">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.012" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:2021">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.005" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:2022">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.005" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridIdleDark" id="0:3010" defaultStateMachineId="0:3011" x="327" y="0" styleId="0:3014">
+    <LayoutComponentStyle id="0:3014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FF24212D" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:3015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:3016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:3017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:3018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:3019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:3020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:3021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:3022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:3023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:3024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:3019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:3025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:3026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:3020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:3027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:3028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:3029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:3030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:3031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:3032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:3033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:3034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:3018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:3035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:3036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:3037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:3038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:3016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:3039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:3040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:3041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:3042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:3021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:3043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:3044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:3022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:3045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:3046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:3017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:3015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:3011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:3013" />
+        </EntryState>
+        <AnimationState animationId="0:3012" id="0:3013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="Idle" id="0:3012">
+      <KeyedObject objectId="0:3017">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.0075" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.0075" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:3016">
+        <KeyedProperty propertyKey="91">
+          <KeyFrameDouble frame="0" value="86" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="85.75" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="86" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:3018">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.012" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:3021">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0.005" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:3022">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="-0.005" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridBlinkProbeLight" id="0:4010" defaultStateMachineId="0:4011" x="436" y="0" styleId="0:4014">
+    <LayoutComponentStyle id="0:4014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FFFFF9F3" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:4015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:4016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:4017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:4018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:4019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:4020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:4021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:4022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:4023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:4024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:4019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:4025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:4026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:4020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:4027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:4028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:4029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:4030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:4031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:4032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:4033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:4034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:4018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:4035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:4036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:4037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:4038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:4016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:4039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:4040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:4041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:4042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:4021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:4043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:4044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:4022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:4045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:4046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:4017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:4015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:4011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:4013" />
+        </EntryState>
+        <AnimationState animationId="0:4012" id="0:4013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="BlinkProbe" id="0:4012">
+      <KeyedObject objectId="0:4019">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:4020">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridBlinkProbeDark" id="0:5010" defaultStateMachineId="0:5011" x="545" y="0" styleId="0:5014">
+    <LayoutComponentStyle id="0:5014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FF24212D" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:5015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:5016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:5017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:5018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:5019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:5020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:5021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:5022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:5023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:5024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:5019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:5025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:5026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:5020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:5027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:5028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:5029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:5030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:5031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:5032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:5033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:5034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:5018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:5035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:5036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:5037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:5038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:5016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:5039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:5040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:5041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:5042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:5021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:5043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:5044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:5022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:5045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:5046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:5017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:5015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:5011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:5013" />
+        </EntryState>
+        <AnimationState animationId="0:5012" id="0:5013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="BlinkProbe" id="0:5012">
+      <KeyedObject objectId="0:5019">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:5020">
+        <KeyedProperty propertyKey="17">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="46" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="50" value="0.02" interpolationType="linear" />
+          <KeyFrameDouble frame="56" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridOcclusionStressLight" id="0:6010" defaultStateMachineId="0:6011" x="654" y="0" styleId="0:6014">
+    <LayoutComponentStyle id="0:6014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FFFFF9F3" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:6015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:6016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:6017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:6018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:6019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:6020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:6021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:6022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:6023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:6024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:6019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:6025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:6026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:6020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:6027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:6028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:6029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:6030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:6031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:6032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:6033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:6034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:6018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:6035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:6036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:6037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:6038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:6016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:6039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:6040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:6041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:6042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:6021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:6043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:6044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:6022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:6045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:6046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:6017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:6015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:6011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:6013" />
+        </EntryState>
+        <AnimationState animationId="0:6012" id="0:6013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="OcclusionStress" id="0:6012">
+      <KeyedObject objectId="0:6017">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.07" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.07" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:6018">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.12" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.12" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard width="89" height="104" name="GikaHybridOcclusionStressDark" id="0:7010" defaultStateMachineId="0:7011" x="763" y="0" styleId="0:7014">
+    <LayoutComponentStyle id="0:7014" name="ArtboardStyle" />
+    <Fill name="QA background, not product">
+      <SolidColor colorValue="FF24212D" />
+    </Fill>
+    <RootBone x="0" y="0" length="0" name="body" id="0:7015">
+      <RootBone x="49" y="86" length="0" name="neck" id="0:7016">
+        <RootBone x="1" y="-12" length="0" name="head" id="0:7017">
+          <RootBone x="22" y="-35" length="0" name="curl" id="0:7018" />
+          <RootBone x="8" y="-25" length="0" name="eye_L" id="0:7019" />
+          <RootBone x="-15" y="-20" length="0" name="eye_R" id="0:7020" />
+          <RootBone x="30" y="-6" length="0" name="side_curls_L" id="0:7021" />
+          <RootBone x="-35" y="-6" length="0" name="side_curls_R" id="0:7022" />
+        </RootBone>
+      </RootBone>
+    </RootBone>
+    <Image originX="0" originY="0" assetId="0:10000" name="eye_L" id="0:7023">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_L_mesh" id="0:7024">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_L_skin">
+          <Tendon boneId="0:7019" tx="58" ty="49" name="eye_L_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10001" name="eye_R" id="0:7025">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="eye_R_mesh" id="0:7026">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="eye_R_skin">
+          <Tendon boneId="0:7020" tx="35" ty="54" name="eye_R_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10002" name="brow_L" id="0:7027">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_L_mesh" id="0:7028">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_L_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10003" name="brow_R" id="0:7029">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="brow_R_mesh" id="0:7030">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="brow_R_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10004" name="mouth_neutral" id="0:7031">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="mouth_neutral_mesh" id="0:7032">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="mouth_neutral_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10005" name="signature_purple_curl" id="0:7033">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="signature_purple_curl_mesh" id="0:7034">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="signature_purple_curl_skin">
+          <Tendon boneId="0:7018" tx="72" ty="39" name="curl_bind" />
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10006" name="face_visible" id="0:7035">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="face_visible_mesh" id="0:7036">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="face_visible_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10007" name="neck_shoulders_visible" id="0:7037">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="neck_shoulders_visible_mesh" id="0:7038">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="neck_shoulders_visible_skin">
+          <Tendon boneId="0:7016" tx="49" ty="86" name="neck_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10008" name="hair_front_visible" id="0:7039">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_front_visible_mesh" id="0:7040">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_front_visible_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10009" name="side_curls_L_visible" id="0:7041">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_L_visible_mesh" id="0:7042">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_L_visible_skin">
+          <Tendon boneId="0:7021" tx="80" ty="68" name="side_curls_L_bind" />
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10010" name="side_curls_R_visible" id="0:7043">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="side_curls_R_visible_mesh" id="0:7044">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="65280" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="65280" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="41310" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="side_curls_R_visible_skin">
+          <Tendon boneId="0:7022" tx="15" ty="68" name="side_curls_R_bind" />
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <Image originX="0" originY="0" assetId="0:10011" name="hair_back_visible" id="0:7045">
+      <Mesh triangleIndexBytes="AAQIBAEIAQUIBQIIAgYIBgMIAwcIBwAI" name="hair_back_visible_mesh" id="0:7046">
+        <ContourMeshVertex x="0" y="0" u="0.0" v="0.0" name="v0">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="0" u="1.0" v="0.0" name="v1">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="89" y="104" u="1.0" v="1.0" name="v2">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <ContourMeshVertex x="0" y="104" u="0.0" v="1.0" name="v3">
+          <Weight indices="513" values="255" />
+        </ContourMeshVertex>
+        <MeshVertex x="44.5" y="0" u="0.5" v="0.0" name="v4">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="89" y="52.0" u="1.0" v="0.5" name="v5">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="104" u="0.5" v="1.0" name="v6">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="0" y="52.0" u="0.0" v="0.5" name="v7">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <MeshVertex x="44.5" y="52.0" u="0.5" v="0.5" name="v8">
+          <Weight indices="513" values="255" />
+        </MeshVertex>
+        <Skin tx="0" ty="0" name="hair_back_visible_skin">
+          <Tendon boneId="0:7017" tx="50" ty="74" name="head_bind" />
+          <Tendon boneId="0:7015" tx="0" ty="0" name="body_bind" />
+        </Skin>
+      </Mesh>
+    </Image>
+    <StateMachine name="GikaHybridProbe" id="0:7011">
+      <StateMachineLayer name="Base">
+        <AnyState x="200" y="-120" />
+        <ExitState x="400" y="-120" />
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:7013" />
+        </EntryState>
+        <AnimationState animationId="0:7012" id="0:7013" x="200" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation duration="240" loopValue="loop" name="OcclusionStress" id="0:7012">
+      <KeyedObject objectId="0:7017">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.07" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.07" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:7018">
+        <KeyedProperty propertyKey="15">
+          <KeyFrameDouble frame="0" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="60" value="0.12" interpolationType="linear" />
+          <KeyFrameDouble frame="120" value="0" interpolationType="linear" />
+          <KeyFrameDouble frame="180" value="-0.12" interpolationType="linear" />
+          <KeyFrameDouble frame="240" value="0" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <ImageAsset file="../../source/hybrid-bust/layers/eye_L.png" name="eye_L" id="0:10000" />
+  <ImageAsset file="../../source/hybrid-bust/layers/eye_R.png" name="eye_R" id="0:10001" />
+  <ImageAsset file="../../source/hybrid-bust/layers/brow_L.png" name="brow_L" id="0:10002" />
+  <ImageAsset file="../../source/hybrid-bust/layers/brow_R.png" name="brow_R" id="0:10003" />
+  <ImageAsset file="../../source/hybrid-bust/layers/mouth_neutral.png" name="mouth_neutral" id="0:10004" />
+  <ImageAsset file="../../source/hybrid-bust/layers/signature_purple_curl.png" name="signature_purple_curl" id="0:10005" />
+  <ImageAsset file="../../source/hybrid-bust/layers/face_visible.png" name="face_visible" id="0:10006" />
+  <ImageAsset file="../../source/hybrid-bust/layers/neck_shoulders_visible.png" name="neck_shoulders_visible" id="0:10007" />
+  <ImageAsset file="../../source/hybrid-bust/layers/hair_front_visible.png" name="hair_front_visible" id="0:10008" />
+  <ImageAsset file="../../source/hybrid-bust/layers/side_curls_L_visible.png" name="side_curls_L_visible" id="0:10009" />
+  <ImageAsset file="../../source/hybrid-bust/layers/side_curls_R_visible.png" name="side_curls_R_visible" id="0:10010" />
+  <ImageAsset file="../../source/hybrid-bust/layers/hair_back_visible.png" name="hair_back_visible" id="0:10011" />
+</Rive>

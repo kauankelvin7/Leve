@@ -16,7 +16,7 @@ export function requestTutorial() {
 const steps = [
   { route: '/hoje', target: '.page-heading', title: 'Seu dia no Leve', text: 'Aqui você acompanha o que importa no dia.' },
   { route: '/hoje?nova=1', target: '.activity-composer', title: 'Crie uma atividade', text: 'Título e data bastam. O restante é opcional.' },
-  { route: '/calendario', target: '.calendar-panel', title: 'Seu calendário em cores', text: 'Escolha um dia para ver o que está marcado.' },
+  { route: '/calendario', target: '.calendar-panel, .calendar-time-panel', title: 'Seu calendário em cores', text: 'Escolha um dia para ver o que está marcado.' },
   { route: '/configuracoes#settings-device', target: '.notification-settings', title: 'Lembretes neste aparelho', text: 'Ative se quiser receber lembretes fora do Leve.' },
   { route: '/compras', target: '.sidebar nav', title: 'Compras, notas e recuperação', text: 'Notas, compras, lixeira e preferências ficam no menu.' },
 ] as const;

@@ -27,7 +27,7 @@ function responseMessage(status: number, data: { code?: string; message?: string
   return label ? `${base} Revise ${label} e tente novamente.` : `${base} Revise os campos destacados e tente novamente.`;
 }
 
-export async function apiRequest<Result>(path: string, options: RequestInit = {}): Promise<Result> {
+export async function apiRequest<Result>(path: string, options: RequestInit = {}, expectedUid?: string): Promise<Result> {
   const user = firebaseAuth?.currentUser;
   if (!user) throw new ApiError(401, 'AUTH_REQUIRED', 'Entre na sua conta para continuar.');
   let response: Response;
@@ -35,6 +35,8 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
     let token: string;
     try { token = await user!.getIdToken(forceRefresh); }
     catch { throw new ApiError(401, 'AUTH_REQUIRED', 'Sua sessão expirou. Entre novamente.'); }
+    if (expectedUid && (user!.uid !== expectedUid || firebaseAuth?.currentUser?.uid !== expectedUid)) throw new ApiError(401, 'AUTH_REQUIRED', 'Sua conta mudou. Entre novamente.');
+    options.signal?.throwIfAborted();
     return fetch(`/api${path}`, {
       ...options,
       signal: options.signal ?? AbortSignal.timeout(20_000),
@@ -54,9 +56,9 @@ export async function apiRequest<Result>(path: string, options: RequestInit = {}
   return data as Result;
 }
 
-export async function sendCommand(command: CommandEnvelope, options: { queueOnNetworkError?: boolean; keepalive?: boolean } = {}): Promise<CommandResult> {
+export async function sendCommand(command: CommandEnvelope, options: { queueOnNetworkError?: boolean; keepalive?: boolean; signal?: AbortSignal; expectedUid?: string } = {}): Promise<CommandResult> {
   const originatingUid = firebaseAuth?.currentUser?.uid;
-  try { return await apiRequest('/commands', { method: 'POST', body: JSON.stringify(command), keepalive: options.keepalive }); }
+  try { return await apiRequest('/commands', { method: 'POST', body: JSON.stringify(command), keepalive: options.keepalive, signal: options.signal }, options.expectedUid); }
   catch (failure) {
     const user = firebaseAuth?.currentUser;
     const queueable = options.queueOnNetworkError !== false && !command.command.startsWith('account.') && offlineEnabled();

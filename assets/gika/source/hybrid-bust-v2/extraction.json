@@ -1,0 +1,216 @@
+{
+  "sourceSha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+  "sourceBox": [
+    477,
+    417,
+    596,
+    534
+  ],
+  "nativeSize": [
+    119,
+    117
+  ],
+  "assetCanvas": [
+    135,
+    133
+  ],
+  "sourceOffset": [
+    8,
+    8
+  ],
+  "sourceFormat": "PNG RGB",
+  "faceBackingPixels": 1202,
+  "faceBackingMethod": "nearest adjacent same-face skin, harmonic relaxation only in hidden feature masks; no ML",
+  "matteBoundaryPixels": 623,
+  "hairMatteInteriorPixels": 370,
+  "underlapAddedPixels": {
+    "hair_back_visible": 1467,
+    "hair_front_visible": 114,
+    "side_curls_L_visible": 31,
+    "side_curls_R_visible": 24,
+    "neck_shoulders_visible": 69
+  },
+  "lidRegistration": {
+    "L": {
+      "sourceBox": [
+        1413,
+        417,
+        1532,
+        534
+      ],
+      "sourcePolygon": [
+        [
+          72,
+          53
+        ],
+        [
+          73,
+          48
+        ],
+        [
+          79,
+          44
+        ],
+        [
+          84,
+          44
+        ],
+        [
+          88,
+          47
+        ],
+        [
+          88,
+          51
+        ],
+        [
+          83,
+          52
+        ],
+        [
+          78,
+          52
+        ],
+        [
+          74,
+          55
+        ]
+      ],
+      "sourceCenter": [
+        80,
+        49
+      ],
+      "targetCenter": [
+        81,
+        55
+      ],
+      "scale": [
+        1.17,
+        0.85
+      ],
+      "method": "registered approved closed lash; local matte removal; no generative drawing"
+    },
+    "R": {
+      "sourceBox": [
+        1413,
+        417,
+        1532,
+        534
+      ],
+      "sourcePolygon": [
+        [
+          40,
+          60
+        ],
+        [
+          40,
+          55
+        ],
+        [
+          44,
+          51
+        ],
+        [
+          49,
+          50
+        ],
+        [
+          54,
+          53
+        ],
+        [
+          58,
+          56
+        ],
+        [
+          58,
+          61
+        ],
+        [
+          53,
+          59
+        ],
+        [
+          47,
+          57
+        ],
+        [
+          42,
+          61
+        ]
+      ],
+      "sourceCenter": [
+        48,
+        56
+      ],
+      "targetCenter": [
+        52,
+        60
+      ],
+      "scale": [
+        1.18,
+        0.85
+      ],
+      "method": "registered approved closed lash; local matte removal; no generative drawing"
+    }
+  },
+  "signatureSide": "anatomical LEFT / viewer RIGHT",
+  "layerFiles": {
+    "signature_purple_curl": {
+      "pixelsWithAlpha": 415,
+      "sha256": "6e87bd74ac2849d8fff041567be535e2a7208756d10ef60b5a56fae8f420ee98"
+    },
+    "eye_L": {
+      "pixelsWithAlpha": 375,
+      "sha256": "5603bd0d9bfae9000b0a9b4d4fcaec658babdaa8bc8355eb102945a0bbe2ce60"
+    },
+    "eye_R": {
+      "pixelsWithAlpha": 414,
+      "sha256": "ce0f231c7e1084c943704deb6e7e3ea53530ed249f5baf529a37ea16510b562b"
+    },
+    "brow_L": {
+      "pixelsWithAlpha": 110,
+      "sha256": "60c46665b8f0d6fe8fb8369b5b5dfd575ca3f05b4a7fc3a03abf41255755d592"
+    },
+    "brow_R": {
+      "pixelsWithAlpha": 121,
+      "sha256": "2f86fb00115d3de7e24b0516956ce85b321fa5cef12f90904da9eadaf36954e8"
+    },
+    "mouth_neutral": {
+      "pixelsWithAlpha": 182,
+      "sha256": "98daacd09508cb971d202bcc9db070f4c9fb879875dcea8b9f58789d26eed7b9"
+    },
+    "neck_shoulders_visible": {
+      "pixelsWithAlpha": 1631,
+      "sha256": "b18e71fc2dd49f3902b6ffb95811c564dda99c877da10d5eaf3c8ad54f6ebee5"
+    },
+    "hair_front_visible": {
+      "pixelsWithAlpha": 1582,
+      "sha256": "e2f1c69049702120db633f75667d2e9790e5b0c12c1f148b87b5940e2d10ce94"
+    },
+    "side_curls_L_visible": {
+      "pixelsWithAlpha": 795,
+      "sha256": "40ebd0fc316e8240abf6bf03b24cb7cfb1e091ec4e579d04697e21d0c67acfe5"
+    },
+    "side_curls_R_visible": {
+      "pixelsWithAlpha": 1562,
+      "sha256": "8b4140f14f1762f3aff3cd6d944b052d20de4ced0fc7dc2aae1fe6b8c318d1d5"
+    },
+    "hair_back_visible": {
+      "pixelsWithAlpha": 4003,
+      "sha256": "26e8159fe59ba6b9133ac5631734c5b0e375ce8ed5f7d9f8db7a56509b92e8cd"
+    },
+    "face_base_clean": {
+      "pixelsWithAlpha": 2195,
+      "sha256": "25675377a5ef4a2b727cbc89908fce47c012a1d76af77bc1aa124914529a51fa"
+    },
+    "lid_L_closed": {
+      "pixelsWithAlpha": 124,
+      "sha256": "3ced4946d28982d077a4a6cc7ecdf0f60a0540a201c5ae51fced9584696d8a05"
+    },
+    "lid_R_closed": {
+      "pixelsWithAlpha": 118,
+      "sha256": "6a0836c0b3a730bb2c1970c0ad417a1dc688ea7988815a68c1287d7e9862b74d"
+    }
+  }
+}

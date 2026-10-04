@@ -1,0 +1,96 @@
+{
+  "base": "92cc9c74f5d865265ebe80a100386f992c97d20d",
+  "method": "Archived baseline frontend, existing unchanged command/domain backend, same emulators; no global reseed during comparison; no Gika invoked",
+  "failedComparisons": [
+    {
+      "test": "design.spec.ts >> paletas acompanham navegação e calendário funciona em desktop e celular",
+      "baseline": [
+        "Pular (guia|tutorial)"
+      ],
+      "current": [
+        "Pular (guia|tutorial)"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+      "baseline": [
+        "strict mode violation"
+      ],
+      "current": [
+        "strict mode violation"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> compromisso de dia inteiro salva tempo e pode ser concluído",
+      "baseline": [
+        "strict mode violation"
+      ],
+      "current": [
+        "strict mode violation"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> conflito de nota entre abas preserva as duas versões",
+      "baseline": [
+        "strict mode violation"
+      ],
+      "current": [
+        "strict mode violation"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> exportação pessoal volta pela importação sem substituir os dados atuais",
+      "baseline": [
+        "event \"download\""
+      ],
+      "current": [
+        "event \"download\""
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> login, ativação e atividade sobrevivem ao reload",
+      "baseline": [
+        ".calendar-agenda"
+      ],
+      "current": [
+        ".calendar-agenda"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "persistent.spec.ts >> teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+      "baseline": [
+        "color-contrast"
+      ],
+      "current": [
+        "color-contrast"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "refinements.spec.ts >> tutorial, cores persistentes, unidade condicional e lixeira móvel",
+      "baseline": [
+        "Tutorial do Leve"
+      ],
+      "current": [
+        "Tutorial do Leve"
+      ],
+      "reproducedAt92cc9c7": true
+    },
+    {
+      "test": "session.spec.ts >> cronômetro continua contando fora do detalhe da atividade",
+      "baseline": [
+        "strict mode violation"
+      ],
+      "current": [
+        "strict mode violation"
+      ],
+      "reproducedAt92cc9c7": true
+    }
+  ]
+}

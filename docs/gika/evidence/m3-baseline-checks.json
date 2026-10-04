@@ -1,0 +1,24 @@
+[
+  {
+    "source": "92cc9c7",
+    "sameDevMode": true,
+    "reducedMotion": true,
+    "route": "/demo/compras",
+    "violations": [],
+    "designHarness": {
+      "skipGuideCount": 0,
+      "profilePreviouslyCompletedByEarlierPlannerTests": true
+    }
+  },
+  {
+    "source": "M3-T1",
+    "sameDevMode": true,
+    "reducedMotion": true,
+    "route": "/demo/compras",
+    "violations": [],
+    "designHarness": {
+      "skipGuideCount": 0,
+      "profilePreviouslyCompletedByEarlierPlannerTests": true
+    }
+  }
+]

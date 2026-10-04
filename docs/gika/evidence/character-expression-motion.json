@@ -1,0 +1,240 @@
+{
+  "entry": "4505bec1aedd3c0888c49f173769e4ce5924e88b",
+  "branch": "feat/gika-integration",
+  "sourceSha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+  "rigSha256": "2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6",
+  "rigBytes": 64233,
+  "video": {
+    "artifact": "/workspace/gika-expression-review/gika-expression-motion-review.mp4",
+    "seconds": 92.6,
+    "sha256": "f5db3c5a6acaf8f756a805873d6b96f87b66d150ba80c0c7021e164ed6cadef6",
+    "capture": "Continuous actual Playwright Canvas runtime recording; only H264 encoding, no cuts/transitions omitted"
+  },
+  "gates": {
+    "rive": "verify/once/inspect: 0 errors/warnings, 1 board, 1 mode, 9 states, 10 bones",
+    "authoring": {
+      "nativeFrames": 144,
+      "smallFrames": 144,
+      "states": [
+        "rest",
+        "idle",
+        "blink",
+        "listening",
+        "thinking",
+        "clarify",
+        "success",
+        "error",
+        "offline"
+      ],
+      "sizes": [
+        24,
+        32,
+        48,
+        56,
+        64,
+        72,
+        96,
+        120
+      ],
+      "restFidelity": {
+        "light": {
+          "maxRgbError": 2,
+          "meanRgbError": 0.03919056901513042
+        },
+        "dark": {
+          "maxRgbError": 2,
+          "meanRgbError": 0.03072496054952195
+        }
+      },
+      "curlCentroidWidthFraction": [
+        0.7395833333333334,
+        0.7607758620689655
+      ],
+      "faceAndNeckExposureHoles": 0,
+      "distinctAnimatedStates": 5,
+      "allFeatureChannelsReset": true,
+      "neutralMasterBones": 10,
+      "semanticStates": 9,
+      "anatomicalSide": "LEFT / viewer RIGHT frontal",
+      "rigBytes": 64233,
+      "rigSha256": "2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6",
+      "limitations": [
+        "Small119x117native bust only; not HD240/fullbody.",
+        "Headless motion proof requires product/browser integration and human review.",
+        "Local unsigned scriptless build, not final signed production export/licensing proof."
+      ]
+    },
+    "unit": {
+      "focal": 8,
+      "passed": 8
+    },
+    "characterE2E": [
+      {
+        "attempt": "first",
+        "passed": 5,
+        "seconds": 45.3
+      },
+      {
+        "attempt": "static asset loading optimization",
+        "passed": 5,
+        "seconds": 35.0
+      },
+      {
+        "attempt": "final master face support constraint",
+        "passed": 5,
+        "seconds": 44.0
+      }
+    ],
+    "matteAxe": "focal development surface: 1 PASS, Axe0; included again in final 5 cases",
+    "lint": "initial PASS; added authoring-helper browser absolute import caused 1 import/no-unresolved error; modulePath variable matches existing browser harness; final PASS, no rule suppression",
+    "boundaries": 47,
+    "typechecks": "web + server PASS",
+    "build": "PASS; existing large-chunk warning preserved",
+    "productionIsolation": "No review strings/modules in dist; normal rendered404 on preview, no review/actor; no external access",
+    "broadSuites": "Not repeated during human visual iteration"
+  },
+  "theme": {
+    "actualRestRgbaIdentical": true,
+    "staticSourcesIdenticalAcrossThemes": [
+      "rest",
+      "idle",
+      "blink",
+      "listening",
+      "thinking",
+      "clarify",
+      "success",
+      "error",
+      "offline"
+    ],
+    "themeChangesCharacter": false,
+    "filter": "none",
+    "opacity": 1,
+    "mixBlendMode": "normal",
+    "cliTransparentScreenshot": "opaque gray default; not valid alpha evidence"
+  },
+  "masterMatte": {
+    "uniquePixels": 34,
+    "layerPixelChanges": {
+      "hair_back_visible": 13,
+      "side_curls_R_visible": 14,
+      "side_curls_L_visible": 4,
+      "neck_shoulders_visible": 7
+    },
+    "explanation": "7 pixels in neck layer are allocated outer hair fringe at x7..15/x113, not shirt/skin; layers contain overlapping pixels",
+    "protectedUnchanged": [
+      "face_base_clean",
+      "signature_purple_curl",
+      "eye_L",
+      "eye_R",
+      "brow_L",
+      "brow_R",
+      "mouth_neutral",
+      "hair_front_visible",
+      "lid_L_closed",
+      "lid_R_closed"
+    ]
+  },
+  "recording": {
+    "segments": [
+      {
+        "seconds": 2.9,
+        "label": "9 states \u00b7 light \u00b7120 \u00b7 portrait \u00b7 runtime"
+      },
+      {
+        "seconds": 13.1,
+        "label": "9 states \u00b7 dark \u00b7120 \u00b7 portrait \u00b7 runtime"
+      },
+      {
+        "seconds": 23.2,
+        "label": "9 states \u00b7 dark \u00b796 \u00b7 runtime"
+      },
+      {
+        "seconds": 29.2,
+        "label": "9 states \u00b7 light \u00b796 \u00b7 runtime"
+      },
+      {
+        "seconds": 35.6,
+        "label": "state-specific static expressions \u00b7 reduced motion"
+      },
+      {
+        "seconds": 44.9,
+        "label": "same master \u00b7 plain comparison"
+      },
+      {
+        "seconds": 52.7,
+        "label": "one captured RGBA \u00b7 five controlled backgrounds"
+      },
+      {
+        "seconds": 59.8,
+        "label": "continuous transition \u2192 idle"
+      },
+      {
+        "seconds": 61.3,
+        "label": "continuous transition \u2192 listening"
+      },
+      {
+        "seconds": 62.7,
+        "label": "continuous transition \u2192 thinking"
+      },
+      {
+        "seconds": 64.2,
+        "label": "continuous transition \u2192 clarify"
+      },
+      {
+        "seconds": 65.7,
+        "label": "continuous transition \u2192 thinking"
+      },
+      {
+        "seconds": 67.1,
+        "label": "continuous transition \u2192 success"
+      },
+      {
+        "seconds": 68.4,
+        "label": "continuous transition \u2192 idle"
+      },
+      {
+        "seconds": 69.8,
+        "label": "continuous transition \u2192 thinking"
+      },
+      {
+        "seconds": 71.3,
+        "label": "continuous transition \u2192 error"
+      },
+      {
+        "seconds": 72.5,
+        "label": "continuous transition \u2192 offline"
+      },
+      {
+        "seconds": 73.8,
+        "label": "continuous transition \u2192 idle"
+      },
+      {
+        "seconds": 75.4,
+        "label": "continuous transition \u2192 blink"
+      },
+      {
+        "seconds": 79.3,
+        "label": "actual product welcome \u00b7 synthetic emulator session"
+      },
+      {
+        "seconds": 85.6,
+        "label": "actual product compact header \u00b7 fixture response \u00b7 no Gemini"
+      }
+    ],
+    "reviewPrivateRequests": 0,
+    "providerRequests": 0,
+    "pageErrors": 0,
+    "productSession": "synthetic local emulators only; in-memory auth; textual fixture; no Gika command",
+    "durationSeconds": 92
+  },
+  "authoringDiagnostics": [
+    "CLI transparent screenshot is opaque gray; initial alpha comparison invalid and discarded, actual transparent Canvas used.",
+    "Initial paused Canvas sampling before draw yielded empty images; discarded; mounted/play-pause/scrub/flush + nonempty guard fixed sampling.",
+    "Initial video setup encountered expected unconfigured seeded fixture; use conventional activate/skip-guide setup in synthetic account.",
+    "Initial light screenshot wait used wrong guessed token; replaced by actual resolved token without timeout change.",
+    "Review button color transition can appear transiently light when captured immediately after dark switch; final stills wait for resolved CSS color.",
+    "Registration found16 donor pixels outside neutral face support; removed by master occlusion and now asserted absent."
+  ],
+  "decision": "GIKA_HUMAN_VISUAL_REVIEW_REQUIRED",
+  "implementationCommit": "a67261c2224fa7a1fea3846e2e3696738a76768b"
+}

@@ -1,0 +1,86 @@
+{
+  "entry": "a922594699cd95e2bc6602bccc215f4a23e75f41",
+  "branch": "chore/security-hardening",
+  "dicebearCommit": "73e750c",
+  "productionAudit": {
+    "before": {
+      "high": 4,
+      "moderate": 9,
+      "critical": 0,
+      "total": 13
+    },
+    "after": {
+      "high": 0,
+      "moderate": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "auditOmitDevAuditLevelHighExitCode": 0
+  },
+  "completeAudit": {
+    "before": {
+      "high": 11,
+      "moderate": 17,
+      "total": 28
+    },
+    "after": {
+      "high": 6,
+      "moderate": 8,
+      "total": 14
+    },
+    "remainingAllDevOnlyAndPreexisting": true,
+    "CIUnchanged": true
+  },
+  "dicebearGates": {
+    "lint": 0,
+    "buildBothTypechecks": 0,
+    "unitPassed": 325,
+    "unitFiles": 41,
+    "avatarE2EPassed": 2,
+    "standardAvatarOutputIdenticalSeeds": 6
+  },
+  "finalGates": {
+    "npmCiIgnoreScripts": 0,
+    "npmLsRequestedTree": 0,
+    "lint": 0,
+    "buildBothTypechecks": 0,
+    "unitPassed": 334,
+    "unitFiles": 42,
+    "integrationPassed": 166,
+    "integrationFiles": 6,
+    "authRulesCommandsReceiptsAllGikaMutationsUndoPolicyCovered": true,
+    "e2eMutationShellAndAvatarPassed": 47,
+    "e2eReadonlyFallbackPassed": 6,
+    "uniqueGikaCasesPassed": 51,
+    "totalFinalE2EPassed": 53,
+    "e2eFailed": 0,
+    "check": {
+      "exitCode": 1,
+      "buildBothTypechecksPassed": true,
+      "unitPassed": 334,
+      "shellPassed": 12,
+      "shellFailed": 1,
+      "classification": "PREEXISTING_COLOR_CONTRAST",
+      "ratioRange": [
+        3.66,
+        4.17
+      ],
+      "requiredRatio": 4.5,
+      "onlyEnvironmentSetting": "NODE_OPTIONS=--dns-result-order=ipv4first"
+    }
+  },
+  "installationIteration": {
+    "initialShadowGrpc": "1.14.4 invalid despite scoped 1.14.5 override",
+    "initialAuditHigh": 1,
+    "accepted": false,
+    "targetedLockResolutionRegeneratedByNpm": true,
+    "finalCleanInstallAndTreeValid": true,
+    "libcMetadataPreserved": true
+  },
+  "productAndHarnessFilesIdentical": 152,
+  "geminiLiveExecuted": false,
+  "credentialUsed": false,
+  "mergePushDeployExecuted": false,
+  "M5T2Started": false,
+  "stop": "review before integrating temporary branch into feat/gika-integration"
+}

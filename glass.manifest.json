@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "sourceRoot": "apps/web/src",
+  "primitive": "apps/web/src/styles/glass.css",
+  "maxBlurPx": 24,
+  "components": [
+    {
+      "id": "mobile-navigation",
+      "selector": ".sidebar",
+      "variant": "glass",
+      "scope": "max-width:739px",
+      "reason": "Navegação flutuante sobre conteúdo; desktop/rail continuam ink opaco e sem blur."
+    },
+    {
+      "id": "auth-entry",
+      "selector": ".auth-entry",
+      "variant": "glass-strong",
+      "scope": "public auth",
+      "reason": "Card elevado sobre ambientação de entrada; corrigir blur histórico34 e fallback."
+    },
+    {
+      "id": "confirm-dialog",
+      "selector": ".confirm-dialog",
+      "variant": "glass-strong",
+      "scope": "open dialog",
+      "reason": "Uma superfície elevada; conteúdo e ações internos opacos, backdrop sem blur."
+    },
+    {
+      "id": "recurrence-dialog",
+      "selector": ".calendar-recurrence-dialog",
+      "variant": "glass-strong",
+      "scope": "open dialog",
+      "reason": "Mesmo princípio do dialog convencional; nenhum contrato de escopo alterado."
+    },
+    {
+      "id": "calendar-sheet",
+      "selector": ".calendar-agenda.open",
+      "variant": "glass-strong",
+      "scope": "max-width:739px",
+      "reason": "Somente sheet móvel aberto; células/timegrid/agenda desktop continuam sólidos."
+    },
+    {
+      "id": "timer-dock",
+      "selector": ".active-timer-bar",
+      "variant": "glass",
+      "scope": "visible dock",
+      "reason": "Barra flutuante pequena já possui vidro; centralizar valores e fallbacks, sem mudar timer."
+    },
+    {
+      "id": "gika-panel",
+      "selector": ".gika-panel",
+      "variant": "glass-strong",
+      "scope": "open dialog; desktop glass/mobile solid",
+      "reason": "Container externo apenas; cards/composer sólidos e Character intocado; fullscreen móvel sólido por custo/ausência de benefício atrás."
+    }
+  ]
+}

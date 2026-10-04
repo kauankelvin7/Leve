@@ -181,7 +181,7 @@ export function Login({ mode = 'login' }: { mode?: AuthMode }) {
   }
 
   const title = mode === 'recovery' ? 'Recuperar acesso' : user ? 'Finalize sua agenda' : mode === 'register' ? 'Crie seu acesso' : 'Entre na sua agenda';
-  return <div className="auth-page"><AuthBackdrop /><aside className="auth-brand"><Link className="brand" to="/entrar">leve<span>.</span></Link><p>Organize o que importa.<br />Respire o resto.</p></aside><main className="entry auth-entry">
+  return <div className="auth-page"><AuthBackdrop /><aside className="auth-brand"><Link className="brand" to="/entrar">leve<span>.</span></Link><p>Organize o que importa.<br />Respire o resto.</p></aside><main className="entry auth-entry glass glass-strong">
     {!user && mode !== 'recovery' ? <nav className="auth-switch" aria-label="Acesso"><Link to="/entrar" aria-current={mode === 'login' ? 'page' : undefined}>Entrar</Link><Link to="/registrar" aria-current={mode === 'register' ? 'page' : undefined}>Criar conta</Link></nav> : null}
     <p className="eyebrow">Sua agenda privada</p><h1 id="page-title" tabIndex={-1}>{title}</h1>
     {!user && mode === 'recovery' ? <p className="auth-description">Informe seu e-mail para recuperar o acesso.</p> : null}

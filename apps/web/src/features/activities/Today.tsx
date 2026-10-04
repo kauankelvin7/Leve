@@ -16,6 +16,7 @@ import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
 import { formatCivilDate } from '../../platform/formatters';
 import { DailyBrief } from './DailyBrief';
+import { GikaSuggestion } from '../gika/GikaSuggestion';
 import { plannerDraftFromSearchParams } from './calendar/calendarDraftModel';
 
 type StoredActivity = Activity & { id: string };
@@ -402,6 +403,8 @@ export function Today() {
             </div>
             {plannedMinutes > 0 ? <p className="muted">{Math.floor(plannedMinutes / 60) ? `${Math.floor(plannedMinutes / 60)}h ` : ''}{plannedMinutes % 60 ? `${plannedMinutes % 60}min` : ''} planejados</p> : null}
           </section>
+
+          <GikaSuggestion key={session!.uid} uid={session!.uid} today={today} selectedDay={selectedDay} activities={activityQuery.items as StoredActivity[]} loading={activityQuery.loading} error={activityQuery.error} partial={activityQuery.partial} />
 
           <DailyBrief selectedDay={selectedDay} today={today} activities={activities} notes={notes} shoppingItems={shoppingItems.items} />
 

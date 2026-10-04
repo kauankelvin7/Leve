@@ -1,0 +1,453 @@
+version: 1
+project: gika
+source_of_truth: true
+
+# Continuação focal do smoke Preview em 2026-10-04, entrada ce28348.
+# Controle ausente em leve-preview provisionado create-only; fail-closed preservado.
+# Diagnóstico por estágio e regressões focais: .agent/GIKA_STATE.md (sem nova milestone).
+# Leitura real PASS; criação/confirmacão aguardam smoke no novo Preview instrumentado.
+# Preview 42771a1: upstream200 seguido de policy/GIKA_POLICY; parser de artigo/aspas
+# da criação corrigido com regressão antes/depois. Policy Engine global preservada.
+# Smoke READ/CREATE/CONFIRMATION do reparo pendente, sem nova fase/milestone.
+
+# Integração responsiva aprovada consolidada por fast-forward em feat/gika-integration.
+# Evidência: docs/RESPONSIVE-SHELL-V2.md; base c840492 para M6 sequencial autorizado.
+# Nenhuma tarefa/milestone adicional ou alteração ao grafo M5/M6.
+
+status_values:
+  - todo
+  - in_progress
+  - blocked
+  - done
+
+rules:
+  - "Apenas uma tarefa mutável pode estar in_progress no mesmo conjunto de arquivos."
+  - "done exige acceptance_criteria + evidence + checkpoint."
+  - "Toda tarefa concluída atualiza GIKA_STATE.md no mesmo commit."
+  - "Não iniciar tarefa com dependência não concluída."
+
+milestones:
+  M0:
+    name: "Auditoria e arquitetura factual"
+    status: done
+    evidence: "docs/gika/M0_EVIDENCE.md; cinco commits atômicos M0-T1..M0-T5 e gates baseline aprovados."
+    gate: "Nenhuma feature de produção é implementada."
+    tasks:
+      - id: M0-T1
+        title: "Mapear repositório e comandos de qualidade"
+        status: done
+        evidence:
+          - "docs/gika/ARCHITECTURE.md: stack, scripts, entradas, base SHA e status; M0_EVIDENCE.md: lint/build/typecheck e 93 unit PASS."
+        dependencies: []
+        owner: auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Stack, scripts, diretórios e entrypoints documentados."
+          - "Comandos reais de test/lint/typecheck/build identificados."
+          - "SHA e git status registrados."
+      - id: M0-T2
+        title: "Mapear domínio da agenda"
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: schemas reais Activity/Category/series e rastreio create/update/setStatus/reschedule/trash; evidências M0-T2."
+        dependencies: [M0-T1]
+        owner: domain-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Schemas de tarefa, rotina, recorrência e categorias documentados."
+          - "Fluxos create/update/complete/reschedule/delete rastreados."
+          - "Sem suposições não verificadas."
+      - id: M0-T3
+        title: "Mapear auth, persistência, offline e outbox"
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: auth/Rules/persistência/outbox e riscos verificados; M0_EVIDENCE.md: 28 integration PASS com emuladores."
+        dependencies: [M0-T1]
+        owner: platform-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Auth e regras de acesso documentadas."
+          - "Persistência e sincronização documentadas."
+          - "Riscos de idempotência/conflito identificados."
+      - id: M0-T4
+        title: "Mapear design system e navegação"
+        status: done
+        evidence:
+          - "ARCHITECTURE.md: Shell/tokens/componentes/mobile/PWA reais e restrições de foco/timer; revisão documental M0-T4."
+        dependencies: [M0-T1]
+        owner: ui-auditor
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Shell, navegação, tokens e componentes reutilizáveis identificados."
+          - "Restrições mobile/PWA/safe-area documentadas."
+      - id: M0-T5
+        title: "Fechar arquitetura concreta da Gika"
+        status: done
+        evidence:
+          - "Contratos tipados/command bridge/policy matrix e ADRs 004-007; ExecPlan factual revisado; lint/typecheck/build, 93 unit e 28 integration PASS."
+        dependencies: [M0-T2, M0-T3, M0-T4]
+        owner: architect
+        mutation_scope: "docs only"
+        acceptance_criteria:
+          - "Contratos de tool calling definidos."
+          - "Policy matrix definida."
+          - "Plano de integração sem duplicar regras de negócio."
+          - "Decisões relevantes registradas."
+
+  M1:
+    name: "Shell visual da Gika"
+    status: done
+    evidence: "M1_EVIDENCE.md: gates focais aprovados, refinements T4 e screenshots finais; falhas da regressão ampliada documentadas explicitamente."
+    tasks:
+      - id: M1-S0
+        title: "Versionar humanizer-br local oficial"
+        status: done
+        dependencies: [M0-T5]
+        owner: orchestrator
+        mutation_scope: "skill e documentação"
+        acceptance_criteria:
+          - "Conteúdo fornecido pelo usuário versionado e lido integralmente."
+          - "ADR e estado removem bloqueio externo sem alterar regras originais."
+        evidence:
+          - ".agent/skills/humanizer-br/SKILL.md lido integralmente; ADR-GIKA-008; revisão literal do conteúdo fornecido."
+      - id: M1-T1
+        title: "Botão flutuante e painel"
+        status: done
+        acceptance_criteria:
+          - "Botão só no Shell autenticado; painel lazy com falha isolada."
+          - "Modal com foco contido, Escape e retorno ao acionador; sem perda de rascunho/navegação."
+          - "Mobile respeita navegação e safe area; texto demo explícito."
+        evidence:
+          - "M1_EVIDENCE.md: 2 E2E autenticados + Axe PASS; lint/build/typechecks e 93 unit PASS."
+        dependencies: [M0-T5, M1-S0]
+        owner: frontend
+        mutation_scope: "UI Gika + testes"
+      - id: M1-T2
+        title: "Composer, mensagens, estados e responsividade"
+        status: done
+        acceptance_criteria:
+          - "Composer identificado, sugestões, Shift+Enter/IME, histórico limitado e memória por uid."
+          - "Loading/error/offline com cancelamento e preservação de texto; retry não duplica pergunta."
+          - "Foco/aria-live e composer adaptável ao viewport."
+        evidence:
+          - "M1_EVIDENCE.md: 4 cenários E2E cobertos (3 PASS + repetição focal 1 PASS); build/typechecks/lint/93 unit PASS."
+        dependencies: [M1-T1]
+        owner: frontend
+        mutation_scope: "UI Gika + testes"
+      - id: M1-T3
+        title: "Mock adapter sem IA real"
+        status: done
+        evidence: ["M1_EVIDENCE.md: 101 unit, 12 E2E + Axe, lint/build/typechecks PASS; screenshots revisados."]
+        acceptance_criteria: ["Mock determinístico cancelável, saída validada, nenhuma consulta/mutação real; isolamento por conta e falhas testados."]
+        dependencies: [M1-T2]
+        owner: frontend
+        mutation_scope: "Gika adapter + testes"
+
+      - id: M1-T4
+        title: "Refinement visual e estrutural solicitado pelo usuário"
+        status: done
+        evidence:
+          - "M1_EVIDENCE.md: lint/build/typechecks, 102 unit, 28 integração, 13 Gika E2E + Axe, 13 shell e 7 sazonal PASS; Planner 4 falhas na regressão ampliada, comparação com base e repetição offline registradas."
+        dependencies: [M1-T3]
+        owner: frontend
+        mutation_scope: "UI Gika, mock, testes e evidências"
+        acceptance_criteria:
+          - "Conversation viewport independente, empty state, símbolo próprio, chips com ícones e composer expansível fixo com envio interno."
+          - "Voz apenas visual; mensagens, loading, erro, tool result, confirmação e undo exclusivamente simulados."
+          - "Polimento final: aviso discreto, empty state útil, composer leve, título mobile menor e quick actions inicialmente visíveis."
+          - "Gates M1, desktop/mobile, temas, solid, 200%, safe areas e acessibilidade aprovados antes do checkpoint."
+
+  M2:
+    name: "Gika read-only"
+    status: done
+    evidence: "M2_EVIDENCE.md: T1/T2/T3 e smoke real E01/E02 PASS/HTTP200; NETWORK / ENV_PROXY_NOT_ENABLED é configuração do Codex Remote, proxy/egress habilitado somente no subprocesso; arquitetura/produção inalteradas, M3-T1 todo; fechamento final lint/build/typechecks/134 unit e grafo/diff/segredos PASS."
+    tasks:
+      - id: M2-S0
+        title: "Classificar falhas Planner e intermitência antes do adapter"
+        status: done
+        evidence: ["M2_PREFLIGHT.md e m2-planner-hit-test.json: regressão de dock corrigida, 2 Planner + 3 Gika E2E e lint/build/102 unit PASS."]
+        dependencies: [M1-T4]
+        owner: qa
+        mutation_scope: "evidências/estado e correção de dock Gika demonstrada por comparação local"
+        acceptance_criteria: ["Classificação sustentada por prova reproduzível em base e branch atual, sem atribuição ambígua."]
+      - id: M2-T1
+        title: "Adapter de modelo e configuração"
+        status: done
+        evidence: ["M2_EVIDENCE.md: lint/build/typechecks e 116 unit PASS; falhas/limites/privacidade do adapter sem segredo."]
+        acceptance_criteria: ["Modelo explícito, medium, interface sem persistência e variável somente servidor; falhas requeridas testadas sem chave/billing/fallback pago."]
+        dependencies: [M1-T4, M2-S0]
+        owner: ai-integration
+      - id: M2-T2
+        title: "Tools get_today/get_day/get_week"
+        status: done
+        evidence: ["M2_EVIDENCE.md: 126 unit, 41 integração, 14 Gika mock + 4 UI read-only E2E/Axe PASS; nenhuma mutação."]
+        acceptance_criteria: ["Três leituras autenticadas, allowlist/policy/limites/contexto trusted e partial honestos; contrato de UI dos mocks preservado, nenhuma escrita."]
+        dependencies: [M2-T1]
+        owner: ai-integration
+      - id: M2-T3
+        title: "Evals read-only e fallback"
+        status: done
+        evidence: ["M2_EVIDENCE.md/EVALS.md: 134 unit, 42 integração e 8 E2E finais PASS; bloqueio histórico do smoke posteriormente resolvido em M2-SMOKE, sem skipped."]
+        acceptance_criteria: ["Evals determinísticos E01/E02/E60/E70 e isolamento/partial/malformed/cancelamento; gates e revisão de escopo concluídos, limite de prova real explícito."]
+        dependencies: [M2-T2]
+        owner: qa
+
+      - id: M2-SMOKE
+        title: "Smoke Gemini real Free Tier (E01/E02)"
+        status: done
+        dependencies: [M2-T3]
+        owner: qa
+        evidence: ["2026-10-01: diagnóstico sanitizado HTTP200 com proxy; smoke existente repetido com NODE_USE_ENV_PROXY=1 somente no subprocesso Codex Remote PASS/exit0, E01/E02; sem alteração de produção. M2_EVIDENCE.md."]
+        acceptance_criteria: ["Modelo estável/medium interpretam E01/E02 pelo adapter real, nenhum acesso/mutação de agenda; registrar prova e checkpoint sem segredo."]
+
+  M3:
+    name: "Primeira mutação segura"
+    status: done
+    evidence: "M3-T1/T2/T3 e M3-SMOKE done. M3_SMOKE_EVIDENCE.md: Gemini real HTTP200/create_task/persistência/UI/receipt/retry sem duplicata e undo exato PASS;194 unit/76 integração/32 E2E/lint/build/dois TS PASS;check12/1/audit13 baseline explícitos;M4 não iniciado."
+    tasks:
+      - id: M3-T1
+        title: "create_task via command layer existente"
+        status: done
+        evidence: ["M3_T1_EXECPLAN.md/M3_T1_EVIDENCE.md: PRE92cc9c7 limpo, auditoria command layer, lint/typechecks/build/175 unit/53 integração PASS; 25 E2E Gika (5 criação real), baseline12 falhas local e1 shell classificadas; UI structured após receipt, parada antes de T2/T3."]
+        acceptance_criteria: ["Criação simples explicitamente solicitada, schemas strict, data civil determinística e autorização fresca; bridge único sendCommand/activity.create, sucesso estruturado somente após ack, testes/evals/gates e parada antes de T2."]
+        dependencies: [M2-T3, M2-SMOKE]
+        owner: ai-integration
+      - id: M3-T2
+        title: "Idempotência básica e duplicate protection"
+        status: done
+        evidence: ["M3_T2_EXECPLAN.md/M3_T2_EVIDENCE.md: PREa9aff2f limpo, receipt/outbox auditados, ADR012, lint/dois typechecks/build/184 unit/64 integração PASS;27 E2E Gika global e13 finais PASS;58 locais46 PASS/12 FAIL baseline;check12/1 e audit13 vulnerabilidades baseline comparados;parar antes de T3."]
+        acceptance_criteria: ["requestId do sistema ligado a operationId/entityId por UID;receipt existente atômico com snapshot/hash mínimo;replay/concurrency/lost response no máximo uma criação;novo ID com conteúdo igual permitido;outro UID isolado e payload diferente conflita;schemas strict/auth fresca/evals,gates,checkpoint e worktree limpo."]
+        dependencies: [M3-T1]
+        owner: domain
+      - id: M3-T3
+        title: "Undo seguro da criação Gika pelo comando existente"
+        status: done
+        dependencies: [M3-T2]
+        owner: domain
+        acceptance_criteria:
+          - "Ação UI determinística, UID original/operation/entity exatos/revisão1/createdAt original; nenhuma chamada Gemini nem target por conteúdo."
+          - "activity.trash soft-delete30dias existente; validação/auth/policy/receipt original transacionais, sem purge/revision refresh/writer paralelo."
+          - "Receipts existentes tornam replay/concurrency/lost response seguros; edições/remoção/reuso ID posteriores claros sem perda de dados."
+          - "UI pending/success/error/conflict somente após ack; auth/logout/conta/falhas/cancelamento cobertos, humanizer/a11y/mobile/dark."
+          - "Testes/evals/gates/evidências/checkpoint limpo; parar antes do smoke live/M4, M3 não done."
+        evidence: ["M3_T3_EXECPLAN.md/M3_T3_EVIDENCE.md; ADR013; lint/dois TS/build/194 unit/76 integração/6 E2E finais PASS;63 amplos50/13 baseline incluindo timer comprovadofc30bf9;check12/1 e audit13 baseline;checkpoint atômico 55b760ffa80a84070872e82a42a3d8f132f4141a/worktree limpo verificado."]
+
+      - id: M3-SMOKE
+        title: "Smoke real da cadeia completa create_task após revisão T3"
+        status: done
+        dependencies: [M3-T3]
+        owner: qa
+        evidence: ["M3_SMOKE_EXECPLAN.md/M3_SMOKE_EVIDENCE.md/evidence/m3-smoke.json: PREabbd1e2 limpo;1 Gemini real HTTP200/create_task;task2026-10-02 real/ID exato/uma criação/receipt applied→alreadyApplied/UI após ack;undo soft-delete exato sem Gemini;32 E2E/194 unit/76 integração/lint/dois TS/build PASS;check12/1/audit13 baseline;credencial somente memória/processo encerrado;M4 proibido."]
+        acceptance_criteria: ["Após revisão T3, smoke real linguagem natural/create_task/persistência/resultado com credencial atual autorizada, Free Tier/R$0; gates e evidência sanitizada antes de fechar M3."]
+
+  M4:
+    name: "Edição controlada"
+    status: done
+    evidence: "M4_SMOKE_EVIDENCE.md/evidence/m4-smoke.json: quatro Gemini reais HTTP200 complete/update/reschedule timed+untimed, UI/ack/receipt/retry/preview/preservação/isolamento PASS;295 unit/150 integração/25 E2E/lint/build/dois TS PASS;check12/1/audit13 baseline, produção inalterada. M5 não iniciado."
+    tasks:
+      - id: M4-T1
+        title: "complete_task"
+        status: done
+        evidence: ["M4_T1_EXECPLAN.md/M4_T1_EVIDENCE.md/evidence/m4-t1-gates.json: PRE56b9308 limpo, complete_task strict/title+dia bounded/resolução autenticada/activity.setStatus/revisão/receipt transacional/ack UI real.218 unit/98 integração/38 E2E Gika/lint/dois TS/build PASS;local58/11,check12/1,audit13 baseline explícitos e23 arquivos idênticos à entrada. Sem live; T2/T3 não iniciados, parar para revisão."]
+        dependencies: [M3-SMOKE]
+      - id: M4-T2
+        title: "update_task"
+        status: done
+        evidence: ["M4_T2_EXECPLAN.md/M4_T2_EVIDENCE.md/evidence/m4-t2-gates.json: PRE02fe03e limpo; título patch-only no activity.update convencional/transaction/revision/receipts, ADR015.262 unit/123 integração/lint/dois TS/build PASS;75 locais62/13 causas classificadas (11 históricas+2 deadlines reproduzidos02fe);10 E2E finais PASS,44 cenários Gika únicos com passagem;check12/1 contraste/audit13 baseline e26 arquivos idênticos. Sem live/T3, parada para revisão."]
+        acceptance_criteria: ["Apenas title, patch strict, selector civil/exato/bounded autenticado; ambiguidade/none/partial/no-op sem command; campos não mencionados preservados na transação convencional, original revision sem refresh, UID/receipt/retry/concurrency/lost ack seguros, UI structured só após ack; testes/evals/gates/evidências/checkpoint e parar antes de T3."]
+        dependencies: [M4-T1]
+      - id: M4-T3
+        title: "reschedule_task"
+        status: done
+        evidence: ["M4_T3_EXECPLAN.md/M4_T3_EVIDENCE.md/evidence/m4-t3-gates.json: PREd233971 limpo; patch temporal strict/preview civil/time preservado→activity.update/receipt/revision convencional, ADR016.295 unit/150 integração/7 focal/lint/doisTS/build PASS;82 locais67/15 causas classificadas contra base, comparação atual8/2 históricos, todas51 Gika observadas PASS;check12/1,audit13 baseline e26 arquivos idênticos. Sem live/M5, parar para revisão antes de M4-SMOKE."]
+        acceptance_criteria: ["Um alvo exato/bounded autenticado, civil deterministicamente validado; partial/ambiguidade/recorrência bloqueiam; horário omitido e todos campos preservados, patch somente solicitado, no-op sem command, preview e confirmação específica, auth/revision/receipt/ack real, replay/concurrency/lost ack seguros; testes/evals/gates/evidências/checkpoint e parar antes de M4-SMOKE/M5."]
+        dependencies: [M4-T2]
+      - id: M4-SMOKE
+        title: "Smoke real complete/update/reschedule após revisão"
+        status: done
+        evidence: ["M4_SMOKE_EXECPLAN.md/M4_SMOKE_EVIDENCE.md/evidence/m4-smoke.json/m4-smoke-gates.json: PREcfd96c3 limpo, quatro chamadas Gemini reais HTTP200 tools esperadas, comandos/receipt/revision2/ack/UI após sucesso, retry alreadyApplied sem extra upstream; preview sem write, time19:00/null preservado, outro UID intacto, fallback missing-env real.295 unit/150 integração/25 E2E/lint/build/dois TS PASS;check12/1/audit13 baseline. Processo segredo encerrado, somente emuladores/contas fictícias, sem M5."]
+        dependencies: [M4-T3]
+
+  M5:
+    name: "Políticas, lote e recorrência"
+    status: done
+    tasks:
+      - id: M5-T1
+        title: "Policy engine"
+        status: done
+        evidence: ["M5_T1_EXECPLAN.md/M5_T1_EVIDENCE.md/evidence/m5-t1-gates.json/m5-t1-transport-baseline.json: PRE156fe77 limpo, classifier puro strict/typed allow|clarify|confirm|deny, facts server e gates de quatro mutações, replay reautorizado precede resolução nova; schema/auth/revision/commands/receipts/ack independentes.323 unit/166 integração/lint/build/dois TS/6 focal PASS; amplo50/1 deadline Undo comparado156 original+sondas10200 nas duas versões, todas51 únicas observadas PASS. Check12/1 contraste e audit13 baseline;26 arquivos idênticos. M5 parcial; T2+ todo, sem live/batch/recorrência/delete/novo writer."]
+        dependencies: [M4-SMOKE]
+      - id: M5-T2
+        title: "Confirmation Contract + Preview"
+        status: done
+        evidence: ["M5_T2_EXECPLAN.md/M5_T2_EVIDENCE.md/evidence/m5-t2-gates.json; ADR018: contrato strict server-derived selado UID/op/textHash/descriptor/revision/patch/validade, guard no command convencional/receipt existente e recovery receipt-only sem Gemini.343unit/172integração/lint/doisTS/build/auditprodução0 PASS;12 focal PASS;56 Gika únicos observados PASS (amplo54/2 timeouts comparados9c2c6fb: originais2PASS e sondas2PASS em ambas versões).Check12/1 contraste histórico;6 cenários temporais idênticos,18 referências de escopo idênticas. Sem persistência de preview/conversa, batch/séries/T3/live; parar para revisão."]
+        acceptance_criteria: ["Policy confirm, summary estruturado e efeito server-bound; preview/cancel sem writes/receipt/modelo; confirmação original auth/ownership/revision/receipt/ack real, retry/concurrency/lost ack seguros, tampering bloqueado, estados/foco/teclado/Axe/light/dark/mobile; regressão temporal/evals/gates/checkpoint e parada antes de T3."]
+        dependencies: [M5-T1]
+      - id: M5-T3
+        title: "Recorrência: occurrence vs series"
+        status: done
+        evidence: ["M5_T3_EXECPLAN/EVIDENCE.md e m5-t3-*.json; ADR019; entradafc0b669 local/origin limpa/exata; occurrence/future convencional, all unsupported, choice distinta de confirmation/prazo original15min; guard/snapshot/receipt no mesmo writer. Auditprodução0/lint/doisTS/build/396unit/212integração/40focal/7E2E PASS; amplo56/7 classificado contrafc com8originais e5sondas PASS em ambas,63Gika únicas observadas PASS;check12/1 contraste histórico comprovado. Commit funcional atômico 8fe12469d9b5d3751109d79d5beafe4449f07aa6, worktree limpo confirmado;checkpoint documental/backup somente feat;M5-T4 todo/não iniciado."]
+        dependencies: [M5-T2]
+      - id: M5-T4
+        title: "Batch operations seguras"
+        status: done
+        evidence: ["M5_T4_EXECPLAN/EVIDENCE.md; ADR020; m5-t4-gates/transport-baseline/reference-files.json. Entrada1b09f5f local/origin limpa/exata; complete/reschedule cap5/dia explícito/seleção integral; plano selado/guard pendentes/receipts convencionais/recovery5/partial honesto/occurrence explícito, future/all lote recusados sem alterar T3individual. Auditprodução0/lint/doisTS/build/480unit/243integração/31focal/13E2Ebatch PASS; amplo64/11 preservado/classificado contra entrada com12originais+7sondas PASS em cada cópia;76Gika únicas observadas PASS. Check12/1 contraste histórico;29 referências byte-idênticas/CSS antigo intacto. Sem live/novo writer/collection/engine/dependência/M6; commit funcional atômico dd2a6e88f9c25e87241187886d6264f4c13375fe e worktree limpo verificados; checkpoint documental/backup autorizado somente feat, comparar HEAD local/origin após push e parar para revisão."]
+        acceptance_criteria: ["Conjunto software-owned bounded e integral, preview completo e confirmação vinculam UID/request/targets/revs/patches/scopes/count/expiry; nenhuma escrita preview/cancel/partialread/ambiguidade/cap excedido; auth/revision/receipt/retry/concurrency/lostack/tamper seguros, execução itemizada recuperável e parcial explícita, UI só ack real/sem Gemini nos botões; regressões M4/M5-T2/T3/gates/evals/evidências/checkpoint/backup e parada antes M6."]
+        dependencies: [M5-T3]
+
+  M6:
+    name: "Organização inteligente"
+    status: done
+    evidence: "docs/gika/M6_EVIDENCE.md; ADR021; base responsiva c840492 preservada; T1/T2/T3 concluídos, audit produção0/0/0, lint/doisTS/build/508unit/252integração/86Gika/17shell e Axe PASS. Nenhum live; parar antes M7."
+    tasks:
+      - id: M6-T1
+        title: "Structured proposal para organizar dia"
+        status: done
+        evidence: ["M6_EVIDENCE.md T1; checkpoint e39cd6a632bf018b09d7666e0a0b77ba6f9968a1; strict slots/minimização/releitura/software resolution, 501unit/lint/doisTS/build PASS."]
+        acceptance_criteria: ["Contexto mínimo bounded/cap5, schema strict sem identidades do modelo, snapshot/revisões/auth/scope validados; proposta nunca escreve sem confirmação."]
+        dependencies: [M5-T4]
+      - id: M6-T2
+        title: "Preview + confirmação + execução pelo command layer"
+        status: done
+        evidence: ["M6_EVIDENCE.md T2; checkpoint 85e3ec95b6c1ce7925edfe28eecab29945fb1d2a; mesmo BatchPlan/signer/guard/bridge/receipt/activity.update, preservados/diff selados; 502unit/250integração/8E2E/Axe PASS; primeiras falhas de fixture/seletor preservadas."]
+        acceptance_criteria: ["Prévia concreta selada, cancel/newdraft sem escrita, confirmação sem Gemini, auth/revision/receipt e resultado itemizado real sem atomicidade global fictícia/Undo universal."]
+        dependencies: [M6-T1]
+      - id: M6-T3
+        title: "Organizar semana"
+        status: done
+        evidence: ["M6_EVIDENCE.md T3/final; get_week/civil week, slots strict e mesmas confirmações/commands/receipts; ocorrência explícita preserva irmã/template, offline bloqueia confirmar/autoexecução; 508unit/252integração/86Gika/17shell/Axe/audit0 PASS. Primeira85/85 preservada, correção offline e fixture semanal duas datas documentadas; checkpoint funcional T3 430b892917317e0b73563631f527dde01e73588d; backup feat/igualdade local=origin e worktree limpo no encerramento."]
+        acceptance_criteria: ["Mesmo planner/contrato/batch com get_week/fuso/weekStartsOn, até7dias/5tarefas, partial não executa/não alega completo; occurrence explícito, future/all lote negados, offline sem fila/autoexecução; gates completos e backup feat, parar antes M7."]
+        dependencies: [M6-T2]
+
+  M7:
+    name: "Voz"
+    status: done
+    evidence: "docs/gika/M7_EVIDENCE.md; T1/T2 done; audit0/lint/doisTS/build/522unit/252integração/37E2Eselecionados/17shell/Axe PASS; sem live/hardware/produção, parar antes M8."
+    tasks:
+      - id: M7-T1
+        title: "Input de voz com fallback"
+        status: done
+        evidence: ["docs/gika/M7_EVIDENCE.md T1; reconhecimento nativo pt-BR, somente draft/finais, cancel/cleanup/fallback; header self; lint/doisTS/build/522unit/252integração/5E2E focal/Axe/audit0 PASS."]
+        acceptance_criteria: ["Voz nativa por gesto preenche somente draft final/revisável, nunca envia; cancel/erro/denied/unsupported/offline/UID preservam texto/invalidam eventos; header microphone self, privacidade remota explícita, sem áudio persistido/Gemini."]
+        dependencies: [M6-T3]
+      - id: M7-T2
+        title: "Evals de linguagem natural falada"
+        status: done
+        evidence: ["docs/gika/M7_EVIDENCE.md T2; EVALS M7-E01..E18; controlador14unit/casos7E2Evoz simulada, envio manual pipeline existente; regressãozoom corrigida, gates finais522unit/252integração/37E2E/17shell/Axe/audit0 PASS."]
+        acceptance_criteria: ["PT-BR final/partial/cancel/denied/unsupported/start/unmount/draft/UID/offline/doubleclick, sem autoenvio; manualsend normal; status/privacy mobile/reflow200/keyboard/Axe; primeiras falhas registradas, sem relaxar prazo/retry/assertion; M8 todo."]
+        dependencies: [M7-T1]
+
+  M8:
+    name: "Proatividade controlada"
+    status: done
+    evidence: "docs/gika/M8_EVIDENCE.md; audit0/lint/doisTS/build/533unit/7focal/37regressão/17shell/Axe PASS; client-only sem integração redundante, parar antes M9."
+    tasks:
+      - id: M8-T1
+        title: "Rules engine de sugestões locais"
+        status: done
+        evidence: ["docs/gika/M8_EVIDENCE.md T1; daySuggestion sobre leitura existente completa, threshold4–5/cap5, fingerprint sem privado; lint/doisTS/build/533unit PASS."]
+        acceptance_criteria: ["Local/puro/determinístico/bounded<=150, sem IO/model/commands/history/log/timers; partial/loading/error/normal/date/cap bloqueados; somente facts de taskpending hoje."]
+        dependencies: [M7-T2]
+      - id: M8-T2
+        title: "Geração de proposta somente sob interação"
+        status: done
+        evidence: ["M8_EVIDENCE.md T2; panel/daily-brief/composer existentes, opt-in sem request/manualsend/M6 preview/confirm real; offline/draft/auth/dismiss/meaningful change/mobile/dark/zoom/Axe; cancel-lazy reproduzido e corrigido, 7focal/37regressão/17shell/533unit/audit0 PASS."]
+        acceptance_criteria: ["Sem IA automática/command antes da confirmação; interação apenas prepara draft revisável, UID atual/offline/cancel/reload seguros, nenhum writer/query/persistência/CSS/dependência nova; M9 todo."]
+        dependencies: [M8-T1]
+
+  M9:
+    name: "Hardening e release"
+    status: done
+    evidence: "Histórico preservado: docs/gika/M9_EVIDENCE.md; histórico técnico preservado. Expression/motion/matte sobre4505bec: Neutral Master/9states/10bones; donors seletivos,34pixels fringe, reduced estático por estado; QA288/8unit/5focal+Axe/lintAST/doisTS/build/isolamento aprovados. Retrato circular aprovado como direção; nova atuação/matte aguardam humano. GIKA_HUMAN_VISUAL_REVIEW_REQUIRED; sem aceite Character/M9/RC/export ou expansão."
+    tasks:
+      - id: M9-T1
+        title: "Segurança, App Check/rate limits conforme stack factual"
+        status: done
+        evidence: ["M9_EVIDENCE T1; risco VITE_APIkey reproduzido/fix, whitelistFirebase preservada; 535unit/lint/doisTS/build/audit0 PASS; AppCheck adiado factualmente, limites existentes preservados."]
+        dependencies: [M8-T2]
+      - id: M9-T2
+        title: "Observabilidade e métricas"
+        status: done
+        evidence: ["M9_EVIDENCE T2; erro privado reproduzido/fix técnico-only, rota genérica/correlation/latencybucket; sem IDs/conteúdo, 537unit/252integração/lint/doisTS/build PASS."]
+        dependencies: [M9-T1]
+      - id: M9-T3
+        title: "Acessibilidade, performance e offline"
+        status: done
+        evidence: ["M9_EVIDENCE Character essencial; funcional0375d2d; mesmas14PNGs/master, noveestados/umViewModel.mode/10bones/build51586. CLI/QA252frames PASS, Controller facts-only sem autoridade de execução, lazy/runtime/fallback/reduced/offline. Audit0/lint/doisTS/build/545unit/252integração PASS; Ampla95/9 não integralmente verde (fixtures cap e launcher baseline reproduzidos; reconnectvoz NOT_REPRODUCED); focais13/13+pós-presença9/9+scroll1/1+shell17/17/Axe0/12viewportthemes+200% PASS. Feedback do usuário: composição atual não aprovada; presença adaptativa, escala, duplicação header/centro e halo/cortes pendentes, sem upscale do raster. T3 permanece in_progress e não RC_READY."]
+        current_evidence: "GIKA_V1_FACIAL_APPROVED; docs/release/M9_FINAL.md. Glass 853 light/dark resolvido com medição modal top-layer; 55 casos PASS em execuções completas/focais (run capturado 48PASS/7 timeout, sete repeats 57.2–59.4s PASS), Axe 0, glass:selftest/check PASS. Lint/typecheck/build/545unit/2 launcher E2E PASS. Glass pronto para integração feat/gika-integration; regressão final/RC-UAT ainda pendentes."
+        dependencies: [M9-T2]
+      - id: M9-T4
+        title: "Regression suite e release candidate"
+        status: done
+        evidence: ["M9_EVIDENCE T4: verify/audit0/lint/AST/doisTS/build/537unit/252integração/8critical/Gika100/Plannerdesign13/convencional20/shell17 históricos PASS. Retomadas anteriores de referência/docs/QA/estado sem produto preservadas. Integração essencial atual entregue tecnicamente; gates/falhas qualificadas em M9_EVIDENCE, composição explicitamente não aprovada e presença adaptativa/halo/cortes pendentes. Decisão financeira resolvida (ADR024); aceite RC depende de busto híbrido/rig visualmente aprovados e gates após integração, não M9_DONE_RC_READY."]
+        current_evidence: "GIKA_V1_FACIAL_APPROVED; docs/release/M9_FINAL.md; Glass evidência em docs/glass/FINAL_REPORT.md. Harness clipping corrigido para modal top-layer; contrastes Gika 853 light/dark certificados e screenshots revisadas. Glass 55 casos PASS em execução serial segmentada; run capturado integral reteve 7 timeouts existentes e os sete passaram repeats sem captura. Lint/typecheck/build/545unit/2 launcher E2E PASS. Integração feat/gika-integration e regressão final/RC-UAT pendentes."
+        dependencies: [M9-T3]
+# Etapa isolada fora dos milestones funcionais da Gika; M5-T2 não iniciado.
+security_hardening:
+  branch: chore/security-hardening
+  entry_checkpoint: a922594699cd95e2bc6602bccc215f4a23e75f41
+  status: done
+  evidence: docs/security/REPORT.md
+  dicebear:
+    status: done
+    evidence: docs/security/DICEBEAR_EVIDENCE.md
+  firebase_google:
+    status: done
+    evidence: docs/security/GOOGLE_EVIDENCE.md
+  integration_review:
+    status: approved
+  integration:
+    status: done
+    branch: feat/gika-integration
+    from_checkpoint: a922594699cd95e2bc6602bccc215f4a23e75f41
+    source_checkpoint: 8300c2b48408ba12664573ee92c1402b5aafd82f
+    method: fast_forward_only
+    evidence: ".agent/GIKA_STATE.md: pré-condições exatas/ancestralidade/worktree limpo; ff-only e HEAD8300c2b confirmados. Audit produção0; lint/doisTS/build/334unit/166integração PASS; check12/1 somente contraste histórico; E2E52/1 timeout temporal e original isolado1PASS, todas53 únicas observadas PASS, sem esconder tentativa inicial. Sem alteração funcional/dependências/main/visual, sem Gemini live. M5-T2 todo/não iniciado; parar para revisão."
+
+# Gate documental de encerramento; preserva o histórico de M5 e M6.
+m5_closure:
+  status: done
+  decision: M5_READY_FOR_NEXT_PHASE
+  entry_checkpoint: "8a892504753d7624f50cf54f534ce7c38fde195a"
+  evidence: "docs/gika/M5_CLOSURE_EVIDENCE.md"
+  gates: "Lint/doisTS/build/480unit/243integração PASS. Primeira Gika56PASS/20FAIL; entrada exata somente20 originais13PASS/7FAIL; nenhum deadline relaxado.284arquivos não documentais idênticos."
+  blocker: null
+  next_action: "Parar para revisão do closure final após checkpoint/push feat; M6 todo/não iniciado, aguardar autorização específica."
+  initial_decision: M5_BLOCKED
+  final_entry_checkpoint: "f5b969d1c134afe51496ee90773a401719c53ac7"
+  final_evidence: "docs/gika/M5_CLOSURE_FINAL_EVIDENCE.md; docs/gika/evidence/m5-closure-final-gates.json"
+  final_gates: "Primeiras execuções auditprodução0/0/0/lint/doisTS/build/480unit/243integração PASS; única ampla Gika76/76 PASS, sem rerun/fixture/deadline/assertion/retry alterado. Admin13.10/forgeausente, revisão read-only invariantes sem defeito concreto atual.248fontes/config idênticos, só documentação."
+  history: "Primeiro gate M5_BLOCKED preservado na evidência original; R1_PASS corrigiu segurança, R2_PASS não reproduziu sete históricos. READY atual não apaga falhas anteriores nem identifica causa física histórica."
+
+m5_closure_r1:
+  status: done
+  decision: R1_PASS
+  entry_checkpoint: "5ca793e17f23f671833bdf7cebd793cc96107af3"
+  scope: "Targeted firebase-admin13.6→13.10; node-forge removido naturalmente; client/policies/domínio preservados."
+  evidence: "docs/gika/M5_CLOSURE_R1_SECURITY_EVIDENCE.md; docs/gika/evidence/m5-closure-r1-dependencies.json"
+  gates: "Clean install/auditprodução0/lint/doisTS/build/480unit/243integração PASS;56GikaE2E originais PASS; Auth suplemento PASS nas duas versões. Unit inicial479/1 por runnerloglevel e Authoriginal1FAIL por selector reproduzidos na entrada; cópia Auth13.10 comfont403fsdeny corrigida somente no /tmp, primeira tentativa preservada. Nenhum deadline relaxado."
+  checkpoint: "12c36521eeea7aa39fa1a7ccc7381c70a1b8dbe2 — commit funcional isolado manifest/lock, seguido de checkpoint documental e backup feat."
+  next_action: "Parar para revisão após checkpoint/push feat; closure global blocked; não iniciar R2/M6."
+
+m5_closure_r2:
+  status: done
+  decision: R2_PASS
+  entry_checkpoint: "6849f1fe3094e2296ea41f6c2277fad9d7524c5c"
+  evidence: "docs/gika/M5_CLOSURE_R2_EVIDENCE.md; docs/gika/evidence/m5-closure-r2-gates.json"
+  code_changes: false
+  gates: "Primeira ampla76PASS/0FAIL preservada; sete originais isolados fresh7PASS/0FAIL. Auditprodução0critical/high/moderate/lint/doisTS/build/480unit/243integração PASS. Ampla final76PASS/0FAIL e sete originais fresh finais7PASS/0FAIL, sem deadlines/asserções/fixtures/seletores/retries alterados, nenhum rerun oculto.248arquivos fonte/config idênticos. Somente documentação, sem Gemini live/dependência/closure final/M6."
+  diagnosis: "Sete históricos NOT_REPRODUCED_IN_R2, causa física não atribuída; nenhuma correção especulativa de Auth/produto/harness. Histórico anterior reprovado permanece na evidência original."
+  next_action: "Parar para revisão após checkpoint/push feat e igualdade HEAD local/origin/worktree limpo; não reexecutar closure final ainda, M6 todo."
+
+# Continuação Glass autorizada após checkpoint 1ec7edc; não reabre nem altera o M9 congelado.
+glass_rc_uat_continuation:
+  entry_checkpoint: "1ec7edc74fbc575a6e394251e8618102e99fd748"
+  m9_frozen: "b0e7bae753ec93374a3ebe3ec2b1a5ac07298046"
+  branch: feat/gika-integration
+  integration: merged_remote_security_updates_locally
+  status: final_uat_passed
+  evidence: docs/release/GLASS_RC_UAT.md
+  gates: "Na ponta combinada: verify PASS auditprod0/lint/boundaries/typecheck web+server/build/546unit/257integration/8critical; glass:selftest/check PASS; 853 light/dark focais PASS58.3s/58.6s, welcome12/chat10 targets/theme, min chat5.48:1/6.19:1, Axe0/errors0/overflowfalse; E2E local ampla PASS141/141 em21.0min. Histórico de execuções anteriores/timeouts preservado em docs e estado, sem relaxar guardas. Main/deploy proibidos pelo pedido."
+  publication: completed
+  published_product_commit: "61ffa4cda11f596a8a3e6fe45bdb74c68297028c"
+  remote_matches_head: true

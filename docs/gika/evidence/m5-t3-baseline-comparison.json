@@ -1,0 +1,221 @@
+{
+  "entry_checkpoint": "fc0b66972164e3cee73c6c9a65969ea2e61d3994",
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "original_expect_timeout_ms": 10000,
+  "original_api_timeout_ms": 20000,
+  "probe_transport_holds_ms": [
+    10200,
+    20200
+  ],
+  "probe_source_sha256": "12aa32f274e9f5c33ae396b9832abed032bc41e5e915947fcd1ba2f15ff87f28",
+  "original_specs_changed": false,
+  "original_deadlines_changed": false,
+  "emulator_writers_concurrent": false,
+  "specific_infrastructure_cause": "not inferred",
+  "original_cases_entry": {
+    "pass": 8,
+    "minutes": 1.6,
+    "exit": 0
+  },
+  "original_cases_current": {
+    "pass": 8,
+    "minutes": 1.6,
+    "exit": 0
+  },
+  "probes": {
+    "entry": {
+      "pass": 5,
+      "minutes": 1.7,
+      "exit": 0,
+      "events": [
+        {
+          "probe": "rename",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 9870
+        },
+        {
+          "probe": "rename",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10203
+        },
+        {
+          "probe": "rename",
+          "phase": "real_ack_receipt_revision2_once",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10010
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "postcommit_transport_hold",
+          "status": "ABORTED",
+          "elapsedMs": 10204
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "retry_same_operation_revision2",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10011
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10203
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "same_operation_real_ack_revision2",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "client_timeout",
+          "status": "NETWORK_ERROR",
+          "elapsedMs": 20010
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "same_operation_receipt_revision1",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED_AFTER_CLIENT_TIMEOUT",
+          "elapsedMs": 20202
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10012
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "conventional_edit_ack_then_descriptor_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10204
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "revision2_edit_preserved_no_stale_receipt",
+          "status": "PASS",
+          "elapsedMs": 0
+        }
+      ]
+    },
+    "current": {
+      "pass": 5,
+      "minutes": 1.7,
+      "exit": 0,
+      "events": [
+        {
+          "probe": "rename",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 9866
+        },
+        {
+          "probe": "rename",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10202
+        },
+        {
+          "probe": "rename",
+          "phase": "real_ack_receipt_revision2_once",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10010
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "postcommit_transport_hold",
+          "status": "ABORTED",
+          "elapsedMs": 10203
+        },
+        {
+          "probe": "lost_ack",
+          "phase": "retry_same_operation_revision2",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10013
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10203
+        },
+        {
+          "probe": "precommit_retry",
+          "phase": "same_operation_real_ack_revision2",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "client_timeout",
+          "status": "NETWORK_ERROR",
+          "elapsedMs": 20015
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "same_operation_receipt_revision1",
+          "status": "PASS",
+          "elapsedMs": 0
+        },
+        {
+          "probe": "conventional_create",
+          "phase": "postcommit_transport_hold",
+          "status": "RELEASED_AFTER_CLIENT_TIMEOUT",
+          "elapsedMs": 20206
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "original_10000ms_assertion",
+          "status": "EXPECTED_TIMEOUT",
+          "elapsedMs": 10011
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "conventional_edit_ack_then_descriptor_hold",
+          "status": "RELEASED",
+          "elapsedMs": 10203
+        },
+        {
+          "probe": "rename_conflict",
+          "phase": "revision2_edit_preserved_no_stale_receipt",
+          "status": "PASS",
+          "elapsedMs": 0
+        }
+      ]
+    }
+  }
+}

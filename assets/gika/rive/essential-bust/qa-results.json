@@ -1,0 +1,52 @@
+{
+  "nativeFrames": 144,
+  "smallFrames": 144,
+  "states": [
+    "rest",
+    "idle",
+    "blink",
+    "listening",
+    "thinking",
+    "clarify",
+    "success",
+    "error",
+    "offline"
+  ],
+  "sizes": [
+    24,
+    32,
+    48,
+    56,
+    64,
+    72,
+    96,
+    120
+  ],
+  "restFidelity": {
+    "light": {
+      "maxRgbError": 2,
+      "meanRgbError": 0.03919056901513042
+    },
+    "dark": {
+      "maxRgbError": 2,
+      "meanRgbError": 0.03072496054952195
+    }
+  },
+  "curlCentroidWidthFraction": [
+    0.7395833333333334,
+    0.7607758620689655
+  ],
+  "faceAndNeckExposureHoles": 0,
+  "distinctAnimatedStates": 5,
+  "allFeatureChannelsReset": true,
+  "neutralMasterBones": 10,
+  "semanticStates": 9,
+  "anatomicalSide": "LEFT / viewer RIGHT frontal",
+  "rigBytes": 64233,
+  "rigSha256": "2ed99a720ed6651ae56e2e3fa8d0eaa569cb7eee473dc3d57cc539aa2298cbc6",
+  "limitations": [
+    "Small119x117native bust only; not HD240/fullbody.",
+    "Headless motion proof requires product/browser integration and human review.",
+    "Local unsigned scriptless build, not final signed production export/licensing proof."
+  ]
+}

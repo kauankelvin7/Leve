@@ -1,0 +1,26 @@
+[
+  {
+    "seed": "leve-aurora",
+    "sha256": "da1af6c7be7ac8412c490c26ea577af5c427cbe6e31045796a56d091d8ec66f4"
+  },
+  {
+    "seed": "leve-bento",
+    "sha256": "31f5e116b185aa478d56ef20486b9f37ddf9ba8879a35f3cd301695b26c5ac2d"
+  },
+  {
+    "seed": "leve-caju",
+    "sha256": "99a96bddc8d732863cc7112f2fa1be24643c1b597bceca7498e85e6479333e3c"
+  },
+  {
+    "seed": "leve-dengo",
+    "sha256": "588eb8d30f53f0483bcc6a50dece2edc949fd70841349e25ea54c3426090e0d7"
+  },
+  {
+    "seed": "leve-flora",
+    "sha256": "b8a37cae693f060eb17294585c7e4d8296d34596d0cf92ed39c51e9ea76a836e"
+  },
+  {
+    "seed": "leve-jasmim",
+    "sha256": "3372c3e24c234ccdd4097e2d1099032eecbaaa5ef8219622eedec92722b305b5"
+  }
+]

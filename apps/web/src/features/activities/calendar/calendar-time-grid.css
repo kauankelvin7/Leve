@@ -34,7 +34,7 @@
 }
 
 .calendar-time-view {
-  --calendar-time-axis: 62px;
+  --calendar-time-axis: max(62px, 3.875rem);
   margin-top: 20px;
 }
 
@@ -118,8 +118,8 @@
 }
 
 .calendar-time-date.today strong {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   margin: 3px auto 0;
   display: grid;
   place-items: center;
@@ -178,7 +178,7 @@
 }
 
 .calendar-time-chip.completed {
-  opacity: .62;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -209,6 +209,7 @@
   color: var(--color-text-muted);
   font-size: .68rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .calendar-time-axis span:first-child {
@@ -305,7 +306,7 @@
 }
 
 .calendar-time-event.completed {
-  opacity: .64;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -405,7 +406,6 @@
 
 .calendar-recurrence-dialog::backdrop {
   background: color-mix(in srgb, #000 48%, transparent);
-  backdrop-filter: blur(3px);
 }
 
 .calendar-recurrence-dialog-content {
@@ -464,19 +464,24 @@
   }
 
   .calendar-view-switcher button {
-    min-width: 0;
+    min-width: 0; min-height: 44px; padding-inline: 6px;
+    font-size: .875rem; white-space: nowrap;
   }
+
+  .calendar-filters > label { flex: 1 1 10rem; max-width: none; }
 
   .calendar-time-panel {
     padding: 16px;
   }
 
   .calendar-time-view {
-    --calendar-time-axis: 52px;
+    --calendar-time-axis: max(52px, 3.25rem);
   }
 
+  .calendar-time-board { min-width: max(320px, 18rem); }
+
   .calendar-time-view.week .calendar-time-board {
-    min-width: 720px;
+    min-width: max(720px, 45rem);
   }
 
   .calendar-time-scroll {

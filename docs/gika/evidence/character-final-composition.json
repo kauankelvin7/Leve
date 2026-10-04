@@ -1,0 +1,3163 @@
+{
+  "entry": "057744ff25c6f4a1bf7de281fd4406f76e428e33",
+  "branch": "feat/gika-integration",
+  "sourceInspection": {
+    "source": "docs/gika/character/reference/gika-authoring-v2-original.png",
+    "sourceSha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "primaryInspectionBox": [
+      120,
+      105,
+      465,
+      560
+    ],
+    "primaryInspectionSize": [
+      345,
+      455
+    ],
+    "essentialCanvas": [
+      135,
+      133
+    ],
+    "essentialLastOpaqueRow": 124,
+    "essentialLastOpaqueRowSpan": [
+      39,
+      113
+    ],
+    "decision": "HALF_BODY_SOURCE_INSUFFICIENT",
+    "qualification": "Primary pose has sufficient pixels for a fixed seated illustration, not sufficient unoccluded layers for a naturally bounded half-body rig. Essential shirt terminates at reference crop. No new geometry generated.",
+    "proof": "docs/gika/character/qa/presence-source-inspection.png",
+    "frontInspectionBox": [
+      430,
+      52,
+      555,
+      250
+    ],
+    "frontInspectionSize": [
+      125,
+      198
+    ]
+  },
+  "unchangedLayerHashes": {
+    "face_base_clean": {
+      "unchanged": true,
+      "sha256": "25675377a5ef4a2b727cbc89908fce47c012a1d76af77bc1aa124914529a51fa"
+    },
+    "signature_purple_curl": {
+      "unchanged": true,
+      "sha256": "6e87bd74ac2849d8fff041567be535e2a7208756d10ef60b5a56fae8f420ee98"
+    },
+    "eye_L": {
+      "unchanged": true,
+      "sha256": "5603bd0d9bfae9000b0a9b4d4fcaec658babdaa8bc8355eb102945a0bbe2ce60"
+    },
+    "eye_R": {
+      "unchanged": true,
+      "sha256": "ce0f231c7e1084c943704deb6e7e3ea53530ed249f5baf529a37ea16510b562b"
+    },
+    "brow_L": {
+      "unchanged": true,
+      "sha256": "60c46665b8f0d6fe8fb8369b5b5dfd575ca3f05b4a7fc3a03abf41255755d592"
+    },
+    "brow_R": {
+      "unchanged": true,
+      "sha256": "2f86fb00115d3de7e24b0516956ce85b321fa5cef12f90904da9eadaf36954e8"
+    },
+    "mouth_neutral": {
+      "unchanged": true,
+      "sha256": "98daacd09508cb971d202bcc9db070f4c9fb879875dcea8b9f58789d26eed7b9"
+    },
+    "neck_shoulders_visible": {
+      "unchanged": true,
+      "sha256": "3deaba844ea7376aa1202a422b929ceefb1e168697f0912011d8daa82e991cdf"
+    },
+    "lid_L_closed": {
+      "unchanged": true,
+      "sha256": "3ced4946d28982d077a4a6cc7ecdf0f60a0540a201c5ae51fced9584696d8a05"
+    },
+    "lid_R_closed": {
+      "unchanged": true,
+      "sha256": "6a0836c0b3a730bb2c1970c0ad417a1dc688ea7988815a68c1287d7e9862b74d"
+    },
+    "hair_front_visible": {
+      "unchanged": true,
+      "sha256": "e2f1c69049702120db633f75667d2e9790e5b0c12c1f148b87b5940e2d10ce94"
+    }
+  },
+  "architectureComparison": {
+    "entry": "057744ff25c6f4a1bf7de281fd4406f76e428e33",
+    "protectedFilesCompared": 75,
+    "changedProtectedFiles": [],
+    "riveGeometryChanged": false,
+    "riveGeometryFilesCompared": [
+      "assets/gika/rive/essential-bust/scene.rml",
+      "assets/gika/rive/essential-bust/author.py",
+      "assets/gika/rive/essential-bust/rive.yaml"
+    ],
+    "gikaFunctionalFilesCompared": 28,
+    "changedGikaFunctionalFiles": []
+  },
+  "riveQA": {
+    "nativeFrames": 144,
+    "smallFrames": 108,
+    "states": [
+      "rest",
+      "idle",
+      "blink",
+      "listening",
+      "thinking",
+      "clarify",
+      "success",
+      "error",
+      "offline"
+    ],
+    "sizes": [
+      24,
+      32,
+      48,
+      56,
+      64,
+      72
+    ],
+    "restFidelity": {
+      "light": {
+        "maxRgbError": 2,
+        "meanRgbError": 0.03904204956836536
+      },
+      "dark": {
+        "maxRgbError": 2,
+        "meanRgbError": 0.030595006033602525
+      }
+    },
+    "curlCentroidWidthFraction": [
+      0.7440476190476191,
+      0.7638176638176638
+    ],
+    "faceAndNeckExposureHoles": 0,
+    "distinctAnimatedStates": 5,
+    "anatomicalSide": "LEFT / viewer RIGHT frontal",
+    "rigBytes": 51569,
+    "rigSha256": "44c797f18c652c64830eab2a9b3f12a79d2c37f35b485e472781b1a48243fdaf",
+    "limitations": [
+      "Small119x117native bust only; not HD240/fullbody.",
+      "Headless motion proof requires product/browser integration and human review.",
+      "Local unsigned scriptless build, not final signed production export/licensing proof."
+    ]
+  },
+  "performance": {
+    "entryBrowser": {
+      "assetsBeforePanelOpen": 0,
+      "firstOpenReadyMs": 1411,
+      "usageAfter": {
+        "usedSize": 32880032,
+        "totalSize": 34025472,
+        "embedderHeapUsedSize": 3314944,
+        "backingStorageSize": 23499516
+      },
+      "additionalMemory": [
+        {
+          "usedSize": 33335432,
+          "totalSize": 34549760,
+          "embedderHeapUsedSize": 3909200,
+          "backingStorageSize": 23499572
+        },
+        {
+          "usedSize": 33422248,
+          "totalSize": 34811904,
+          "embedderHeapUsedSize": 4021640,
+          "backingStorageSize": 23499572
+        }
+      ],
+      "hiddenFrameDelta": 0,
+      "closedFrameDelta": 0
+    },
+    "finalBrowser": {
+      "warmOpenReadyMs": 101,
+      "layoutShifts": [
+        {
+          "value": 0.04497620790629575,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 382.5
+        },
+        {
+          "value": 0.04497620790629575,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 420.19999998807907
+        },
+        {
+          "value": 0.0043265167258767084,
+          "recentInput": true,
+          "stage": "bootstrap",
+          "time": 496.19999998807907
+        },
+        {
+          "value": 0.04497620790629575,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 1076.9000000059605
+        },
+        {
+          "value": 0.04497620790629575,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 1253.4000000059605
+        },
+        {
+          "value": 1.0263077832572821e-05,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 2570.300000011921
+        },
+        {
+          "value": 0.09524653794533919,
+          "recentInput": false,
+          "stage": "bootstrap",
+          "time": 2883.5999999940395
+        },
+        {
+          "value": 0.9641025641025641,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4081.9000000059605
+        },
+        {
+          "value": 0.018564273039689133,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4091.0999999940395
+        },
+        {
+          "value": 0.26972133909272417,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4298.199999988079
+        },
+        {
+          "value": 0.0003864920684349355,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4310.300000011921
+        },
+        {
+          "value": 0.47989047303174936,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4583.199999988079
+        },
+        {
+          "value": 0.2106621217220556,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 4779
+        },
+        {
+          "value": 0.5314413819136443,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 5003.9000000059605
+        },
+        {
+          "value": 0.24433132595486112,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 5298.0999999940395
+        },
+        {
+          "value": 1,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 5816.4000000059605
+        },
+        {
+          "value": 0.0001392601244356596,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 5842.199999988079
+        },
+        {
+          "value": 0.26972133909272417,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6186.199999988079
+        },
+        {
+          "value": 0.0003864920684349355,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6197.300000011921
+        },
+        {
+          "value": 0.48016015673056245,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6417.199999988079
+        },
+        {
+          "value": 0.2106621217220556,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6549.300000011921
+        },
+        {
+          "value": 0.5314413819136443,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6749.5999999940395
+        },
+        {
+          "value": 0.24433132595486112,
+          "recentInput": true,
+          "stage": "viewport-matrix",
+          "time": 6946.199999988079
+        },
+        {
+          "value": 1,
+          "recentInput": true,
+          "stage": "text-reflow",
+          "time": 7265.4000000059605
+        },
+        {
+          "value": 0.00025916896607132677,
+          "recentInput": true,
+          "stage": "text-reflow",
+          "time": 7277.5
+        },
+        {
+          "value": 0.5504852929890764,
+          "recentInput": true,
+          "stage": "hidden",
+          "time": 7409.5999999940395
+        }
+      ],
+      "usageAfter": {
+        "usedSize": 33012636,
+        "totalSize": 34287616,
+        "embedderHeapUsedSize": 3351800,
+        "backingStorageSize": 23500782
+      },
+      "additionalMemory": [
+        {
+          "usedSize": 33136976,
+          "totalSize": 34287616,
+          "embedderHeapUsedSize": 3462368,
+          "backingStorageSize": 23500782
+        },
+        {
+          "usedSize": 33242912,
+          "totalSize": 34811904,
+          "embedderHeapUsedSize": 3587896,
+          "backingStorageSize": 23500782
+        }
+      ],
+      "assetsBeforePanelOpen": 0,
+      "firstOpenReadyMs": 859,
+      "fallbackBounds": {
+        "x": 1037,
+        "y": 183.796875,
+        "width": 135,
+        "height": 133
+      },
+      "readyBounds": {
+        "x": 1037,
+        "y": 183.796875,
+        "width": 135,
+        "height": 133
+      },
+      "snapshots": [
+        {
+          "theme": "light",
+          "viewport": [
+            390,
+            844
+          ],
+          "overflow": false,
+          "portrait": [
+            128,
+            126
+          ],
+          "composerBottom": 844,
+          "conversationHeight": 658
+        },
+        {
+          "theme": "light",
+          "viewport": [
+            853,
+            1280
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 989,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "light",
+          "viewport": [
+            1024,
+            768
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 733,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "light",
+          "viewport": [
+            1366,
+            768
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 733,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "light",
+          "viewport": [
+            1920,
+            1080
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 889,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "light",
+          "viewport": [
+            2560,
+            1440
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 1069,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            390,
+            844
+          ],
+          "overflow": false,
+          "portrait": [
+            128,
+            126
+          ],
+          "composerBottom": 844,
+          "conversationHeight": 658
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            853,
+            1280
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 989,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            1024,
+            768
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 733,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            1366,
+            768
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 733,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            1920,
+            1080
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 889,
+          "conversationHeight": 484
+        },
+        {
+          "theme": "dark",
+          "viewport": [
+            2560,
+            1440
+          ],
+          "overflow": false,
+          "portrait": [
+            135,
+            133
+          ],
+          "composerBottom": 1069,
+          "conversationHeight": 484
+        }
+      ],
+      "zoom": {
+        "overflow": false,
+        "conversationHeight": 451
+      },
+      "hiddenFrameDelta": 0,
+      "closedFrameDelta": 0,
+      "openCloseCycles": 20,
+      "heapBefore": 32860460,
+      "heapAfter": 33012636,
+      "heapDelta": 152176,
+      "reducedState": "rest",
+      "pageErrorNames": []
+    },
+    "finalBundle": {
+      "gikaPanel": {
+        "bytes": 91003,
+        "gzip": 41482
+      },
+      "riveLazy": {
+        "bytes": 210823,
+        "gzip": 59316
+      },
+      "wasm": {
+        "bytes": 1992302,
+        "gzip": 819439
+      },
+      "rig": {
+        "bytes": 51569,
+        "gzip": 39858
+      },
+      "bootstrap": {
+        "files": [
+          {
+            "file": "index-B5NCF5Uj.js",
+            "raw": 1210129,
+            "gzip": 357090
+          },
+          {
+            "file": "jsx-runtime-BNakU3Ej.js",
+            "raw": 8243,
+            "gzip": 3129
+          },
+          {
+            "file": "preload-helper-BZ1Pz5am.js",
+            "raw": 1218,
+            "gzip": 691
+          },
+          {
+            "file": "rolldown-runtime-hePW80VL.js",
+            "raw": 716,
+            "gzip": 430
+          }
+        ],
+        "bytes": 1220306,
+        "gzip": 361340
+      }
+    },
+    "interpretation": "Local samples only. Entry warm opening unavailable. Bootstrap/login and deliberate viewport changes are not comparable opening CLS. No layout-shift entry during first-opening; no universal memory/leak claim.",
+    "heapSamplesCycleCounts": [
+      20,
+      40,
+      60
+    ],
+    "measuredOpenCloseCycles": 60,
+    "lastBuildBundle": {
+      "gikaPanel": {
+        "bytes": 91003,
+        "gzip": 41482
+      },
+      "riveLazy": {
+        "bytes": 210823,
+        "gzip": 59316
+      },
+      "wasm": {
+        "bytes": 1992302,
+        "gzip": 819439
+      },
+      "rig": {
+        "bytes": 51569,
+        "gzip": 39858
+      },
+      "bootstrap": {
+        "files": [
+          {
+            "file": "index-CxNdlAPq.js",
+            "raw": 1210129,
+            "gzip": 357093
+          },
+          {
+            "file": "jsx-runtime-BNakU3Ej.js",
+            "raw": 8243,
+            "gzip": 3129
+          },
+          {
+            "file": "preload-helper-BZ1Pz5am.js",
+            "raw": 1218,
+            "gzip": 691
+          },
+          {
+            "file": "rolldown-runtime-hePW80VL.js",
+            "raw": 716,
+            "gzip": 430
+          }
+        ],
+        "bytes": 1220306,
+        "gzip": 361343
+      }
+    }
+  },
+  "firstExecutions": {
+    "historicalEntryGika": {
+      "passed": 95,
+      "failed": 9,
+      "source": "M9_EVIDENCE historical essential integration; not retroactively green"
+    },
+    "fixtureFirst": {
+      "passed": 0,
+      "failed": 8,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika-launcher.spec.ts:3:1 › M9 launcher leaves logout reachable after scrolling a long agenda",
+          "result": "FAIL",
+          "seconds": 12.6
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:49:1 › M8 local detection, dismiss and meaningful re-evaluation never call the model",
+          "result": "FAIL",
+          "seconds": 0.141
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:60:1 › M8 explicit opt-in prepares editable text; only manual send produces existing preview, cancel never writes",
+          "result": "FAIL",
+          "seconds": 0.15
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:68:1 › M8 proposal uses original confirmation, real commands and receipts; no model on confirm",
+          "result": "FAIL",
+          "seconds": 0.128
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:76:1 › M8 offline click is local, no lazy AI panel, queue or reconnect execution",
+          "result": "FAIL",
+          "seconds": 0.133
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:81:1 › M8 preserves existing draft and rejects foreign UID/logout opener without request",
+          "result": "FAIL",
+          "seconds": 0.131
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:89:1 › M8 current Leve surface: desktop/mobile, light/dark, keyboard, zoom and Axe",
+          "result": "FAIL",
+          "seconds": 0.13
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:102:1 › M8 cancellation during lazy loading invalidates the pending draft and later intentions stay distinct",
+          "result": "FAIL",
+          "seconds": 0.144
+        }
+      ],
+      "cause": "New fixture TS2339; new launcher regression observed before scroll event settled"
+    },
+    "fixtureSecond": {
+      "passed": 1,
+      "failed": 7,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika-launcher.spec.ts:3:1 › M9 launcher leaves logout reachable after scrolling a long agenda",
+          "result": "PASS",
+          "seconds": 11.3
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:50:1 › M8 local detection, dismiss and meaningful re-evaluation never call the model",
+          "result": "FAIL",
+          "seconds": 14.5
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:61:1 › M8 explicit opt-in prepares editable text; only manual send produces existing preview, cancel never writes",
+          "result": "FAIL",
+          "seconds": 15.4
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:69:1 › M8 proposal uses original confirmation, real commands and receipts; no model on confirm",
+          "result": "FAIL",
+          "seconds": 16.0
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:77:1 › M8 offline click is local, no lazy AI panel, queue or reconnect execution",
+          "result": "FAIL",
+          "seconds": 13.7
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:82:1 › M8 preserves existing draft and rejects foreign UID/logout opener without request",
+          "result": "FAIL",
+          "seconds": 14.2
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:90:1 › M8 current Leve surface: desktop/mobile, light/dark, keyboard, zoom and Axe",
+          "result": "FAIL",
+          "seconds": 14.3
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:103:1 › M8 cancellation during lazy loading invalidates the pending draft and later intentions stay distinct",
+          "result": "FAIL",
+          "seconds": 14.6
+        }
+      ],
+      "cause": "New Auth emulator fixture lacked displayName; initial form required name and made no activation request"
+    },
+    "fixtureAfterCorrection": {
+      "passed": 8,
+      "failed": 0,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika-launcher.spec.ts:3:1 › M9 launcher leaves logout reachable after scrolling a long agenda",
+          "result": "PASS",
+          "seconds": 11.1
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:50:1 › M8 local detection, dismiss and meaningful re-evaluation never call the model",
+          "result": "PASS",
+          "seconds": 4.9
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:61:1 › M8 explicit opt-in prepares editable text; only manual send produces existing preview, cancel never writes",
+          "result": "PASS",
+          "seconds": 5.5
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:69:1 › M8 proposal uses original confirmation, real commands and receipts; no model on confirm",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:77:1 › M8 offline click is local, no lazy AI panel, queue or reconnect execution",
+          "result": "PASS",
+          "seconds": 5.3
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:82:1 › M8 preserves existing draft and rejects foreign UID/logout opener without request",
+          "result": "PASS",
+          "seconds": 6.1
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:90:1 › M8 current Leve surface: desktop/mobile, light/dark, keyboard, zoom and Axe",
+          "result": "PASS",
+          "seconds": 5.5
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:103:1 › M8 cancellation during lazy loading invalidates the pending draft and later intentions stay distinct",
+          "result": "PASS",
+          "seconds": 5.9
+        }
+      ]
+    },
+    "currentWideFirst": {
+      "passed": 104,
+      "failed": 1,
+      "duration": "16.4m",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika-batch.spec.ts:19:37 › M5-T4 desktop light complete exact preview, double click and success after final real ack",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/gika-batch.spec.ts:19:37 › M5-T4 mobile dark reschedule exact preview, double click and success after final real ack",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/gika-batch.spec.ts:33:1 › M5-T4 keyboard cancellation is terminal, no writes or receipts, reload restores no batch",
+          "result": "PASS",
+          "seconds": 8.8
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/gika-batch.spec.ts:39:59 › M5-T4 complete lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "result": "PASS",
+          "seconds": 9.0
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/gika-batch.spec.ts:39:59 › M5-T4 reschedule lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/gika-batch.spec.ts:46:1 › M5-T4 stale second target blocks the first commit and preserves the conventional edit",
+          "result": "PASS",
+          "seconds": 7.9
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/gika-batch.spec.ts:55:44 › M5-T4 tampered command target cannot affect excluded sibling or remaining tasks",
+          "result": "PASS",
+          "seconds": 7.4
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/gika-batch.spec.ts:55:44 › M5-T4 tampered command patch cannot affect excluded sibling or remaining tasks",
+          "result": "PASS",
+          "seconds": 7.8
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/gika-batch.spec.ts:60:1 › M5-T4 second lost ack reports partial result honestly and retry confirms both receipts",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/gika-batch.spec.ts:66:1 › M5-T4 logout discards preview and cannot execute old account batch",
+          "result": "PASS",
+          "seconds": 14.7
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/gika-batch.spec.ts:72:1 › M5-T4 explicitly scoped occurrence in batch leaves template and other recurrence members untouched",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/gika-batch.spec.ts:80:1 › M5-T4 max5 mobile360 preview keeps all targets and composer while only conversation scrolls",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/gika-batch.spec.ts:97:1 › M5-T4 closing after first commit keeps honest unknown state and reopening retries original receipts",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/gika-character.spec.ts:20:1 › Character lazy Rive: real frames, request thinking, narration never success, close cleanup",
+          "result": "PASS",
+          "seconds": 11.8
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/gika-character.spec.ts:57:1 › Character success only after real create command ack; failure and logout keep boundaries",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/gika-character.spec.ts:72:1 › Character reduced motion/offline/asset failure preserve faithful static draft and composer",
+          "result": "PASS",
+          "seconds": 7.3
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/gika-character.spec.ts:86:1 › Character actual raster/bones and all mode transitions render under deployment CSP",
+          "result": "PASS",
+          "seconds": 3.3
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 desktop light completion card only after real ack, exact target and double submit",
+          "result": "PASS",
+          "seconds": 10.3
+        },
+        {
+          "ordinal": 19,
+          "case": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 mobile dark completion card only after real ack, exact target and double submit",
+          "result": "PASS",
+          "seconds": 10.1
+        },
+        {
+          "ordinal": 20,
+          "case": "tests/e2e-local/gika-complete.spec.ts:32:1 › M4-T1 lost real ack retry retains exact identity and no extra state transition",
+          "result": "PASS",
+          "seconds": 7.3
+        },
+        {
+          "ordinal": 21,
+          "case": "tests/e2e-local/gika-complete.spec.ts:40:1 › M4-T1 ambiguity, missing and already completed are observations with no commands",
+          "result": "PASS",
+          "seconds": 6.6
+        },
+        {
+          "ordinal": 22,
+          "case": "tests/e2e-local/gika-complete.spec.ts:47:1 › M4-T1 conventional edit after resolution produces conflict without overwriting or automatic retry",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 23,
+          "case": "tests/e2e-local/gika-complete.spec.ts:56:1 › M4-T1 logout while resolution waits prevents completion dispatch",
+          "result": "PASS",
+          "seconds": 13.3
+        },
+        {
+          "ordinal": 24,
+          "case": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 desktop light: structured success after actual command, task survives reload",
+          "result": "PASS",
+          "seconds": 11.7
+        },
+        {
+          "ordinal": 25,
+          "case": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 mobile dark: structured success after actual command, task survives reload",
+          "result": "PASS",
+          "seconds": 10.3
+        },
+        {
+          "ordinal": 26,
+          "case": "tests/e2e-local/gika-create.spec.ts:51:1 › command failure preserves draft, never claims success, conventional agenda remains usable",
+          "result": "PASS",
+          "seconds": 7.1
+        },
+        {
+          "ordinal": 27,
+          "case": "tests/e2e-local/gika-create.spec.ts:64:1 › unknown descriptor fields fail before any commands; generated text cannot forge creation",
+          "result": "PASS",
+          "seconds": 5.9
+        },
+        {
+          "ordinal": 28,
+          "case": "tests/e2e-local/gika-create.spec.ts:73:1 › logout during upstream wait aborts creation before command dispatch",
+          "result": "PASS",
+          "seconds": 12.0
+        },
+        {
+          "ordinal": 29,
+          "case": "tests/e2e-local/gika-create.spec.ts:83:1 › M3-T2 double submit is one intent; identical content after success is a new intent",
+          "result": "PASS",
+          "seconds": 10.7
+        },
+        {
+          "ordinal": 30,
+          "case": "tests/e2e-local/gika-create.spec.ts:106:1 › M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate",
+          "result": "PASS",
+          "seconds": 11.9
+        },
+        {
+          "ordinal": 31,
+          "case": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 desktop light exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "result": "PASS",
+          "seconds": 15.5
+        },
+        {
+          "ordinal": 32,
+          "case": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 mobile dark exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "result": "PASS",
+          "seconds": 13.6
+        },
+        {
+          "ordinal": 33,
+          "case": "tests/e2e-local/gika-create.spec.ts:163:1 › M3-T3 lost undo acknowledgement: same operation retry without Gemini or second effect",
+          "result": "PASS",
+          "seconds": 9.9
+        },
+        {
+          "ordinal": 34,
+          "case": "tests/e2e-local/gika-create.spec.ts:180:1 › M3-T3 later edit conflicts, user work preserved by revision precondition",
+          "result": "PASS",
+          "seconds": 10.4
+        },
+        {
+          "ordinal": 35,
+          "case": "tests/e2e-local/gika-create.spec.ts:198:1 › M3-T3 close during lost acknowledgement then reopen permits same-ID reconciliation",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 36,
+          "case": "tests/e2e-local/gika-launcher.spec.ts:4:1 › M9 launcher leaves logout reachable after scrolling a long agenda",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 37,
+          "case": "tests/e2e-local/gika-organization.spec.ts:33:1 › M6 daily preview cancellation is terminal and preserves every task",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 38,
+          "case": "tests/e2e-local/gika-organization.spec.ts:38:1 › M6 daily confirm waits for real final ack, preserves kept tasks, accessible mobile dark",
+          "result": "PASS",
+          "seconds": 8.5
+        },
+        {
+          "ordinal": 39,
+          "case": "tests/e2e-local/gika-organization.spec.ts:46:50 › M6 stale blocks organization without broadened effect",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 40,
+          "case": "tests/e2e-local/gika-organization.spec.ts:46:50 › M6 tamper blocks organization without broadened effect",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 41,
+          "case": "tests/e2e-local/gika-organization.spec.ts:55:1 › M6 partial read reports incompleteness without an executable preview",
+          "result": "PASS",
+          "seconds": 6.6
+        },
+        {
+          "ordinal": 42,
+          "case": "tests/e2e-local/gika-organization.spec.ts:59:1 › M6 offline preserves draft and cannot propose or execute after reconnect",
+          "result": "PASS",
+          "seconds": 7.9
+        },
+        {
+          "ordinal": 43,
+          "case": "tests/e2e-local/gika-organization.spec.ts:63:1 › M6 logout invalidates prior organization without dispatch",
+          "result": "PASS",
+          "seconds": 9.3
+        },
+        {
+          "ordinal": 44,
+          "case": "tests/e2e-local/gika-organization.spec.ts:67:1 › M6 editing a new request invalidates the old preview before confirmation",
+          "result": "PASS",
+          "seconds": 7.7
+        },
+        {
+          "ordinal": 45,
+          "case": "tests/e2e-local/gika-organization.spec.ts:71:1 › M6 week uses the same explicit preview and real command acknowledgements",
+          "result": "PASS",
+          "seconds": 10.6
+        },
+        {
+          "ordinal": 46,
+          "case": "tests/e2e-local/gika-organization.spec.ts:74:1 › M6 pending organization cannot confirm offline and reconnect never autoexecutes",
+          "result": "PASS",
+          "seconds": 9.0
+        },
+        {
+          "ordinal": 47,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:45:1 › M8 local detection, dismiss and meaningful re-evaluation never call the model",
+          "result": "PASS",
+          "seconds": 4.1
+        },
+        {
+          "ordinal": 48,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:56:1 › M8 explicit opt-in prepares editable text; only manual send produces existing preview, cancel never writes",
+          "result": "PASS",
+          "seconds": 5.1
+        },
+        {
+          "ordinal": 49,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:64:1 › M8 proposal uses original confirmation, real commands and receipts; no model on confirm",
+          "result": "PASS",
+          "seconds": 5.9
+        },
+        {
+          "ordinal": 50,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:72:1 › M8 offline click is local, no lazy AI panel, queue or reconnect execution",
+          "result": "PASS",
+          "seconds": 4.8
+        },
+        {
+          "ordinal": 51,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:77:1 › M8 preserves existing draft and rejects foreign UID/logout opener without request",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 52,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:85:1 › M8 current Leve surface: desktop/mobile, light/dark, keyboard, zoom and Axe",
+          "result": "PASS",
+          "seconds": 5.1
+        },
+        {
+          "ordinal": 53,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:98:1 › M8 cancellation during lazy loading invalidates the pending draft and later intentions stay distinct",
+          "result": "PASS",
+          "seconds": 5.8
+        },
+        {
+          "ordinal": 54,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:17:1 › missing env real: fallback preserva draft e agenda convencional",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 55,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:35:1 › contrato real mostra tool result escapado, sem confirmação/undo ou commands",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 56,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:51:1 › mobile dark: partial/empty honestos, composer fixo e scroll separado",
+          "result": "PASS",
+          "seconds": 6.4
+        },
+        {
+          "ordinal": 57,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:71:1 › 429 e saída com command/preview real rejeitadas sem mutar",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 58,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:84:1 › API cancelada ao fechar/sair não publica resposta na segunda conta",
+          "result": "PASS",
+          "seconds": 13.4
+        },
+        {
+          "ordinal": 59,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:112:1 › E70: 503, timeout e resposta inválida permitem consultar calendário após fallback",
+          "result": "PASS",
+          "seconds": 7.7
+        },
+        {
+          "ordinal": 60,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:49:37 › M5-T3 desktop light occurrence preview, real ack and sibling isolation",
+          "result": "PASS",
+          "seconds": 10.1
+        },
+        {
+          "ordinal": 61,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:49:37 › M5-T3 mobile dark occurrence preview, real ack and sibling isolation",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 62,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:67:1 › M5-T3 scope cancellation and preview cancellation are terminal without commands",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 63,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:73:1 › M5-T3 future lost ack repeats receipt without new Gemini or scope choice",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 64,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:81:1 › M5-T3 tampered scope transport cannot change a sibling or execute future intent",
+          "result": "PASS",
+          "seconds": 7.7
+        },
+        {
+          "ordinal": 65,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:86:1 › M5-T3 logout invalidates old scope card and stale bridge cannot dispatch",
+          "result": "PASS",
+          "seconds": 14.0
+        },
+        {
+          "ordinal": 66,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:96:1 › M5-T3 reload does not restore preview or execute the unconfirmed action",
+          "result": "PASS",
+          "seconds": 9.3
+        },
+        {
+          "ordinal": 67,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:21:34 › M4-T3 desktop light preview, double tap, structured result after real ack",
+          "result": "PASS",
+          "seconds": 12.2
+        },
+        {
+          "ordinal": 68,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:21:34 › M4-T3 mobile dark preview, double tap, structured result after real ack",
+          "result": "PASS",
+          "seconds": 12.0
+        },
+        {
+          "ordinal": 69,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:30:1 › M4-T3 cancel preview produces no command",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 70,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:33:1 › M4-T3 lost actual acknowledgement repeats same operation without new Gemini or revision",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 71,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:36:1 › M4-T3 later conventional edit conflicts at original revision and preserves edit",
+          "result": "PASS",
+          "seconds": 10.7
+        },
+        {
+          "ordinal": 72,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:39:1 › M4-T3 observation partial/ambiguous/no-op never writes",
+          "result": "PASS",
+          "seconds": 7.9
+        },
+        {
+          "ordinal": 73,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:42:1 › M4-T3 logout during resolution discards preview without dispatch",
+          "result": "PASS",
+          "seconds": 15.4
+        },
+        {
+          "ordinal": 74,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:46:1 › M5-T2 keyboard cancellation is terminal, focused, no receipt and no reload restoration",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 75,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:55:1 › M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "result": "PASS",
+          "seconds": 9.2
+        },
+        {
+          "ordinal": 76,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:62:1 › M5-T2 tampered transport target or patch cannot apply a different approved effect",
+          "result": "PASS",
+          "seconds": 10.4
+        },
+        {
+          "ordinal": 77,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:69:1 › M5-T2 narrative confirmation and allow/clarify/deny observations never become executable cards",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 78,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:74:1 › M5-T2 logout after preview removes execution and stale account descriptor cannot dispatch",
+          "result": "PASS",
+          "seconds": 8.8
+        },
+        {
+          "ordinal": 79,
+          "case": "tests/e2e-local/gika-update.spec.ts:19:37 › M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "result": "PASS",
+          "seconds": 13.7
+        },
+        {
+          "ordinal": 80,
+          "case": "tests/e2e-local/gika-update.spec.ts:19:37 › M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "result": "PASS",
+          "seconds": 11.9
+        },
+        {
+          "ordinal": 81,
+          "case": "tests/e2e-local/gika-update.spec.ts:37:1 › M4-T2 lost real acknowledgement retries original operation without another revision",
+          "result": "PASS",
+          "seconds": 9.6
+        },
+        {
+          "ordinal": 82,
+          "case": "tests/e2e-local/gika-update.spec.ts:48:1 › M4-T2 no-op, ambiguous, missing and partial observations perform no command",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 83,
+          "case": "tests/e2e-local/gika-update.spec.ts:55:1 › M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "result": "PASS",
+          "seconds": 11.2
+        },
+        {
+          "ordinal": 84,
+          "case": "tests/e2e-local/gika-update.spec.ts:66:1 › M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "result": "PASS",
+          "seconds": 13.6
+        },
+        {
+          "ordinal": 85,
+          "case": "tests/e2e-local/gika-voice.spec.ts:37:1 › M7-T1 explicit gesture, accessible listening, editable final and conscious textual send",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 86,
+          "case": "tests/e2e-local/gika-voice.spec.ts:53:1 › M7-T1 cancellation ignores a late final and preserves typed text",
+          "result": "PASS",
+          "seconds": 7.1
+        },
+        {
+          "ordinal": 87,
+          "case": "tests/e2e-local/gika-voice.spec.ts:59:1 › M7-T1 denied microphone leaves textual composer functional without requests",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 88,
+          "case": "tests/e2e-local/gika-voice.spec.ts:65:1 › M7-T2 unsupported browser keeps normal text sending without capture",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 89,
+          "case": "tests/e2e-local/gika-voice.spec.ts:74:1 › M7-T2 offline aborts capture, preserves draft and reconnect never sends or restarts",
+          "result": "PASS",
+          "seconds": 8.1
+        },
+        {
+          "ordinal": 90,
+          "case": "tests/e2e-local/gika-voice.spec.ts:81:1 › M7-T2 logout and another UID discard late speech without text or requests",
+          "result": "PASS",
+          "seconds": 10.4
+        },
+        {
+          "ordinal": 91,
+          "case": "tests/e2e-local/gika-voice.spec.ts:99:1 › M7-T2 mobile dark append, double start, processing, cancellation and layout are accessible",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 92,
+          "case": "tests/e2e-local/gika.spec.ts:24:1 › painel acessível abre e fecha sem perder rascunho nem navegação",
+          "result": "PASS",
+          "seconds": 9.9
+        },
+        {
+          "ordinal": 93,
+          "case": "tests/e2e-local/gika.spec.ts:58:1 › composer preserva texto, permite sugestões e bloqueia envio offline",
+          "result": "PASS",
+          "seconds": 9.3
+        },
+        {
+          "ordinal": 94,
+          "case": "tests/e2e-local/gika.spec.ts:83:1 › falha mantém pergunta e retry não duplica a mensagem",
+          "result": "PASS",
+          "seconds": 7.3
+        },
+        {
+          "ordinal": 95,
+          "case": "tests/e2e-local/gika.spec.ts:106:1 › mock responde sem consulta, comandos ou duplicação por envio repetido",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 96,
+          "case": "tests/e2e-local/gika.spec.ts:127:1 › fechar cancela resposta pendente sem perder pergunta e sair limpa conversa",
+          "result": "PASS",
+          "seconds": 15.6
+        },
+        {
+          "ordinal": 97,
+          "case": "tests/e2e-local/gika.spec.ts:149:1 › IME não envia composição e uma saída inválida vira erro sem alegar sucesso",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 98,
+          "case": "tests/e2e-local/gika.spec.ts:165:1 › paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+          "result": "FAIL",
+          "seconds": 23.4
+        },
+        {
+          "ordinal": 99,
+          "case": "tests/e2e-local/gika.spec.ts:221:1 › painel cabe em mobile e botão não cobre navegação",
+          "result": "PASS",
+          "seconds": 6.2
+        },
+        {
+          "ordinal": 100,
+          "case": "tests/e2e-local/gika.spec.ts:238:1 › conversa da conta anterior não aparece em uma segunda conta",
+          "result": "PASS",
+          "seconds": 14.9
+        },
+        {
+          "ordinal": 101,
+          "case": "tests/e2e-local/gika.spec.ts:262:1 › falha de carregamento da Gika não desmonta a agenda",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 102,
+          "case": "tests/e2e-local/gika.spec.ts:273:1 › botão respeita cronômetro real em desktop e mobile",
+          "result": "PASS",
+          "seconds": 9.0
+        },
+        {
+          "ordinal": 103,
+          "case": "tests/e2e-local/gika.spec.ts:296:1 › rascunho editado durante resposta é mantido e offline cancela a resposta",
+          "result": "PASS",
+          "seconds": 12.3
+        },
+        {
+          "ordinal": 104,
+          "case": "tests/e2e-local/gika.spec.ts:323:1 › conversa tem scroll independente, composer expansível e cards apenas simulados",
+          "result": "PASS",
+          "seconds": 13.8
+        },
+        {
+          "ordinal": 105,
+          "case": "tests/e2e-local/gika.spec.ts:387:1 › launcher no calendário fica fora do grid e da navegação desktop",
+          "result": "PASS",
+          "seconds": 6.4
+        }
+      ],
+      "cause": "NEW_CSS_REFLOW_REGRESSION",
+      "stage": "UI layout, text 200%",
+      "observedFirstActionBottom": 701.6875,
+      "allowedFirstActionBottom": 614.8125,
+      "comparison": "Exact entry CSS reapplied to original palette case: PASS; first action bottom611.59375. CSS-only causal replay, not full entry run."
+    },
+    "reflowAfterCorrection": {
+      "passed": 1,
+      "failed": 0,
+      "duration": "32.4s total,19.3s case",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika.spec.ts:165:1 › paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+          "result": "PASS",
+          "seconds": 19.3
+        }
+      ]
+    },
+    "conventionalCurrentFirst": {
+      "passed": 17,
+      "failed": 1,
+      "total": 18,
+      "duration": "3.6m",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+          "result": "PASS",
+          "seconds": 12.4
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+          "result": "FAIL",
+          "seconds": 60.0
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/persistent.spec.ts:169:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/persistent.spec.ts:217:1 › lixeira global restaura item de compras",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/persistent.spec.ts:246:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+          "result": "PASS",
+          "seconds": 9.9
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/persistent.spec.ts:292:1 › conflito de nota entre abas preserva as duas versões",
+          "result": "PASS",
+          "seconds": 5.4
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/persistent.spec.ts:330:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+          "result": "PASS",
+          "seconds": 8.8
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/persistent.spec.ts:359:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+          "result": "PASS",
+          "seconds": 5.6
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/refinements.spec.ts:4:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+          "result": "PASS",
+          "seconds": 16.5
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:65:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+          "result": "PASS",
+          "seconds": 3.4
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:80:1 › intro aparece uma vez por período neste aparelho",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:99:1 › movimento reduzido mantém apenas ambientação estática",
+          "result": "PASS",
+          "seconds": 1.1
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:108:1 › preferência desligada remove toda a experiência e persiste no perfil",
+          "result": "PASS",
+          "seconds": 13.4
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:134:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:157:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:190:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+          "result": "PASS",
+          "seconds": 13.2
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "PASS",
+          "seconds": 6.6
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "PASS",
+          "seconds": 7.3
+        }
+      ],
+      "stage": "UI reconciliation/navigation after notes reload",
+      "lastSemanticState": "Tutorial still active; route /hoje; pinned note visible but no note Edit button on this route",
+      "classification": "PREEXISTING_FIXTURE_PRECONDITION_REPRODUCED_AT_ENTRY",
+      "entryComparison": {
+        "sha": "057744ff25c6f4a1bf7de281fd4406f76e428e33",
+        "passed": 0,
+        "failed": 1,
+        "caseSeconds": 60,
+        "fresh": true,
+        "sameStage": true,
+        "sameGuideOpenAndHomeRoute": true
+      },
+      "fix": "Finish guide through current UI before persistence/reload scenario; no product change or removed assertions",
+      "firstAfterCorrection": {
+        "passed": 1,
+        "failed": 0,
+        "caseSeconds": 23.6,
+        "totalSeconds": 32.5
+      }
+    },
+    "conventionalAfterOnboardingFix": {
+      "passed": 19,
+      "failed": 1,
+      "total": 20,
+      "duration": "3.1m",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: desktop light rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: mobile dark rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+          "result": "PASS",
+          "seconds": 11.1
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+          "result": "PASS",
+          "seconds": 22.6
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/persistent.spec.ts:172:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/persistent.spec.ts:220:1 › lixeira global restaura item de compras",
+          "result": "PASS",
+          "seconds": 6.6
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/persistent.spec.ts:249:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+          "result": "PASS",
+          "seconds": 9.7
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/persistent.spec.ts:295:1 › conflito de nota entre abas preserva as duas versões",
+          "result": "PASS",
+          "seconds": 6.1
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/persistent.spec.ts:333:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/persistent.spec.ts:362:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+          "result": "PASS",
+          "seconds": 5.8
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/refinements.spec.ts:4:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+          "result": "FAIL",
+          "seconds": 11.9
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:65:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+          "result": "PASS",
+          "seconds": 3.9
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:80:1 › intro aparece uma vez por período neste aparelho",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:99:1 › movimento reduzido mantém apenas ambientação estática",
+          "result": "PASS",
+          "seconds": 1.1
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:108:1 › preferência desligada remove toda a experiência e persiste no perfil",
+          "result": "PASS",
+          "seconds": 13.7
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:134:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:157:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+          "result": "PASS",
+          "seconds": 9.0
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:190:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+          "result": "PASS",
+          "seconds": 12.9
+        },
+        {
+          "ordinal": 19,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "PASS",
+          "seconds": 6.8
+        },
+        {
+          "ordinal": 20,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "PASS",
+          "seconds": 8.3
+        }
+      ],
+      "stage": "Calendar summary color assertion",
+      "observedTaskCount": 11,
+      "selectedColor": "#B76F88",
+      "targetAgendaBorderColor": "rgb(183, 111, 136)",
+      "summaryCap": 4,
+      "summaryColors": "First four indicators gray, Rosa excluded",
+      "classification": "OBSERVED_SHARED_FIXTURE_SUMMARY_MEMBERSHIP_ASSUMPTION",
+      "entryComparison": {
+        "sha": "057744ff25c6f4a1bf7de281fd4406f76e428e33",
+        "productUnmodified": true,
+        "fixtureDifference": "Same corrected persistent onboarding setup used for comparability",
+        "passed": 10,
+        "failed": 1,
+        "targetRefinements": "PASS_NOT_REPRODUCED",
+        "otherFailure": "Task not visible after trash restore and full navigation to home;10s observation timeout. Root cause not assigned.",
+        "limitation": "Sequence did not produce identical predecessor outcomes; no claim that the color failure reproduced at entry. Calendar limit/color renderer source byte-identical."
+      },
+      "fix": "Existing isolated Auth emulator account helper reused; unchanged selected-color assertion and calendar cap4; no product fix."
+    },
+    "entryConventionalSequenceWithSymlink": {
+      "passed": 9,
+      "failed": 2,
+      "targetRefinements": "PASS_NOT_REPRODUCED",
+      "classification": "COMPARISON_ENVIRONMENT_INVALID_RESOURCE_403",
+      "http403Categories": {
+        "FONT_FS_RESOURCE": 128
+      },
+      "nextComparison": "Physical dependency copy inside temporary root; no install/version/product-config change. EXDEV blocked hard-links; existing71 symlinks reused,45839 regular files checked by size, font/runtime SHA samples identical."
+    },
+    "conventionalAfterIsolationFix": {
+      "passed": 19,
+      "failed": 1,
+      "total": 20,
+      "duration": "3.9m",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: desktop light rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: mobile dark rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+          "result": "PASS",
+          "seconds": 11.1
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+          "result": "PASS",
+          "seconds": 21.3
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/persistent.spec.ts:172:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/persistent.spec.ts:220:1 › lixeira global restaura item de compras",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/persistent.spec.ts:249:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+          "result": "PASS",
+          "seconds": 9.6
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/persistent.spec.ts:295:1 › conflito de nota entre abas preserva as duas versões",
+          "result": "PASS",
+          "seconds": 6.4
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/persistent.spec.ts:333:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/persistent.spec.ts:362:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+          "result": "PASS",
+          "seconds": 5.4
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/refinements.spec.ts:5:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+          "result": "PASS",
+          "seconds": 16.0
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:65:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+          "result": "PASS",
+          "seconds": 3.6
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:80:1 › intro aparece uma vez por período neste aparelho",
+          "result": "PASS",
+          "seconds": 6.6
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:99:1 › movimento reduzido mantém apenas ambientação estática",
+          "result": "PASS",
+          "seconds": 1.2
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:108:1 › preferência desligada remove toda a experiência e persiste no perfil",
+          "result": "FAIL",
+          "seconds": 60.0
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:134:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:157:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+          "result": "PASS",
+          "seconds": 9.7
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:190:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+          "result": "PASS",
+          "seconds": 12.8
+        },
+        {
+          "ordinal": 19,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "PASS",
+          "seconds": 6.3
+        },
+        {
+          "ordinal": 20,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "PASS",
+          "seconds": 7.4
+        }
+      ],
+      "stage": "Cleanup full navigation to settings after preference assertions, not mutation/receipt execution",
+      "deadlineSeconds": 60,
+      "settingsResponseStatusCounts": {
+        "200": 2
+      },
+      "consoleErrorCategories": {
+        "ERR_INSUFFICIENT_RESOURCES": 23
+      },
+      "classification": "HARNESS_FULL_NAVIGATION_RESOURCE_FAILURE_REPRODUCED_AT_ENTRY",
+      "currentFocalBeforeFix": {
+        "passed": 0,
+        "failed": 1,
+        "stage": "Settings UI absent in cleanup",
+        "deadlineSeconds": 10,
+        "consoleErrorCategories": {
+          "ERR_INSUFFICIENT_RESOURCES": 14
+        }
+      },
+      "entryFocalBeforeFix": {
+        "sha": "057744ff25c6f4a1bf7de281fd4406f76e428e33",
+        "passed": 0,
+        "failed": 1,
+        "stage": "Cleanup full navigation pending",
+        "deadlineSeconds": 60,
+        "consoleErrorCategories": {
+          "ERR_INSUFFICIENT_RESOURCES": 20
+        }
+      },
+      "fix": "Harness uses actual SPA navigation links and asserts settings URL; original preference/reload assertions and deadlines unchanged. No seasonal/product code fix.",
+      "firstFocalAfterFix": {
+        "passed": 1,
+        "failed": 0,
+        "caseSeconds": 9,
+        "totalSeconds": 18.5
+      }
+    },
+    "conventionalAfterSpaSeasonalFix": {
+      "passed": 18,
+      "failed": 2,
+      "total": 20,
+      "duration": "5.5m",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: desktop light rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.3
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: mobile dark rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+          "result": "PASS",
+          "seconds": 9.3
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+          "result": "FAIL",
+          "seconds": 30.4
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/persistent.spec.ts:172:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+          "result": "PASS",
+          "seconds": 7.3
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/persistent.spec.ts:220:1 › lixeira global restaura item de compras",
+          "result": "PASS",
+          "seconds": 6.3
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/persistent.spec.ts:249:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+          "result": "PASS",
+          "seconds": 10.8
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/persistent.spec.ts:295:1 › conflito de nota entre abas preserva as duas versões",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/persistent.spec.ts:333:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+          "result": "PASS",
+          "seconds": 9.6
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/persistent.spec.ts:362:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+          "result": "PASS",
+          "seconds": 6.2
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/refinements.spec.ts:5:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+          "result": "FAIL",
+          "seconds": 150.0
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:66:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+          "result": "PASS",
+          "seconds": 4.2
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:81:1 › intro aparece uma vez por período neste aparelho",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:100:1 › movimento reduzido mantém apenas ambientação estática",
+          "result": "PASS",
+          "seconds": 1.2
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:109:1 › preferência desligada remove toda a experiência e persiste no perfil",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:135:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+          "result": "PASS",
+          "seconds": 7.9
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:158:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:191:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+          "result": "PASS",
+          "seconds": 12.1
+        },
+        {
+          "ordinal": 19,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "PASS",
+          "seconds": 6.4
+        },
+        {
+          "ordinal": 20,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "PASS",
+          "seconds": 8.0
+        }
+      ],
+      "failures": [
+        {
+          "case": "persistent reload",
+          "stage": "Task absent after restore and full navigation to home,10s observation timeout",
+          "consoleErrorCategories": {
+            "ERR_INSUFFICIENT_RESOURCES": 7
+          },
+          "classification": "Same missing-task observation at entry; physical root cause not equated. Harness had no wait for restored row disappearance before full navigation.",
+          "fix": "Wait for real trash row removal, use SPA navigation; final reload retained."
+        },
+        {
+          "case": "refinements",
+          "stage": "Ver tutorial novamente absent while initial guide already visible on home;150s",
+          "consoleErrorCategories": {},
+          "classification": "NEW_FIXTURE_ONBOARDING_RACE_AFTER_ACCOUNT_ISOLATION",
+          "fix": "New account requires guide: await actual Pular guia action instead of immediate isVisible check."
+        }
+      ],
+      "firstFocalAfterSemanticFix": {
+        "passed": 2,
+        "failed": 0,
+        "totalSeconds": 49.1,
+        "persistentCaseSeconds": 22.9,
+        "refinementsCaseSeconds": 16.2
+      }
+    },
+    "conventionalCleanPerFileFirst": {
+      "passed": 18,
+      "failed": 2,
+      "total": 20,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: desktop light rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.8
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: mobile dark rendering and profile command survive reload",
+          "result": "PASS",
+          "seconds": 7.7
+        },
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+          "result": "PASS",
+          "seconds": 11.1
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+          "result": "PASS",
+          "seconds": 21.8
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/persistent.spec.ts:173:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/persistent.spec.ts:221:1 › lixeira global restaura item de compras",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/persistent.spec.ts:250:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/persistent.spec.ts:296:1 › conflito de nota entre abas preserva as duas versões",
+          "result": "PASS",
+          "seconds": 5.7
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/persistent.spec.ts:334:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/persistent.spec.ts:363:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+          "result": "PASS",
+          "seconds": 5.2
+        },
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/refinements.spec.ts:5:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+          "result": "PASS",
+          "seconds": 17.7
+        },
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:66:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+          "result": "PASS",
+          "seconds": 3.2
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:81:1 › intro aparece uma vez por período neste aparelho",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:100:1 › movimento reduzido mantém apenas ambientação estática",
+          "result": "PASS",
+          "seconds": 1.2
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:109:1 › preferência desligada remove toda a experiência e persiste no perfil",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:135:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:158:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/seasonal-experience.spec.ts:191:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+          "result": "PASS",
+          "seconds": 12.5
+        },
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "FAIL",
+          "seconds": 13.4
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "FAIL",
+          "seconds": 13.0
+        }
+      ],
+      "sessionCause": "Both timer cases fail at initial page-title: Finalize sua agenda instead of Meu dia; no timer execution. Same two failures reproduced on immutable entry before modifying test."
+    },
+    "sessionEntryFresh": {
+      "passed": 0,
+      "failed": 2,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "FAIL",
+          "seconds": 12.6
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "FAIL",
+          "seconds": 12.7
+        }
+      ],
+      "classification": "PREEXISTING_HARNESS_BOOTSTRAP_DEPENDENCY"
+    },
+    "sessionAfterSetupCorrection": {
+      "passed": 2,
+      "failed": 0,
+      "duration": "24.0s",
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/session.spec.ts:16:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/session.spec.ts:44:1 › cronômetro continua contando fora do detalhe da atividade",
+          "result": "PASS",
+          "seconds": 7.1
+        }
+      ],
+      "change": "Activate and skip initial guide through conventional UI before timer cases; no timer code/clock/deadline/assertion change."
+    }
+  },
+  "gates": {
+    "gikaFullFinal": {
+      "passed": 105,
+      "failed": 0,
+      "duration": "16.2m",
+      "freshEmulators": true,
+      "workers": 1,
+      "cases": [
+        {
+          "ordinal": 1,
+          "case": "tests/e2e-local/gika-batch.spec.ts:19:37 › M5-T4 desktop light complete exact preview, double click and success after final real ack",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 2,
+          "case": "tests/e2e-local/gika-batch.spec.ts:19:37 › M5-T4 mobile dark reschedule exact preview, double click and success after final real ack",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 3,
+          "case": "tests/e2e-local/gika-batch.spec.ts:33:1 › M5-T4 keyboard cancellation is terminal, no writes or receipts, reload restores no batch",
+          "result": "PASS",
+          "seconds": 8.8
+        },
+        {
+          "ordinal": 4,
+          "case": "tests/e2e-local/gika-batch.spec.ts:39:59 › M5-T4 complete lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 5,
+          "case": "tests/e2e-local/gika-batch.spec.ts:39:59 › M5-T4 reschedule lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 6,
+          "case": "tests/e2e-local/gika-batch.spec.ts:46:1 › M5-T4 stale second target blocks the first commit and preserves the conventional edit",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 7,
+          "case": "tests/e2e-local/gika-batch.spec.ts:55:44 › M5-T4 tampered command target cannot affect excluded sibling or remaining tasks",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 8,
+          "case": "tests/e2e-local/gika-batch.spec.ts:55:44 › M5-T4 tampered command patch cannot affect excluded sibling or remaining tasks",
+          "result": "PASS",
+          "seconds": 7.7
+        },
+        {
+          "ordinal": 9,
+          "case": "tests/e2e-local/gika-batch.spec.ts:60:1 › M5-T4 second lost ack reports partial result honestly and retry confirms both receipts",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 10,
+          "case": "tests/e2e-local/gika-batch.spec.ts:66:1 › M5-T4 logout discards preview and cannot execute old account batch",
+          "result": "PASS",
+          "seconds": 13.6
+        },
+        {
+          "ordinal": 11,
+          "case": "tests/e2e-local/gika-batch.spec.ts:72:1 › M5-T4 explicitly scoped occurrence in batch leaves template and other recurrence members untouched",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 12,
+          "case": "tests/e2e-local/gika-batch.spec.ts:80:1 › M5-T4 max5 mobile360 preview keeps all targets and composer while only conversation scrolls",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 13,
+          "case": "tests/e2e-local/gika-batch.spec.ts:97:1 › M5-T4 closing after first commit keeps honest unknown state and reopening retries original receipts",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 14,
+          "case": "tests/e2e-local/gika-character.spec.ts:20:1 › Character lazy Rive: real frames, request thinking, narration never success, close cleanup",
+          "result": "PASS",
+          "seconds": 11.6
+        },
+        {
+          "ordinal": 15,
+          "case": "tests/e2e-local/gika-character.spec.ts:57:1 › Character success only after real create command ack; failure and logout keep boundaries",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 16,
+          "case": "tests/e2e-local/gika-character.spec.ts:72:1 › Character reduced motion/offline/asset failure preserve faithful static draft and composer",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 17,
+          "case": "tests/e2e-local/gika-character.spec.ts:86:1 › Character actual raster/bones and all mode transitions render under deployment CSP",
+          "result": "PASS",
+          "seconds": 3.3
+        },
+        {
+          "ordinal": 18,
+          "case": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 desktop light completion card only after real ack, exact target and double submit",
+          "result": "PASS",
+          "seconds": 10.5
+        },
+        {
+          "ordinal": 19,
+          "case": "tests/e2e-local/gika-complete.spec.ts:18:34 › M4-T1 mobile dark completion card only after real ack, exact target and double submit",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 20,
+          "case": "tests/e2e-local/gika-complete.spec.ts:32:1 › M4-T1 lost real ack retry retains exact identity and no extra state transition",
+          "result": "PASS",
+          "seconds": 7.4
+        },
+        {
+          "ordinal": 21,
+          "case": "tests/e2e-local/gika-complete.spec.ts:40:1 › M4-T1 ambiguity, missing and already completed are observations with no commands",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 22,
+          "case": "tests/e2e-local/gika-complete.spec.ts:47:1 › M4-T1 conventional edit after resolution produces conflict without overwriting or automatic retry",
+          "result": "PASS",
+          "seconds": 9.3
+        },
+        {
+          "ordinal": 23,
+          "case": "tests/e2e-local/gika-complete.spec.ts:56:1 › M4-T1 logout while resolution waits prevents completion dispatch",
+          "result": "PASS",
+          "seconds": 13.5
+        },
+        {
+          "ordinal": 24,
+          "case": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 desktop light: structured success after actual command, task survives reload",
+          "result": "PASS",
+          "seconds": 11.2
+        },
+        {
+          "ordinal": 25,
+          "case": "tests/e2e-local/gika-create.spec.ts:27:37 › E10 mobile dark: structured success after actual command, task survives reload",
+          "result": "PASS",
+          "seconds": 10.0
+        },
+        {
+          "ordinal": 26,
+          "case": "tests/e2e-local/gika-create.spec.ts:51:1 › command failure preserves draft, never claims success, conventional agenda remains usable",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 27,
+          "case": "tests/e2e-local/gika-create.spec.ts:64:1 › unknown descriptor fields fail before any commands; generated text cannot forge creation",
+          "result": "PASS",
+          "seconds": 6.1
+        },
+        {
+          "ordinal": 28,
+          "case": "tests/e2e-local/gika-create.spec.ts:73:1 › logout during upstream wait aborts creation before command dispatch",
+          "result": "PASS",
+          "seconds": 13.0
+        },
+        {
+          "ordinal": 29,
+          "case": "tests/e2e-local/gika-create.spec.ts:83:1 › M3-T2 double submit is one intent; identical content after success is a new intent",
+          "result": "PASS",
+          "seconds": 10.3
+        },
+        {
+          "ordinal": 30,
+          "case": "tests/e2e-local/gika-create.spec.ts:106:1 › M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate",
+          "result": "PASS",
+          "seconds": 11.5
+        },
+        {
+          "ordinal": 31,
+          "case": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 desktop light exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "result": "PASS",
+          "seconds": 14.8
+        },
+        {
+          "ordinal": 32,
+          "case": "tests/e2e-local/gika-create.spec.ts:132:37 › M3-T3 mobile dark exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "result": "PASS",
+          "seconds": 13.6
+        },
+        {
+          "ordinal": 33,
+          "case": "tests/e2e-local/gika-create.spec.ts:163:1 › M3-T3 lost undo acknowledgement: same operation retry without Gemini or second effect",
+          "result": "PASS",
+          "seconds": 9.8
+        },
+        {
+          "ordinal": 34,
+          "case": "tests/e2e-local/gika-create.spec.ts:180:1 › M3-T3 later edit conflicts, user work preserved by revision precondition",
+          "result": "PASS",
+          "seconds": 10.4
+        },
+        {
+          "ordinal": 35,
+          "case": "tests/e2e-local/gika-create.spec.ts:198:1 › M3-T3 close during lost acknowledgement then reopen permits same-ID reconciliation",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 36,
+          "case": "tests/e2e-local/gika-launcher.spec.ts:4:1 › M9 launcher leaves logout reachable after scrolling a long agenda",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 37,
+          "case": "tests/e2e-local/gika-organization.spec.ts:33:1 › M6 daily preview cancellation is terminal and preserves every task",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 38,
+          "case": "tests/e2e-local/gika-organization.spec.ts:38:1 › M6 daily confirm waits for real final ack, preserves kept tasks, accessible mobile dark",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 39,
+          "case": "tests/e2e-local/gika-organization.spec.ts:46:50 › M6 stale blocks organization without broadened effect",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 40,
+          "case": "tests/e2e-local/gika-organization.spec.ts:46:50 › M6 tamper blocks organization without broadened effect",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 41,
+          "case": "tests/e2e-local/gika-organization.spec.ts:55:1 › M6 partial read reports incompleteness without an executable preview",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 42,
+          "case": "tests/e2e-local/gika-organization.spec.ts:59:1 › M6 offline preserves draft and cannot propose or execute after reconnect",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 43,
+          "case": "tests/e2e-local/gika-organization.spec.ts:63:1 › M6 logout invalidates prior organization without dispatch",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 44,
+          "case": "tests/e2e-local/gika-organization.spec.ts:67:1 › M6 editing a new request invalidates the old preview before confirmation",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 45,
+          "case": "tests/e2e-local/gika-organization.spec.ts:71:1 › M6 week uses the same explicit preview and real command acknowledgements",
+          "result": "PASS",
+          "seconds": 10.1
+        },
+        {
+          "ordinal": 46,
+          "case": "tests/e2e-local/gika-organization.spec.ts:74:1 › M6 pending organization cannot confirm offline and reconnect never autoexecutes",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 47,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:45:1 › M8 local detection, dismiss and meaningful re-evaluation never call the model",
+          "result": "PASS",
+          "seconds": 4.2
+        },
+        {
+          "ordinal": 48,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:56:1 › M8 explicit opt-in prepares editable text; only manual send produces existing preview, cancel never writes",
+          "result": "PASS",
+          "seconds": 5.5
+        },
+        {
+          "ordinal": 49,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:64:1 › M8 proposal uses original confirmation, real commands and receipts; no model on confirm",
+          "result": "PASS",
+          "seconds": 5.7
+        },
+        {
+          "ordinal": 50,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:72:1 › M8 offline click is local, no lazy AI panel, queue or reconnect execution",
+          "result": "PASS",
+          "seconds": 5.4
+        },
+        {
+          "ordinal": 51,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:77:1 › M8 preserves existing draft and rejects foreign UID/logout opener without request",
+          "result": "PASS",
+          "seconds": 6.8
+        },
+        {
+          "ordinal": 52,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:85:1 › M8 current Leve surface: desktop/mobile, light/dark, keyboard, zoom and Axe",
+          "result": "PASS",
+          "seconds": 5.4
+        },
+        {
+          "ordinal": 53,
+          "case": "tests/e2e-local/gika-proactivity.spec.ts:98:1 › M8 cancellation during lazy loading invalidates the pending draft and later intentions stay distinct",
+          "result": "PASS",
+          "seconds": 6.1
+        },
+        {
+          "ordinal": 54,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:17:1 › missing env real: fallback preserva draft e agenda convencional",
+          "result": "PASS",
+          "seconds": 8.5
+        },
+        {
+          "ordinal": 55,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:35:1 › contrato real mostra tool result escapado, sem confirmação/undo ou commands",
+          "result": "PASS",
+          "seconds": 7.8
+        },
+        {
+          "ordinal": 56,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:51:1 › mobile dark: partial/empty honestos, composer fixo e scroll separado",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 57,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:71:1 › 429 e saída com command/preview real rejeitadas sem mutar",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 58,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:84:1 › API cancelada ao fechar/sair não publica resposta na segunda conta",
+          "result": "PASS",
+          "seconds": 12.6
+        },
+        {
+          "ordinal": 59,
+          "case": "tests/e2e-local/gika-readonly.spec.ts:112:1 › E70: 503, timeout e resposta inválida permitem consultar calendário após fallback",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 60,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:49:37 › M5-T3 desktop light occurrence preview, real ack and sibling isolation",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 61,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:49:37 › M5-T3 mobile dark occurrence preview, real ack and sibling isolation",
+          "result": "PASS",
+          "seconds": 8.0
+        },
+        {
+          "ordinal": 62,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:67:1 › M5-T3 scope cancellation and preview cancellation are terminal without commands",
+          "result": "PASS",
+          "seconds": 7.8
+        },
+        {
+          "ordinal": 63,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:73:1 › M5-T3 future lost ack repeats receipt without new Gemini or scope choice",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 64,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:81:1 › M5-T3 tampered scope transport cannot change a sibling or execute future intent",
+          "result": "PASS",
+          "seconds": 8.6
+        },
+        {
+          "ordinal": 65,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:86:1 › M5-T3 logout invalidates old scope card and stale bridge cannot dispatch",
+          "result": "PASS",
+          "seconds": 14.2
+        },
+        {
+          "ordinal": 66,
+          "case": "tests/e2e-local/gika-recurrence.spec.ts:96:1 › M5-T3 reload does not restore preview or execute the unconfirmed action",
+          "result": "PASS",
+          "seconds": 9.4
+        },
+        {
+          "ordinal": 67,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:21:34 › M4-T3 desktop light preview, double tap, structured result after real ack",
+          "result": "PASS",
+          "seconds": 12.8
+        },
+        {
+          "ordinal": 68,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:21:34 › M4-T3 mobile dark preview, double tap, structured result after real ack",
+          "result": "PASS",
+          "seconds": 11.5
+        },
+        {
+          "ordinal": 69,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:30:1 › M4-T3 cancel preview produces no command",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 70,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:33:1 › M4-T3 lost actual acknowledgement repeats same operation without new Gemini or revision",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 71,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:36:1 › M4-T3 later conventional edit conflicts at original revision and preserves edit",
+          "result": "PASS",
+          "seconds": 10.7
+        },
+        {
+          "ordinal": 72,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:39:1 › M4-T3 observation partial/ambiguous/no-op never writes",
+          "result": "PASS",
+          "seconds": 7.8
+        },
+        {
+          "ordinal": 73,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:42:1 › M4-T3 logout during resolution discards preview without dispatch",
+          "result": "PASS",
+          "seconds": 14.4
+        },
+        {
+          "ordinal": 74,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:46:1 › M5-T2 keyboard cancellation is terminal, focused, no receipt and no reload restoration",
+          "result": "PASS",
+          "seconds": 9.1
+        },
+        {
+          "ordinal": 75,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:55:1 › M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "result": "PASS",
+          "seconds": 8.9
+        },
+        {
+          "ordinal": 76,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:62:1 › M5-T2 tampered transport target or patch cannot apply a different approved effect",
+          "result": "PASS",
+          "seconds": 10.1
+        },
+        {
+          "ordinal": 77,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:69:1 › M5-T2 narrative confirmation and allow/clarify/deny observations never become executable cards",
+          "result": "PASS",
+          "seconds": 6.9
+        },
+        {
+          "ordinal": 78,
+          "case": "tests/e2e-local/gika-reschedule.spec.ts:74:1 › M5-T2 logout after preview removes execution and stale account descriptor cannot dispatch",
+          "result": "PASS",
+          "seconds": 8.2
+        },
+        {
+          "ordinal": 79,
+          "case": "tests/e2e-local/gika-update.spec.ts:19:37 › M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "result": "PASS",
+          "seconds": 13.1
+        },
+        {
+          "ordinal": 80,
+          "case": "tests/e2e-local/gika-update.spec.ts:19:37 › M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "result": "PASS",
+          "seconds": 11.1
+        },
+        {
+          "ordinal": 81,
+          "case": "tests/e2e-local/gika-update.spec.ts:37:1 › M4-T2 lost real acknowledgement retries original operation without another revision",
+          "result": "PASS",
+          "seconds": 9.9
+        },
+        {
+          "ordinal": 82,
+          "case": "tests/e2e-local/gika-update.spec.ts:48:1 › M4-T2 no-op, ambiguous, missing and partial observations perform no command",
+          "result": "PASS",
+          "seconds": 7.2
+        },
+        {
+          "ordinal": 83,
+          "case": "tests/e2e-local/gika-update.spec.ts:55:1 › M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "result": "PASS",
+          "seconds": 11.0
+        },
+        {
+          "ordinal": 84,
+          "case": "tests/e2e-local/gika-update.spec.ts:66:1 › M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "result": "PASS",
+          "seconds": 14.4
+        },
+        {
+          "ordinal": 85,
+          "case": "tests/e2e-local/gika-voice.spec.ts:37:1 › M7-T1 explicit gesture, accessible listening, editable final and conscious textual send",
+          "result": "PASS",
+          "seconds": 7.6
+        },
+        {
+          "ordinal": 86,
+          "case": "tests/e2e-local/gika-voice.spec.ts:53:1 › M7-T1 cancellation ignores a late final and preserves typed text",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 87,
+          "case": "tests/e2e-local/gika-voice.spec.ts:59:1 › M7-T1 denied microphone leaves textual composer functional without requests",
+          "result": "PASS",
+          "seconds": 6.4
+        },
+        {
+          "ordinal": 88,
+          "case": "tests/e2e-local/gika-voice.spec.ts:65:1 › M7-T2 unsupported browser keeps normal text sending without capture",
+          "result": "PASS",
+          "seconds": 6.7
+        },
+        {
+          "ordinal": 89,
+          "case": "tests/e2e-local/gika-voice.spec.ts:74:1 › M7-T2 offline aborts capture, preserves draft and reconnect never sends or restarts",
+          "result": "PASS",
+          "seconds": 7.5
+        },
+        {
+          "ordinal": 90,
+          "case": "tests/e2e-local/gika-voice.spec.ts:81:1 › M7-T2 logout and another UID discard late speech without text or requests",
+          "result": "PASS",
+          "seconds": 10.4
+        },
+        {
+          "ordinal": 91,
+          "case": "tests/e2e-local/gika-voice.spec.ts:99:1 › M7-T2 mobile dark append, double start, processing, cancellation and layout are accessible",
+          "result": "PASS",
+          "seconds": 6.3
+        },
+        {
+          "ordinal": 92,
+          "case": "tests/e2e-local/gika.spec.ts:24:1 › painel acessível abre e fecha sem perder rascunho nem navegação",
+          "result": "PASS",
+          "seconds": 9.6
+        },
+        {
+          "ordinal": 93,
+          "case": "tests/e2e-local/gika.spec.ts:58:1 › composer preserva texto, permite sugestões e bloqueia envio offline",
+          "result": "PASS",
+          "seconds": 9.2
+        },
+        {
+          "ordinal": 94,
+          "case": "tests/e2e-local/gika.spec.ts:83:1 › falha mantém pergunta e retry não duplica a mensagem",
+          "result": "PASS",
+          "seconds": 7.0
+        },
+        {
+          "ordinal": 95,
+          "case": "tests/e2e-local/gika.spec.ts:106:1 › mock responde sem consulta, comandos ou duplicação por envio repetido",
+          "result": "PASS",
+          "seconds": 8.3
+        },
+        {
+          "ordinal": 96,
+          "case": "tests/e2e-local/gika.spec.ts:127:1 › fechar cancela resposta pendente sem perder pergunta e sair limpa conversa",
+          "result": "PASS",
+          "seconds": 15.4
+        },
+        {
+          "ordinal": 97,
+          "case": "tests/e2e-local/gika.spec.ts:149:1 › IME não envia composição e uma saída inválida vira erro sem alegar sucesso",
+          "result": "PASS",
+          "seconds": 7.4
+        },
+        {
+          "ordinal": 98,
+          "case": "tests/e2e-local/gika.spec.ts:165:1 › paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+          "result": "PASS",
+          "seconds": 22.0
+        },
+        {
+          "ordinal": 99,
+          "case": "tests/e2e-local/gika.spec.ts:221:1 › painel cabe em mobile e botão não cobre navegação",
+          "result": "PASS",
+          "seconds": 6.5
+        },
+        {
+          "ordinal": 100,
+          "case": "tests/e2e-local/gika.spec.ts:238:1 › conversa da conta anterior não aparece em uma segunda conta",
+          "result": "PASS",
+          "seconds": 14.9
+        },
+        {
+          "ordinal": 101,
+          "case": "tests/e2e-local/gika.spec.ts:262:1 › falha de carregamento da Gika não desmonta a agenda",
+          "result": "PASS",
+          "seconds": 6.8
+        },
+        {
+          "ordinal": 102,
+          "case": "tests/e2e-local/gika.spec.ts:273:1 › botão respeita cronômetro real em desktop e mobile",
+          "result": "PASS",
+          "seconds": 8.7
+        },
+        {
+          "ordinal": 103,
+          "case": "tests/e2e-local/gika.spec.ts:296:1 › rascunho editado durante resposta é mantido e offline cancela a resposta",
+          "result": "PASS",
+          "seconds": 12.7
+        },
+        {
+          "ordinal": 104,
+          "case": "tests/e2e-local/gika.spec.ts:323:1 › conversa tem scroll independente, composer expansível e cards apenas simulados",
+          "result": "PASS",
+          "seconds": 13.3
+        },
+        {
+          "ordinal": 105,
+          "case": "tests/e2e-local/gika.spec.ts:387:1 › launcher no calendário fica fora do grid e da navegação desktop",
+          "result": "PASS",
+          "seconds": 6.5
+        }
+      ]
+    },
+    "remaining": "TECHNICAL_GATES_PASS_VISUAL_GATE_BLOCKED",
+    "remainingRunsBeforeConventionalFailure": [
+      {
+        "gate": "unit-final",
+        "exitCode": 0,
+        "seconds": 11.53
+      },
+      {
+        "gate": "integration-final",
+        "exitCode": 0,
+        "seconds": 82.9
+      },
+      {
+        "gate": "shell-final",
+        "exitCode": 0,
+        "seconds": 37.62
+      },
+      {
+        "gate": "planner-final",
+        "exitCode": 0,
+        "seconds": 195.49
+      },
+      {
+        "gate": "conventional-final",
+        "exitCode": 1,
+        "seconds": 214.29
+      }
+    ],
+    "finalConventionalPlan": "Five unchanged case sets in separate fresh serial emulator/API/dev/browser processes,2avatar+8persistent+1refinements+7seasonal+2session=20. No skips/deadline/retry changes. Earlier wide results remain failed.",
+    "conventionalFinal": {
+      "passed": 20,
+      "failed": 0,
+      "method": "Five separate fresh emulator/API/dev/browser processes. Four unchanged passing files retained; only session rerun after demonstrated setup correction. This does not make any earlier failed wide run green.",
+      "files": [
+        {
+          "file": "avatar-security.spec.ts",
+          "freshEmulators": true,
+          "workers": 1,
+          "passed": 2,
+          "failed": 0,
+          "cases": [
+            {
+              "ordinal": 1,
+              "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: desktop light rendering and profile command survive reload",
+              "result": "PASS",
+              "seconds": 7.8
+            },
+            {
+              "ordinal": 2,
+              "case": "tests/e2e-local/avatar-security.spec.ts:3:37 › avatar security patch: mobile dark rendering and profile command survive reload",
+              "result": "PASS",
+              "seconds": 7.7
+            }
+          ]
+        },
+        {
+          "file": "persistent.spec.ts",
+          "freshEmulators": true,
+          "workers": 1,
+          "passed": 8,
+          "failed": 0,
+          "cases": [
+            {
+              "ordinal": 1,
+              "case": "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+              "result": "PASS",
+              "seconds": 11.1
+            },
+            {
+              "ordinal": 2,
+              "case": "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload",
+              "result": "PASS",
+              "seconds": 21.8
+            },
+            {
+              "ordinal": 3,
+              "case": "tests/e2e-local/persistent.spec.ts:173:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+              "result": "PASS",
+              "seconds": 6.7
+            },
+            {
+              "ordinal": 4,
+              "case": "tests/e2e-local/persistent.spec.ts:221:1 › lixeira global restaura item de compras",
+              "result": "PASS",
+              "seconds": 7.2
+            },
+            {
+              "ordinal": 5,
+              "case": "tests/e2e-local/persistent.spec.ts:250:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+              "result": "PASS",
+              "seconds": 9.8
+            },
+            {
+              "ordinal": 6,
+              "case": "tests/e2e-local/persistent.spec.ts:296:1 › conflito de nota entre abas preserva as duas versões",
+              "result": "PASS",
+              "seconds": 5.7
+            },
+            {
+              "ordinal": 7,
+              "case": "tests/e2e-local/persistent.spec.ts:334:1 › teclado e reflow equivalente a zoom de 200% mantêm todas as rotas acessíveis",
+              "result": "PASS",
+              "seconds": 9.8
+            },
+            {
+              "ordinal": 8,
+              "case": "tests/e2e-local/persistent.spec.ts:363:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+              "result": "PASS",
+              "seconds": 5.2
+            }
+          ]
+        },
+        {
+          "file": "refinements.spec.ts",
+          "freshEmulators": true,
+          "workers": 1,
+          "passed": 1,
+          "failed": 0,
+          "cases": [
+            {
+              "ordinal": 1,
+              "case": "tests/e2e-local/refinements.spec.ts:5:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+              "result": "PASS",
+              "seconds": 17.7
+            }
+          ]
+        },
+        {
+          "file": "seasonal-experience.spec.ts",
+          "freshEmulators": true,
+          "workers": 1,
+          "passed": 7,
+          "failed": 0,
+          "cases": [
+            {
+              "ordinal": 1,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:66:1 › Natal aparece de forma decorativa, sem bloquear a entrada",
+              "result": "PASS",
+              "seconds": 3.2
+            },
+            {
+              "ordinal": 2,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:81:1 › intro aparece uma vez por período neste aparelho",
+              "result": "PASS",
+              "seconds": 7.2
+            },
+            {
+              "ordinal": 3,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:100:1 › movimento reduzido mantém apenas ambientação estática",
+              "result": "PASS",
+              "seconds": 1.2
+            },
+            {
+              "ordinal": 4,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:109:1 › preferência desligada remove toda a experiência e persiste no perfil",
+              "result": "PASS",
+              "seconds": 8.6
+            },
+            {
+              "ordinal": 5,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:135:1 › experiência sazonal acompanha Claro, Escuro e Sistema",
+              "result": "PASS",
+              "seconds": 8.0
+            },
+            {
+              "ordinal": 6,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:158:1 › Calendário marca as datas sazonais exatas sem competir com atividades",
+              "result": "PASS",
+              "seconds": 8.7
+            },
+            {
+              "ordinal": 7,
+              "case": "tests/e2e-local/seasonal-experience.spec.ts:191:1 › Meu dia e Calendário preservam reflow e marcador sazonal nas larguras oficiais",
+              "result": "PASS",
+              "seconds": 12.5
+            }
+          ]
+        },
+        {
+          "file": "session.spec.ts",
+          "freshEmulators": true,
+          "workers": 1,
+          "passed": 2,
+          "failed": 0,
+          "cases": [
+            {
+              "ordinal": 1,
+              "case": "tests/e2e-local/session.spec.ts:16:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+              "result": "PASS",
+              "seconds": 7.6
+            },
+            {
+              "ordinal": 2,
+              "case": "tests/e2e-local/session.spec.ts:44:1 › cronômetro continua contando fora do detalhe da atividade",
+              "result": "PASS",
+              "seconds": 7.1
+            }
+          ]
+        }
+      ]
+    },
+    "finalStatic": [
+      {
+        "gate": "audit-final",
+        "exitCode": 0,
+        "seconds": 0.68
+      },
+      {
+        "gate": "audit-json-final",
+        "exitCode": 0,
+        "seconds": 0.68
+      },
+      {
+        "gate": "lint-final",
+        "exitCode": 0,
+        "seconds": 1.2
+      },
+      {
+        "gate": "typecheck-final",
+        "exitCode": 0,
+        "seconds": 2.68
+      },
+      {
+        "gate": "build-final",
+        "exitCode": 0,
+        "seconds": 3.53
+      }
+    ],
+    "productionAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "unit": {
+      "passed": 545,
+      "failed": 0,
+      "files": 55
+    },
+    "integration": {
+      "passed": 252,
+      "failed": 0,
+      "files": 8
+    },
+    "shellResponsive": {
+      "passed": 17,
+      "failed": 0,
+      "duration": "37s"
+    },
+    "plannerDesign": {
+      "passed": 13,
+      "failed": 0,
+      "duration": "3.2m"
+    }
+  },
+  "visualDecision": {
+    "status": "COMPOSITION_NOT_APPROVED_ADAPTIVE_PRESENCE_QA_REQUIRED",
+    "halfBody": "HALF_BODY_SOURCE_INSUFFICIENT",
+    "lowerShirtCrop": "VISIBLE_NOT_APPROVED",
+    "fullProductStateModeViewportMatrix": "PENDING",
+    "humanVisualApproval": "PENDING",
+    "finalLicensedExport": "NOT_PERFORMED",
+    "readyForFinalRiveExportApproval": false
+  },
+  "limits": [
+    "No GikaPresence placeholder or new character. Native essential canvas135x133; mobile128x126; no upscale119x117.",
+    "All nine essential states/controller unchanged; eleven layers unchanged, three hair textures matte-only.",
+    "Capture set is six empty-state viewports x light/dark plus solid/reduced/text200; not full nine-state five-profile matrix or approved browser-zoom QA.",
+    "No production data, Gemini live, paid subscription, UAT, deploy, PR or main merge."
+  ],
+  "implementationCommit": "8c2e765dc360a9d32d22741944a3488b8e42ddf4"
+}

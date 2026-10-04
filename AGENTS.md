@@ -100,3 +100,70 @@ Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, 
 - Use o formato: `Agente recomendado: <modelo/agente>; forca: <baixo|medio|alto|maximo>.`
 - Ajuste a recomendacao a cada requisicao. Tarefas simples podem usar um agente rapido com forca baixa; implementacoes moderadas pedem forca media; arquitetura, seguranca, dados e depuracao complexa pedem forca alta; investigacoes amplas ou decisoes criticas podem pedir o melhor agente disponivel com forca maxima.
 - Essa recomendacao deve aparecer antes de iniciar a tarefa, inclusive antes de planos, comandos ou explicacoes longas.
+
+
+---
+
+# AGENTS.md — Leve / Gika
+
+Este arquivo é um **mapa**, não a documentação completa.
+
+## Fonte de verdade
+
+Antes de trabalhar na Gika, leia:
+
+1. `.agent/GIKA_STATE.md` — estado atual e ponto exato de retomada
+2. `.agent/GIKA_TASKS.yaml` — grafo de tarefas e dependências
+3. `.agent/GIKA_EXECPLAN.md` — plano executável e milestones
+4. `.agent/GIKA_DECISIONS.md` — decisões arquiteturais persistidas
+5. `docs/gika/PRODUCT_SPEC.md` — comportamento do produto
+6. `docs/gika/ARCHITECTURE.md` — limites e contratos técnicos
+7. `docs/gika/SECURITY_AND_POLICY.md` — segurança e permissões
+8. `docs/gika/EVALS.md` — critérios e cenários de avaliação
+
+Para trabalhos complexos, siga `.agent/PLANS.md`.
+
+## Regras invioláveis
+
+- O repositório é a memória persistente. Nunca dependa apenas do histórico do chat.
+- Antes de editar, verifique `git status` e o SHA atual.
+- Não sobrescreva trabalho local do usuário.
+- Não use `reset --hard`, force push ou comandos destrutivos para “resolver” conflitos.
+- Não marque tarefa como concluída sem evidência verificável.
+- Atualize `GIKA_STATE.md` após cada tarefa atômica concluída ou bloqueada.
+- Atualize `GIKA_TASKS.yaml` no mesmo commit da mudança correspondente.
+- Registre decisões arquiteturais relevantes em `GIKA_DECISIONS.md`.
+- Uma tarefa por vez pode possuir o estado global de implementação.
+- Subagentes que editam código não podem concorrer sobre os mesmos arquivos.
+- Paralelize preferencialmente auditoria, pesquisa, revisão, testes e tarefas com ownership de arquivos disjuntos.
+- Mudanças de dados em lote, exclusão, alteração de recorrência e ações destrutivas exigem política explícita.
+- O modelo de IA nunca acessa o banco diretamente.
+- Toda mutação passa pela camada de comandos/regra de negócio do Leve.
+- Toda entrada e saída de ferramenta deve ser validada.
+- A Gika não pode ser requisito para o funcionamento normal da agenda.
+- Em falha de IA, a agenda convencional continua operacional.
+- Não exponha segredos no cliente, logs, fixtures ou commits.
+
+## Gates obrigatórios
+
+Antes de qualquer milestone ser marcado `done`:
+
+1. critérios de aceitação cumpridos;
+2. testes relevantes executados;
+3. typecheck/lint/build conforme o projeto permitir;
+4. regressões conhecidas registradas;
+5. documentação e estado atualizados;
+6. worktree consistente;
+7. commit atômico criado.
+
+## Comunicação
+
+Ao terminar uma sessão, informe de forma objetiva:
+
+- milestone/tarefa concluída;
+- testes executados;
+- commit final;
+- bloqueios;
+- próxima tarefa registrada em `GIKA_STATE.md`.
+
+Se o estado persistido contradizer o chat, pare, investigue e corrija a fonte de verdade antes de continuar.

@@ -1,30 +1,34 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { isolatedTestAccount } from '../helpers/gikaBatch';
 
 test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async ({ page }) => {
   test.setTimeout(150_000);
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   const title = `Atividade rosa ${Date.now()}`;
+  // Other persistence/import cases may fill the four-dot summary before this task.
+  const email = await isolatedTestAccount('refinements');
   await page.goto('/entrar');
-  await page.getByLabel('E-mail').fill('leve.local@example.test');
+  await page.getByLabel('E-mail').fill(email);
   await page.getByLabel('Senha', { exact: true }).fill('leve-local-123');
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Finalize sua agenda|Meu dia/ })).toBeVisible();
   if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   await expect(page).toHaveURL(/\/hoje$/);
-  if (await page.getByRole('button', { name: 'Pular tutorial' }).isVisible()) await page.getByRole('button', { name: 'Pular tutorial' }).click();
+  // This account is new: await its onboarding instead of racing an immediate visibility check.
+  await page.getByRole('button', { name: 'Pular guia', exact: true }).click();
   await page.goto('/configuracoes');
   await page.getByRole('button', { name: 'Ver tutorial novamente' }).click();
-  const tutorial = page.getByRole('dialog', { name: 'Tutorial do Leve' });
+  const tutorial = page.getByRole('dialog').filter({ has: page.locator('#tutorial-title') });
   await expect(tutorial).toBeVisible();
   await tutorial.getByRole('button', { name: 'Próximo' }).click();
   await expect(page.locator('.activity-composer')).toHaveClass(/tutorial-highlight/);
   await tutorial.getByRole('button', { name: 'Próximo' }).click();
-  await expect(page.locator('.calendar-panel')).toHaveClass(/tutorial-highlight/);
+  await expect(page.locator('.calendar-panel, .calendar-time-panel')).toHaveClass(/tutorial-highlight/);
   await tutorial.getByRole('button', { name: 'Próximo' }).click();
   await expect(tutorial).toContainText('Lembretes neste aparelho');
   await tutorial.getByRole('button', { name: 'Próximo' }).click();
-  await tutorial.getByRole('button', { name: 'Concluir tutorial' }).click();
+  await tutorial.getByRole('button', { name: 'Concluir guia', exact: true }).click();
   await expect(tutorial).not.toBeVisible();
   await page.reload(); await expect(page.getByRole('heading', { name: 'Compras', exact: true })).toBeVisible();
   await expect(tutorial).not.toBeVisible();
@@ -36,13 +40,18 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   await page.getByLabel('Título', { exact: true }).fill(title);
   await page.locator('.activity-composer .optional-fields > summary').click();
   await page.getByRole('radio', { name: 'Rosa', exact: true }).check();
+  const selectedColor = await page.getByRole('radio', { name: 'Rosa', exact: true }).inputValue();
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true })).toBeVisible();
   await page.reload(); await expect(page.getByText(title, { exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Calendário', exact: true }).click();
+  await page.getByRole('button', { name: 'Mês', exact: true }).click();
   await expect(page.locator('.calendar-agenda')).toContainText(title);
   await expect(page.locator('.calendar-agenda')).toContainText('Rosa');
-  expect(await page.locator('.calendar-colors > span').evaluateAll(elements => elements.some(element => getComputedStyle(element).backgroundColor === 'rgb(206, 146, 165)'))).toBe(true);
+  expect(await page.locator('.calendar-colors > span').evaluateAll((elements, color) => {
+    const swatch = document.createElement('span'); swatch.style.backgroundColor = color;
+    return elements.some(element => getComputedStyle(element).backgroundColor === swatch.style.backgroundColor);
+  }, selectedColor)).toBe(true);
   await page.screenshot({ path: 'docs/evidence/v2-calendar-390.png', fullPage: true });
   await page.getByRole('link', { name: 'Compras', exact: true }).click();
   const list = `Unidades ${Date.now()}`;

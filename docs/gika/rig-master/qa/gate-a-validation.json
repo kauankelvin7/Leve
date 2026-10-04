@@ -1,0 +1,52 @@
+{
+  "entry": "2306314151bfb518321ed64999de50ef79d61d55",
+  "decision": "RIG_READY_MASTER_ART_SOURCE_BLOCKED",
+  "source": {
+    "path": "docs/gika/character/reference/gika-authoring-v2-original.png",
+    "sha256": "2aea8b3141c195d9f7ce1851a21d5baa618ad78079dbd2295649168cbf9e2fba",
+    "format": "PNG",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  "manualAttempt": {
+    "attempts": 1,
+    "localizedCorrections": 0,
+    "format": "SVG",
+    "paths": 84,
+    "groups": 69,
+    "rasterImages": 0,
+    "duplicateIds": 0,
+    "exportSize": [
+      786,
+      2048
+    ],
+    "transparentPixels": 747861,
+    "opaquePixels": 852237,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "svgSha256": "f31ce570629a4a300b8bf121d3dac83adc01ec172aabc102318276df9b636d14",
+    "previewSha256": "e297745661d58df7558dc351a32f6908f11560294ba9e4631b1ef75ee033ccde",
+    "visualIdentity": "FAIL \u2014 face/eyes, hair silhouette and body proportions",
+    "acceptedMaster": false,
+    "candidateLocation": "/tmp/gika-gate-a; rejected source not imported/versioned as master"
+  },
+  "scope": {
+    "productChanged": false,
+    "rigCreated": false,
+    "bonesCreated": false,
+    "stateMachineCreated": false,
+    "runtimeIntegration": false,
+    "buildRequired": false,
+    "productRegressionRun": false
+  },
+  "qaArtifactHashes": {
+    "gate-a-source-inspection.png": "9315c5daed5fa8d229d3723b4939a8ce2d8191bd046799bb38d2fd71a8316d00",
+    "gate-a-neutral-identity-comparison.png": "f4d3094f2c3470c2f5c02f8b07fcb1f5bf111dff09a8a6a48fd095c807439c26",
+    "gate-a-rejected-manual-comparison.png": "b0e57eada1035bcc88aecce22daf48a74d189a738e869b389e6b76e0806ea2b2"
+  }
+}

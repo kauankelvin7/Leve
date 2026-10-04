@@ -20,23 +20,34 @@
     "build": "npm run typecheck && vite build --config apps/web/vite.config.ts",
     "preview": "vite preview --config apps/web/vite.config.ts",
     "test": "vitest run",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint . --max-warnings 0 && npm run check:boundaries",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "verify": "npm audit --omit=dev --audit-level=moderate && npm run lint && npm run build && npm test && npm run test:integration && npm run test:e2e:critical",
     "test:integration": "firebase emulators:exec --project demo-leve --only auth,firestore \"npm run test:integration:inside\"",
     "test:integration:inside": "vitest run --config vitest.integration.config.ts",
     "test:e2e:local": "playwright test --config playwright.local.config.ts",
+    "test:e2e:critical": "npm run test:e2e:local -- gika-create.spec.ts gika-reschedule.spec.ts gika-recurrence.spec.ts gika-batch.spec.ts gika-organization.spec.ts --grep \"M3-T2 double submit|logout during upstream wait|M5-T2 failure before commit|M5-T2 tampered transport target or patch|M5-T3 tampered scope transport|M5-T4 second lost ack|M5-T4 explicitly scoped occurrence|M6 week uses\"",
     "test:e2e": "playwright test",
     "screenshots": "tsx scripts/screenshots.ts",
-    "check": "npm run build && npm test && npm run test:e2e"
+    "check": "npm run build && npm test && npm run test:e2e",
+    "gika:smoke": "node scripts/gika-smoke.mjs",
+    "glass:check": "node scripts/glass/check.mjs",
+    "glass:e2e": "node scripts/glass/run.mjs e2e",
+    "glass:shots:before": "node scripts/glass/run.mjs before",
+    "glass:shots:after": "node scripts/glass/run.mjs after",
+    "glass:verify": "node scripts/glass/run.mjs verify",
+    "glass:selftest": "node scripts/glass/run.mjs selftest"
   },
   "dependencies": {
-    "@dicebear/avataaars": "9.4.2",
-    "@dicebear/core": "9.4.2",
+    "@dicebear/avataaars": "9.4.3",
+    "@dicebear/core": "9.4.3",
     "@fontsource/dm-sans": "5.3.0",
     "@fontsource/nunito": "^5.2.7",
     "@js-temporal/polyfill": "0.5.1",
+    "@rive-app/canvas": "2.44.0",
     "express": "5.2.1",
     "firebase": "12.19.0",
-    "firebase-admin": "13.6.0",
+    "firebase-admin": "13.10.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-router-dom": "7.18.3",
@@ -65,5 +76,20 @@
     "typescript": "7.0.2",
     "vite": "8.3.0",
     "vitest": "5.0.0"
+  },
+  "overrides": {
+    "@firebase/firestore@4.17.2": {
+      "@grpc/grpc-js": "1.14.5"
+    },
+    "google-gax@4.6.1": {
+      "@grpc/grpc-js": "1.14.5",
+      "uuid": "11.1.1"
+    },
+    "gaxios@6.7.1": {
+      "uuid": "11.1.1"
+    },
+    "teeny-request@9.0.0": {
+      "uuid": "11.1.1"
+    }
   }
 }

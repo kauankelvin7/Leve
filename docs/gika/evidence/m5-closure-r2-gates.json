@@ -1,0 +1,1604 @@
+{
+  "static_test_counts": {
+    "unit": 480,
+    "integration": 243
+  },
+  "entry_checkpoint": "6849f1fe3094e2296ea41f6c2277fad9d7524c5c",
+  "branch": "feat/gika-integration",
+  "decision": "R2_PASS",
+  "static_gates": [
+    {
+      "gate": "audit",
+      "command": "npm audit --omit=dev --audit-level=high",
+      "exit_code": 0,
+      "duration_ms": 749
+    },
+    {
+      "gate": "audit-json",
+      "command": "npm audit --omit=dev --json",
+      "exit_code": 0,
+      "duration_ms": 646
+    },
+    {
+      "gate": "lint",
+      "command": "npm run lint",
+      "exit_code": 0,
+      "duration_ms": 694
+    },
+    {
+      "gate": "typecheck",
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "duration_ms": 2957
+    },
+    {
+      "gate": "build",
+      "command": "npm run build",
+      "exit_code": 0,
+      "duration_ms": 3535
+    },
+    {
+      "gate": "unit",
+      "command": "npm test",
+      "exit_code": 0,
+      "duration_ms": 10310
+    },
+    {
+      "gate": "integration",
+      "command": "npm run test:integration",
+      "exit_code": 0,
+      "duration_ms": 76581
+    }
+  ],
+  "production_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "runs": [
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika.spec.ts tests/e2e-local/gika-readonly.spec.ts tests/e2e-local/gika-create.spec.ts tests/e2e-local/gika-complete.spec.ts tests/e2e-local/gika-update.spec.ts tests/e2e-local/gika-reschedule.spec.ts tests/e2e-local/gika-recurrence.spec.ts tests/e2e-local/gika-batch.spec.ts",
+      "exit_code": 0,
+      "phase": "current",
+      "group": "phase-a",
+      "total": 76,
+      "pass": 76,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 19,
+          "case": "M5-T4 desktop light complete exact preview, double click and success after final real ack",
+          "duration": "6.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 19,
+          "case": "M5-T4 mobile dark reschedule exact preview, double click and success after final real ack",
+          "duration": "6.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 33,
+          "case": "M5-T4 keyboard cancellation is terminal, no writes or receipts, reload restores no batch",
+          "duration": "8.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 39,
+          "case": "M5-T4 complete lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "duration": "7.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 39,
+          "case": "M5-T4 reschedule lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "duration": "7.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 46,
+          "case": "M5-T4 stale second target blocks the first commit and preserves the conventional edit",
+          "duration": "6.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 55,
+          "case": "M5-T4 tampered command target cannot affect excluded sibling or remaining tasks",
+          "duration": "7.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 55,
+          "case": "M5-T4 tampered command patch cannot affect excluded sibling or remaining tasks",
+          "duration": "6.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 60,
+          "case": "M5-T4 second lost ack reports partial result honestly and retry confirms both receipts",
+          "duration": "7.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 66,
+          "case": "M5-T4 logout discards preview and cannot execute old account batch",
+          "duration": "14.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 72,
+          "case": "M5-T4 explicitly scoped occurrence in batch leaves template and other recurrence members untouched",
+          "duration": "8.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 80,
+          "case": "M5-T4 max5 mobile360 preview keeps all targets and composer while only conversation scrolls",
+          "duration": "7.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 97,
+          "case": "M5-T4 closing after first commit keeps honest unknown state and reopening retries original receipts",
+          "duration": "8.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 18,
+          "case": "M4-T1 desktop light completion card only after real ack, exact target and double submit",
+          "duration": "10.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 18,
+          "case": "M4-T1 mobile dark completion card only after real ack, exact target and double submit",
+          "duration": "9.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 32,
+          "case": "M4-T1 lost real ack retry retains exact identity and no extra state transition",
+          "duration": "7.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 40,
+          "case": "M4-T1 ambiguity, missing and already completed are observations with no commands",
+          "duration": "8.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 47,
+          "case": "M4-T1 conventional edit after resolution produces conflict without overwriting or automatic retry",
+          "duration": "9.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 56,
+          "case": "M4-T1 logout while resolution waits prevents completion dispatch",
+          "duration": "14.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 27,
+          "case": "E10 desktop light: structured success after actual command, task survives reload",
+          "duration": "10.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 27,
+          "case": "E10 mobile dark: structured success after actual command, task survives reload",
+          "duration": "10.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 51,
+          "case": "command failure preserves draft, never claims success, conventional agenda remains usable",
+          "duration": "6.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 64,
+          "case": "unknown descriptor fields fail before any commands; generated text cannot forge creation",
+          "duration": "7.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 73,
+          "case": "logout during upstream wait aborts creation before command dispatch",
+          "duration": "13.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 83,
+          "case": "M3-T2 double submit is one intent; identical content after success is a new intent",
+          "duration": "10.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 106,
+          "case": "M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate",
+          "duration": "11.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 132,
+          "case": "M3-T3 desktop light exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "duration": "14.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 132,
+          "case": "M3-T3 mobile dark exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "duration": "13.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 163,
+          "case": "M3-T3 lost undo acknowledgement: same operation retry without Gemini or second effect",
+          "duration": "10.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 180,
+          "case": "M3-T3 later edit conflicts, user work preserved by revision precondition",
+          "duration": "9.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 198,
+          "case": "M3-T3 close during lost acknowledgement then reopen permits same-ID reconciliation",
+          "duration": "8.7s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 17,
+          "case": "missing env real: fallback preserva draft e agenda convencional",
+          "duration": "8.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 35,
+          "case": "contrato real mostra tool result escapado, sem confirmação/undo ou commands",
+          "duration": "7.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 51,
+          "case": "mobile dark: partial/empty honestos, composer fixo e scroll separado",
+          "duration": "6.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 71,
+          "case": "429 e saída com command/preview real rejeitadas sem mutar",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 84,
+          "case": "API cancelada ao fechar/sair não publica resposta na segunda conta",
+          "duration": "14.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 112,
+          "case": "E70: 503, timeout e resposta inválida permitem consultar calendário após fallback",
+          "duration": "7.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 49,
+          "case": "M5-T3 desktop light occurrence preview, real ack and sibling isolation",
+          "duration": "8.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 49,
+          "case": "M5-T3 mobile dark occurrence preview, real ack and sibling isolation",
+          "duration": "7.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 67,
+          "case": "M5-T3 scope cancellation and preview cancellation are terminal without commands",
+          "duration": "7.7s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 73,
+          "case": "M5-T3 future lost ack repeats receipt without new Gemini or scope choice",
+          "duration": "8.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 81,
+          "case": "M5-T3 tampered scope transport cannot change a sibling or execute future intent",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 86,
+          "case": "M5-T3 logout invalidates old scope card and stale bridge cannot dispatch",
+          "duration": "13.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 96,
+          "case": "M5-T3 reload does not restore preview or execute the unconfirmed action",
+          "duration": "8.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 21,
+          "case": "M4-T3 desktop light preview, double tap, structured result after real ack",
+          "duration": "11.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 21,
+          "case": "M4-T3 mobile dark preview, double tap, structured result after real ack",
+          "duration": "11.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 29,
+          "case": "M4-T3 cancel preview produces no command",
+          "duration": "7.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 32,
+          "case": "M4-T3 lost actual acknowledgement repeats same operation without new Gemini or revision",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 35,
+          "case": "M4-T3 later conventional edit conflicts at original revision and preserves edit",
+          "duration": "10.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 38,
+          "case": "M4-T3 observation partial/ambiguous/no-op never writes",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 41,
+          "case": "M4-T3 logout during resolution discards preview without dispatch",
+          "duration": "13.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 45,
+          "case": "M5-T2 keyboard cancellation is terminal, focused, no receipt and no reload restoration",
+          "duration": "9.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 54,
+          "case": "M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "duration": "9.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 61,
+          "case": "M5-T2 tampered transport target or patch cannot apply a different approved effect",
+          "duration": "11.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 68,
+          "case": "M5-T2 narrative confirmation and allow/clarify/deny observations never become executable cards",
+          "duration": "7.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 73,
+          "case": "M5-T2 logout after preview removes execution and stale account descriptor cannot dispatch",
+          "duration": "8.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "duration": "12.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "duration": "11.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 37,
+          "case": "M4-T2 lost real acknowledgement retries original operation without another revision",
+          "duration": "8.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 48,
+          "case": "M4-T2 no-op, ambiguous, missing and partial observations perform no command",
+          "duration": "6.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 55,
+          "case": "M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "duration": "10.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 66,
+          "case": "M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "duration": "14.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 24,
+          "case": "painel acessível abre e fecha sem perder rascunho nem navegação",
+          "duration": "9.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 55,
+          "case": "composer preserva texto, permite sugestões e bloqueia envio offline",
+          "duration": "9.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 80,
+          "case": "falha mantém pergunta e retry não duplica a mensagem",
+          "duration": "7.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 103,
+          "case": "mock responde sem consulta, comandos ou duplicação por envio repetido",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 124,
+          "case": "fechar cancela resposta pendente sem perder pergunta e sair limpa conversa",
+          "duration": "15.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 146,
+          "case": "IME não envia composição e uma saída inválida vira erro sem alegar sucesso",
+          "duration": "7.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 162,
+          "case": "paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+          "duration": "22.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 216,
+          "case": "painel cabe em mobile e botão não cobre navegação",
+          "duration": "6.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 233,
+          "case": "conversa da conta anterior não aparece em uma segunda conta",
+          "duration": "13.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 257,
+          "case": "falha de carregamento da Gika não desmonta a agenda",
+          "duration": "6.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 268,
+          "case": "botão respeita cronômetro real em desktop e mobile",
+          "duration": "8.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 291,
+          "case": "rascunho editado durante resposta é mantido e offline cancela a resposta",
+          "duration": "11.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 318,
+          "case": "conversa tem scroll independente, composer expansível e cards apenas simulados",
+          "duration": "12.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 379,
+          "case": "launcher no calendário fica fora do grid e da navegação desktop",
+          "duration": "6.8s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "12.2m",
+      "raw_log_sha256": "1b8b2921662dd0cecd96f376c9b83f86568fa9634a3bd23d4a22510688479c6b",
+      "first_server_request_timestamp": "2026-10-02T07:11:02.695Z",
+      "last_server_request_timestamp": "2026-10-02T07:23:02.940Z",
+      "max_before_dispatch_ms": 44.0,
+      "max_after_ack_to_http_ms": 34.0,
+      "observed_requests": 282,
+      "max_server_http_ms": 732,
+      "max_server_command_ms": 728.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-reschedule.spec.ts --grep M5-T2 failure before commit never confirms and retries original sealed operation without model$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "precommit",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 54,
+          "case": "M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "duration": "6.0s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "8.2s",
+      "raw_log_sha256": "12c220d0fe947b2e10e5482e80c721b0b26fabd799160c95cc755d506cf4e1d2",
+      "first_server_request_timestamp": "2026-10-02T07:23:40.322Z",
+      "last_server_request_timestamp": "2026-10-02T07:23:43.775Z",
+      "max_before_dispatch_ms": 27.0,
+      "max_after_ack_to_http_ms": 3.0,
+      "observed_requests": 7,
+      "max_server_http_ms": 251,
+      "max_server_command_ms": 224.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 desktop light title patch, exact entity, double submit and real ack$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "update-desktop",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "duration": "10.0s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "12.2s",
+      "raw_log_sha256": "255300a1a558b09c9e40eaadd528955798b3773b8f10b04ca87f58a59cbae4d9",
+      "first_server_request_timestamp": "2026-10-02T07:24:00.979Z",
+      "last_server_request_timestamp": "2026-10-02T07:24:07.826Z",
+      "max_before_dispatch_ms": 29.0,
+      "max_after_ack_to_http_ms": 7.0,
+      "observed_requests": 10,
+      "max_server_http_ms": 220,
+      "max_server_command_ms": 183.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 mobile dark title patch, exact entity, double submit and real ack$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "update-mobile",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "duration": "7.5s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "9.6s",
+      "raw_log_sha256": "758d3f1fdf59848526d4bb64a68958452825683a960ecb40a80d9e5d36aa9d35",
+      "first_server_request_timestamp": "2026-10-02T07:24:23.609Z",
+      "last_server_request_timestamp": "2026-10-02T07:24:29.106Z",
+      "max_before_dispatch_ms": 16.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 10,
+      "max_server_http_ms": 151,
+      "max_server_command_ms": 96.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 lost real acknowledgement retries original operation without another revision$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "update-lost",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 37,
+          "case": "M4-T2 lost real acknowledgement retries original operation without another revision",
+          "duration": "6.1s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "8.2s",
+      "raw_log_sha256": "074f554075fb764453d30cc93ec622e2ea3677d63f1ec0d468a4dc8f0eed3848",
+      "first_server_request_timestamp": "2026-10-02T07:24:45.808Z",
+      "last_server_request_timestamp": "2026-10-02T07:24:49.773Z",
+      "max_before_dispatch_ms": 14.0,
+      "max_after_ack_to_http_ms": 2.0,
+      "observed_requests": 8,
+      "max_server_http_ms": 191,
+      "max_server_command_ms": 176.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "update-conflict",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 55,
+          "case": "M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "duration": "7.9s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "10.1s",
+      "raw_log_sha256": "ffa6ca6f36ac2a4771a098677be31eca1c48a10bc4cdd41a59d7c1876d899163",
+      "first_server_request_timestamp": "2026-10-02T07:25:05.527Z",
+      "last_server_request_timestamp": "2026-10-02T07:25:10.687Z",
+      "max_before_dispatch_ms": 31.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 9,
+      "max_server_http_ms": 251,
+      "max_server_command_ms": 219.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 logout during resolution cannot dispatch update or expose stale card$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "update-logout",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 66,
+          "case": "M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "duration": "11.8s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "14.0s",
+      "raw_log_sha256": "5dea9ddafd43d795149d767037cae04af39a11cb1aa81d5974284603230d5557",
+      "first_server_request_timestamp": "2026-10-02T07:25:27.809Z",
+      "last_server_request_timestamp": "2026-10-02T07:25:33.576Z",
+      "max_before_dispatch_ms": 23.0,
+      "max_after_ack_to_http_ms": 6.0,
+      "observed_requests": 7,
+      "max_server_http_ms": 215,
+      "max_server_command_ms": 186.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika.spec.ts --grep composer preserva texto, permite sugestões e bloqueia envio offline$",
+      "exit_code": 0,
+      "phase": "phase-b",
+      "group": "offline",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 55,
+          "case": "composer preserva texto, permite sugestões e bloqueia envio offline",
+          "duration": "6.9s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "8.9s",
+      "raw_log_sha256": "bea47993d5926efb055f33ccaa8c8f49469142d70eda76e8e329ef9e3223c3bb",
+      "first_server_request_timestamp": "2026-10-02T07:25:53.994Z",
+      "last_server_request_timestamp": "2026-10-02T07:25:56.129Z",
+      "max_before_dispatch_ms": 36.0,
+      "max_after_ack_to_http_ms": 2.0,
+      "observed_requests": 5,
+      "max_server_http_ms": 193,
+      "max_server_command_ms": 155.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika.spec.ts tests/e2e-local/gika-readonly.spec.ts tests/e2e-local/gika-create.spec.ts tests/e2e-local/gika-complete.spec.ts tests/e2e-local/gika-update.spec.ts tests/e2e-local/gika-reschedule.spec.ts tests/e2e-local/gika-recurrence.spec.ts tests/e2e-local/gika-batch.spec.ts",
+      "exit_code": 0,
+      "phase": "final",
+      "group": "phase-a",
+      "total": 76,
+      "pass": 76,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 19,
+          "case": "M5-T4 desktop light complete exact preview, double click and success after final real ack",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 19,
+          "case": "M5-T4 mobile dark reschedule exact preview, double click and success after final real ack",
+          "duration": "7.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 33,
+          "case": "M5-T4 keyboard cancellation is terminal, no writes or receipts, reload restores no batch",
+          "duration": "8.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 39,
+          "case": "M5-T4 complete lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "duration": "8.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 39,
+          "case": "M5-T4 reschedule lost first ack stops sequence and resumes the same sealed children without Gemini",
+          "duration": "7.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 46,
+          "case": "M5-T4 stale second target blocks the first commit and preserves the conventional edit",
+          "duration": "8.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 55,
+          "case": "M5-T4 tampered command target cannot affect excluded sibling or remaining tasks",
+          "duration": "7.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 55,
+          "case": "M5-T4 tampered command patch cannot affect excluded sibling or remaining tasks",
+          "duration": "7.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 60,
+          "case": "M5-T4 second lost ack reports partial result honestly and retry confirms both receipts",
+          "duration": "8.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 66,
+          "case": "M5-T4 logout discards preview and cannot execute old account batch",
+          "duration": "13.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 72,
+          "case": "M5-T4 explicitly scoped occurrence in batch leaves template and other recurrence members untouched",
+          "duration": "8.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 80,
+          "case": "M5-T4 max5 mobile360 preview keeps all targets and composer while only conversation scrolls",
+          "duration": "7.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-batch.spec.ts",
+          "line": 97,
+          "case": "M5-T4 closing after first commit keeps honest unknown state and reopening retries original receipts",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 18,
+          "case": "M4-T1 desktop light completion card only after real ack, exact target and double submit",
+          "duration": "10.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 18,
+          "case": "M4-T1 mobile dark completion card only after real ack, exact target and double submit",
+          "duration": "9.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 32,
+          "case": "M4-T1 lost real ack retry retains exact identity and no extra state transition",
+          "duration": "8.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 40,
+          "case": "M4-T1 ambiguity, missing and already completed are observations with no commands",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 47,
+          "case": "M4-T1 conventional edit after resolution produces conflict without overwriting or automatic retry",
+          "duration": "9.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-complete.spec.ts",
+          "line": 56,
+          "case": "M4-T1 logout while resolution waits prevents completion dispatch",
+          "duration": "13.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 27,
+          "case": "E10 desktop light: structured success after actual command, task survives reload",
+          "duration": "11.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 27,
+          "case": "E10 mobile dark: structured success after actual command, task survives reload",
+          "duration": "10.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 51,
+          "case": "command failure preserves draft, never claims success, conventional agenda remains usable",
+          "duration": "7.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 64,
+          "case": "unknown descriptor fields fail before any commands; generated text cannot forge creation",
+          "duration": "6.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 73,
+          "case": "logout during upstream wait aborts creation before command dispatch",
+          "duration": "12.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 83,
+          "case": "M3-T2 double submit is one intent; identical content after success is a new intent",
+          "duration": "10.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 106,
+          "case": "M3-T2 acknowledgement lost after real commit: retry recovers receipt and creates no duplicate",
+          "duration": "11.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 132,
+          "case": "M3-T3 desktop light exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "duration": "14.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 132,
+          "case": "M3-T3 mobile dark exact-ID undo, pending ack, double tap, active list and conventional trash",
+          "duration": "13.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 163,
+          "case": "M3-T3 lost undo acknowledgement: same operation retry without Gemini or second effect",
+          "duration": "9.7s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 180,
+          "case": "M3-T3 later edit conflicts, user work preserved by revision precondition",
+          "duration": "9.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-create.spec.ts",
+          "line": 198,
+          "case": "M3-T3 close during lost acknowledgement then reopen permits same-ID reconciliation",
+          "duration": "7.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 17,
+          "case": "missing env real: fallback preserva draft e agenda convencional",
+          "duration": "8.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 35,
+          "case": "contrato real mostra tool result escapado, sem confirmação/undo ou commands",
+          "duration": "7.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 51,
+          "case": "mobile dark: partial/empty honestos, composer fixo e scroll separado",
+          "duration": "6.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 71,
+          "case": "429 e saída com command/preview real rejeitadas sem mutar",
+          "duration": "7.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 84,
+          "case": "API cancelada ao fechar/sair não publica resposta na segunda conta",
+          "duration": "13.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-readonly.spec.ts",
+          "line": 112,
+          "case": "E70: 503, timeout e resposta inválida permitem consultar calendário após fallback",
+          "duration": "7.7s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 49,
+          "case": "M5-T3 desktop light occurrence preview, real ack and sibling isolation",
+          "duration": "8.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 49,
+          "case": "M5-T3 mobile dark occurrence preview, real ack and sibling isolation",
+          "duration": "8.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 67,
+          "case": "M5-T3 scope cancellation and preview cancellation are terminal without commands",
+          "duration": "7.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 73,
+          "case": "M5-T3 future lost ack repeats receipt without new Gemini or scope choice",
+          "duration": "7.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 81,
+          "case": "M5-T3 tampered scope transport cannot change a sibling or execute future intent",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 86,
+          "case": "M5-T3 logout invalidates old scope card and stale bridge cannot dispatch",
+          "duration": "13.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-recurrence.spec.ts",
+          "line": 96,
+          "case": "M5-T3 reload does not restore preview or execute the unconfirmed action",
+          "duration": "9.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 21,
+          "case": "M4-T3 desktop light preview, double tap, structured result after real ack",
+          "duration": "12.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 21,
+          "case": "M4-T3 mobile dark preview, double tap, structured result after real ack",
+          "duration": "11.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 29,
+          "case": "M4-T3 cancel preview produces no command",
+          "duration": "7.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 32,
+          "case": "M4-T3 lost actual acknowledgement repeats same operation without new Gemini or revision",
+          "duration": "8.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 35,
+          "case": "M4-T3 later conventional edit conflicts at original revision and preserves edit",
+          "duration": "9.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 38,
+          "case": "M4-T3 observation partial/ambiguous/no-op never writes",
+          "duration": "6.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 41,
+          "case": "M4-T3 logout during resolution discards preview without dispatch",
+          "duration": "13.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 45,
+          "case": "M5-T2 keyboard cancellation is terminal, focused, no receipt and no reload restoration",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 54,
+          "case": "M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "duration": "8.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 61,
+          "case": "M5-T2 tampered transport target or patch cannot apply a different approved effect",
+          "duration": "10.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 68,
+          "case": "M5-T2 narrative confirmation and allow/clarify/deny observations never become executable cards",
+          "duration": "7.2s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 73,
+          "case": "M5-T2 logout after preview removes execution and stale account descriptor cannot dispatch",
+          "duration": "8.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "duration": "12.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "duration": "11.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 37,
+          "case": "M4-T2 lost real acknowledgement retries original operation without another revision",
+          "duration": "8.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 48,
+          "case": "M4-T2 no-op, ambiguous, missing and partial observations perform no command",
+          "duration": "6.5s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 55,
+          "case": "M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "duration": "11.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 66,
+          "case": "M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "duration": "15.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 24,
+          "case": "painel acessível abre e fecha sem perder rascunho nem navegação",
+          "duration": "8.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 55,
+          "case": "composer preserva texto, permite sugestões e bloqueia envio offline",
+          "duration": "8.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 80,
+          "case": "falha mantém pergunta e retry não duplica a mensagem",
+          "duration": "6.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 103,
+          "case": "mock responde sem consulta, comandos ou duplicação por envio repetido",
+          "duration": "8.3s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 124,
+          "case": "fechar cancela resposta pendente sem perder pergunta e sair limpa conversa",
+          "duration": "14.4s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 146,
+          "case": "IME não envia composição e uma saída inválida vira erro sem alegar sucesso",
+          "duration": "7.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 162,
+          "case": "paletas, viewports, contraste, movimento reduzido e reflow mantêm o painel utilizável",
+          "duration": "22.6s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 216,
+          "case": "painel cabe em mobile e botão não cobre navegação",
+          "duration": "6.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 233,
+          "case": "conversa da conta anterior não aparece em uma segunda conta",
+          "duration": "14.1s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 257,
+          "case": "falha de carregamento da Gika não desmonta a agenda",
+          "duration": "6.9s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 268,
+          "case": "botão respeita cronômetro real em desktop e mobile",
+          "duration": "9.0s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 291,
+          "case": "rascunho editado durante resposta é mantido e offline cancela a resposta",
+          "duration": "11.8s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 318,
+          "case": "conversa tem scroll independente, composer expansível e cards apenas simulados",
+          "duration": "12.7s"
+        },
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 379,
+          "case": "launcher no calendário fica fora do grid e da navegação desktop",
+          "duration": "7.1s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "12.1m",
+      "raw_log_sha256": "df965391e13a07a549c0eaf21531003abf6a19b3ad42034800993d341f8464da",
+      "first_server_request_timestamp": "2026-10-02T07:28:44.905Z",
+      "last_server_request_timestamp": "2026-10-02T07:40:41.544Z",
+      "max_before_dispatch_ms": 28.0,
+      "max_after_ack_to_http_ms": 5.0,
+      "observed_requests": 283,
+      "max_server_http_ms": 832,
+      "max_server_command_ms": 828.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-reschedule.spec.ts --grep M5-T2 failure before commit never confirms and retries original sealed operation without model$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "precommit",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-reschedule.spec.ts",
+          "line": 54,
+          "case": "M5-T2 failure before commit never confirms and retries original sealed operation without model",
+          "duration": "5.4s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "7.6s",
+      "raw_log_sha256": "99e33d5052a639aa263116ad98cd66fce82df2552e0107bad70d4fc94b21c755",
+      "first_server_request_timestamp": "2026-10-02T07:41:32.411Z",
+      "last_server_request_timestamp": "2026-10-02T07:41:35.531Z",
+      "max_before_dispatch_ms": 25.0,
+      "max_after_ack_to_http_ms": 4.0,
+      "observed_requests": 7,
+      "max_server_http_ms": 186,
+      "max_server_command_ms": 161.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 desktop light title patch, exact entity, double submit and real ack$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "update-desktop",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 desktop light title patch, exact entity, double submit and real ack",
+          "duration": "9.3s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "11.3s",
+      "raw_log_sha256": "9ab01f4c710bc502f891231766cdc8586cdf51ff71d3579037832ad521407067",
+      "first_server_request_timestamp": "2026-10-02T07:41:51.729Z",
+      "last_server_request_timestamp": "2026-10-02T07:41:58.047Z",
+      "max_before_dispatch_ms": 37.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 10,
+      "max_server_http_ms": 238,
+      "max_server_command_ms": 199.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 mobile dark title patch, exact entity, double submit and real ack$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "update-mobile",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 19,
+          "case": "M4-T2 mobile dark title patch, exact entity, double submit and real ack",
+          "duration": "7.0s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "9.1s",
+      "raw_log_sha256": "9a4f23ce82ee829dbe7af59a266d25e9a4af21b14e20860900e5f4cc7bcb6cd9",
+      "first_server_request_timestamp": "2026-10-02T07:42:13.966Z",
+      "last_server_request_timestamp": "2026-10-02T07:42:19.076Z",
+      "max_before_dispatch_ms": 17.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 10,
+      "max_server_http_ms": 147,
+      "max_server_command_ms": 73.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 lost real acknowledgement retries original operation without another revision$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "update-lost",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 37,
+          "case": "M4-T2 lost real acknowledgement retries original operation without another revision",
+          "duration": "6.4s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "8.5s",
+      "raw_log_sha256": "1d45c404d47564320f915a10a3df470c55a2d8fbc2b202cb25ff8989d6709878",
+      "first_server_request_timestamp": "2026-10-02T07:42:36.283Z",
+      "last_server_request_timestamp": "2026-10-02T07:42:40.147Z",
+      "max_before_dispatch_ms": 30.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 8,
+      "max_server_http_ms": 222,
+      "max_server_command_ms": 197.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "update-conflict",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 55,
+          "case": "M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+          "duration": "8.3s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "10.4s",
+      "raw_log_sha256": "df742d62ec1bf2dcbe0a4adfd44f4f9477b7930b55741b44730c252f32554702",
+      "first_server_request_timestamp": "2026-10-02T07:42:56.224Z",
+      "last_server_request_timestamp": "2026-10-02T07:43:01.120Z",
+      "max_before_dispatch_ms": 37.0,
+      "max_after_ack_to_http_ms": 31.0,
+      "observed_requests": 9,
+      "max_server_http_ms": 233,
+      "max_server_command_ms": 198.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika-update.spec.ts --grep M4-T2 logout during resolution cannot dispatch update or expose stale card$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "update-logout",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika-update.spec.ts",
+          "line": 66,
+          "case": "M4-T2 logout during resolution cannot dispatch update or expose stale card",
+          "duration": "11.3s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "13.4s",
+      "raw_log_sha256": "b77551f83ee02f645ffe1bb105de9d6934b4ce1db072b55623542b553b233d7b",
+      "first_server_request_timestamp": "2026-10-02T07:43:17.948Z",
+      "last_server_request_timestamp": "2026-10-02T07:43:23.576Z",
+      "max_before_dispatch_ms": 26.0,
+      "max_after_ack_to_http_ms": 1.0,
+      "observed_requests": 7,
+      "max_server_http_ms": 230,
+      "max_server_command_ms": 225.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    },
+    {
+      "command": "npm run test:e2e:local -- tests/e2e-local/gika.spec.ts --grep composer preserva texto, permite sugestões e bloqueia envio offline$",
+      "exit_code": 0,
+      "phase": "final-focus",
+      "group": "offline",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cases": [
+        {
+          "result": "PASS",
+          "file": "tests/e2e-local/gika.spec.ts",
+          "line": 55,
+          "case": "composer preserva texto, permite sugestões e bloqueia envio offline",
+          "duration": "6.5s"
+        }
+      ],
+      "failed_cases": [],
+      "duration": "8.6s",
+      "raw_log_sha256": "de2e16379d64ff1006363f816c8a7da61c92fa410b589468a47a1ea3421e68dc",
+      "first_server_request_timestamp": "2026-10-02T07:43:43.347Z",
+      "last_server_request_timestamp": "2026-10-02T07:43:45.418Z",
+      "max_before_dispatch_ms": 22.0,
+      "max_after_ack_to_http_ms": 2.0,
+      "observed_requests": 5,
+      "max_server_http_ms": 218,
+      "max_server_command_ms": 194.0,
+      "incomplete_http": 0,
+      "failure_semantic_contexts": []
+    }
+  ],
+  "source_comparison": {
+    "files": 248,
+    "changed": [],
+    "digest": "29e343da1afb0766e747405bd1e8983717a1953dcc9dfd6870a5098695d467ea"
+  },
+  "test_changes": false,
+  "deadline_changes": false,
+  "assertions_removed": false,
+  "gemini_live": false,
+  "bounded_run_plan": "2 full suites and 2 rounds of 7 isolated original cases, no additional reruns",
+  "historical_root_cause": "Not determined by current passing runs; no attribution to Admin upgrade or physical latency."
+}

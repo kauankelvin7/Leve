@@ -1,0 +1,50 @@
+[
+  {
+    "path": "apps/web/src/features/demo/Demo.tsx",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/features/activities/Today.tsx",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/features/activities/Calendar.tsx",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "tests/e2e/shell.spec.ts",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "tests/e2e-local/design.spec.ts",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "tests/e2e-local/persistent.spec.ts",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "tests/e2e-local/refinements.spec.ts",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/styles/app.css",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/styles/editorial.css",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/styles/glass.css",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/styles/refinements.css",
+    "unchangedFrom92cc9c7": true
+  },
+  {
+    "path": "apps/web/src/styles/theme-runtime.css",
+    "unchangedFrom92cc9c7": true
+  }
+]

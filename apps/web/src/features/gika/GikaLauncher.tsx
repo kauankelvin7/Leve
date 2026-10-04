@@ -1,0 +1,62 @@
+import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { GikaPortrait } from './character/GikaPortrait';
+import { useAuth } from '../identity/AuthProvider';
+import { firebaseAuth } from '../../platform/firebase';
+import './gika.css';
+
+const DAY_DRAFT_EVENT = 'leve:prepare-gika-day';
+export function requestDayOrganization(uid: string) {
+  window.dispatchEvent(new CustomEvent(DAY_DRAFT_EVENT, { detail: uid }));
+}
+
+function GikaLoadError({ children, label, onAction, role }: { children: string; label: string; onAction: () => void; role: 'alert' | 'status' }) {
+  return createPortal(<div className="gika-load-error" role={role}><p>{children}</p><button type="button" onClick={onAction}>{label}</button></div>, document.body);
+}
+
+const loadPanel = () => import('./GikaPanel').then(module => ({ default: module.GikaPanel }));
+
+class GikaBoundary extends Component<{ children: ReactNode; onClose: () => void }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) return <GikaLoadError role="alert" label="Fechar e tentar novamente" onAction={this.props.onClose}>Não consegui abrir a Gika agora. Sua agenda continua disponível.</GikaLoadError>;
+    return this.props.children;
+  }
+}
+
+export function GikaLauncher() {
+  const { session } = useAuth();
+  const [dayDraftRequest, setDayDraftRequest] = useState(0);
+  const dayDraftSequence = useRef(0);
+  const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const GikaPanel = useMemo(() => lazy(loadPanel), [attempt]);
+  const launcher = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const prepare = (event: Event) => {
+      if (!navigator.onLine) return;
+      if ((event as CustomEvent<unknown>).detail !== session?.uid || !session?.uid || firebaseAuth?.currentUser?.uid !== session.uid) return;
+      setDayDraftRequest(++dayDraftSequence.current); setLoaded(true); setOpen(true);
+    };
+    window.addEventListener(DAY_DRAFT_EVENT, prepare);
+    return () => window.removeEventListener(DAY_DRAFT_EVENT, prepare);
+  }, [session?.uid]);
+
+  function close() { setOpen(false); setDayDraftRequest(0); launcher.current?.focus({ preventScroll: true }); }
+
+  return <>
+    <button ref={launcher} type="button" className="gika-launcher" aria-label="Pergunte à Gika" aria-haspopup="dialog"
+      aria-expanded={open} aria-controls={loaded ? 'gika-dialog' : undefined}
+      onClick={() => { setLoaded(true); setOpen(true); }}>
+      <span className="gika-nav-avatar" aria-hidden="true"><GikaPortrait state="rest" /></span><span className="nav-label">Gika</span>
+    </button>
+    {loaded && <GikaBoundary key={attempt} onClose={() => { close(); setLoaded(false); setAttempt(value => value + 1); }}>
+      <Suspense fallback={open ? <GikaLoadError role="status" label="Cancelar" onAction={close}>Abrindo a conversa…</GikaLoadError> : null}>
+        <GikaPanel open={open} onClose={close} dayDraftRequest={dayDraftRequest} />
+      </Suspense>
+    </GikaBoundary>}
+  </>;
+}

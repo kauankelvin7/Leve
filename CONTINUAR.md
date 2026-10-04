@@ -135,3 +135,73 @@ O workflow do Planner agora observa também os poucos arquivos sazonais que pode
 ## Próximo passo quando autorizado
 
 A etapa planejada seguinte continua sendo a **Fase 7 — auditoria final do plano**, mas ela está deliberadamente parada. Não iniciar auditoria final, novo bloco funcional ou expansão de feriados sem novo pedido explícito do usuário.
+
+
+## Gika — checkpoint em 30/09/2026
+
+Pedido atual autoriza integração Gika e branch feat/gika-integration; não executa Fase 7 sazonal. Base real f6b21b6695f4953e28daace00edb05b2dd4bfde1.
+
+- M0 e M1 visual/mock/refinement concluídos; polimento final M1-T4 validado. M2-T1 é a próxima tarefa, sem implementação IA nesta sessão por escopo do pedido mais recente.
+- Último SHA de tarefa: ea10ae9d69b2124e0ffc340bc0bfab9128454bbb (M1-T4); este checkpoint posterior registra o SHA real sem referência circular.
+- Provas: lint/build/typechecks, 102 unitários, 28 integração, 13 E2E Gika + Axe, 13 shell e 7 sazonal PASS. Regressões conhecidas do Planner e intermitência offline estão detalhadas em docs/gika/M1_EVIDENCE.md; suite global não declarada integralmente verde.
+- Fonte oficial para textos: .agent/skills/humanizer-br/SKILL.md. UI apenas mock em memória; confirmação/undo exclusivamente demonstrativos, voz indisponível.
+- M2: Gemini Developer API gemini-3.5-flash-lite, thinking_level medium, Free Tier/R$ 0, sem billing/fallback pago. Implementar sem segredo; GEMINI_API_KEY servidor ausente bloqueia somente smoke real futuro.
+- Ler .agent/GIKA_STATE.md, GIKA_TASKS.yaml, GIKA_EXECPLAN.md e GIKA_DECISIONS.md; verificar git status/SHA antes de agir. Sem push/deploy/merge ou credenciais de produção.
+
+## Gika — M3-T2 em 01/10/2026
+
+M3-T2 concluído na feat/gika-integration a partir de a9aff2f: identidade por requestId/UID, command receipts atômicos existentes, recuperação de resposta perdida e proteção contra duplicação sem dedup por conteúdo. Fontes atuais .agent/GIKA_STATE.md e docs/gika/M3_T2_EVIDENCE.md; ADR-GIKA-012. Lint/typechecks/build/184 unit/64 integração e27 E2E Gika PASS;13 criação+read repetidos após última alteração/reinícioAPI PASS.58 locais46 PASS/12 FAIL baseline,check shell12/1 e audit13 vulnerabilidades baseline comparados à base. M3 parcial; M3-T3 todo e não iniciado, aguardar revisão/autorização. Sem segredo/billing/deploy; SHA real no checkpoint documental posterior.
+
+Commit atômico M3-T2 verificado: `56800b2f933e6d6ee0043856698bd6473eb13e37`; worktree limpo depois do commit. Este checkpoint posterior só documenta o SHA real. M3-T3 permanece não iniciado.
+
+## Gika — M3-T3 em 01/10/2026
+
+Undo seguro da criação concluído a partir de fc30bf9 na feat/gika-integration. Botão determinístico → activity.trash/soft-delete30dias/receipts transacionais existentes, UID/ID/revisão1/createdAt original e replay seguros; sem Gemini ou purge no undo. ADR013, M3_T3_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md. Gates focais194 unit/76 integração/6 E2E/lint/dois TS/build PASS; amplo50/13:12 falhas anteriores + intermitência dock/timer preexistente demonstrada nas duas versões,check12/1,audit13 baseline. M3 permanece parcial até M3-SMOKE após revisão; não executar live nem iniciar M4 nesta sessão. SHA real no checkpoint documental posterior.
+
+Commit atômico M3-T3 verificado: `55b760ffa80a84070872e82a42a3d8f132f4141a`, worktree limpo após commit. Checkpoint posterior é documental; próxima ação revisão T3, sem iniciar smoke/M4 automaticamente.
+
+
+## Gika — M3-SMOKE e fechamento M3 em 01/10/2026
+
+T3 aprovado e smoke exclusivamente autorizado a partir de abbd1e2 limpo na feat/gika-integration. Gemini real HTTP200/create_task → validation/policy → command layer/receipt/persistência → UI, uma tarefa sintética, ack perdido/retry alreadyApplied sem duplicata nem segundo Gemini. Undo opcional real remove só alvo pela lixeira. M3_SMOKE_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais; M3 done.194 unit/76 integração/32 E2E Gika/lint/build/dois TS PASS;check12/1 contraste e audit13 baseline explícitos. Credencial somente memória e processo encerrado, sem segredo versionado. Proxy Codex Remote ambiente-only; produção/arquitetura/modelo intactos. Parar antes de M4-T1, exige autorização nova. SHA real no checkpoint documental posterior.
+
+Commit atômico M3-SMOKE/fechamento M3 verificado: `723d444295fafb08e7706b92a283bf3d1f2b0d0b`, worktree limpo confirmado. Este checkpoint posterior somente registra SHA/estado; M4-T1 não iniciado.
+
+
+## Gika — M4-T1 em 01/10/2026
+
+Pedido posterior autorizou exclusivamente complete_task a partir de56b9308 na feat/gika-integration. T1 done: tool strict title/date, resolução autenticada limitada a um dia civil, ambiguidade/no-op honestos, activity.setStatus/revisão/receipt transacional existentes, retry/lost ack seguro e UI structured somente após ack real. ADR014, M4_T1_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais. Lint/build/dois TS/218 unit/98 integração/38 E2E Gika PASS;local58 PASS/11 FAIL baseline,check12/1,audit13 baseline.23 arquivos de baselines idênticos à entrada; timer/reflow passaram sem remover pendências. Sem Gemini live/segredo/billing/push/deploy/merge. M4 parcial, T2/T3 todo: parar para revisão antes de M4-T2, não iniciar automaticamente. SHA real no checkpoint documental posterior.
+
+Commit atômico M4-T1 verificado: `c0de781413f00a00eeb3e498215f1f55db625ba7`, worktree limpo depois do commit. Este registro documental posterior não altera código. M4-T2 não iniciado; aguardar revisão/autorização explícita.
+
+
+## Gika — M4-T2 em 01/10/2026
+
+Pedido posterior autorizou exclusivamente update_task a partir de02fe03e na feat/gika-integration. T2 done: apenas título como patch strict; selector textual/civil/exato bounded autenticado, activity.update/contentCommand convencional hidrata ActivityInput atual dentro da transação, campos não solicitados intactos, revision/receipts/retry/lost ack/ownership e UI structured após ack real. ADR015, M4_T2_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md são fontes atuais.262 unit/123 integração/10 E2E finais/lint/build/dois TS PASS;75 amplos62/13 causas comparadas02fe (11 históricas+2 intermitências deadline demonstradas);check12/1 contraste e audit13 baseline.26 arquivos de referência idênticos, sem timer/contraste fixes. Sondas temporárias removidas. Sem live/segredo/billing/push/deploy/merge. M4 parcial; T3 todo/não iniciado, aguardar revisão/autorização. SHA real no checkpoint documental posterior.
+
+Commit atômico M4-T2 verificado: `ededc2090887c181f6f463d92cda934a9cd6d16a`, worktree limpo depois do commit. Este checkpoint documental posterior registra o SHA real sem mudança funcional. M4-T3 não iniciado; aguardar revisão/autorização.
+
+
+## Gika — checkpoint M4-T3
+
+Na branch feat/gika-integration, reagendamento simples concluído a partir de d233971. Fonte atual `.agent/GIKA_STATE.md`, tarefas/ExecPlan e `docs/gika/M4_T3_EVIDENCE.md`. Patch temporal/preview→activity.update convencional/revisão/receipt/ack reais; sem recorrência/batch/Undo genérico.295 unit/150 integração/7 focal PASS; ampla67/15 e check12/1/audit13 baseline classificados, sem mascarar gates. M4 parcial: parar para revisão antes do M4-SMOKE real, não iniciar M5/Gemini live automaticamente. Checkpoint SHA real no estado/documentação após commit atômico.
+
+Commit atômico M4-T3: `f774d9c9b1466683e418be8b59f83615eb9495e7`; worktree limpo após commit. Checkpoint documental seguinte somente registra este SHA, sem mudança funcional.
+
+## Gika — M4-SMOKE e fechamento M4
+
+A partir de cfd96c3 limpo na feat/gika-integration, T3 aprovado e smoke exclusivamente autorizado. Quatro chamadas Gemini reais HTTP200 complete/update/reschedule timed+untimed→validation/resolution/policy→commands/receipt/persistência emulada→ack/UI; retries sem extra efeitos/upstream, preview sem escrita até confirmar, horários preservados e UID vizinho intacto. M4_SMOKE_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md fontes atuais; M4 done.295 unit/150 integração/25 E2E/lint/build/dois TS PASS;check12/1 contraste e audit13 baseline explícitos,26 arquivos idênticos. Credencial somente memória e processo encerrado; proxy/egress apenas Codex Remote, sem produção alterada. M5 não iniciado; parar antes de M5-T1 até autorização nova. SHA real no checkpoint documental posterior.
+
+Commit atômico M4-SMOKE/fechamento M4: `2443993295e45d7dc215ac0a1ab250437cee6c44`, branch feat/gika-integration e worktree limpo confirmados após commit. Checkpoint documental posterior apenas registra SHA real, sem repetir live/gates funcionais. M4 done, parar antes de M5.
+
+## Gika — M5-T1
+
+Entrada156fe77 limpa na feat/gika-integration. Classificador determinístico puro/strict/typed allow|clarify|confirm|deny, facts do servidor e registro fechado de quatro mutações atuais, gate antes de descriptor; auth/schema/ownership/revision/receipt/command layer/ack independentes. Preview reschedule preservado, replay histórico reautorizado precede resolução nova. ADR017, M5_T1_EXECPLAN/EVIDENCE e .agent/GIKA_STATE.md fontes atuais.323 unit/166 integração/6 E2E finais/lint/build/dois TS PASS;amplo50/1 deadlineUndo comparado original+sondas10200ms nas duas versões156/atual, todas51 únicas observadas PASS; check12/1 contraste e audit13 baseline,26 arquivos idênticos. Nenhum workaround/harness timeout/UI/writer/Rules/outbox/modelo/live/segredo/billing/push/deploy/merge. M5 in_progress/T1 done/T2+ todo; parar para revisão antes de M5-T2. SHA real no checkpoint documental posterior.
+
+Commit atômico M5-T1: `4561cf59db395ac4c10c58118890283a3e45ec1e`; branch feat/gika-integration/worktree limpo confirmados após commit. Checkpoint documental posterior somente registra este SHA, sem alteração funcional. M5-T2 permanece todo, aguardar revisão/autorização; nenhum live automático.
+
+## Security dependency hardening isolado
+
+M5-T1 aprovado; entrada a922594 limpa e branch temporária chore/security-hardening criada. DiceBear9.4.3 em commit separado73e750c, seis avatares padrão idênticos e injeção SVG corrigida. Firebase12.19/Admin13.6/parents preservados; overrides limitados grpc1.14.5 e uuid11.1.1, árvore válida/clean npmci/contratos CJS/v4/multipart/SDK emulados comprovados. Produção audit13(4high/9moderate)→0, auditlevelhigh exit0; completo28→14 dev-only preexistentes/mesmas versões, não ocultados/CI intacto.334 unit/166 integração/53 E2E finais/lint/build/doisTS PASS;check12/1 contraste histórico.152 arquivos produto/harness/CI idênticos à entrada. Fontes docs/security/REPORT.md/INVENTORY.md/GOOGLE_EVIDENCE.md/DEVELOPMENT_REMAINING.md/gates.json e .agent/GIKA_STATE.md. Sem policy/tools/UI/writer/Rules/outbox/arquitetura/segredo/live/billing/push/deploy/merge alterados. feat/gika-integration permanece a922594; parar para revisão antes de integrar chore/security-hardening. M5-T2 não iniciado. SHA real no checkpoint documental posterior.
+
+Commits atômicos hardening: DiceBear `73e750c866b620bb6a44147ecebf2b42d5e51b18`, Firebase/Google `e8c07be3218cb583fffb5af38e7a8beb10c95851`. chore/security-hardening/worktree limpo confirmados após ambos. Checkpoint documental posterior registra SHAs sem mudança funcional; feat ainda a922594. Aguardar revisão antes de integrar, M5-T2 todo.

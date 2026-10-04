@@ -1,0 +1,111 @@
+import { test, expect, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { batchSourceDate, batchDestinationDate, batchTestPayload, batchTestDb, createBatchFixture, batchReceipt, batchTask } from '../helpers/gikaBatch';
+
+async function enter(page: Page) {
+  await page.goto('/entrar'); await page.getByLabel('E-mail').fill('leve.local@example.test'); await page.getByLabel('Senha', { exact: true }).fill('leve-local-123'); await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.locator('#page-title')).toHaveText(/Finalize sua agenda|Meu dia/);
+  if (await page.getByRole('heading', { name: 'Finalize sua agenda' }).count()) await page.getByRole('button', { name: 'Criar minha agenda' }).click();
+  await expect(page.locator('#page-title')).toHaveText('Meu dia'); const skip = page.getByRole('button', { name: 'Pular guia', exact: true }); await skip.waitFor({ state: 'visible', timeout: 3000 }).catch(() => undefined);
+  if (await skip.isVisible()) { const ack = page.waitForResponse(r => r.url().endsWith('/api/commands') && r.request().postDataJSON()?.command === 'profile.completeTutorial'); await skip.click(); await ack; }
+}
+const label = (date: string) => date.split('-').reverse().join('/');
+async function ask(page: Page, fixture: Awaited<ReturnType<typeof createBatchFixture>>) {
+  await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click(); const field = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  const text = fixture.action === 'complete' ? `Conclui as tarefas pendentes de ${label(batchSourceDate)}, exceto "${fixture.excluded.title}"` : `Move as tarefas pendentes de ${label(batchSourceDate)} para ${label(batchDestinationDate)}, exceto "${fixture.excluded.title}"`;
+  await field.fill(text + (fixture.recurring ? ', só estas ocorrências' : '')); await field.press('Enter');
+  return page.getByRole('group', { name: 'Prévia do lote', exact: true });
+}
+for (const mobile of [false, true]) test(`M5-T4 ${mobile ? 'mobile dark reschedule' : 'desktop light complete'} exact preview, double click and success after final real ack`, async ({ page }) => {
+  if (mobile) { await page.setViewportSize({ width: 390, height: 844 }); await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' }); }
+  await enter(page); if (mobile) await page.evaluate(async () => { const path = '/src/platform/theme.ts'; (await import(/* @vite-ignore */ path)).applyAppearance('dark'); });
+  const fixture = await createBatchFixture(page, `Teste Gika lote ${mobile ? 'mobile' : 'desktop'}`, mobile ? 'reschedule' : 'complete');
+  const operations: string[] = []; let committed = false, release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/api/commands', async route => { const command = route.request().postDataJSON(); expect(command.gikaBatch).toBeTruthy(); operations.push(command.operationId); const response = await route.fetch(); expect(response.status()).toBe(200); expect((await response.json()).revision).toBe(2); if (operations.length === 2) { committed = true; await gate; } await route.fulfill({ response }); });
+  const preview = await ask(page, fixture); await expect(preview).toHaveAttribute('data-batch-state', 'awaiting_confirmation'); for (const task of fixture.selected) await expect(preview).toContainText(task.title); await expect(preview).not.toContainText(fixture.excluded.title); expect(operations).toHaveLength(0);
+  await page.screenshot({ path: `/tmp/leve-m5t4-batch-${mobile ? 'mobile-dark' : 'desktop-light'}.png` });
+  const confirm = preview.getByRole('button', { name: mobile ? 'Mover 2 tarefas' : 'Concluir 2 tarefas', exact: true }), handle = await confirm.elementHandle(); await confirm.click(); await handle!.dispatchEvent('click');
+  await expect.poll(() => committed).toBe(true); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0); release(); const success = page.getByRole('group', { name: 'Lote concluído', exact: true }); await expect(success).toContainText(mobile ? '2 tarefas movidas.' : '2 tarefas concluídas.'); await expect(success.getByRole('button')).toHaveCount(0); expect(operations).toHaveLength(2); expect(new Set(operations).size).toBe(2); expect(fixture.modelCalls()).toBe(1);
+  for (const item of fixture.confirmation().plan.items) { const data = await batchTask(fixture.uid, item.id); expect(data).toMatchObject({ revision: 2, ...(mobile ? { schedule: { dueDate: batchDestinationDate, dueTime: item.before.dueTime } } : { status: 'completed' }) }); expect((await batchReceipt(fixture.uid, item.operationId))?.response).toMatchObject({ entityId: item.id, revision: 2 }); }
+  const excluded = fixture.original.find(item => item.id === fixture.excluded.id); if (!excluded) throw Error('Expected excluded fixture.'); expect(await batchTask(fixture.uid, excluded.id)).toEqual(excluded.data);
+  expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
+});
+test('M5-T4 keyboard cancellation is terminal, no writes or receipts, reload restores no batch', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote cancelar', 'reschedule'); let writes = 0; page.on('request', request => { if (request.url().endsWith('/api/commands') && request.method() === 'POST') writes++; });
+  const preview = await ask(page, fixture); await preview.getByRole('button', { name: 'Cancelar', exact: true }).focus(); await page.keyboard.press('Enter'); await expect(preview).toHaveAttribute('data-batch-state', 'cancelled'); await expect(preview.getByRole('status')).toBeFocused(); await expect(preview.getByRole('button')).toHaveCount(0);
+  for (const item of fixture.confirmation().plan.items) expect(await batchReceipt(fixture.uid, item.operationId)).toBeUndefined(); for (const item of fixture.original) expect(await batchTask(fixture.uid, item.id)).toEqual(item.data); expect(writes).toBe(0); expect(fixture.modelCalls()).toBe(1);
+  await page.reload(); await expect(page.locator('#page-title')).toHaveText('Meu dia'); await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click(); await expect(page.locator('.gika-message')).toHaveCount(0); await expect(page.getByRole('group', { name: 'Prévia do lote', exact: true })).toHaveCount(0); expect(writes).toBe(0);
+});
+for (const action of ['complete', 'reschedule'] as const) test(`M5-T4 ${action} lost first ack stops sequence and resumes the same sealed children without Gemini`, async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, `Teste Gika lote retry ${action}`, action), operations: string[] = [], results: string[] = [];
+  await page.route('**/api/commands', async route => { const command = route.request().postDataJSON(); operations.push(command.operationId); const response = await route.fetch(); expect(response.status()).toBe(200); const ack = await response.json(); expect(ack.revision).toBe(2); results.push(ack.result); if (operations.length === 1) await route.abort('failed'); else await route.fulfill({ response }); });
+  const preview = await ask(page, fixture); await preview.getByRole('button', { name: action === 'complete' ? 'Concluir 2 tarefas' : 'Mover 2 tarefas', exact: true }).click(); await expect(preview.getByRole('button', { name: 'Retomar tarefas', exact: true })).toBeVisible(); expect(operations).toHaveLength(1); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0);
+  const plan = fixture.confirmation().plan, first = plan.items[0], second = plan.items[1]; if (!first || !second) throw Error('Expected both batch targets.'); expect(await batchTask(fixture.uid, first.id)).toMatchObject({ revision: 2 }); expect(await batchTask(fixture.uid, second.id)).toMatchObject({ revision: 1, status: 'pending' });
+  await preview.getByRole('button', { name: 'Retomar tarefas', exact: true }).click(); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toBeVisible(); expect(operations).toHaveLength(3); expect(operations[0]).toBe(operations[1]); expect(results).toEqual(['applied', 'alreadyApplied', 'applied']); expect(fixture.modelCalls()).toBe(1); for (const item of plan.items) expect(await batchTask(fixture.uid, item.id)).toMatchObject({ revision: 2 });
+});
+test('M5-T4 stale second target blocks the first commit and preserves the conventional edit', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote conflito', 'complete'); const preview = await ask(page, fixture); await expect(preview).toHaveAttribute('data-batch-state', 'awaiting_confirmation');
+  const item = fixture.confirmation().plan.items[1]; if (!item) throw Error('Expected second target.');
+  await page.evaluate(async value => { const path = '/src/platform/api.ts'; await (await import(/* @vite-ignore */ path)).sendCommand({ command: 'activity.update', operationId: crypto.randomUUID(), entityId: value.id, expectedRevision: 1, payload: { ...value.payload, descriptionPlain: 'Edição sintética posterior preservada' } }); }, { id: item.id, payload: batchTestPayload(item.title, item.before.dueTime) });
+  let writes = 0; await page.route('**/api/commands', async route => { writes++; const response = await route.fetch(); expect(response.status()).toBe(409); await route.fulfill({ response }); });
+  await preview.getByRole('button', { name: 'Concluir 2 tarefas', exact: true }).click(); await expect(preview).toHaveAttribute('data-batch-state', 'conflict'); await expect(preview.getByRole('button')).toHaveCount(0); expect(writes).toBe(1); expect(fixture.modelCalls()).toBe(1);
+  for (const target of fixture.confirmation().plan.items) { expect(await batchReceipt(fixture.uid, target.operationId)).toBeUndefined(); expect(await batchTask(fixture.uid, target.id)).toMatchObject({ status: 'pending', revision: target.id === item.id ? 2 : 1 }); }
+  expect(await batchTask(fixture.uid, item.id)).toMatchObject({ descriptionPlain: 'Edição sintética posterior preservada' });
+});
+for (const variant of ['target', 'patch']) test(`M5-T4 tampered command ${variant} cannot affect excluded sibling or remaining tasks`, async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, `Teste Gika lote adulterado ${variant}`, 'reschedule');
+  await page.route('**/api/commands', async route => { const command = route.request().postDataJSON(); const modified = variant === 'target' ? { ...command, entityId: fixture.excluded.id } : { ...command, payload: { dueDate: batchSourceDate } }; const response = await route.fetch({ postData: modified }); expect(response.status()).toBe(422); await route.fulfill({ response }); });
+  const preview = await ask(page, fixture); await preview.getByRole('button', { name: 'Mover 2 tarefas', exact: true }).click(); await expect(preview).toHaveAttribute('data-batch-state', 'failed'); await expect(preview.getByRole('button')).toHaveCount(0); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0); for (const item of fixture.original) expect(await batchTask(fixture.uid, item.id)).toEqual(item.data); expect(fixture.modelCalls()).toBe(1);
+});
+test('M5-T4 second lost ack reports partial result honestly and retry confirms both receipts', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote parcial', 'reschedule'), operations: string[] = [], results: string[] = [];
+  await page.route('**/api/commands', async route => { const command = route.request().postDataJSON(); operations.push(command.operationId); const response = await route.fetch(); expect(response.status()).toBe(200); const ack = await response.json(); results.push(ack.result); expect(ack.revision).toBe(2); if (operations.length === 2) await route.abort('failed'); else await route.fulfill({ response }); });
+  const preview = await ask(page, fixture); await preview.getByRole('button', { name: 'Mover 2 tarefas', exact: true }).click(); await expect(preview).toHaveAttribute('data-batch-state', 'partial'); await expect(preview.getByRole('status')).toContainText('1 de 2 tarefas foram movidas.'); await expect(preview).toContainText('Confirmação pendente'); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0); expect(operations).toHaveLength(2);
+  await preview.getByRole('button', { name: 'Retomar tarefas', exact: true }).click(); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toContainText('2 tarefas movidas.'); expect(results).toEqual(['applied', 'applied', 'alreadyApplied', 'alreadyApplied']); expect(operations).toHaveLength(4); expect(operations.slice(2)).toEqual(operations.slice(0, 2)); expect(fixture.modelCalls()).toBe(1); for (const item of fixture.confirmation().plan.items) expect(await batchTask(fixture.uid, item.id)).toMatchObject({ revision: 2, schedule: { dueDate: batchDestinationDate, dueTime: item.before.dueTime } });
+});
+test('M5-T4 logout discards preview and cannot execute old account batch', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote logout', 'complete'); const preview = await ask(page, fixture); await expect(preview).toHaveAttribute('data-batch-state', 'awaiting_confirmation'); let writes = 0;
+  page.on('request', request => { if (request.url().endsWith('/api/commands') && request.method() === 'POST') writes++; }); await page.getByRole('button', { name: 'Fechar Gika', exact: true }).click(); await page.getByRole('button', { name: 'Sair', exact: true }).click(); await expect(page.getByLabel('E-mail')).toBeVisible();
+  const outcome = await page.evaluate(async value => { const path = '/src/features/gika/batchBridge.ts'; try { await (await import(/* @vite-ignore */ path)).confirmGikaBatch(value.confirmation, value.request, value.uid, new AbortController().signal); return 'UNEXPECTED_SUCCESS'; } catch (error) { return (error as { code: string }).code; } }, { confirmation: fixture.confirmation(), request: fixture.request(), uid: fixture.uid });
+  expect(outcome).toBe('AUTH_REQUIRED'); expect(writes).toBe(0); for (const item of fixture.original) expect(await batchTask(fixture.uid, item.id)).toEqual(item.data); await enter(page); await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click(); await expect(page.locator('.gika-message')).toHaveCount(0);
+});
+test('M5-T4 explicitly scoped occurrence in batch leaves template and other recurrence members untouched', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote ocorrência', 'complete', true);
+  const target = fixture.selected.find(item => item.seriesId); if (!target?.seriesId) throw Error('Expected recurring batch target.');
+  const seriesRef = batchTestDb.doc(`users/${fixture.uid}/series/${target.seriesId}`), series = (await seriesRef.get()).data();
+  const siblings = (await batchTestDb.collection(`users/${fixture.uid}/activities`).where('seriesId', '==', target.seriesId).get()).docs.filter(document => document.id !== target.id);
+  expect(siblings).toHaveLength(2); const preview = await ask(page, fixture); await expect(preview).toContainText(/só esta ocorrência/i); await preview.getByRole('button', { name: 'Concluir 2 tarefas', exact: true }).click(); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toContainText('2 tarefas concluídas.');
+  expect(await batchTask(fixture.uid, target.id)).toMatchObject({ revision: 2, status: 'completed', seriesId: target.seriesId }); for (const sibling of siblings) expect((await sibling.ref.get()).data()).toEqual(sibling.data()); expect((await seriesRef.get()).data()).toEqual(series); expect(fixture.modelCalls()).toBe(1);
+});
+test('M5-T4 max5 mobile360 preview keeps all targets and composer while only conversation scrolls', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 }); await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' }); await enter(page);
+  await page.evaluate(async () => { const path = '/src/platform/theme.ts'; (await import(/* @vite-ignore */ path)).applyAppearance('dark'); });
+  const fixture = await createBatchFixture(page, 'Teste Gika cinco tarefas no mobile: planejamento para revisar material e organizar o estudo', 'reschedule', false, 5); let writes = 0;
+  page.on('request', request => { if (request.url().endsWith('/api/commands') && request.method() === 'POST') writes++; });
+  const preview = await ask(page, fixture); await expect(preview).toHaveAttribute('data-batch-state', 'awaiting_confirmation'); await expect(preview.locator('.gika-batch-items > li')).toHaveCount(5); for (const target of fixture.selected) await expect(preview).toContainText(target.title); await expect(preview).not.toContainText(fixture.excluded.title); await expect(preview.getByRole('button', { name: 'Mover 5 tarefas', exact: true })).toHaveCount(1);
+  const metrics = await page.evaluate(() => {
+    const viewport = document.querySelector<HTMLElement>('.gika-content'), composer = document.querySelector<HTMLElement>('.gika-composer');
+    if (!viewport || !composer) throw Error('Conversation viewport and composer required.');
+    const composerBefore = composer.getBoundingClientRect(), documentBefore = document.scrollingElement?.scrollTop ?? 0;
+    viewport.scrollTop = 0; const top = viewport.scrollTop; viewport.scrollTop = viewport.scrollHeight; const after = composer.getBoundingClientRect();
+    return { scrollable: viewport.scrollHeight > viewport.clientHeight, moved: viewport.scrollTop > top, documentStable: documentBefore === (document.scrollingElement?.scrollTop ?? 0), composerStable: Math.abs(composerBefore.top - after.top) < 1 && Math.abs(composerBefore.bottom - after.bottom) < 1, composerTop: after.top, composerBottom: after.bottom, viewportBottom: viewport.getBoundingClientRect().bottom, screenHeight: window.innerHeight, widthFits: document.documentElement.scrollWidth <= window.innerWidth };
+  });
+  expect(metrics).toMatchObject({ scrollable: true, moved: true, documentStable: true, composerStable: true, widthFits: true }); expect(metrics.composerBottom).toBeLessThanOrEqual(metrics.screenHeight); expect(metrics.viewportBottom).toBeLessThanOrEqual(metrics.composerTop + 1); await expect(page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true })).toBeVisible();
+  expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]); await page.screenshot({ path: '/tmp/leve-m5t4-batch-max5-mobile360-dark.png' });
+  await preview.getByRole('button', { name: 'Cancelar', exact: true }).click(); await expect(preview).toHaveAttribute('data-batch-state', 'cancelled'); expect(writes).toBe(0); expect(fixture.modelCalls()).toBe(1); for (const item of fixture.original) expect(await batchTask(fixture.uid, item.id)).toEqual(item.data);
+});
+test('M5-T4 closing after first commit keeps honest unknown state and reopening retries original receipts', async ({ page }) => {
+  await enter(page); const fixture = await createBatchFixture(page, 'Teste Gika lote fechar após commit', 'complete'), operations: string[] = [], results: string[] = [];
+  let committed = false, routeFinished = false, release!: () => void; const hold = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/api/commands', async route => {
+    const command = route.request().postDataJSON(); operations.push(command.operationId); const response = await route.fetch(); expect(response.status()).toBe(200); const ack = await response.json(); expect(ack.revision).toBe(2); results.push(ack.result);
+    if (operations.length === 1) { committed = true; await hold; await route.abort('failed').catch(() => undefined); routeFinished = true; } else await route.fulfill({ response });
+  });
+  const preview = await ask(page, fixture); await preview.getByRole('button', { name: 'Concluir 2 tarefas', exact: true }).click(); await expect.poll(() => committed).toBe(true); await expect(preview).toHaveAttribute('data-batch-state', 'confirming'); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Fechar Gika', exact: true }).click(); release(); await expect.poll(() => routeFinished).toBe(true); expect(operations).toHaveLength(1);
+  const plan = fixture.confirmation().plan, first = plan.items[0], second = plan.items[1]; if (!first || !second) throw Error('Expected both batch targets.'); expect(await batchTask(fixture.uid, first.id)).toMatchObject({ status: 'completed', revision: 2 }); expect(await batchTask(fixture.uid, second.id)).toMatchObject({ status: 'pending', revision: 1 });
+  await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click(); const reopened = page.getByRole('group', { name: 'Prévia do lote', exact: true }); await expect(reopened).toHaveAttribute('data-batch-state', 'failed'); await expect(reopened.getByRole('status')).toContainText('Não recebi a confirmação. A alteração pode ter sido aplicada. Retome este pedido para conferir.'); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toHaveCount(0);
+  await reopened.getByRole('button', { name: 'Retomar tarefas', exact: true }).click(); await expect(page.getByRole('group', { name: 'Lote concluído', exact: true })).toContainText('2 tarefas concluídas.'); expect(operations).toHaveLength(3); expect(operations[0]).toBe(operations[1]); expect(results).toEqual(['applied', 'alreadyApplied', 'applied']); expect(fixture.modelCalls()).toBe(1);
+  for (const item of plan.items) { expect(await batchTask(fixture.uid, item.id)).toMatchObject({ status: 'completed', revision: 2 }); expect((await batchReceipt(fixture.uid, item.operationId))?.response).toMatchObject({ entityId: item.id, revision: 2 }); }
+  const excluded = fixture.original.find(item => item.id === fixture.excluded.id); if (!excluded) throw Error('Expected excluded fixture.'); expect(await batchTask(fixture.uid, excluded.id)).toEqual(excluded.data);
+});

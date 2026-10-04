@@ -1,0 +1,52 @@
+{
+  "entryCheckpoint": "02fe03e0ddf09d8f589c11a6cccc1c9c2df5bad5",
+  "environment": "demo-leve Auth/Firestore Emulators; synthetic accounts; no Gemini live",
+  "originalCreationObservedHttpStatus": 200,
+  "originalCreationObservedRequestDurationMs": 10143.776,
+  "originalManualObservedRequests": "unacknowledged at original 10s assertion deadline; no upstream body/token retained",
+  "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE",
+  "baselineSource": "isolated git archive 02fe03e; original product code unchanged; diagnostic probes only",
+  "baselineOriginalCreationUndo": "PASS",
+  "baselineOriginalManualTime": "PASS",
+  "baselineOriginalSessionNavigation": "FAIL: PREEXISTING_HARNESS_STRICT_SELECTOR Meu dia resolves twice",
+  "probeDefinition": {
+    "creation": "real activity.create commit then hold acknowledgement 10200ms; original assertion timeout 10000ms is observed, then structured card and deterministic undo succeed",
+    "manual": "hold timeEntry.addManual transport before real commit 10200ms; original assertion timeout 10000ms is observed, then actual history and reload succeed",
+    "originalTestsUnmodified": true,
+    "probesTemporaryAndNotVersioned": true
+  },
+  "controlled": {
+    "entry": [
+      {
+        "probe": "ACK_DEADLINE",
+        "injectedAckDelayMs": 10200,
+        "originalAssertionDeadlineMs": 10000,
+        "originalAssertionTimedOut": true,
+        "cardAfterAck": true
+      },
+      {
+        "probe": "MANUAL_TRANSPORT_DEADLINE",
+        "injectedPrecommitDelayMs": 10200,
+        "originalAssertionDeadlineMs": 10000,
+        "originalAssertionTimedOut": true,
+        "historyAfterRealCommit": true
+      }
+    ],
+    "current": [
+      {
+        "probe": "ACK_DEADLINE",
+        "injectedAckDelayMs": 10200,
+        "originalAssertionDeadlineMs": 10000,
+        "originalAssertionTimedOut": true,
+        "cardAfterAck": true
+      },
+      {
+        "probe": "MANUAL_TRANSPORT_DEADLINE",
+        "injectedPrecommitDelayMs": 10200,
+        "originalAssertionDeadlineMs": 10000,
+        "originalAssertionTimedOut": true,
+        "historyAfterRealCommit": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "entry": "9c2c6fb474aa902820b815daa73108b0c38e5b7e",
+  "task": "M5-T2",
+  "production_audit": {
+    "critical": 0,
+    "high": 0,
+    "moderate": 0,
+    "exit_code": 0
+  },
+  "lint": "PASS",
+  "typechecks": "PASS client and server",
+  "build": "PASS",
+  "unit": {
+    "passed": 343,
+    "files": 43,
+    "exit_code": 0,
+    "restricted_attempt": {
+      "passed": 340,
+      "failed": 3,
+      "errors": 2,
+      "classification": "ENV_SANDBOX_NETWORK_PROCESS_RESTRICTION",
+      "original_unrestricted_repeat": "PASS"
+    }
+  },
+  "integration": {
+    "passed": 172,
+    "files": 6,
+    "exit_code": 0,
+    "preserved_pre_disconnect_log": true,
+    "functional_source_unchanged_after_gate": true
+  },
+  "e2e": {
+    "broad": {
+      "passed": 54,
+      "failed": 2,
+      "exit_code": 1
+    },
+    "reschedule_confirmation_focal": {
+      "passed": 12,
+      "failed": 0
+    },
+    "failed_originals_repeat": {
+      "passed": 2,
+      "failed": 0
+    },
+    "unique_gika_cases_observed_pass": 56,
+    "entry_originals_and_probes": {
+      "passed": 4,
+      "exit_code": 0
+    },
+    "current_originals_and_probes": {
+      "passed": 4,
+      "exit_code": 0
+    },
+    "classification": "ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE"
+  },
+  "check": {
+    "shell_passed": 12,
+    "shell_failed": 1,
+    "classification": "PREEXISTING_COLOR_CONTRAST",
+    "ratio": 4.38,
+    "required": 4.5
+  },
+  "temporal_regression": {
+    "scenarios": 6,
+    "identical_to_entry": true
+  },
+  "scope_reference_files_identical": 18,
+  "gemini_live": false,
+  "M5-T3_started": false
+}

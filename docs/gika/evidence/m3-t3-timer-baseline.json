@@ -1,0 +1,28 @@
+{
+  "checkpoint": "fc30bf9c51a7978cf2cb22280ddaa67d59b48f6d",
+  "controlledScenario": "Pause original CSS dock animation at first frame, trigger existing resize handler, finish original animation without content resize, then measure gap; no production modification",
+  "rows": [
+    {
+      "version": "fc30bf9",
+      "animation": "timer-dock-in",
+      "durationMs": 360,
+      "fontsLoaded": true,
+      "duringAnimationGap": 11.986,
+      "afterAnimationGap": -2.234,
+      "afterExplicitResizeGap": 12
+    },
+    {
+      "version": "M3-T3",
+      "animation": "timer-dock-in",
+      "durationMs": 360,
+      "fontsLoaded": true,
+      "duringAnimationGap": 11.986,
+      "afterAnimationGap": -2.234,
+      "afterExplicitResizeGap": 12
+    }
+  ],
+  "reproducedOnBothVersions": true,
+  "classification": "PREEXISTING_UI_TRANSFORM_MEASUREMENT_RACE",
+  "noGeminiCalls": true,
+  "noSecretsRecorded": true
+}

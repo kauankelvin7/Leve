@@ -1,0 +1,75 @@
+{
+  "checkpoint": "d23397136ce4033cd164f1628419cda2b97cf548",
+  "scope": "M4-T3 only",
+  "lint": "PASS",
+  "typecheck": "PASS both",
+  "build": "PASS",
+  "unit": {
+    "passed": 295,
+    "files": 39
+  },
+  "integration": {
+    "passed": 150,
+    "files": 5
+  },
+  "rescheduleFocal": {
+    "passed": 7,
+    "failed": 0
+  },
+  "localFull": {
+    "total": 82,
+    "passed": 67,
+    "failed": 15,
+    "gikaPassed": 49,
+    "gikaFailed": 2,
+    "failedTests": [
+      "tests/e2e-local/calendar-planner.spec.ts:170:1 › planner cria, move, redimensiona e preserva o fluxo de comando",
+      "tests/e2e-local/calendar-planner.spec.ts:202:1 › planner pede escopo e cancelar mantém a ocorrência intacta",
+      "tests/e2e-local/calendar-planner.spec.ts:220:1 › escopos recorrentes separam ocorrência e futuro corretamente",
+      "tests/e2e-local/design.spec.ts:4:1 › paletas acompanham navegação e calendário funciona em desktop e celular",
+      "tests/e2e-local/gika-update.spec.ts:37:1 › M4-T2 lost real acknowledgement retries original operation without another revision",
+      "tests/e2e-local/gika-update.spec.ts:55:1 › M4-T2 later conventional edit conflicts without refresh, forced overwrite or misleading retry",
+      "tests/e2e-local/persistent.spec.ts:5:1 › cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface",
+      "tests/e2e-local/persistent.spec.ts:52:1 › login, ativação e atividade sobrevivem ao reload ────",
+      "tests/e2e-local/persistent.spec.ts:164:1 › compromisso de dia inteiro salva tempo e pode ser concluído",
+      "tests/e2e-local/persistent.spec.ts:241:1 › duas abas sincronizam, preservam alteração offline e encerram a mesma sessão",
+      "tests/e2e-local/persistent.spec.ts:287:1 › conflito de nota entre abas preserva as duas versões",
+      "tests/e2e-local/persistent.spec.ts:354:1 › exportação pessoal volta pela importação sem substituir os dados atuais",
+      "tests/e2e-local/refinements.spec.ts:4:1 › tutorial, cores persistentes, unidade condicional e lixeira móvel",
+      "tests/e2e-local/session.spec.ts:3:1 › cronômetro explícito, conclusão e registro manual persistem após recarregar",
+      "tests/e2e-local/session.spec.ts:35:1 › cronômetro continua contando fora do detalhe da atividade"
+    ]
+  },
+  "comparison": {
+    "baselineOriginalPassed": 4,
+    "baselineOriginalHistoricFailures": 2,
+    "baselineControlledPassed": 4,
+    "currentOriginalAndControlledPassed": 8,
+    "currentHistoricFailures": 2,
+    "all51UniqueGikaCasesObservedPassingAcrossCurrentFullAndFocalComparison": true
+  },
+  "check": {
+    "buildTypecheckUnit": "PASS",
+    "shellPassed": 12,
+    "shellFailed": 1,
+    "classification": "PREEXISTING_DEMO_COLOR_CONTRAST",
+    "observedRatios": [
+      3.59,
+      3.66,
+      4.17
+    ]
+  },
+  "audit": {
+    "moderate": 9,
+    "high": 4,
+    "total": 13,
+    "classification": "PREEXISTING_DEPENDENCY_BASELINE",
+    "fixApplied": false
+  },
+  "baselineFilesIdentical": 26,
+  "agentBrowser": "PASS current and isolated baseline",
+  "geminiLive": false,
+  "secretsPersisted": false,
+  "M4Milestone": "in_progress; smoke requires review/authorization",
+  "M5Started": false
+}

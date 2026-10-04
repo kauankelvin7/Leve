@@ -1,0 +1,44 @@
+{
+  "checkpoint": "abbd1e2",
+  "project": "demo-leve",
+  "model": "gemini-3.5-flash-lite",
+  "thinking": "medium",
+  "proxyEnvironmentOnly": true,
+  "provider": [
+    {
+      "http": 200,
+      "tools": [
+        "create_task"
+      ]
+    }
+  ],
+  "result": "PASS",
+  "uiNoSuccessBeforeAck": true,
+  "creation": {
+    "title": "Teste Gika M3",
+    "dueDate": "2026-10-02",
+    "timeZone": "America/Sao_Paulo",
+    "count": 1,
+    "entityMatchesStructuredAck": true,
+    "receipt": true,
+    "results": [
+      "applied",
+      "alreadyApplied"
+    ],
+    "technicalRetrySameIdentity": true,
+    "upstreamCalls": 1,
+    "otherEntitiesUnchanged": true,
+    "commands": [
+      "activity.create",
+      "activity.create"
+    ]
+  },
+  "undo": {
+    "command": "activity.trash",
+    "ack": "applied",
+    "revision": 2,
+    "exactTargetSoftDeleted": true,
+    "otherEntitiesUnchanged": true,
+    "additionalGeminiCalls": 0
+  }
+}
