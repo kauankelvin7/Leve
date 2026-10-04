@@ -317,3 +317,13 @@ Forced colors focal anterior1/1PASS39.6s; selftests/lintAST47/ambosTS/build/stri
 Pendências exatas: diagnosticar contraste não medido no painel Gika853; imagem estática da nav atualmente reutiliza GikaPortrait e antecipa rest/offline inline no bootstrap (entry1210129→1277239bytes, medição bruta; otimização ainda NÃO aplicada); concluir Glass ampla/capturas/QA/performance; somente depois integrar e executar regressão final/RC-UAT. Nenhum asset/controller/contrato/backend alterado.
 
 Nenhuma integração em feat/gika-integration, nenhum main/deploy/live/Cadet. M9 congelado b0e7bae preservado. Estado: `STOPPED_BY_USER_WITH_GLASS_VERIFICATION_PENDING`. Parar aqui; não continuar investigação automaticamente.
+
+## Retomada do checkpoint `1ec7edc` — contraste Glass resolvido
+
+O `UNMEASURED_CONTRAST` da Gika em 853px vinha do harness intersectar texto da `<dialog>` modal top-layer com a sidebar `overflow:auto` ancestral. O medidor agora respeita o limite modal/popover; self-test acrescentado. Welcome 12/12 e chat 10/10 targets medidos em light/dark; mínimos 5.48:1 e 6.19:1 respectivamente, Axe 0.
+
+Após separar o componente `GikaPortrait`, somente `rest` inline é carregado pelo launcher; os demais estados (incluindo offline, ainda inline) ficam no chunk lazy da Gika. Build inicial caiu 34.39 kB bruto/25.26 kB gzip; painel lazy cresce 35 kB bruto/25.9 kB gzip. Mesmo asset/master e visual continuam inalterados.
+
+Glass: 55 casos observados como PASS em combinações de run completo e repeats focais; a invocação capturada completa reportou 48 PASS + 7 timeout de 60s. Os sete passaram sem captura em 57.2–59.4s, sem alterar deadlines/assertions/retries. Selftest/check e focais 853 light/dark passaram; duas E2E de launcher, lint/typechecks/build/545 unit passaram. Capturas reviewed; dados detalhados e limites em `docs/glass/FINAL_REPORT.md` e `docs/glass/DECISIONS.md`.
+
+Status agora: Glass resolvido nesta branch e pronto para integrar em `feat/gika-integration`; a integração e a regressão final/RC-UAT ainda precisam ser executadas. Preservar M9 frozen `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`; `main` e deploy permanecem fora do escopo.

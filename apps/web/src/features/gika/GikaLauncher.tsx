@@ -1,5 +1,5 @@
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { GikaPortrait } from './character/GikaCharacter';
+import { GikaPortrait } from './character/GikaPortrait';
 import { useAuth } from '../identity/AuthProvider';
 import { firebaseAuth } from '../../platform/firebase';
 import './gika.css';

@@ -407,6 +407,16 @@ Direção posterior sobre f056244: meia-altura removida do requisito de M9; bust
 
 M9 congelado b0e7bae; sem reabertura. Forced colors: medir sem alterar inline-flex React/Text, usar system colors em Compras, nunca liberar unmeasured. Responsividade: calendário390/200%, scroll interno e mobile páginas reais. Gika: mesmo opener/panel lazy dentro da nav com portrait aprovado, excluir dock fixed e observadores obsoletos; não tocar assets/controller/domínio. Concluir overlays/Gika somente com primitivo central e manifesto7. Gates Glass fresh/selftests/after+review/perf antes de FF para integration; então regressão total sintética/RC-UAT, evidência final e push. Git/runtime/CSS/estado pertencem ao root; auditoria paralela somente leitura. Main/produção/live/paid intactos. Falhas iniciais preservadas, sem deadlines/retries/assertions relaxados.
 
+### Retomada aprovada após `1ec7edc`
+
+Glass contrast bug corrigido em `scripts/glass/contrast.mjs`: o clipping segue ancestors até o `:modal`/`:popover-open` mais próximo e para fora da top layer. `contrast-selftest` cobre `<dialog>.showModal()` dentro de ancestral rolável. Focus 853px light/dark e capturas passam; motivos/razões WCAG em `docs/glass/FINAL_REPORT.md`.
+
+Performance baseline identificado no build: launcher importava `GikaPortrait` da unidade que também inlinava todos os estados; isso movia rest/offline para a entry chunk. `GikaPortrait.tsx` agora separa rest e preserva `GikaCharacter` no painel lazy. Entry -34.39 kB/ -25.26 kB gzip; sem mudar assets, controller ou estados visuais. Dois launcher E2E e gates focais após a mudança PASS.
+
+Glass: 55 casos PASS agregados de uma execução serial capturada mais 7 repetições focais após os timeouts normais de60s (57.2–59.4s); o exit1 original e seus sete timeouts continuam explicitamente registrados. Selftest/static lock PASS. Capturas public + authenticated após permanecem locais ignoradas por conterem dados sintéticos.
+
+Próximo: commit atômico harness/evidência e otimização de bundle; fast-forward integrado em `feat/gika-integration` (autorizado pelo usuário); executar regressão, preparar RC/UAT e documentar resultados. Sem main/deploy.
+
 ## Interrupção solicitada pelo usuário — checkpoint atual
 
 Implementação preservada em `c8620e2af48fa3c6f4ef997923991fe63644b9cb`, branch `feat/liquid-glass-system`. Suíte `GLASS_CAPTURE=1 TMPDIR=/workspace/leve-glass-tmp npm run glass:verify` interrompida por SIGINT após pedido explícito, exit130. Resultado observado:16PASS/2FAIL/1interrompido/36não executados,7.3min. Falhas reais desta rodada: authenticated853light55.5s e853dark (duração no log original), welcome/chat retornam `UNMEASURED_CONTRAST`, razão `NO_VISIBLE_TEXT_RECTS`; zero violações Axe nesses snapshots. Causa ainda NÃO diagnosticada; desconhecido não é PASS.1024light foi interrompido em auth/bootstrap, não classificado como regressão.
