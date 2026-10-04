@@ -33,6 +33,9 @@ export async function measureIncompleteContrast(page, target) {
       const field = root instanceof HTMLTextAreaElement || (root instanceof HTMLInputElement && ['text', 'email', 'search', 'password', 'tel', 'url'].includes(root.type));
       const placeholder = field && !root.value && root.placeholder;
       let node;
+      // Modal dialogs and open popovers render in the browser's top layer, so
+      // overflow ancestors outside that layer boundary do not clip their paint.
+      const topLayer = root.closest(':modal, :popover-open');
       while ((node = field ? (node ? null : root) : walker.nextNode())) {
         if (field && !root.value && !placeholder) return { reason: 'EMPTY_TEXT_CONTROL' };
         if (!field && !node.textContent.trim()) continue;
@@ -54,6 +57,7 @@ export async function measureIncompleteContrast(page, target) {
         let rects = (field ? [root.getBoundingClientRect()] : [...range.getClientRects()]).filter(r => r.width > 0 && r.height > 0).map(r => ({ x: r.x, y: r.y, width: r.width, height: r.height }));
         if (!rects.length) continue;
         for (let ancestor = parent; ancestor; ancestor = ancestor.parentElement) {
+          if (topLayer && !topLayer.contains(ancestor)) break;
           const s = getComputedStyle(ancestor), bounds = ancestor.getBoundingClientRect();
           const left = bounds.x + ancestor.clientLeft, top = bounds.y + ancestor.clientTop;
           rects = rects.map(rect => {

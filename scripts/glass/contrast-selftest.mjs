@@ -54,6 +54,11 @@ try {
   await page.setContent('<style>body{background:white}#scroller{height:80px;overflow:auto}#target{margin-top:300px;background:linear-gradient(90deg,white,#eee);color:black}</style><div id="scroller"><div id="target">Synthetic clipped scroller text</div></div>');
   await measureIncompleteContrast(page, ['#target']);
   assert.equal(await page.locator('#scroller').evaluate(e => e.scrollTop), 0);
+  // Modal dialogs render in the top layer and escape overflow clipping from
+  // their DOM ancestors; their own overflow still constrains visible text.
+  await page.setContent('<style>body{margin:0;background:white}#scroller{position:relative;height:80px;overflow:auto}dialog{position:fixed;inset:40px auto auto 180px;margin:0;width:180px;background:white;color:black}#target{font:16px Arial}</style><div id="scroller"><dialog id="modal"><p id="target">Synthetic top-layer dialog text</p></dialog></div>');
+  await page.locator('#modal').evaluate(dialog => dialog.showModal());
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
   // Offscreen root bounds are not visible paint inside a horizontal scrollport.
   await page.setContent('<style>html{font-size:200%}body{margin:0;background:white}.scroller{margin:30px;width:330px;overflow-x:auto}.board{width:max(320px,18rem);padding-left:max(52px,3.25rem);box-sizing:border-box}#target{display:block;font:16px Arial;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:black;background:linear-gradient(90deg,white,#eee)}</style><div class="scroller"><div class="board"><strong id="target">Synthetic long title inside the scrollable timeline</strong></div></div>');
   assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
