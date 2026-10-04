@@ -71,3 +71,13 @@ Sampler clipping reproduzido sem app: root x31–491 em scrollport x30–360/doc
 Rodada com scroller corrigido: text2001/1PASS; authenticated390lightFAIL54.8s por NESTED_FILTER no dialog Gika dentro da nav recém-integrada. Nenhuma violação Axe/overflow. Aplicar superfície Gika já autorizada/manifestada pelo primitivo: mobile fullscreen sólido sem blur; desktop nav ink sólido + panel strong, sem blur no backdrop. Remover filtros/fallbacks/shadow/bg duplicados de gika.css, sem mudança de handler/controller. Reexecução pendente.
 
 Focal final do lote nav/calendário/Gika:3/3PASS2.6min (authenticated390light52.7s, solid41.4s, forcedColors38.9s), snapshots after reais; nenhum nested filter/Axe/overflow. Calendar200 focal1PASS e selftests/static/lint/AST/doisTS/buildPASS. Captura mobile revisada: título/tabs legíveis, avatar44px no nav, timeline contida. Overlays/dock restantes e ampla/final RC ainda pendentes.
+
+Lote4 superfícies: strict static/lint/AST/doisTS/buildPASS, timer+confirmation390light1PASS17.2s (36.5s com setup), recurrence390light1PASS8.0s (28.1s com setup). Extensão da matriz Planner para sheet aberto inicialmente timeout150s buscando data-date inexistente no mês de produção (atributo da UI histórica). Causa de fixture demonstrada no JSX atual; selecionar botão pelo nome acessível da data real, mantendo abrir/medir/fechar e todas as asserções originais, sem prazo/retry maior.
+
+Captura demonstrou artefato Chromium, não bug do skip-link: com scroll950 e link não focado, recttop-100/bottom-39; viewport sem bloco branco, fullPage pinta emdocument850–910. Em scroll0 o artefato desaparece. CSS preservado. Harness passa a capturar viewport original e fullPage na origem, restaurando scroll/foco; nenhuma mudança na medição/asserções. Lock probe atualizado por esse bug factual de evidência. Snapshot anterior com bloco não representa visibilidade real.
+
+Sheet após seletor semântico1PASS18.1s/27.1s total: seis viewports Mês/Semana/Dia contidos, abrir/medir/fechar sheet; zero Axe/overflow/nested,16px nav +22px sheet. Lote4 completo, sem alteração de lógica.
+
+Primeiro build após captura: typecheck rejeitou acesso ao grupo opcional do RegExp (TS2532). Conversão explícita Number mantém comparação24px e semântica; lint/selftests anteriores PASS. Revalidar build antes dos servidores.
+
+Capture fix focal: primeiro filtro inglês não encontrou testes (não é PASS); selecionar nome PT-BR existente,1/1PASS19.6s/29s total. Viewport real e fullPage origin inspecionados; skip-link corretamente oculto, sheet utilizável. Selftests/lint/AST/ambosTS/build/strictstatic PASS; warning de bundle histórico registrado.

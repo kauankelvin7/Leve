@@ -406,7 +406,6 @@
 
 .calendar-recurrence-dialog::backdrop {
   background: color-mix(in srgb, #000 48%, transparent);
-  backdrop-filter: blur(3px);
 }
 
 .calendar-recurrence-dialog-content {

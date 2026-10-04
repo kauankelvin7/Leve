@@ -55,7 +55,7 @@ export function ActiveTimerBar() {
   const title = activity?.title ?? 'Atividade em andamento';
   const seconds = timeEntrySeconds(entry, now);
   return createPortal(
-    <aside className={`active-timer-bar${entry.paused ? ' is-paused' : ''}${session?.profile?.reduceTransparency ? ' is-solid' : ''}`} aria-label={`Cronômetro de ${title}`} aria-live="polite">
+    <aside className={`active-timer-bar glass${entry.paused ? ' is-paused' : ''}${session?.profile?.reduceTransparency ? ' is-solid' : ''}`} aria-label={`Cronômetro de ${title}`} aria-live="polite">
       <div className="active-timer-state" aria-hidden="true"><span /><Icon name="clock" /></div>
       <Link className="active-timer-summary" to={`/atividade/${entry.activityId}#cronometro`}>
         <span className="active-timer-label">{entry.paused ? 'Cronômetro pausado' : 'Contando agora'}</span>

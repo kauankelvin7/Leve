@@ -1129,8 +1129,6 @@ dialog {
 
 dialog::backdrop {
   background: rgba(25, 42, 30, 0.32);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 
 dialog h2 { font: 800 2.25rem/1.1 var(--font-brand); letter-spacing: -0.035em; }

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { inspect } from '../../scripts/glass/probe';
 
 const TEST_DAY = '2026-09-17';
 const VIEWPORTS = [
@@ -70,6 +71,14 @@ test('Mês, Semana e Dia permanecem contidos nos seis viewports de homologação
     for (const view of ['Mês', 'Semana', 'Dia'] as const) {
       await chooseView(page, view);
       await assertNoGlobalOverflow(page);
+      if (view === 'Mês' && viewport.width === 390) {
+        await page.getByLabel('Mês', { exact: true }).fill(TEST_DAY.slice(0, 7));
+        await page.getByRole('button', { name: /17 de setembro de 2026/ }).click();
+        await expect(page.locator('.calendar-agenda.open')).toBeVisible();
+        await inspect(page, 'calendar-mobile-sheet');
+        await page.locator('.calendar-sheet-close').click();
+        await expect(page.locator('.calendar-agenda.open')).toHaveCount(0);
+      }
       if (view === 'Semana' && viewport.width <= 430) {
         expect(await page.locator('.calendar-time-horizontal').evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
       }

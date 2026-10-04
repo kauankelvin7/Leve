@@ -28,7 +28,7 @@ export async function inspect(page: Page, name: string, solid = false) {
         if (complete && !approved.length) errors.push(`UNAPPROVED_FILTER: ${label}`);
         if (approved.some(component=>component.scope==='max-width:739px') && innerWidth>739) errors.push(`FILTER_SCOPE: ${label}`);
         if (solid) errors.push(`SOLID_FILTER_LEAK: ${label}`);
-        for (const m of filter.matchAll(/blur\(([\d.]+)px\)/g)) if (+m[1] > 24) errors.push(`MAX_BLUR_24: ${label}`);
+        for (const m of filter.matchAll(/blur\(([\d.]+)px\)/g)) if (Number(m[1]) > 24) errors.push(`MAX_BLUR_24: ${label}`);
         for (let p = e.parentElement; p; p = p.parentElement) if (active(p)) { errors.push(`NESTED_FILTER: ${label}`); break; }
       }
       if (e.matches('.glass-pressable') && (r.width < 44 || r.height < 44)) errors.push(`TOUCH_TARGET_44: ${label}`);
@@ -59,7 +59,18 @@ export async function inspect(page: Page, name: string, solid = false) {
     if (measurement.status !== 'PASS') result.errors.push(`${measurement.status === 'FAIL' ? 'CONTRAST_RATIO' : 'UNMEASURED_CONTRAST'}: incomplete target ${targetIndex}`);
   }
   await writeFile(`${directory}/${name}.json`, JSON.stringify({ ...result, colors: measuredColors, contrastMeasurements, axe: { violations: summarize(axe.violations), incomplete: summarize(axe.incomplete) }, phase, verification: phase === 'before' ? 'BASELINE_ONLY' : 'STRICT' }, null, 2));
-  if (process.env.GLASS_CAPTURE === '1') await page.screenshot({ path: `${directory}/${name}.png`, fullPage: true, animations: 'disabled' });
+  if (process.env.GLASS_CAPTURE === '1') {
+    await page.screenshot({ path: `${directory}/${name}-viewport.png`, animations: 'disabled' });
+    // Chromium full-page capture can paint offscreen fixed elements at scrollY.
+    // Capture from the document origin, then restore the interaction's scroll.
+    const scroll = await page.evaluate(() => ({ x: scrollX, y: scrollY }));
+    try {
+      await page.evaluate(() => window.scrollTo({ left: 0, top: 0, behavior: 'instant' }));
+      await page.screenshot({ path: `${directory}/${name}.png`, fullPage: true, animations: 'disabled' });
+    } finally {
+      await page.evaluate(position => window.scrollTo({ left: position.x, top: position.y, behavior: 'instant' }), scroll);
+    }
+  }
   if (phase !== 'before') {
     expect.soft(result.errors, name).toEqual([]);
     expect.soft(result.horizontalOverflow, `${name}: reflow`).toBe(false);

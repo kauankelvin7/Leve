@@ -31,7 +31,7 @@ export function RecurrenceScopeDialog({
   return (
     <dialog
       ref={dialogRef}
-      className="calendar-recurrence-dialog"
+      className="calendar-recurrence-dialog glass glass-strong"
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       onCancel={event => {
