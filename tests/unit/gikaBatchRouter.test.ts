@@ -64,7 +64,7 @@ import { AppError } from '../../server/errors';
 function httpFixture() {
  const model={interpret:vi.fn()};
  const repo={authorize:vi.fn().mockResolvedValue(context),read:vi.fn().mockResolvedValue(read),recoverMutation:vi.fn().mockResolvedValue(null),recoverBatch:vi.fn().mockResolvedValue(null)};
- const app=express();app.use((_req,res,next)=>{res.locals.identity={uid:'user-a',email_verified:true};next();});app.use('/gika',createGikaRouter(model,repo));
+ const app=express();app.use((_req,res,next)=>{res.locals.identity={uid:'user-a',email_verified:true};next();});app.use('/gika',createGikaRouter(model,repo,async()=>{}));
  app.use((error:AppError,_req:express.Request,res:express.Response,_next:express.NextFunction)=>res.status(error.status??500).json({code:error.code}));
  return {http:supertest(app),model,repo};
 }

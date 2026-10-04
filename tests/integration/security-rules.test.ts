@@ -67,6 +67,15 @@ describe('Firestore security rules', () => {
     await expect(deleteDoc(existing)).rejects.toThrow();
   });
 
+  it('denies client reads and edits of the server-only Gika quota', async () => {
+    const database = rules.authenticatedContext('user-a', { email_verified: true }).firestore();
+    const quota = doc(database, 'usageBuckets/user-a_gika');
+    await expect(getDoc(quota)).rejects.toThrow();
+    await expect(setDoc(quota, { gikaRequestTimesMs: [] })).rejects.toThrow();
+    await expect(updateDoc(quota, { gikaRequestTimesMs: [Date.now()] })).rejects.toThrow();
+    await expect(deleteDoc(quota)).rejects.toThrow();
+  });
+
   it('rejects reads when email is unverified or membership is inactive', async () => {
     const unverified = rules.authenticatedContext('user-a', { email_verified: false }).firestore();
     await expect(getDoc(doc(unverified, 'users/user-a/activities/activity-1'))).rejects.toThrow();

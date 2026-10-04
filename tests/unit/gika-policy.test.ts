@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readResultSchema, gikaResponseSchema } from '../../packages/domain/src/gika';
-import { createReadLimiter, readRange, validateCalls } from '../../server/gika/policy';
+import { readRange, validateCalls } from '../../server/gika/policy';
+import { parseGikaDailyLimit } from '../../server/gika/quotaPolicy';
 const context = { today: '2026-09-30', timeZone: 'America/Sao_Paulo', weekStartsOn: 1 as const };
 describe('Gika allowlist e policy somente leitura', () => {
   it.each(['activity.create', 'complete_task', 'reschedule_task', 'delete_task', 'get_other_user', '__proto__'])('nega %s', name => {
@@ -25,13 +26,10 @@ describe('Gika allowlist e policy somente leitura', () => {
     for (const change of [{ endDate: '2026-10-07' }, { cached: true }, { command: 'activity.create' }]) expect(readResultSchema.safeParse({ ...read, ...change }).success).toBe(false);
     expect(gikaResponseSchema.safeParse({ text: 'ok', simulated: false, reads: [read], preview: 'organize-demo' }).success).toBe(false);
   });
-  it('limite por conta, single flight e reset UTC sem writes', () => {
-    let now = Date.UTC(2026, 8, 30); const acquire = createReadLimiter(() => now);
-    const release = acquire('a'); expect(() => acquire('a')).toThrow('GIKA_QUOTA'); release();
-    acquire('a')(); acquire('a')(); expect(() => acquire('a')).toThrow('GIKA_QUOTA');
-    acquire('b')();
-    for (let count = 3; count < 10; count++) { now += 60_000; acquire('a')(); }
-    now += 60_000; expect(() => acquire('a')).toThrow('GIKA_QUOTA');
-    now += 86_400_000; expect(acquire('a')).toBeTypeOf('function');
+  it('daily quota is optional and only accepts an explicit positive safe integer', () => {
+    expect(parseGikaDailyLimit(undefined)).toBeNull();
+    expect(parseGikaDailyLimit('')).toBeNull();
+    expect(parseGikaDailyLimit('25')).toBe(25);
+    for (const invalid of ['0', '-1', '1.5', 'abc', '9007199254740992']) expect(() => parseGikaDailyLimit(invalid)).toThrow('Invalid GIKA_DAILY_LIMIT');
   });
 });
