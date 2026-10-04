@@ -157,3 +157,29 @@ test('E70: 503, timeout e resposta inválida permitem consultar calendário apó
    await expect(page.locator('.gika-content')).toContainText('Oi! Como posso te ajudar?');
    expect(requests[3]).not.toHaveProperty('conversation');
  });
+
+test('domain-bounded conversation redirects general knowledge without agenda commands', async ({page}) => {
+  await enter(page);
+  const commands:string[]=[];
+  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/api/commands'))commands.push(request.url());});
+  const replies:Record<string,{domainIntent:string;text:string}>={
+    'Oi':{domainIntent:'SOCIAL',text:'Oi! Como posso te ajudar com sua agenda?'},
+    'Me ensine Python':{domainIntent:'OUT_OF_SCOPE',text:'Eu fico focada na sua agenda e organização no Leve. Posso ajudar a reservar um horário de estudo ou adicionar uma tarefa à sua agenda.'},
+    'Quem é você?':{domainIntent:'GIKA_META',text:'Sou a Gika. Ajudo você com sua agenda e organização no Leve.'},
+    'Meu dia está uma bagunça':{domainIntent:'ORGANIZATION_CONVERSATION',text:'Podemos começar escolhendo uma prioridade para hoje.'},
+  };
+  await page.route('**/api/gika/respond',route=>{
+    const text=route.request().postDataJSON().text;
+    return route.fulfill({json:{...replies[text],intent:'conversation',simulated:false,reads:[]}});
+  });
+  await page.getByRole('button',{name:'Pergunte à Gika'}).click();
+  const composer=page.getByRole('textbox',{name:'Pergunte à Gika',exact:true});
+  for(const [text,reply] of Object.entries(replies)){
+    await composer.fill(text);await composer.press('Enter');
+    await expect(page.locator('.gika-message.is-assistant').last()).toContainText(reply.text);
+  }
+  expect(commands).toEqual([]);
+  await expect(page.locator('.gika-panel')).not.toContainText('Horários em');
+  await expect(page.locator('#gika-voice-privacy')).toHaveCount(0);
+  expect((await new AxeBuilder({page}).include('.gika-panel').analyze()).violations).toEqual([]);
+});

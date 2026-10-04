@@ -3,7 +3,7 @@ import request from 'supertest';
 import { Temporal } from '@js-temporal/polyfill';
 import type { ModelAdapter } from '../../server/gika/model';
 const modelState = vi.hoisted(() => ({ model: null as ModelAdapter | null, calls: 0 }));
-vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ interpret: async (...args: Parameters<ModelAdapter['interpret']>) => { modelState.calls++; return modelState.model!.interpret(...args); } }) }));
+vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classify: async () => ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (...args: Parameters<ModelAdapter['interpret']>) => { modelState.calls++; return modelState.model!.interpret(...args); } }) }));
 import { auth, db } from '../../server/platform/firebase';
 import { app } from '../../server/app';
 import { batchEnvelope, batchOperationId, batchPlanSchema, type BatchPlan } from '../../packages/domain/src/gikaBatch';

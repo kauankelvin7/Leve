@@ -1,3 +1,7 @@
+## Correção vigente — domínio conversacional
+
+Base `main@58119bc9929e55d4c562ccf350c94b667495bad6`. Gika limitada a agenda/organização pessoal: SOCIAL, GIKA_META, AGENDA_QUERY, AGENDA_ACTION, ORGANIZATION_CONVERSATION, OUT_OF_SCOPE. Classificação semântica estrita precede agenda; incerteza não libera ação; fora do escopo recebe redirecionamento server-owned. O escopo GENERAL anterior abaixo é histórico e foi revogado. Commands/policy/confirmation/receipts/serviceControls/quotas, voz e hotfixes de microcopy preservados. Gates/evidência em `docs/gika/DOMAIN_SCOPE_EVIDENCE.md`. Sem nova milestone ou alteração de persistência.
+
 ## Continuação de produção — conversa Gika
 
 Entrada `main@e129f65df6a02b76b9a51ed3f1caed6ae03dd69c`, fetch/local=origin/worktree limpo. Pedido vigente autoriza conversa geral Gemini, roteamento seguro, contexto geral bounded em memória, remoção de microcopy timezone/áudio e commit/push em main após gates. Nenhuma nova milestone.

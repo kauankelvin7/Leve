@@ -375,9 +375,9 @@ Um rig/nove estados/mesmas14camadas. Controller sem conteúdo/IDs/domain: typing
 
 - Sessão fresh: ativação/onboarding pela UI é precondição explícita; entrada reproduziu2falhas antes do cronômetro. Depois do ajuste de setup,2/2PASS, mantendo clocks, ACKs, reload e assertions do timer. Nenhuma correção de produto/timeout necessária.
 
-## Conversa geral: regressões de roteamento
+## Conversa: regressões históricas de roteamento (58119bc)
 
-- `Oi`, `Obrigado`, `Quem é você?`, `Tudo bem?`, procrastinação e dicas gerais: Gemini retorna `respond_conversation`; nenhuma leitura de atividades/séries, descriptor ou escrita de domínio/receipt. A quota técnica permanece ativa.
+- No contrato anterior, `Oi`, `Obrigado`, `Quem é você?`, `Tudo bem?`, procrastinação e dicas gerais: Gemini retorna `respond_conversation`; nenhuma leitura de atividades/séries, descriptor ou escrita de domínio/receipt. A quota técnica permanece ativa.
 - `Oi` → `O que tenho hoje?`: contexto geral limitado + leitura autenticada existente, sem comando.
 - `Crie uma tarefa para amanhã`: ação explícita incompleta pede título; não inventa tarefa.
 - `Talvez academia amanhã`, `Academia amanhã`, `sim`: tool de criação equivocada não produz descriptor, inclusive com pedido anterior no histórico.
@@ -385,3 +385,9 @@ Um rig/nove estados/mesmas14camadas. Controller sem conteúdo/IDs/domain: typing
 - UI: histórico não inclui resultados de agenda; timezone permanece interno; a microcopy permanente de áudio é removida, preservando voz, draft, envio manual e acessibilidade.
 
 Provas determinísticas: `tests/unit/gika-gemini.test.ts`, `tests/unit/gika-create-policy.test.ts`, `tests/integration/gika.test.ts` e `tests/e2e-local/gika-readonly.spec.ts`. Não alegam interpretação Gemini live nem configuração de produção.
+
+## Escopo de domínio
+
+`tests/unit/gika-domain-routing.test.ts` testa os 12 exemplos de produto, adapter Gemini/classificação estrita e dispatcher HTTP: SOCIAL, GIKA_META, AGENDA_QUERY, AGENDA_ACTION, ORGANIZATION_CONVERSATION e OUT_OF_SCOPE. Estudar Python como tarefa/consulta não é confundido com pedir ensino de Python. Incerteza, ausência/malformação do classificador e query propondo mutação não autorizam ação. Os testes determinísticos verificam o contrato com transporte controlado; não certificam precisão semântica live do provider.
+
+`tests/integration/gika.test.ts` aplica a mesma matriz com Auth/Firestore emulados e verifica zero writes/receipts na conversa. `tests/e2e-local/gika-readonly.spec.ts` verifica conversa social/meta/organização e redirecionamento fora do escopo, sem commands e com Axe. Regressões de timezone e microcopy de áudio permanecem.
