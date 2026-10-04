@@ -140,10 +140,14 @@ input::file-selector-button { font: inherit; border: 0; padding: 8px 12px; margi
 }
 .glass.glass-strong { background: var(--glass-bg-strong); }
 .glass-pressable { min-width: 44px; min-height: 44px; }
+/* Keep the empty-state link on paper above the mobile sheet's scrim. */
+.calendar-agenda.glass .empty { background-color: var(--color-solid); }
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   :root {
-    --glass-bg: color-mix(in srgb, var(--color-solid) 92%, transparent);
-    --glass-bg-strong: color-mix(in srgb, var(--color-solid) 97%, transparent);
+    /* Reveal the blurred backdrop while preserving an opaque reading layer
+       inside panels. Solid/reduced-transparency fallbacks remain above/below. */
+    --glass-bg: color-mix(in srgb, var(--color-solid) 82%, transparent);
+    --glass-bg-strong: color-mix(in srgb, var(--color-solid) 88%, transparent);
   }
   .glass.glass {
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));

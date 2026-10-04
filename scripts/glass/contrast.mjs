@@ -1,32 +1,36 @@
 import { measureColor } from './color.mjs';
+import { timeGlassOperation } from './timing.mjs';
 
 // Only resolves Axe's incomplete contrast checks; never replaces Axe violations.
 // Native black/white paint differences identify glyph pixels independently of
 // the original contrast; a foreground matching its background still fails.
 export async function measureIncompleteContrast(page, target) {
+  const evaluatePage = (...args) => timeGlassOperation('contrast.page.evaluate', () => page.evaluate(...args));
+  const screenshotPage = (...args) => timeGlassOperation('contrast.screenshot', () => page.screenshot(...args));
   const unknown = reason => ({ status: 'UNMEASURED', reason });
   if (target.length !== 1 || typeof target[0] !== 'string') return unknown('UNSUPPORTED_TARGET');
   const locator = page.locator(target[0]);
   if (await locator.count() !== 1) return unknown('AMBIGUOUS_TARGET');
   const element = await locator.elementHandle();
   if (!element) return unknown('MISSING_TARGET');
+  const evaluateElement = (...args) => timeGlassOperation('contrast.element.evaluate', () => element.evaluate(...args));
   const key = `__glassContrast_${Math.random().toString(36).slice(2)}`;
-  await page.evaluate(key => {
+  await evaluatePage(key => {
     window[key] = { x: scrollX, y: scrollY, containers: [...document.querySelectorAll('*')].filter(e => e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth).map(e => [e, e.scrollLeft, e.scrollTop]) };
   }, key);
   try {
     await locator.evaluate(element => element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }));
     // Scroll triggers the real launcher's ResizeObserver/rAF positioning. Read
     // after those layout notifications and finite transitions, not mid-update.
-    await page.evaluate(async () => {
+    await evaluatePage(async () => {
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       await Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
     });
-    await page.evaluate(async key => {
+    await evaluatePage(async key => {
       window[key].animations = document.getAnimations().filter(animation => animation.playState === 'running').map(animation => { animation.pause(); return animation; });
       await Promise.all(window[key].animations.map(animation => animation.ready));
     }, key);
-    const metadata = await element.evaluate((root, key) => {
+    const metadata = await evaluateElement((root, key) => {
       root[`${key}Text`] = { text: root.textContent, value: 'value' in root ? root.value : undefined, placeholder: 'placeholder' in root ? root.placeholder : undefined };
       const runs = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       const forcedColors = matchMedia('(forced-colors: active)').matches;
@@ -90,8 +94,8 @@ export async function measureIncompleteContrast(page, target) {
       return { runs, forcedColors, rootBox: { x: r.x, y: r.y, width: r.width, height: r.height }, clip: { x: left, y: top, width: right - left, height: bottom - top }, box: { x: left - scrollX, y: top - scrollY, width: right - left, height: bottom - top } };
     }, key);
     if (metadata.reason) return unknown(metadata.reason);
-    for (const run of metadata.runs) run.rgba = (await page.evaluate(measureColor, run.color)).rgba;
-    const hidingFailure = await element.evaluate((root, { key, forcedColors }) => {
+    for (const run of metadata.runs) run.rgba = (await evaluatePage(measureColor, run.color)).rgba;
+    const hidingFailure = await evaluateElement((root, { key, forcedColors }) => {
       root[key] = [root, ...root.querySelectorAll('*')].map(item => [item, item.getAttribute('style')]);
       // Geometry is checked for every original element. Full computed-style
       // snapshots are needed where paint intersects the measured clip, not for
@@ -161,15 +165,15 @@ export async function measureIncompleteContrast(page, target) {
       return null;
     }, { key, forcedColors: metadata.forcedColors });
     if (hidingFailure) return unknown(hidingFailure);
-    if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_STYLE_CHANGED:' + await element.evaluate((root, key) => root[`${key}Changed`] ?? 'target-content', key));
+    if (!await evaluateElement((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_STYLE_CHANGED:' + await evaluateElement((root, key) => root[`${key}Changed`] ?? 'target-content', key));
     // Native glyph rectangles can extend beyond a tight CSS line-height box.
     // Capture their union rather than silently cropping to the element border.
     // Playwright's viewport screenshot clip is relative to the visible viewport.
-    const png = await page.screenshot({ clip: metadata.box, animations: 'allow', scale: 'css' });
-    if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
+    const png = await screenshotPage({ clip: metadata.box, animations: 'allow', scale: 'css' });
+    if (!await evaluateElement((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
     const paints = [];
     for (const color of ['rgb(0, 0, 0)', 'rgb(255, 255, 255)']) {
-      await element.evaluate((root, { key, color, forcedColors }) => {
+      await evaluateElement((root, { key, color, forcedColors }) => {
         if (forcedColors) for (const [, wrapper] of root[`${key}Wrappers`]) {
           wrapper.style.setProperty('forced-color-adjust', 'none', 'important');
           wrapper.style.setProperty('-webkit-text-fill-color', color, 'important');
@@ -178,13 +182,13 @@ export async function measureIncompleteContrast(page, target) {
         }
         else for (const [item] of root[key]) item.style.setProperty('-webkit-text-fill-color', color, 'important');
       }, { key, color, forcedColors: metadata.forcedColors });
-      if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_STYLE_CHANGED:' + await element.evaluate((root, key) => root[`${key}Changed`] ?? 'target-content', key));
-      paints.push((await page.screenshot({ clip: metadata.box, animations: 'allow', scale: 'css' })).toString('base64'));
-      if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
+      if (!await evaluateElement((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_STYLE_CHANGED:' + await evaluateElement((root, key) => root[`${key}Changed`] ?? 'target-content', key));
+      paints.push((await screenshotPage({ clip: metadata.box, animations: 'allow', scale: 'css' })).toString('base64'));
+      if (!await evaluateElement((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
     }
     const box = await locator.boundingBox();
     if (!box || Object.keys(box).some(k => Math.abs(box[k] - metadata.rootBox[k]) > 0.1)) return unknown('LAYOUT_CHANGED');
-    return await page.evaluate(async ({ png, paints, runs, box }) => {
+    return await evaluatePage(async ({ png, paints, runs, box }) => {
       const decode = async value => {
         const bytes = Uint8Array.from(atob(value), c => c.charCodeAt(0));
         const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
@@ -233,7 +237,7 @@ export async function measureIncompleteContrast(page, target) {
   } catch {
     return unknown('MEASUREMENT_FAILED');
   } finally {
-    await element.evaluate((root, key) => {
+    await evaluateElement((root, key) => {
       for (const [texts, wrapper] of root[`${key}Wrappers`] ?? []) wrapper.replaceWith(...texts);
       delete root[`${key}Wrappers`];
       delete root[`${key}Check`];
@@ -242,7 +246,7 @@ export async function measureIncompleteContrast(page, target) {
       for (const [item, style] of root[key] ?? []) { if (style === null) item.removeAttribute('style'); else item.setAttribute('style', style); }
       delete root[key];
     }, key);
-    await page.evaluate(key => {
+    await evaluatePage(key => {
       const scroll = window[key];
       for (const [element, x, y] of scroll.containers) element.scrollTo({ left: x, top: y, behavior: 'instant' });
       window.scrollTo({ left: scroll.x, top: scroll.y, behavior: 'instant' });

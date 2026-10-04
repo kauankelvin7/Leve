@@ -4,18 +4,23 @@ import { isolatedTestAccount } from '../../tests/helpers/gikaBatch';
 let fixtureEmail = 'leve.local@example.test';
 const fixtureDay = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 import { inspect, instrument, viewports, setAppearance } from './probe';
+import { timeGlassOperation, withGlassScope } from './timing.mjs';
 async function login(page: Page) {
+  return timeGlassOperation('login', async () => {
   await page.goto('/entrar'); await page.getByLabel('E-mail').fill(fixtureEmail); await page.getByLabel('Senha',{exact:true}).fill('leve-local-123'); await page.getByRole('button',{name:'Entrar',exact:true}).click();
   await expect(page.getByRole('heading',{name:/Finalize sua agenda|Meu dia/})).toBeVisible();
   if (await page.getByRole('heading',{name:'Finalize sua agenda'}).count()) await page.getByRole('button',{name:'Criar minha agenda'}).click();
   await expect(page.locator('#page-title')).toHaveText('Meu dia');
   const skip = page.getByRole('button',{name:'Pular guia',exact:true}); await skip.waitFor({state:'visible',timeout:3000}).catch(()=>undefined); if(await skip.isVisible()) await skip.click();
+  });
 }
 // Exercise the app's real client navigation instead of repeatedly reloading the
 // entire Vite module graph in one renderer (first traces: ERR_INSUFFICIENT_RESOURCES).
 async function navigate(page: Page, route: string) {
+  return timeGlassOperation('navigate', async () => {
   const link = page.locator(`a[href="${route}"]:visible`).first();
   if (await link.count()) await link.click(); else await page.goto(route);
+  });
 }
 let detailRoutes: string[] = [];
 test.beforeAll(async ({ browser }) => {
@@ -36,38 +41,95 @@ test.beforeAll(async ({ browser }) => {
   await page.close();
 });
 for (const [width,height] of viewports) for (const appearance of ['light','dark'] as const) {
-  test(`authenticated ${width} ${appearance}`, async ({ page }) => {
-    await page.setViewportSize({width,height}); await instrument(page); await page.emulateMedia({reducedMotion:'reduce',colorScheme:appearance}); await login(page);
-    const routes = ['/hoje','/calendario','/notas','/compras','/revisao','/buscar','/configuracoes','/lixeira',...detailRoutes];
-    for (const [index,route] of routes.entries()) {
-      await navigate(page,route); await expect(page.locator('#page-title')).toBeVisible();
-      await setAppearance(page,appearance);
-      await inspect(page, `auth-route${index}-${width}-${appearance}`);
-    }
-    await page.goto('/hoje'); await page.getByRole('button',{name:'Nova atividade',exact:true}).click(); await expect(page.getByLabel('Título',{exact:true})).toBeVisible(); await setAppearance(page,appearance); await inspect(page,`activity-form-${width}-${appearance}`);
-    await page.goto('/hoje'); await page.getByRole('button',{name:'Pergunte à Gika',exact:true}).click();
-    await expect(page.locator('.gika-panel')).toBeVisible(); await expect(page.locator('.gika-welcome')).toHaveCount(1); await expect(page.locator('#gika-title')).toHaveCount(1); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1);
-    await setAppearance(page,appearance); await inspect(page,`gika-welcome-header-${width}-${appearance}`);
-    await page.route('**/api/gika/respond',route=>route.fulfill({json:{text:'Consulta sintética para verificar a leitura.',simulated:false,reads:[]}}));
-    let chatCommands=0; const countCommands=(request: import('@playwright/test').Request)=>{if(request.method()==='POST' && request.url().endsWith('/api/commands'))chatCommands++;}; page.on('request',countCommands);
-    await page.getByRole('textbox',{name:'Pergunte à Gika',exact:true}).fill('Minha agenda'); await page.getByRole('button',{name:'Enviar pergunta',exact:true}).click(); await expect(page.getByRole('list',{name:'Mensagens da conversa'}).getByText('Consulta sintética para verificar a leitura.',{exact:true})).toBeVisible();
-    await expect(page.locator('.gika-welcome')).toHaveCount(0); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1); expect(chatCommands).toBe(0); page.off('request',countCommands);
-    await inspect(page,`gika-active-chat-${width}-${appearance}`); await page.getByRole('button',{name:'Fechar Gika',exact:true}).click(); await expect(page.locator('.gika-panel')).not.toBeVisible();
-    await page.getByRole('button',{name:'Pergunte à Gika',exact:true}).click(); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1); await page.getByRole('button',{name:'Fechar Gika',exact:true}).click(); await inspect(page,`gika-closed-lifecycle-${width}-${appearance}`);
+  // Two bounded certification phases, preserving the original page, account,
+  // route order and form -> welcome -> chat -> close/reopen lifecycle.
+  // Any phase failure fails the gate; assertions and operation deadlines stay unchanged.
+  test.describe(`authenticated phases ${width} ${appearance}`, () => {
+    test.describe.configure({ mode: 'serial' });
+    let page: Page;
+    test.beforeAll(async ({ browser }, testInfo) => {
+      const context = await browser.newContext({
+        baseURL: 'http://localhost:5174', viewport: { width, height },
+        userAgent: testInfo.project.use.userAgent,
+        deviceScaleFactor: testInfo.project.use.deviceScaleFactor,
+        isMobile: testInfo.project.use.isMobile, hasTouch: testInfo.project.use.hasTouch,
+      });
+      page = await context.newPage();
+      await withGlassScope(`setup-${width}-${appearance}`, async () => {
+        await instrument(page); await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: appearance }); await login(page);
+      });
+    });
+    test.afterAll(async () => { await page?.context().close(); });
+    test(`routes authenticated ${width} ${appearance}`, async () => {
+      return withGlassScope(`authenticated-${width}-${appearance}`, () => timeGlassOperation('routes', async () => {
+        const routes = ['/hoje','/calendario','/notas','/compras','/revisao','/buscar','/configuracoes','/lixeira',...detailRoutes];
+        for (const [index,route] of routes.entries()) {
+          await navigate(page,route); await expect(page.locator('#page-title')).toBeVisible();
+          await setAppearance(page,appearance);
+          await inspect(page, `auth-route${index}-${width}-${appearance}`);
+        }
+      }));
+    });
+    test(`interactions authenticated ${width} ${appearance}`, async () => {
+      return withGlassScope(`authenticated-${width}-${appearance}`, () => timeGlassOperation('interactions', async () => {
+        await page.goto('/hoje'); await page.getByRole('button',{name:'Nova atividade',exact:true}).click(); await expect(page.getByLabel('Título',{exact:true})).toBeVisible(); await setAppearance(page,appearance); await inspect(page,`activity-form-${width}-${appearance}`);
+        await page.goto('/hoje'); await page.getByRole('button',{name:'Pergunte à Gika',exact:true}).click();
+        await expect(page.locator('.gika-panel')).toBeVisible(); await expect(page.locator('.gika-welcome')).toHaveCount(1); await expect(page.locator('#gika-title')).toHaveCount(1); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1);
+        await setAppearance(page,appearance); await inspect(page,`gika-welcome-header-${width}-${appearance}`);
+        await page.route('**/api/gika/respond',route=>route.fulfill({json:{text:'Consulta sintética para verificar a leitura.',simulated:false,reads:[]}}));
+        let chatCommands=0; const countCommands=(request: import('@playwright/test').Request)=>{if(request.method()==='POST' && request.url().endsWith('/api/commands'))chatCommands++;}; page.on('request',countCommands);
+        await page.getByRole('textbox',{name:'Pergunte à Gika',exact:true}).fill('Minha agenda'); await page.getByRole('button',{name:'Enviar pergunta',exact:true}).click(); await expect(page.getByRole('list',{name:'Mensagens da conversa'}).getByText('Consulta sintética para verificar a leitura.',{exact:true})).toBeVisible();
+        await expect(page.locator('.gika-welcome')).toHaveCount(0); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1); expect(chatCommands).toBe(0); page.off('request',countCommands);
+        await inspect(page,`gika-active-chat-${width}-${appearance}`); await page.getByRole('button',{name:'Fechar Gika',exact:true}).click(); await expect(page.locator('.gika-panel')).not.toBeVisible();
+        await page.getByRole('button',{name:'Pergunte à Gika',exact:true}).click(); await expect(page.locator('.gika-panel .gika-character')).toHaveCount(1); await page.getByRole('button',{name:'Fechar Gika',exact:true}).click(); await inspect(page,`gika-closed-lifecycle-${width}-${appearance}`);
+      }));
+    });
   });
 }
-for (const mode of ['text200','solid','forcedColors','highContrast','reducedTransparency'] as const) test(`accessibility ${mode}`, async ({page})=>{
-  await page.setViewportSize({width:390,height:844}); await login(page);
-  if (mode === 'solid' || mode === 'highContrast') {
-    await page.goto('/configuracoes'); await page.getByLabel(mode==='solid'?'Reduzir transparência':'Aumentar contraste',{exact:true}).check(); await page.getByRole('button',{name:'Salvar preferências'}).click(); await expect(page.locator('.form-status')).toHaveText('Preferências salvas.');
-  }
-  if(mode==='forcedColors') await page.emulateMedia({forcedColors:'active'});
-  if(mode==='reducedTransparency') { const cdp=await page.context().newCDPSession(page); await cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'reduce'}]}); }
-  for(const route of ['/hoje','/calendario','/notas','/compras','/revisao','/buscar','/configuracoes','/lixeira',...detailRoutes]) {
-    await navigate(page,route); await expect(page.locator('#page-title')).toBeVisible(); if(mode==='text200') await page.evaluate(()=>document.documentElement.style.fontSize='200%');
-    await inspect(page,`${mode}-${route.replaceAll('/','-')}`, ['solid','forcedColors','reducedTransparency'].includes(mode));
-  }
-  if(mode==='solid'||mode==='highContrast') { await page.goto('/configuracoes'); await page.getByLabel(mode==='solid'?'Reduzir transparência':'Aumentar contraste',{exact:true}).uncheck(); await page.getByRole('button',{name:'Salvar preferências'}).click(); await expect(page.locator('.form-status')).toHaveText('Preferências salvas.'); }
+async function setAccessibilityPreference(page: Page, label: string, checked: boolean) {
+  await page.goto('/configuracoes');
+  const control = page.getByLabel(label, { exact: true });
+  // Real scrolling, followed by a normal actionable click; no force/DOM toggle.
+  // Sticky settings navigation and the bottom rail can cover an already-visible
+  // checkbox after the probe restores scroll positions.
+  await control.evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  if (checked) await control.check(); else await control.uncheck();
+  await page.getByRole('button', { name: 'Salvar preferências' }).click();
+  await expect(page.locator('.form-status')).toHaveText('Preferências salvas.');
+}
+for (const mode of ['text200','solid','forcedColors','highContrast','reducedTransparency'] as const) test.describe(`accessibility phases ${mode}`, () => {
+  test.describe.configure({ mode: 'serial' });
+  let page: Page;
+  test.beforeAll(async ({ browser }, testInfo) => {
+    const context = await browser.newContext({
+      baseURL: 'http://localhost:5174', viewport: { width: 390, height: 844 },
+      userAgent: testInfo.project.use.userAgent,
+      deviceScaleFactor: testInfo.project.use.deviceScaleFactor,
+      isMobile: testInfo.project.use.isMobile, hasTouch: testInfo.project.use.hasTouch,
+    });
+    page = await context.newPage(); await login(page);
+    if (mode === 'solid' || mode === 'highContrast') await setAccessibilityPreference(page, mode === 'solid' ? 'Reduzir transparência' : 'Aumentar contraste', true);
+    if (mode === 'forcedColors') await page.emulateMedia({ forcedColors: 'active' });
+    if (mode === 'reducedTransparency') {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-transparency', value: 'reduce' }] });
+    }
+  });
+  test.afterAll(async () => {
+    if (!page) return;
+    try {
+      if (mode === 'solid' || mode === 'highContrast') await setAccessibilityPreference(page, mode === 'solid' ? 'Reduzir transparência' : 'Aumentar contraste', false);
+    } finally { await page.context().close(); }
+  });
+  for (const phase of ['primary', 'details'] as const) test(`accessibility ${mode} ${phase}`, async () => {
+    const routes = ['/hoje','/calendario','/notas','/compras','/revisao','/buscar','/configuracoes','/lixeira',...detailRoutes];
+    // Same page, route order and eleven probes, divided into bounded phases.
+    for (const route of phase === 'primary' ? routes.slice(0, 5) : routes.slice(5)) {
+      await navigate(page,route); await expect(page.locator('#page-title')).toBeVisible();
+      if (mode === 'text200') await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+      await inspect(page,`${mode}-${route.replaceAll('/','-')}`, ['solid','forcedColors','reducedTransparency'].includes(mode));
+    }
+  });
 });
 for (const [width,height] of viewports) for (const appearance of ['light','dark'] as const) test(`timer and confirmation ${width} ${appearance}`,async({page})=>{
   await page.setViewportSize({width,height}); await login(page); await page.goto(detailRoutes[0]!); await setAppearance(page,appearance);
