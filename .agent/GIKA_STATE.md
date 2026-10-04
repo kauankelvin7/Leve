@@ -290,3 +290,7 @@ Composição explicitamente não aprovada: escala/presença adaptativa/meia-altu
 ## Finalização — reparo focal do launcher
 
 Na branch Liquid Glass, a medição revelou launcher cobrindo Excluir em uma lista curta mobile após reload. Sonda real e regressão reproduziram hit target=launcher. Causa: reserva da caixa inteira do footer, incluindo padding. Cálculo agora reserva somente o botão convencional Sair, mantendo o fallback da caixa se não houver botão. Dois casos focais passaram: lista curta com remoção real e logout com26tarefas. Primeiras tentativas de seletor ambíguo e variante SPA não reprodutora estão preservadas nos logs; reload com item presente reproduziu o defeito antes da correção. Nenhum Auth/command/controller mudou. M9 congelado permanece histórico; Glass/regressão absoluta/RC ainda pendentes.
+
+## Liquid Glass — verificação bloqueada, M9 congelado preservado
+
+`BLOCKED_FORCED_COLORS_VERIFICATION`: última ampla29PASS/3FAIL/23não executados; após correções200% e timer focais passam, forced colors permanece FAIL (badge não certificado/Compras Axe). Três tentativas localizadas, nenhum timeout/retry/threshold alterado. Estado experimental somente em feat/liquid-glass-system; não integrar à feat/gika-integration nem declarar FINAL_RC_READY_FOR_MAIN_MERGE. M9 frozen b0e7bae preservado; detalhes docs/glass/FINAL_REPORT.md/DECISIONS.md.
