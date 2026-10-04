@@ -72,7 +72,11 @@ for (const mode of ['text200','solid','forcedColors','highContrast','reducedTran
 for (const [width,height] of viewports) for (const appearance of ['light','dark'] as const) test(`timer and confirmation ${width} ${appearance}`,async({page})=>{
   await page.setViewportSize({width,height}); await login(page); await page.goto(detailRoutes[0]!); await setAppearance(page,appearance);
   await page.getByRole('button',{name:'Iniciar cronômetro',exact:true}).click(); await expect(page.getByRole('button',{name:'Pausar cronômetro',exact:true}).first()).toBeVisible();
-  await expect(page.locator('.active-timer-bar')).toBeVisible(); await inspect(page,`active-timer-${width}-${appearance}`);
+  await expect(page.locator('.active-timer-bar')).toBeVisible();
+  // Deterministic screenshot timestamp only: native timers/network/commands keep
+  // running, while elapsed text cannot change between the three contrast paints.
+  await page.clock.setFixedTime(new Date());
+  await inspect(page,`active-timer-${width}-${appearance}`);
   await page.getByRole('button',{name:'Pausar cronômetro',exact:true}).first().click(); await expect(page.locator('.active-timer-bar')).toHaveCount(0); await expect(page.getByRole('status').filter({hasText:'Cronômetro pausado.'})).toBeVisible();
   await page.getByRole('button',{name:'Retomar',exact:true}).click(); await expect(page.locator('.active-timer-bar')).toBeVisible();
   await page.getByRole('button',{name:'Encerrar cronômetro',exact:true}).click(); await expect(page.locator('.active-timer-bar')).toHaveCount(0);

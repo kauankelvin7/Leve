@@ -22,6 +22,10 @@ export async function measureIncompleteContrast(page, target) {
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       await Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
     });
+    await page.evaluate(async key => {
+      window[key].animations = document.getAnimations().filter(animation => animation.playState === 'running').map(animation => { animation.pause(); return animation; });
+      await Promise.all(window[key].animations.map(animation => animation.ready));
+    }, key);
     const metadata = await element.evaluate((root, key) => {
       root[`${key}Text`] = { text: root.textContent, value: 'value' in root ? root.value : undefined, placeholder: 'placeholder' in root ? root.placeholder : undefined };
       const runs = [], walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -110,12 +114,7 @@ export async function measureIncompleteContrast(page, target) {
         // :has() can affect ancestors, siblings, and decorative pseudo paint,
         // so validate the original document, not only the target subtree.
         const originalElements = [...document.querySelectorAll('*')];
-        const styles = item => {
-          return [null, '::before', '::after'].map(pseudo => {
-            const s = getComputedStyle(item, pseudo);
-            return [...s].map(property => `${property}:${s.getPropertyValue(property)}`).join(';');
-          }).join('|');
-        };
+        const styles = serialize;
         const originalStyles = originalElements.map(styles);
         const rects = node => {
           const range = document.createRange(); range.selectNodeContents(node);
@@ -152,7 +151,7 @@ export async function measureIncompleteContrast(page, target) {
     // Native glyph rectangles can extend beyond a tight CSS line-height box.
     // Capture their union rather than silently cropping to the element border.
     // Playwright's viewport screenshot clip is relative to the visible viewport.
-    const png = await page.screenshot({ clip: metadata.box, animations: 'disabled', scale: 'css' });
+    const png = await page.screenshot({ clip: metadata.box, animations: 'allow', scale: 'css' });
     if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
     const paints = [];
     for (const color of ['rgb(0, 0, 0)', 'rgb(255, 255, 255)']) {
@@ -166,7 +165,7 @@ export async function measureIncompleteContrast(page, target) {
         else for (const [item] of root[key]) item.style.setProperty('-webkit-text-fill-color', color, 'important');
       }, { key, color, forcedColors: metadata.forcedColors });
       if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_STYLE_CHANGED:' + await element.evaluate((root, key) => root[`${key}Changed`] ?? 'target-content', key));
-      paints.push((await page.screenshot({ clip: metadata.box, animations: 'disabled', scale: 'css' })).toString('base64'));
+      paints.push((await page.screenshot({ clip: metadata.box, animations: 'allow', scale: 'css' })).toString('base64'));
       if (!await element.evaluate((root, key) => root[`${key}Check`](), key)) return unknown('PAINT_CONTENT_OR_STYLE_CHANGED');
     }
     const box = await locator.boundingBox();
@@ -233,6 +232,7 @@ export async function measureIncompleteContrast(page, target) {
       const scroll = window[key];
       for (const [element, x, y] of scroll.containers) element.scrollTo({ left: x, top: y, behavior: 'instant' });
       window.scrollTo({ left: scroll.x, top: scroll.y, behavior: 'instant' });
+      for (const animation of scroll.animations ?? []) if (animation.playState === 'paused') animation.play();
       delete window[key];
     }, key);
     await element.dispose();

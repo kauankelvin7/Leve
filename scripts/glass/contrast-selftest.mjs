@@ -75,7 +75,15 @@ try {
   await page.setContent('<style>body{background:white}#target{padding:20px;color:black;background:white}#target:has(span){padding:40px}</style><div id="target">Synthetic selector guard</div>');
   assert.deepEqual(await measureIncompleteContrast(page, ['#target']), { status: 'UNMEASURED', reason: 'FORCED_WRAPPER_STYLE_CHANGED' });
   assert.equal(await page.locator('#target span').count(), 0);
+  await page.setContent('<style>body{background:white}.heading{display:grid;grid-template-columns:1fr auto}#target{font:16px Arial;padding:5px 10px;border:1px solid green;border-radius:999px;color:green;background:#eee;justify-self:start}</style><div class="heading"><div>Synthetic heading</div><span id="target">3 pontos</span></div>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
   await page.emulateMedia({ forcedColors: 'none' });
+  await page.setContent('<style>body{background:white}#target{color:black;margin:30px}#pulse{display:block;width:10px;height:10px;animation:pulse 2s infinite}@keyframes pulse{from{opacity:.2}to{opacity:1}}</style><p id="target">Synthetic stable text</p><span id="pulse"></span>');
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  assert.equal(await page.evaluate(() => document.getAnimations()[0].playState), 'running');
+  await page.evaluate(() => document.getAnimations()[0].pause());
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  assert.equal(await page.evaluate(() => document.getAnimations()[0].playState), 'paused');
   // Offscreen owners can still paint shadows/generated overlays into the clip.
   for (const declaration of ['box-shadow:0 -1000px 0 200px white', '--overlay:1']) {
     await page.setContent('<style>body{background:white}#target{color:black}#distant{margin-top:1000px}#distant::before{content:"";position:fixed;inset:0;background:white;opacity:var(--overlay,0);pointer-events:none}</style><p id="target">Synthetic guarded text</p><div id="distant">Synthetic distant paint</div>');
