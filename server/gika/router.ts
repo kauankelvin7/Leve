@@ -308,7 +308,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           const intent = validateCreation(calls[0].args, actionText, current);
           const decision = assessCreation(Boolean(intent.task), 'verified');
           if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
-          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : !isCreationRequest(actionText) ? 'Qual tarefa, data e horário você quer usar na sua agenda?' : intent.clarification, intent: isCreationRequest(actionText) ? 'agenda_action' : 'conversation', simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
+          return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
         const ranges = calls.map(call => { if (call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
