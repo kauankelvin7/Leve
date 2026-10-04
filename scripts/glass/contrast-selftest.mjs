@@ -77,6 +77,14 @@ try {
   assert.equal(await page.locator('#target span').count(), 0);
   await page.setContent('<style>body{background:white}.heading{display:grid;grid-template-columns:1fr auto}#target{font:16px Arial;padding:5px 10px;border:1px solid green;border-radius:999px;color:green;background:#eee;justify-self:start}</style><div class="heading"><div>Synthetic heading</div><span id="target">3 pontos</span></div>');
   assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  // React's adjacent text nodes in inline-flex must retain spacing and identity.
+  await page.setContent('<style>body{background:white}.heading{display:grid;grid-template-columns:1fr auto}#target{display:inline-flex;font:16px Arial;padding:5px 10px;color:green;background:#eee}</style><div class="heading"><div>Synthetic heading</div><span id="target"></span></div>');
+  await page.locator('#target').evaluate(element => {
+    window.badgeTextNodes = ['3', ' ', 'pontos'].map(text => document.createTextNode(text));
+    element.append(...window.badgeTextNodes);
+  });
+  assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');
+  assert.equal(await page.locator('#target').evaluate(element => [...element.childNodes].every((node, index) => node === window.badgeTextNodes[index]) && element.childNodes.length === 3), true);
   await page.emulateMedia({ forcedColors: 'none' });
   await page.setContent('<style>body{background:white}#target{color:black;margin:30px}#pulse{display:block;width:10px;height:10px;animation:pulse 2s infinite}@keyframes pulse{from{opacity:.2}to{opacity:1}}</style><p id="target">Synthetic stable text</p><span id="pulse"></span>');
   assert.equal((await measureIncompleteContrast(page, ['#target'])).status, 'PASS');

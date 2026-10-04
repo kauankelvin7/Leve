@@ -122,14 +122,22 @@ export async function measureIncompleteContrast(page, target) {
         };
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), nodes = [];
         let node;
-        while ((node = walker.nextNode())) if (node.textContent.trim()) nodes.push(node);
+        while ((node = walker.nextNode())) nodes.push(node);
         const originalRects = nodes.map(rects);
         root[`${key}Wrappers`] = [];
+        // React can emit adjacent Text nodes. Keep their whitespace in a single
+        // anonymous flex item; wrapping each node changes inline-flex geometry.
+        const groups = [];
         for (const text of nodes) {
+          const previous = groups.at(-1);
+          if (previous?.at(-1).nextSibling === text) previous.push(text);
+          else groups.push([text]);
+        }
+        for (const texts of groups) {
           const wrapper = document.createElement('span');
           wrapper.style.cssText = 'all:unset!important;display:inline!important;opacity:0!important';
-          text.replaceWith(wrapper); wrapper.append(text);
-          root[`${key}Wrappers`].push([text, wrapper]);
+          texts[0].before(wrapper); wrapper.append(...texts);
+          root[`${key}Wrappers`].push([texts, wrapper]);
         }
         if (originalElements.some((item, index) => styles(item) !== originalStyles[index])) return 'FORCED_WRAPPER_STYLE_CHANGED';
         if (nodes.some((text, index) => {
@@ -220,7 +228,7 @@ export async function measureIncompleteContrast(page, target) {
     return unknown('MEASUREMENT_FAILED');
   } finally {
     await element.evaluate((root, key) => {
-      for (const [text, wrapper] of root[`${key}Wrappers`] ?? []) wrapper.replaceWith(text);
+      for (const [texts, wrapper] of root[`${key}Wrappers`] ?? []) wrapper.replaceWith(...texts);
       delete root[`${key}Wrappers`];
       delete root[`${key}Check`];
       delete root[`${key}Changed`];

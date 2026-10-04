@@ -47,3 +47,11 @@
 - Focal após causas iniciais:1PASS/2FAIL.200% PASS; forced colors completou42.4s em vez de deadline, mas badge/ink secundário permaneciam não certificados; CSS declara CanvasText/Canvas/LinkText em suas origens, preservando aparência forçada e temas normais. Timer confirmou avanço real de conteúdo entre três pinturas: fixture agora usa clock.setFixedTime após ACK de iniciar, sem pausar timers/rede/comandos, e continua validando pause/resume/stop reais. Capturas de contraste não certificam conteúdo em mudança; não removida essa rejeição.
 
 - Última focal:1PASS/1FAIL,1.6min. Timer/confirmation390light PASS com timestamp de captura fixo; forced colors41.6s FAIL por badge FORCED_WRAPPER_STYLE_CHANGED e três small de Compras com color-contrast Axe. Limite de três tentativas localizadas atingido. Classificação HARNESS_BUG/contraste ainda não certificado; não esconder, não chamar externo, não integrar o lote experimental ou declarar RC. Checkpoint preserva investigação e gates reais, não aprovação.
+
+## Retomada autorizada — forced colors
+
+Diagnóstico sobre dcf8c9c: badge React gera Text nodes adjacentes (`3`, espaço, `pontos`). Wrappers individuais criavam flex items e removiam o espaço (largura69.234→66.125px). Guard rejeitou corretamente a mudança causada pela medição. Correção factual do harness agrupa irmãos Text contíguos, preserva whitespace/identidade e mantém todos os guards/thresholds; regressão reproduz a estrutura React, incluindo restauração exata. Lock atualizado somente nesses dois arquivos.
+
+Compras reproduziu contraste1.01: texto herdava fill claro da superfície ink enquanto forced colors tornava fundo branco. Regra de cor do sistema na origem e nos descendentes, com especificidade equivalente ao tema dark, corrige o produto; sem forced-color-adjust:none ou exceção Axe. Verificação focal pendente.
+
+Verificação desta retomada: self-tests completos PASS; focal fresh forcedColors1/1PASS39.6s (1.0min incluindo setup); build/typechecks/lint/AST/staticcheck PASS. Primeiras falhas anteriores permanecem registradas.
