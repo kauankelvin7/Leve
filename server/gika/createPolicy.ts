@@ -62,7 +62,7 @@ const hourWords: Record<string, number> = {
   doze:12, treze:13, catorze:14, quatorze:14, quinze:15, dezesseis:16, dezessete:17, dezoito:18, dezenove:19,
   vinte:20, 'vinte e uma':21, 'vinte e um':21, 'vinte e duas':22, 'vinte e dois':22, 'vinte e tres':23
 };
-const createCue = /\b(?:adicion\w*|cri\w*|agend\w*|marc\w*|coloc\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|quero|queria|gostaria|preciso)\b/;
+const createCue = /\b(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|quero|queria|gostaria|preciso)\b/;
 const rescheduleCue = /\b(?:move\w*|mova|reagend\w*|muda\w*|mude|passa\w*|passe|joga\w*|jogue)\b/;
 const unsupportedSemanticAction = /\b(?:exclu\w*|apag\w*|remov\w*|delet\w*|purg\w*|cancel\w*|reabr\w*|desfa\w*|lembre\w*|conclu\w*|complete|terminei|renome\w*)\b/;
 const recurringOrBatchSemanticAction = /\b(?:recorrente|diariamente|semanalmente|serie|series|todos|todas|toda|todo|duas tarefas|dois itens|lote)\b/;
