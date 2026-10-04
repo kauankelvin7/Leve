@@ -1,25 +1,61 @@
-# Trabalhar no Leve
+# Contribuir com o Leve
 
-Use Node24, npm11 e Java21 para os emuladores. Instale com `npm ci --include=dev` e `npx playwright install chromium`.
+Este guia é para quem vai alterar o aplicativo, sua infraestrutura local ou a documentação. Mudanças devem preservar os dados da pessoa usuária e seguir os contratos existentes.
 
-`npm run dev` inicia Auth/Firestore Emulator, API e Vite. `npm run seed:local` prepara somente dados sintéticos de `demo-leve`. O produto real é a agenda autenticada; `/demo` é referência histórica.
+## Preparar o ambiente
 
-## Verificar
+Use Node.js 24.x, npm 11.19.1 e Java 21 quando precisar dos emuladores Firebase. Instale dependências e o navegador usado pelo Playwright:
 
-Feche o servidor de desenvolvimento antes dos gates que iniciam emuladores próprios.
+```sh
+corepack enable
+npm ci --include=dev
+npx playwright install chromium
+```
 
-- `npm run verify`: audit de produção, lint/guardrails, ambos typechecks/build, unitários, integração Auth/Rules/commands e oito jornadas Gika críticas. Não requer credencial Gemini.
-- Durante uma alteração pequena, execute primeiro o teste focal correspondente. Preserve a primeira falha; não aumente deadline/retry nem remova asserções para obter verde.
-- Para RC, acrescente `npm run test:e2e:local` e `npm run test:e2e` ao `verify`: suíte autenticada completa e shell de produção. Revise visualmente telas reais, claro/escuro, mobile/tablet/desktop, teclado, modo sólido/reduced motion e200%. Os screenshots/artefatos locais não substituem validação em dispositivo.
+Inicie o ambiente local e carregue dados sintéticos:
 
-O CI executa o núcleo e o E2E crítico; a suíte ampla fica no gate de RC. `check:boundaries` reutiliza o parser já instalado pelo ESLint: proíbe imports runtime de persistência/commands internos em model/router/UI, e de model/API/commands em voz/proatividade/character. As únicas exceções server-side são os leitores convencionais `reads.ts`/`batchGuard.ts`, somente `db`/`commandHash`; isso não autoriza novos writers.
+```sh
+npm run dev
+npm run seed:local
+```
 
-## Contratos
+Acesse `http://localhost:5174/entrar`. O modo local usa o projeto `demo-leve` e emuladores Auth/Firestore. Não use contas, dados ou credenciais reais em testes locais.
 
-Leia `AGENTS.md`, `.agent/GIKA_STATE.md`, `.agent/GIKA_TASKS.yaml` e `.agent/GIKA_EXECPLAN.md` antes de alterar a Gika. Arquitetura/policy/evals estão em `docs/gika/`.
+## Fazer uma mudança
 
-Toda mutação passa pela API/command layer existente, com UID autenticado, ownership, expectedRevision, receipt e ack real. Modelo propõe; software resolve identidades e valida. Preview e confirmação devem selar o mesmo efeito. Recorrência occurrence/future separados; all unsupported; batch cap5, partial explícito. Nunca criar writer/collection/outbox/persistência paralelos.
+1. Leia [AGENTS.md](AGENTS.md), o [mapa da documentação](docs/README.md) e a decisão ou evidência da área afetada.
+2. Abra uma branch de trabalho (`feat/`, `fix/` ou `docs/`) e mantenha a alteração focada.
+3. Reproduza o comportamento afetado e identifique o módulo que é dono do contrato antes de editar.
+4. Atualize a documentação junto com mudanças de comportamento ou arquitetura.
+5. Rode verificações proporcionais à mudança e registre comandos e resultados no pull request.
 
-Offline não autoriza IA, microfone simulado, fila de prompts ou execução automática ao reconectar. Preserve draft e agenda convencional. Logs somente técnicos: sem tokens, UID, texto, agenda, transcrição, payload ou receipt completo. `GEMINI_API_KEY` é exclusivamente server-side; nenhuma chave privada em `VITE_*`, arquivos versionados ou artefatos de teste. Use somente Free Tier/R$0; sem billing/deploy/main/PR sem autorização.
+Use mensagens de commit curtas com escopo, por exemplo `docs: clarify local setup` ou `fix: preserve activity revision`. Crie um pull request para revisão; descreva o comportamento alterado, decisões relevantes, verificações executadas e limitações conhecidas. Não publique deploy nem altere `main` sem autorização do mantenedor.
 
-O estado registra limites operacionais: AppCheck adiado até configuração/UAT gratuitos, rate limit Gika por instância, microfone/dispositivo real e Gemini live não comprovados nesta regressão. `CHARACTER_ASSET_REQUIRED` exige asset/rig reais antes de concluir o acabamento visual; fallback/documentação não completam a personagem.
+## Comandos de verificação
+
+| Comando | O que verifica |
+|---|---|
+| `npm run lint` | ESLint e limites entre módulos |
+| `npm run typecheck` | TypeScript do cliente e servidor |
+| `npm run build` | Typecheck e build web |
+| `npm test` | Testes unitários |
+| `npm run test:integration` | Contratos com Auth e Firestore Emulator |
+| `npm run test:e2e:local` | Jornadas no ambiente local |
+| `npm run verify` | Auditoria de dependências, lint, build, unitários, integração e E2E crítico |
+
+Mudanças em autenticação, Rules, comandos, revisão, recibos, recorrência, importação/exportação ou sincronização offline exigem atenção especial aos testes de integração. Uma suíte parcial não deve ser descrita como integralmente aprovada. Não altere timeouts, retries ou asserções apenas para obter uma execução verde.
+
+## Contratos que precisam ser preservados
+
+- Cada conta só acessa dados associados ao seu UID e a uma associação ativa. Regras e servidor aplicam a autorização.
+- Alterações de domínio passam pela API de comandos existente. O cliente não grava diretamente nas coleções de domínio.
+- Comandos usam `operationId`; entidades concorrentes usam `expectedRevision`. Recibos permitem reconhecer reaplicações sem duplicar o efeito.
+- Conflitos devem preservar a intenção e o conteúdo da pessoa usuária. Não aplicar “última gravação vence” em silêncio.
+- O modo offline é opcional. Não crie outro cache, writer, outbox ou execução automática ao reconectar.
+- A Gika propõe; o servidor valida a política e a confirmação. Consulte [especificação](docs/gika/PRODUCT_SPEC.md), [arquitetura](docs/gika/ARCHITECTURE.md) e [segurança e política](docs/gika/SECURITY_AND_POLICY.md) antes de alterar essa integração.
+
+## Segurança, privacidade e documentação
+
+Nunca versione segredos, `.env` real, tokens, cookies, credenciais de Firebase Admin ou dados pessoais. Não coloque texto de agenda, prompts, conteúdo de notas, transcrições ou recibos em logs, screenshots ou evidências. Use somente dados sintéticos e emuladores nos testes locais.
+
+Mudanças em arquitetura devem atualizar a documentação correspondente e, quando alterarem uma decisão duradoura, um ADR. Evidências precisam indicar o escopo e os comandos realmente executados. Consulte [política de segurança](SECURITY.md) para relato responsável de vulnerabilidades.
