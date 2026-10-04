@@ -21,7 +21,7 @@ As categorias são por arquivo. Um arquivo pode receber duas classificações qu
 |---|---|---|
 | [AGENTS.md](../../AGENTS.md) | ACTIVE | Regras gerais, ordem das fontes, limites de segurança, custo, UX e validação. Cita `05-capacidade-e-revisao.md`, ausente nesta base. |
 | [CONTINUAR.md](../../CONTINUAR.md) | ACTIVE / HISTORICAL | Índice de retomada com checkpoint sazonal e sucessivos registros Gika. O topo fala em branch `main`/SHA sazonal; seções posteriores são a trilha Gika. Não tratar todos os checkpoints da linha do tempo como estado simultâneo. |
-| [README.md](../../README.md) | ACTIVE / REFERENCE | Apresentação e instruções para pessoas. Descreve produto/release e contém links para `LICENSE` e quatro screenshots ausentes. |
+| [README.md](../../README.md) | ACTIVE / REFERENCE | Apresentação e instruções para pessoas. O link [LICENSE](../../LICENSE) resolve para a licença MIT versionada; os quatro screenshots referenciados também existem em `docs/screenshots/`. |
 | [CONTRIBUTING.md](../../CONTRIBUTING.md) | ACTIVE | Contribuição e comandos de verificação; material dirigido a contribuidores. |
 | [DESIGN.md](../../DESIGN.md) | REFERENCE / HISTORICAL | Direção e referências visuais; inclui revisão datada de 15/09/2026. Consultar junto aos tokens e à implementação para não inferir que toda observação datada é estado atual. |
 | [GIKA_START_HERE.md](../../GIKA_START_HERE.md) | DUPLICATE / ARCHIVE_CANDIDATE | Pacote de bootstrap da Gika. Repete a instrução de ler AGENTS e os arquivos `.agent`; fala em copiar conteúdo e começar M0, já concluído na base. Preservar até eventual arquivamento e ajuste de referências. |
@@ -46,7 +46,7 @@ As categorias são por arquivo. Um arquivo pode receber duas classificações qu
 | [docs/SEASONAL-ART-DIRECTION.md](../SEASONAL-ART-DIRECTION.md) | REFERENCE / EVIDENCE | Direção e decisões da experiência sazonal que AGENTS identifica como integrada e validada. Seu escopo é sazonal, não identidade geral do produto. |
 | [docs/adr/001-fundacao.md](../adr/001-fundacao.md) | HISTORICAL / EVIDENCE | Decisões da fundação E00/E01; contém premissas iniciais explícitas como `/demo` e arquitetura proposta daquela fase, algumas superadas pela aplicação persistente atual. |
 | [docs/adr/002-calendar-renderer.md](../adr/002-calendar-renderer.md) | REFERENCE / EVIDENCE | Decisão aceita do renderer de calendário e limites de isolamento; manter como ADR vigente para esse tema. |
-| [docs/evidence/README.md](../evidence/README.md) | REFERENCE / HISTORICAL | Explica que screenshots históricos foram removidos e aponta testes/relatórios como prova. Contrasta com imagens ainda referenciadas no README principal, que não estão na árvore. |
+| [docs/evidence/README.md](../evidence/README.md) | REFERENCE / HISTORICAL | Diz que capturas históricas foram removidas e orienta usar testes/relatórios; a afirmação não descreve todos os artefatos visuais presentes na árvore, que inclui cinco PNGs tracked em `docs/evidence/` e quatro em `docs/screenshots/`. |
 
 ### Gika: especificação, arquitetura, decisões e evidências
 
@@ -137,13 +137,24 @@ As categorias são por arquivo. Um arquivo pode receber duas classificações qu
 - **Precedência temporal da Gika:** `.agent/GIKA_STATE.md`, `.agent/GIKA_TASKS.yaml` e `docs/release/M9_FINAL.md` registram M9 como `M9_DONE_RC_READY` e aprovação facial. Os checkpoints iniciais/intermediários em `docs/gika/M9_EVIDENCE.md`, `GIKA_VISUAL_LOCK.md`, `CONTINUAR.md` e arquivos de rig descrevem bloqueios reais de etapas anteriores; são históricos, não um segundo estado atual. A base também registra Glass e RC/UAT consolidado como pendentes. Nenhuma etapa posterior é inferida aqui.
 - **Estado geral vs. Gika:** `CONTINUAR.md` começa com estado sazonal/calendário e branch `main`, e acrescenta depois o checkpoint Gika. AGENTS já alerta que a Fase 7 sazonal não foi iniciada. Usar o trecho correspondente ao domínio e seguir a precedência em AGENTS; não escolher a primeira seção por posição.
 - **Capacidade:** `AGENTS.md`, `docs/README.md`, `docs/EXECUCAO.md`, `docs/runbooks/prova-gratuita.md`, `docs/gika/ARCHITECTURE.md` e `docs/gika/SECURITY_AND_POLICY.md` citam `05-capacidade-e-revisao.md`, ausente da base. O runbook cita thresholds 50/70/85/95%, mas não há definição versionada disponível para verificá-los. Não reconstruir esses valores por inferência.
-- **README incompleto:** `README.md` referencia `LICENSE` e `docs/screenshots/desktop.png`, `mobile-1.png`, `mobile-2.png`, `mobile-3.png`; nenhum dos cinco destinos existe nesta árvore. `docs/evidence/README.md` explica que capturas históricas foram removidas. A licença MIT é alegada no README, mas o arquivo de licença não está disponível para revisão nesta base.
+- **Divergência sobre evidências visuais:** `docs/evidence/README.md` diz que capturas históricas foram removidas, mas a árvore versionada da base contém cinco PNGs em `docs/evidence/` e quatro screenshots referenciados pelo README principal em `docs/screenshots/`. O inventário registra a presença dos arquivos sem inferir que comprovem aprovação atual.
 - **Índice parcial:** `docs/README.md` não lista `docs/gika`, `docs/release` nem `docs/security`; leitores precisam conhecer os caminhos ou seguir os links de `GIKA_START_HERE.md`/AGENTS.
 - **Conteúdo órfão ou com descoberta fraca:** os relatórios sob `docs/gika`, `docs/security`, `docs/release` e os três READMEs sob `assets/gika/rive` não são indexados no `docs/README.md`. Eles não estão sem referência dentro do repositório, mas ficam fora da navegação central. A maioria dos documentos técnicos não tem links de retorno ou front matter com data/estado, então descoberta depende do nome do arquivo.
 - **Bootstrap duplicado:** `GIKA_START_HERE.md` instrui copiar pacote e iniciar M0, embora M0 esteja concluído e estado completo esteja versionado em `.agent/`. É candidato a arquivamento depois de definir se ainda há público que usa o pacote externo.
 - **Pontos históricos explicitamente não atuais:** `docs/EXECUCAO.md` documenta E00/E01; `docs/adr/001-fundacao.md` documenta demo e decisões iniciais; `docs/RESPONSIVE-SHELL-V2.md` registra um port posteriormente reconciliado. São preservados como histórico/evidência e não como orientação de arquitetura atual.
 - **Auditorias datadas:** `docs/security/SECURITY-AUDIT.md`, relatórios de hardening e runbooks têm datas/branch/escopo próprios. Advisory count e gates ali relatados não descrevem automaticamente o estado de segurança desta base.
 - **Referências incorporadas em texto:** foram verificadas ligações Markdown locais e referências explícitas relevantes. Menções a paths dentro de blocos de código/logs, links externos e âncoras não foram tratadas como destinos de arquivo local nesta checagem.
+
+## Artefatos visuais versionados (não Markdown)
+
+Estes arquivos não entram na contagem de 86 documentos Markdown, mas são relevantes às referências e às evidências visuais do inventário. Sua presença nesta base não atesta aprovação de release.
+
+- Screenshots referenciados pelo README: [desktop.png](../screenshots/desktop.png), [mobile-1.png](../screenshots/mobile-1.png), [mobile-2.png](../screenshots/mobile-2.png) e [mobile-3.png](../screenshots/mobile-3.png).
+- Capturas em `docs/evidence/`: [responsive-integration-desktop.png](../evidence/responsive-integration-desktop.png), [responsive-integration-tablet.png](../evidence/responsive-integration-tablet.png), [timer-detail-mobile.png](../evidence/timer-detail-mobile.png), [timer-floating-desktop.png](../evidence/timer-floating-desktop.png) e [timer-floating-mobile.png](../evidence/timer-floating-mobile.png).
+
+## Nota da primeira revisão D1
+
+A primeira revisão rejeitou o inventário porque uma varredura centrada em Markdown tratou incorretamente `LICENSE` e screenshots como ausentes. A checagem corrigida contra `git ls-tree -r b0e7bae753ec93374a3ebe3ec2b1a5ac07298046` e `git ls-files` confirmou os nove PNGs listados acima e a licença MIT. Este registro preserva a causa da rejeição e a evidência usada para corrigi-la.
 
 ## Limite desta etapa
 
