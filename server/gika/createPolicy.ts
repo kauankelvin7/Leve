@@ -50,46 +50,109 @@ export function resolveCreationIntent(text: string, context: ModelContext): Crea
 }
 /** A semantic proposal is not an effect: ground every fragment in this request,
  * derive civil fields in software, then run the existing action validator. */
+const semanticGlue = new Set([
+  'a','ao','aos','as','o','os','um','uma','e','eh','de','do','da','dos','das','em','no','na','nos','nas',
+  'para','pra','pro','pros','pras','por','favor','que','eu','me','meu','minha','meus','minhas','agenda','dia',
+  'horario','entao','pode','podia','poderia','quero','queria','gostaria','preciso','tipo','seria','so','apenas',
+  'mesmo','la','ai','isso','adicionar','adicione','criar','crie','agendar','agende','marcar','marque','colocar',
+  'coloque','incluir','inclua','anotar','anote','botar','bota','ponha'
+]);
+const hourWords: Record<string, number> = {
+  uma:1, um:1, duas:2, dois:2, tres:3, quatro:4, cinco:5, seis:6, sete:7, oito:8, nove:9, dez:10, onze:11,
+  doze:12, treze:13, catorze:14, quatorze:14, quinze:15, dezesseis:16, dezessete:17, dezoito:18, dezenove:19,
+  vinte:20, 'vinte e uma':21, 'vinte e um':21, 'vinte e duas':22, 'vinte e dois':22, 'vinte e tres':23
+};
+const createCue = /\b(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|quero|queria|gostaria|preciso)\b/;
+const rescheduleCue = /\b(?:move\w*|mova|reagend\w*|muda\w*|mude|passa\w*|passe|joga\w*|jogue)\b/;
+const unsupportedSemanticAction = /\b(?:exclu\w*|apag\w*|remov\w*|delet\w*|purg\w*|cancel\w*|reabr\w*|desfa\w*|lembre\w*|conclu\w*|complete|terminei|renome\w*)\b/;
+const recurringOrBatchSemanticAction = /\b(?:recorrente|diariamente|semanalmente|serie|series|todos|todas|toda|todo|duas tarefas|dois itens|lote)\b/;
+
+function semanticResidueIsOnlyGlue(value: string) {
+  const tokens = normalized(value).replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+  return tokens.every(token => semanticGlue.has(token));
+}
+
+function parseGroundedTime(expression: string): string | null {
+  let value = normalized(expression).replace(/-/g, ' ').replace(/\s+/g, ' ').trim().replace(/^(?:as|a)\s+/, '');
+  if (value === 'meio dia' || value === 'meiodia') return '12:00';
+  if (value === 'meia noite' || value === 'meianoite') return '00:00';
+
+  let period: 'manha' | 'tarde' | 'noite' | null = null;
+  const periodMatch = value.match(/\s+(?:da|de)\s+(manha|tarde|noite)$/);
+  if (periodMatch) {
+    const periodValue = periodMatch[1];
+    if (periodValue !== 'manha' && periodValue !== 'tarde' && periodValue !== 'noite') return null;
+    period = periodValue;
+    value = value.slice(0, periodMatch.index).trim();
+  }
+
+  let minute = 0;
+  const spokenMinute = value.match(/^(.+?)\s+(?:horas?\s+)?e\s+(meia|quinze|trinta|quarenta e cinco)$/);
+  if (spokenMinute) {
+    value = spokenMinute[1]!.trim();
+    minute = spokenMinute[2] === 'meia' || spokenMinute[2] === 'trinta' ? 30 : spokenMinute[2] === 'quinze' ? 15 : 45;
+  } else {
+    value = value.replace(/\s+horas?$/, '').trim();
+  }
+
+  const numeric = value.match(/^(\d{1,2})(?::([0-5]\d)|h(?:([0-5]\d))?)?$/);
+  let hour: number;
+  if (numeric) {
+    hour = Number(numeric[1]);
+    if (numeric[2] || numeric[3]) minute = Number(numeric[2] ?? numeric[3]);
+  } else {
+    const spoken = hourWords[value];
+    if (spoken === undefined) return null;
+    hour = spoken;
+  }
+
+  if (period) {
+    if (hour === 12) {
+      if (period === 'noite' || period === 'manha') return null;
+    } else {
+      if (hour < 1 || hour > 11 || (period === 'noite' && hour < 6)) return null;
+      if (period !== 'manha') hour += 12;
+    }
+  }
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
+/** A semantic proposal is not an effect: ground every fragment in this request,
+ * derive civil fields in software, then run the existing action validator. */
 export function normalizeCurrentAction(action: z.infer<typeof gikaCurrentActionSchema>, text: string, context: ModelContext): string | null {
   const parsed = gikaCurrentActionSchema.safeParse(action);
   if (!parsed.success || parsed.data.sourceText !== text.trim()) return null;
   const { requestExpression, title, dateExpression, timeExpression, kind } = parsed.data;
   const source = text.trim();
-  if (!source.startsWith(requestExpression) || /\b(?:nao|talvez|se)\b/.test(normalized(requestExpression))) return null;
   const request = normalized(requestExpression);
-  // Preserve the existing refusal of destructive/other operations; semantic
-  // normalization must not turn their literal directives into create/move.
-  if (/\b(?:exclu\w*|apag\w*|remov\w*|delet\w*|purg\w*|cancel\w*|reabr\w*|desfa\w*|lembre\w*|conclu\w*|complete|terminei|renome\w*)\b/.test(request)) return null;
-  if (/\b(?:recorrente|diariamente|semanalmente|serie|series|todos|todas|toda|todo|duas|dois|lote)\b/.test(request)) return null;
-  if (kind === 'create_task' && /\b(?:move|mova|mover|reagenda|reagende|muda|mude)\b/.test(request)) return null;
-  if (kind === 'reschedule_task' && /\b(?:adiciona\w*|cria\w*|crie)\b/.test(request)) return null;
+  const whole = normalized(source);
+  if (/\b(?:nao|talvez|se)\b/.test(request)) return null;
+  if (unsupportedSemanticAction.test(whole) || recurringOrBatchSemanticAction.test(whole)) return null;
+  if (kind === 'create_task' && (!createCue.test(request) || rescheduleCue.test(request))) return null;
+  if (kind === 'reschedule_task' && (!rescheduleCue.test(request) || createCue.test(request))) return null;
+
   const ranges: {index:number;length:number}[] = [];
   for (const fragment of [requestExpression, title, dateExpression, timeExpression].filter((value): value is string => value !== null)) {
     const index = source.indexOf(fragment);
     if (index < 0 || source.indexOf(fragment, index + fragment.length) >= 0 || ranges.some(range => index < range.index + range.length && index + fragment.length > range.index)) return null;
     ranges.push({index,length:fragment.length});
   }
+
   let residue = source;
   for (const range of ranges.sort((a,b)=>b.index-a.index)) residue = residue.slice(0,range.index)+' '+residue.slice(range.index+range.length);
-  // Connectors only; unrepresented instructions/intervals/recurrence cannot disappear.
-  if (normalized(residue).replace(/\b(?:para|pra|no|na|em|as|a|o|dia)\b/g,'').replace(/[\s,.;!?"'“”‘’]/g,'')) return null;
+  // Only grammar/filler may remain. Any extra title, second instruction, interval or hidden target fails closed.
+  if (!semanticResidueIsOnlyGlue(residue)) return null;
   if (!dateExpression && !timeExpression) return null;
+
   if (dateExpression) {
     const temporal = resolveCreationIntent(`Adiciona Referência temporal ${dateExpression}`,context);
     if (!temporal.task || temporal.task.title !== 'Referência temporal' || !temporal.task.dueDate || temporal.task.dueTime !== null) return null;
   }
-  let time: string | null = null;
-  if (timeExpression) {
-    const match = normalized(timeExpression).match(/^(?:as\s+)?(\d{1,2})(?::([0-5]\d)|h(?:([0-5]\d))?)?(?:\s+horas?)?(?:\s+(?:da|de)\s+(manha|tarde|noite))?$/);
-    if (!match) return null;
-    let hour = Number(match[1]);
-    if (match[4]) {
-      if (hour < 1 || hour >= 12 || (match[4] === 'noite' && hour < 6)) return null;
-      hour = hour % 12 + (match[4] === 'manha' ? 0 : 12);
-    }
-    if (hour > 23) return null;
-    time = `${String(hour).padStart(2,'0')}:${match[2] ?? match[3] ?? '00'}`;
-  }
+
+  const time = timeExpression ? parseGroundedTime(timeExpression) : null;
+  if (timeExpression && !time) return null;
+
   if (kind === 'create_task') {
     if (!dateExpression) return null;
     return `Adiciona "${title}" ${dateExpression}${time ? ` às ${time}` : ''}`;

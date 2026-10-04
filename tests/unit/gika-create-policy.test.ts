@@ -65,6 +65,52 @@ describe('current-turn semantic action grounding',()=>{
     expect(resolveCreationIntent(canonical,context).task).toMatchObject({title:'ir à academia',dueTime:'19:00'});
   });
   it.each([
+    {
+      sourceText:'eu quero agendar para amanhã às 7 horas da noite é ir à academia',
+      requestExpression:'eu quero agendar', title:'ir à academia', dateExpression:'amanhã', timeExpression:'às 7 horas da noite', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
+      sourceText:'amanhã às 19h quero ir à academia',
+      requestExpression:'quero', title:'ir à academia', dateExpression:'amanhã', timeExpression:'às 19h', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
+      sourceText:'marca pra amanhã às sete da noite ir à academia',
+      requestExpression:'marca', title:'ir à academia', dateExpression:'amanhã', timeExpression:'às sete da noite', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
+      sourceText:'bota na minha agenda ir à academia amanhã 7 da noite',
+      requestExpression:'bota', title:'ir à academia', dateExpression:'amanhã', timeExpression:'7 da noite', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
+      sourceText:'gostaria de agendar academia para sábado às oito e meia da manhã',
+      requestExpression:'gostaria de agendar', title:'academia', dateExpression:'sábado', timeExpression:'às oito e meia da manhã', dueDate:'2026-10-03', dueTime:'08:30'
+    },
+    {
+      sourceText:'coloque academia na agenda amanhã às 19:30',
+      requestExpression:'coloque', title:'academia', dateExpression:'amanhã', timeExpression:'às 19:30', dueDate:'2026-10-02', dueTime:'19:30'
+    },
+    {
+      sourceText:'marque academia pra amanhã às sete da noite',
+      requestExpression:'marque', title:'academia', dateExpression:'amanhã', timeExpression:'às sete da noite', dueDate:'2026-10-02', dueTime:'19:00'
+    },
+    {
+      sourceText:'preciso agendar ir ao médico amanhã às oito da manhã',
+      requestExpression:'preciso agendar', title:'ir ao médico', dateExpression:'amanhã', timeExpression:'às oito da manhã', dueDate:'2026-10-02', dueTime:'08:00'
+    },
+  ])('accepts grounded colloquial paraphrases without dropping meaning: $sourceText',({sourceText,requestExpression,title,dateExpression,timeExpression,dueDate,dueTime})=>{
+    const canonical=normalizeCurrentAction({kind:'create_task',sourceText,requestExpression,title,dateExpression,timeExpression},sourceText,context);
+    expect(canonical).not.toBeNull();
+    expect(resolveCreationIntent(canonical!,context).task).toMatchObject({title,dueDate,dueTime});
+  });
+  it.each([
+    ['eu quero agendar academia amanhã às 19h e apague compras','eu quero agendar','academia','amanhã','às 19h'],
+    ['talvez eu queira agendar academia amanhã às 19h','talvez eu queira agendar','academia','amanhã','às 19h'],
+    ['agende academia amanhã das 19h às 20h','agende','academia','amanhã','das 19h às 20h'],
+    ['agende academia amanhã às 19h e estudo','agende','academia','amanhã','às 19h'],
+  ])('fails closed when a semantic proposal would hide extra meaning: %s',(sourceText,requestExpression,title,dateExpression,timeExpression)=>{
+    expect(normalizeCurrentAction({kind:'create_task',sourceText,requestExpression,title,dateExpression,timeExpression},sourceText,context)).toBeNull();
+  });
+  it.each([
     {sourceText:'texto anterior'}, {title:'tarefa inventada'}, {requestExpression:'não agende'}, {dateExpression:'2026-10-03'}, {timeExpression:'às 20h'},
   ])('rejects missing/current-turn mismatch or invented evidence %j',patch=>{
     expect(normalizeCurrentAction({...action,...patch},production,context)).toBeNull();
