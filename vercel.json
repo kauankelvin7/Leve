@@ -5,6 +5,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci --include=dev",
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api" },
     { "source": "/", "destination": "/index.html" },
     { "source": "/:page(hoje|calendario|notas|compras|configuracoes|lixeira|buscar|entrar|registrar|recuperar|privacidade)", "destination": "/index.html" },
     { "source": "/:page(notas|compras|atividade)/:id", "destination": "/index.html" },
