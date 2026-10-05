@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const PUBLIC_PATHS = new Set(['/entrar', '/registrar', '/recuperar', '/apoie']);
+const PUBLIC_PATHS = new Set(['/entrar', '/registrar', '/recuperar']);
 
 export function RouteMetadata() {
   const { pathname } = useLocation();

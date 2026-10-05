@@ -93,7 +93,7 @@ export function Settings() {
       <a href="#settings-profile">Perfil</a>
       <a href="#settings-look">Aparência</a>
       <a href="#settings-device">Aparelho</a>
-      <a href="#settings-data">Seus dados</a><Link to="/privacidade">Privacidade</Link><Link to="/apoie">Apoie o Leve</Link>
+      <a href="#settings-data">Seus dados</a><Link to="/privacidade">Privacidade</Link>
     </nav>
     {(error || message) ? <p role={error ? 'alert' : 'status'} className="form-status settings-feedback" aria-live="polite">{error || message}</p> : null}
     <div className="settings-layout">
