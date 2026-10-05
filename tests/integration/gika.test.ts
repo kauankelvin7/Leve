@@ -869,6 +869,26 @@ describe('current-turn action priority and grounded creation',()=>{
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
     expect((await db.collection('commandReceipts').get()).size).toBe(0);
   });
+  it.each([
+    ['consegue agendar amanhã para mim às 7 horas ir à academia','07:00'],
+    ['eu quero agendar para amanhã às 7 horas da noite é ir à academia','19:00'],
+  ])('model create_task fallback stays semantic when currentAction is unavailable: %s',async(text,dueTime)=>{
+    const user=await account();
+    const dueDate=Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().add({days:1}).toString();
+    state.routing={intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:null};
+    state.model={interpret:async input=>{
+      expect(input.agendaIntent).toBe('AGENDA_ACTION');
+      expect(input.text).toBe(text);
+      return [{name:'create_task',args:{title:'ir à academia',dueDate,dueTime}}];
+    }};
+    const response=await ask(user.token,{requestId:crypto.randomUUID(),text}).expect(200);
+    expect(response.body.domainIntent).toBe('AGENDA_ACTION');
+    expect(response.body.intent).toBe('agenda_action');
+    expect(response.body.text).toBe('Preparando a tarefa…');
+    expect(response.body.createTask).toEqual({title:'ir à academia',dueDate,dueTime,timeZone:zone});
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(0);
+    expect((await db.collection('commandReceipts').get()).size).toBe(0);
+  });
   it('uncertain current follow-up does not use an earlier complete request',async()=>{
     const user=await account();state.routing={intent:'AGENDA_ACTION',certain:false,reply:null};
     const response=await ask(user.token,{requestId:crypto.randomUUID(),text:'Então isso',conversation:[{role:'user',text:current}]}).expect(200);
