@@ -381,3 +381,36 @@ No Preview `42771a10bfeb9beee555aa50531f6ff4100be0c0`, READ real PASS. CREATE re
 Prova antes: 4 regressões unitárias FAIL (18 PASS) e integração focal retornando 422 em vez de 200; log original `.cache/preflight/hosted/gika-quoted-before.log` preservado. Correção mínima de duas linhas: reconhecer `a tarefa` após verbo explícito e retirar somente aspas duplas delimitadoras externas, preservando aspas internas. Depois: 91 unit focais PASS, teste adicional de contrato Gemini→tools/schema→descritor→policy com criação allow/título inventado rejeitado; arquivo de criação 23/23 PASS; integração Gika 101/101 PASS, lint/boundaries/typecheck web+server/build PASS. Ferramentas, modelo, env, Firebase, infraestrutura e política global intactos neste ajuste.
 
 Smoke READ/CREATE/CONFIRMATION-HMAC do Preview desse reparo ainda pendente; publicar somente `feat/gika-integration` e validar esses três, sem main/Production/nova fase.
+
+## Revisão da experiência da assistente — 2026-10-05
+
+Pedido novo do proprietário autoriza revisão integral da Gika/chat/voz em branch isolada e
+integração em main somente após gates aprovados. Base atualizada `f949b63ad3bc349ed6c95e12587051e43073699c`,
+branch `feat/gika-assistant-experience`; isto substitui restrições de publicação das tarefas históricas.
+Nenhuma milestone histórica foi reaberta. ExecPlan: `.agent/GIKA_ASSISTANT_EXECPLAN.md`.
+
+Implementação: turno semântico estruturado para domínio/proposta em uma chamada comum;
+contexto de ações/esclarecimentos bounded; resultados de confirmação/undo atualizam a projeção;
+chat acompanha rolagem só perto do fim; parar resposta explícito; voz com transcrição parcial,
+tempo, regravação e deadlines. Preservados comandos, schemas, identidade, receipts, revisions,
+HMAC do texto original, recorrência, batch, quotas transacionais e serviceControls.
+
+Evidência até o checkpoint de Preview: audit produção 0; lint/boundaries, dois TS e build PASS;
+unit ampla 736 PASS antes de últimos testes de contexto/escopo; integração ampla 306 PASS.
+UI focal 12 PASS. Primeira UI 9 PASS/2 FAIL demonstrou clique no botão Stop reutilizado como
+submit; `preventDefault` corrigiu causa, sem timeout/retry/assertion relaxados. Primeira integração
+285 PASS/21 FAIL por contar classificação local das fixtures como chamada provider; fixtures
+agora declaram custo local zero, provider conta por default e produção usa turno único.
+Unit posterior de diagnóstico falhou somente por campo técnico novo `phase`; contratos exatos
+foram atualizados e 50 focais PASS. Logs originais/artefatos sintéticos ficam no cache ignorado.
+E2E ampla e avaliação real ainda pendentes; não declarar Gika pronta nem integrar main ainda.
+
+Checkpoint atual: 744 unit PASS, lint/boundaries, typecheck web/server e build PASS. Deadline
+de organização reproduzido (duas fases de 8s retornavam 504 sob teto total 15s); corrigido
+para 25s dentro do cliente 30s, teste focal PASS. Grounding legado por conjunto de palavras
+aceitava nome negado/substituição numérica: duas regressões FAIL antes, 86 focais PASS após
+preservar span literal e números. Produção usa interpretação semântica, não esse fallback.
+E2E focal final de envio/contexto/UI: 11 PASS; ampla final em andamento sem relaxar timeout,
+retry ou guardas. Scripts de eval são exclusivamente Preview/sintéticos, com audiência
+leve-preview validada e artefatos sem prompts/respostas/credenciais. Publicação candidata
+na branch isolada serve para validar provider real; main continua condicionada aos gates.

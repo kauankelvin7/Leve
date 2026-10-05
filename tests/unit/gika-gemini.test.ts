@@ -48,7 +48,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     const upstream = log.mock.calls.map(([line]) => JSON.parse(line as string))
       .filter(record => record.event === 'gika.upstream.response');
     expect(upstream).toEqual([{ timestamp: expect.any(String), level: 'info', service: 'leve-backend',
-      event: 'gika.upstream.response', stage: 'upstream_response', upstreamStatus: status, correlationId, model: 'gemini-3.5-flash-lite' }]);
+      event: 'gika.upstream.response', stage: 'upstream_response', upstreamStatus: status, correlationId, model: 'gemini-3.5-flash-lite', phase: 'interpretation' }]);
     expect(JSON.stringify(log.mock.calls)).not.toContain('PRIVATE_');
     expect(JSON.stringify(http.mock.calls[0])).not.toContain(correlationId);
   });
@@ -68,7 +68,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     expect(records().filter(record => record.level === 'warn')).toEqual([{
       timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
       event: 'gika.diagnostic', stage: 'config_error', correlationId,
-      model: 'gemini-3.5-flash-lite', keyPresent, errorClass,
+      model: 'gemini-3.5-flash-lite', phase: 'interpretation', keyPresent, errorClass,
     }]);
     expect(records().some(record => record.stage === 'request_started' || record.event === 'gika.upstream.response')).toBe(false);
     expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
@@ -95,7 +95,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     expect(records().filter(record => record.level === 'warn')).toEqual([{
       timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
       event: 'gika.diagnostic', stage: 'fetch_exception', correlationId,
-      model: 'gemini-3.5-flash-lite', keyPresent: true,
+      model: 'gemini-3.5-flash-lite', phase: 'interpretation', keyPresent: true,
       errorClass: 'TypeError', causeClass: 'DnsResolutionError',
     }]);
     expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
@@ -114,7 +114,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     expect(records().filter(record => record.level === 'warn')).toEqual([{
       timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
       event: 'gika.diagnostic', stage: 'timeout', correlationId,
-      model: 'gemini-3.5-flash-lite', keyPresent: true, errorClass: 'GikaFault',
+      model: 'gemini-3.5-flash-lite', phase: 'interpretation', keyPresent: true, errorClass: 'GikaFault',
     }]);
     expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
     expect(JSON.stringify(records())).not.toContain('PRIVATE');
@@ -137,7 +137,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     expect(records().filter(record => record.level === 'warn')).toEqual([{
       timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
       event: 'gika.diagnostic', stage: 'timeout', correlationId,
-      model: 'gemini-3.5-flash-lite', keyPresent: true, errorClass: 'GikaFault',
+      model: 'gemini-3.5-flash-lite', phase: 'interpretation', keyPresent: true, errorClass: 'GikaFault',
     }]);
     expect(records().filter(record => record.stage === 'timeout')).toHaveLength(1);
     expect(records().every(record => !Object.hasOwn(record, 'upstreamStatus'))).toBe(true);
@@ -159,7 +159,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
     expect(records().filter(record => record.level === 'warn')).toEqual([{
       timestamp: expect.any(String), level: 'warn', service: 'leve-backend',
       event: 'gika.diagnostic', stage: 'parse_error', correlationId,
-      model: 'gemini-3.5-flash-lite', keyPresent: true,
+      model: 'gemini-3.5-flash-lite', phase: 'interpretation', keyPresent: true,
       upstreamStatus: 200, errorClass,
     }]);
     expect(records().filter(record => record.event === 'gika.upstream.response')).toHaveLength(1);
@@ -212,7 +212,7 @@ describe('Gemini Developer adapter, sem credenciais fictícias', () => {
    const {gikaRequestSchema,gikaInterpretationSchema}=await import('../../packages/domain/src/gika');
    const {validateToolCalls}=await import('../../server/gika/createPolicy');
    expect(()=>validateToolCalls([{name:'respond_conversation',args:{text:'Oi',uid:'other'}}])).toThrow();
-   expect(()=>gikaRequestSchema.parse({requestId:crypto.randomUUID(),text:'Oi',conversation:Array(7).fill({role:'user',text:'x'})})).toThrow();
+   expect(()=>gikaRequestSchema.parse({requestId:crypto.randomUUID(),text:'Oi',conversation:Array(13).fill({role:'user',text:'x'})})).toThrow();
    expect(()=>gikaRequestSchema.parse({requestId:crypto.randomUUID(),text:'Oi',conversation:[{role:'user',text:'x',uid:'other'}]})).toThrow();
    expect(()=>gikaInterpretationSchema.parse({text:'Oi',intent:'conversation',simulated:false,reads:[],createTask:{title:'X',dueDate:null,dueTime:null,timeZone:input.context.timeZone}})).toThrow();
  });

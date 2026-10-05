@@ -1,7 +1,7 @@
 import { useCharacterEvent } from './character/CharacterEvents';
 import { useEffect, useRef, useState } from 'react';
 import type { RecurrenceChoice, RecurrenceConfirmation, RecurrenceApplied } from '../../../../../packages/domain/src/gikaRecurrence';
-import type { GikaRequest } from './conversation';
+import type { GikaContextOutcome, GikaRequest } from './conversation';
 import { ApiError } from '../../platform/api';
 import { Icon } from '../../components/ui/Icon';
 import { chooseGikaRecurrence, confirmGikaRecurrence } from './recurrenceBridge';
@@ -9,7 +9,7 @@ import { chooseGikaRecurrence, confirmGikaRecurrence } from './recurrenceBridge'
 type State = 'choice' | 'preparing' | 'preview' | 'confirming' | 'confirmed' | 'cancelled' | 'conflict' | 'failed';
 const label = (date: string) => date.split('-').reverse().join('/');
 const moment = (date: string, time: string | null) => `${label(date)}${time ? ` às ${time}` : ''}`;
-export function GikaRecurrence({ choice, confirmation: initial, context, active }: { choice?: RecurrenceChoice; confirmation?: RecurrenceConfirmation; context: { uid: string; request: GikaRequest }; active: boolean }) {
+export function GikaRecurrence({ choice, confirmation: initial, context, active, onOutcome }: { onOutcome?: (outcome: GikaContextOutcome) => void; choice?: RecurrenceChoice; confirmation?: RecurrenceConfirmation; context: { uid: string; request: GikaRequest }; active: boolean }) {
   const notifyCharacter = useCharacterEvent();
   const [confirmation, setConfirmation] = useState(initial), [state, setState] = useState<State>(initial ? 'preview' : 'choice');
   const [result, setResult] = useState<RecurrenceApplied | null>(null), [errorText, setErrorText] = useState<string>();
@@ -22,7 +22,7 @@ export function GikaRecurrence({ choice, confirmation: initial, context, active 
   }, [active]);
   function focusFeedback() { requestAnimationFrame(() => { if (feedback.current?.closest('dialog')?.open) feedback.current.focus({ preventScroll: true }); }); }
   function fail(error: unknown) {
-    notifyCharacter('error');
+    notifyCharacter('error'); onOutcome?.({ state: 'uncertain', tasks: [] });
     const code = error instanceof ApiError ? error.code : '';
     const conflict = ['REVISION_CONFLICT', 'GIKA_RECURRENCE_CONFLICT', 'GIKA_CONFIRMATION_EXPIRED'].includes(code);
     setErrorText(code === 'GIKA_CONFIRMATION_EXPIRED' ? 'Essa prévia expirou. Faça o pedido novamente.' : conflict ? 'Essa rotina mudou. Faça o pedido novamente.' : ['AUTH_REQUIRED', 'FORBIDDEN', 'EMAIL_UNVERIFIED'].includes(code) ? 'Entre na conta que fez esse pedido para continuar.' : 'Não consegui confirmar. Confira sua agenda e tente novamente.');
@@ -45,12 +45,12 @@ export function GikaRecurrence({ choice, confirmation: initial, context, active 
         setState('confirming'); notifyCharacter('working');
         const ack = await confirmGikaRecurrence(confirmation, context.request, context.uid, signal);
         if (pending.signal.aborted || controller.current !== pending) return;
-        setResult(ack); setState('confirmed'); notifyCharacter('ack');
+        setResult(ack); setState('confirmed'); onOutcome?.({ state: 'confirmed', tasks: [{ title: ack.title, dueDate: ack.dueDate, dueTime: ack.dueTime, ...(ack.operation === 'complete' ? { status: 'completed' as const } : {}) }] }); notifyCharacter('ack');
       }
     } catch (error) { if (!pending.signal.aborted && controller.current === pending) fail(error); }
     finally { if (controller.current === pending) { controller.current = null; focusFeedback(); } }
   }
-  function cancel() { if (!active || controller.current || !['choice', 'preview'].includes(state)) return; setState('cancelled'); notifyCharacter('idle'); focusFeedback(); }
+  function cancel() { if (!active || controller.current || !['choice', 'preview'].includes(state)) return; setState('cancelled'); onOutcome?.({ state: 'cancelled', tasks: [] }); notifyCharacter('idle'); focusFeedback(); }
   const proposal = confirmation?.effect ?? choice?.proposal;
   if (!proposal) return null;
   const future = confirmation?.effect.scope === 'future', count = future ? proposal.recurrence.futureCount : 1;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readResultSchema, gikaResponseSchema } from '../../packages/domain/src/gika';
 import { readRange, validateCalls } from '../../server/gika/policy';
-import { parseGikaDailyLimit } from '../../server/gika/quotaPolicy';
+import { parseGikaDailyLimit, parseGikaMinuteLimit } from '../../server/gika/quotaPolicy';
 const context = { today: '2026-09-30', timeZone: 'America/Sao_Paulo', weekStartsOn: 1 as const };
 describe('Gika allowlist e policy somente leitura', () => {
   it.each(['activity.create', 'complete_task', 'reschedule_task', 'delete_task', 'get_other_user', '__proto__'])('nega %s', name => {
@@ -32,4 +32,10 @@ describe('Gika allowlist e policy somente leitura', () => {
     expect(parseGikaDailyLimit('25')).toBe(25);
     for (const invalid of ['0', '-1', '1.5', 'abc', '9007199254740992']) expect(() => parseGikaDailyLimit(invalid)).toThrow('Invalid GIKA_DAILY_LIMIT');
   });
+  it('minute budget is explicit, bounded to the previous maximum upstream envelope, and fail-closed', () => {
+    expect(parseGikaMinuteLimit('')).toBe(6);
+    expect(parseGikaMinuteLimit('3')).toBe(3);
+    for (const value of ['0', '7', '-1', '2.5', 'unlimited']) expect(() => parseGikaMinuteLimit(value)).toThrow('Invalid GIKA_MINUTE_LIMIT');
+  });
+
 });

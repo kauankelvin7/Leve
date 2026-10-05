@@ -455,3 +455,13 @@ glass_rc_uat_continuation:
   publication: completed
   published_product_commit: "61ffa4cda11f596a8a3e6fe45bdb74c68297028c"
   remote_matches_head: true
+
+assistant_experience:
+  entry_checkpoint: "f949b63ad3bc349ed6c95e12587051e43073699c"
+  branch: feat/gika-assistant-experience
+  status: validating
+  scope: "Semântica, contexto, personalidade PT-BR, limites proporcionais, chat e voz; sem nova milestone."
+  authorization: "Pedido atual permite merge/push main somente após todos os gates PASS."
+  plan: .agent/GIKA_ASSISTANT_EXECPLAN.md
+  evidence: docs/gika/ASSISTANT_EXPERIENCE.md
+  next_action: "Concluir E2E ampla, avaliação real Preview e revisão; não publicar main antes dos gates."

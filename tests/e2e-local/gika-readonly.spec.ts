@@ -89,7 +89,7 @@ test('API cancelada ao fechar/sair não publica resposta na segunda conta', asyn
   const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
   await question.fill('Pergunta privada anterior'); await question.press('Enter');
   await expect.poll(() => Boolean(finish)).toBe(true);
-  await expect(page.locator('.gika-loading')).toContainText('Consultando sua agenda');
+  await expect(page.locator('.gika-loading')).toContainText('Preparando uma resposta');
   await page.getByRole('button', { name: 'Fechar Gika' }).click();
   await page.getByRole('button', { name: 'Sair', exact: true }).click();
   await finish!();

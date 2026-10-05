@@ -27,6 +27,9 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
   const dialog = useRef<HTMLDialogElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const transcript = useRef<HTMLDivElement>(null);
+  const followTail = useRef(true);
+  const lastAssistant = useRef<string | undefined>(undefined);
+  const [unseenResponse, setUnseenResponse] = useState(false);
   const conversation = useGikaConversation(adapter);
   const { draft, setDraft, messages, status, errorCode, online, send, cancel, retry } = conversation;
 
@@ -56,8 +59,8 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
   }, [open, dayDraftRequest, draft, setDraft]);
 
   const suggestions = demo ? demoSuggestions : [
-    { text: 'O que tenho hoje?', icon: 'day' }, { text: 'O que tenho amanhã?', icon: 'calendar' },
-    { text: 'Ver minha semana', icon: 'list' }, { text: 'Adicionar uma tarefa', icon: 'plus' },
+    { text: 'O que tenho hoje?', icon: 'day' }, { text: 'Organizar meu dia', icon: 'calendar' },
+    { text: 'Como você pode ajudar?', icon: 'list' }, { text: 'Adicionar uma tarefa', icon: 'plus' },
   ] as const;
 
   function close() { cancel(); onClose(); }
@@ -75,8 +78,22 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
   }, [open]);
 
   useEffect(() => {
-    if (open && transcript.current) transcript.current.scrollTop = messages.length ? transcript.current.scrollHeight : 0;
-  }, [open, messages.length, status]);
+    const latestAssistant = messages.findLast(message => message.role === 'assistant')?.id;
+    if (open && transcript.current) {
+      if (followTail.current) transcript.current.scrollTop = messages.length ? transcript.current.scrollHeight : 0;
+      else if (latestAssistant && latestAssistant !== lastAssistant.current) setUnseenResponse(true);
+    }
+    lastAssistant.current = latestAssistant;
+  }, [open, messages, status]);
+
+  function followLatest() {
+    followTail.current = true; setUnseenResponse(false);
+    if (transcript.current) transcript.current.scrollTop = transcript.current.scrollHeight;
+  }
+
+  function submit() {
+    followLatest(); setOrganizationNotice(null); void send();
+  }
 
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -105,18 +122,22 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
       <div className="gika-identity">{messages.length ? character : <span className="gika-identity-mark"><GikaMark /></span>}<div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
-    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : organizationNotice ?? 'Consulte sua agenda ou adicione uma tarefa.'}</p>
-    <div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0}>
+    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : organizationNotice ?? 'Converse sobre sua agenda ou peça ajuda para organizar o dia.'}</p>
+    <div className="gika-transcript"><div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0} onScroll={event => {
+      const element = event.currentTarget;
+      followTail.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 48;
+      if (followTail.current) setUnseenResponse(false);
+    }}>
       {messages.length === 0 && <div className="gika-welcome">
-        <span className="gika-welcome-mark" aria-hidden="true">{character}</span><h3>{demo ? 'O que vamos organizar?' : 'O que você quer consultar?'}</h3><p>Pergunte sobre seu dia ou peça para adicionar uma tarefa.</p>
+        <span className="gika-welcome-mark" aria-hidden="true">{character}</span><h3>{demo ? 'O que vamos organizar?' : 'Como posso te ajudar hoje?'}</h3><p>{demo ? 'Pergunte sobre seu dia ou peça para adicionar uma tarefa.' : 'Veja sua agenda, organize pendências ou me conte o que precisa.'}</p>
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}
-      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} active={open} online={online} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
+      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} onOutcome={conversation.recordOutcome} active={open} online={online} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
       {status === 'loading' && <GikaLoading demo={demo} />}
       {status === 'error' && <GikaError code={errorCode} online={online} onRetry={() => void retry()} />}
-      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Consultando sua agenda…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
-    </div>
-    <GikaComposer textareaRef={composer} draft={draft} open={open} loading={status === 'loading'} online={online} onDraft={setDraft} onVoiceListening={setVoiceListening} onSend={() => { setOrganizationNotice(null); void send(); }} />
+      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Preparando uma resposta…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
+    </div>{unseenResponse && <button type="button" className="gika-latest" onClick={() => { followLatest(); composer.current?.focus({ preventScroll: true }); }}>Ver resposta</button>}</div>
+    <GikaComposer textareaRef={composer} draft={draft} open={open} loading={status === 'loading'} online={online} onDraft={setDraft} onVoiceListening={setVoiceListening} onSend={submit} onCancelResponse={cancel} />
   </dialog></CharacterEvents.Provider>;
 }

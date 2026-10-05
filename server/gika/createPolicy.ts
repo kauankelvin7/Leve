@@ -187,9 +187,10 @@ function groundedTitle(title: string, text: string) {
   if (/^(?:tarefa|evento|compromisso|atividade)$/.test(titlePlain)) return false;
   if ([...titlePlain.matchAll(datePattern)].length) return false;
   if ([...titlePlain.matchAll(semanticTimeEvidencePattern)].some(match => timeEvidenceHasCue(match[0]))) return false;
-  const sourceTokens = new Set(normalized(text).replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean));
-  const titleTokens = titlePlain.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(token => token && !semanticGlue.has(token) && !temporalTitleTokens.has(token) && !/^\d+$/.test(token));
-  return titleTokens.length > 0 && titleTokens.every(token => sourceTokens.has(token));
+  // Compatibility adapters conserve the full literal span, including numbers and order.
+  // The production semantic-turn path does not use this lexical parser.
+  const escaped = titlePlain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'u').test(normalized(text));
 }
 function hasSpecificTitleEvidence(text: string) {
   let plain = normalized(text).replace(datePattern, ' ');

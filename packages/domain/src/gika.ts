@@ -13,10 +13,11 @@ export const gikaDomainIntentSchema = z.enum(['SOCIAL', 'GIKA_META', 'AGENDA_QUE
 export const gikaCurrentActionSchema = z.object({ kind: z.enum(['create_task', 'reschedule_task']), sourceText: z.string().trim().min(1).max(2000), requestExpression: z.string().trim().min(1).max(120), title: z.string().trim().min(1).max(120), dateExpression: z.string().trim().min(1).max(40).nullable(), timeExpression: z.string().trim().min(1).max(60).nullable() }).strict();
 export const gikaIntentClassificationSchema = z.object({ intent: gikaDomainIntentSchema, certain: z.boolean(), currentAction: gikaCurrentActionSchema.nullable().optional(), reply: z.string().trim().min(1).max(1000).nullable() }).strict().refine(value => !value.currentAction || (value.certain && value.intent === 'AGENDA_ACTION')).refine(value => (value.certain && ['SOCIAL', 'GIKA_META', 'ORGANIZATION_CONVERSATION'].includes(value.intent)) || value.reply === null);
 export const GIKA_MAX_INPUT = 2000;
-export const GIKA_MAX_MESSAGES = 40;
+export const GIKA_MAX_MESSAGES = 120;
+export const GIKA_MAX_CONTEXT_TURNS = 12;
 export const GIKA_MAX_REQUEST_BYTES = 12 * 1024;
 export const conversationTurnSchema = z.object({ role: z.enum(['user', 'assistant']), text: z.string().trim().min(1).max(1000) }).strict();
-export const gikaRequestSchema = z.object({ requestId: z.uuid(), text: z.string().trim().min(1).max(GIKA_MAX_INPUT), conversation: z.array(conversationTurnSchema).max(6).optional() }).strict();
+export const gikaRequestSchema = z.object({ requestId: z.uuid(), text: z.string().trim().min(1).max(GIKA_MAX_INPUT), conversation: z.array(conversationTurnSchema).max(GIKA_MAX_CONTEXT_TURNS).optional() }).strict();
 export const conversationCallSchema = z.object({ name: z.literal('respond_conversation'), args: z.object({ text: z.string().trim().min(1).max(1000) }).strict() }).strict();
 export const readCallSchema = z.discriminatedUnion('name', [
   z.object({ name: z.literal('get_today'), args: z.object({}).strict() }).strict(),

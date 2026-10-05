@@ -27,10 +27,12 @@ describe('Gika semantic domain classification and software boundary',()=>{
   it.each(cases)('%s is %s; only agenda intents reach existing interpretation',async(text,intent)=>{
     const calls: ModelInput[]=[];
     const adapter=createGeminiAdapter(async payload=>{
-      const classification=payload.tools[0]!.functionDeclarations[0]!.name==='classify_intent';
-      calls.push({text,context,classifyOnly:classification});
-      const reply=['SOCIAL','GIKA_META','ORGANIZATION_CONVERSATION'].includes(intent)?'Posso ajudar com sua agenda e organização no Leve.':null;
-      const functionCall=classification?{name:'classify_intent',args:{intent,certain:true,reply}}:intent==='AGENDA_QUERY'?{name:'get_day',args:{date:'2026-10-05'}}:{name:'create_task',args:{title:text.startsWith('Crie')?'academia':'estudar Python',dueDate:'2026-10-05',dueTime:null}};
+      expect(payload.tools[0]!.functionDeclarations[0]!.name).toBe('respond_turn');
+      calls.push({text,context,turnOnly:true});
+      const conversation=['SOCIAL','GIKA_META','ORGANIZATION_CONVERSATION'].includes(intent);
+      const clarification=text.startsWith('Reserve');
+      const proposals= intent==='AGENDA_QUERY' ? [{name:'get_day',args:{date:'2026-10-05'}}] : intent==='AGENDA_ACTION' && !clarification ? [{name:'create_task',args:{title:'academia',dueDate:'2026-10-05',dueTime:null}}] : [];
+      const functionCall={name:'respond_turn',args:{domainIntent:intent,certain:true,explicitAction:intent==='AGENDA_ACTION',proposals,reply:conversation?'Posso ajudar com sua agenda e organização no Leve.':clarification?'Tarefas simples têm um horário, sem duração. Quer adicionar estudar Python amanhã?':null}};
       return Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall}]}}]});
     });
     const f=fixture(adapter),response=await f.ask(text);
@@ -38,7 +40,7 @@ describe('Gika semantic domain classification and software boundary',()=>{
     if(!['AGENDA_QUERY','AGENDA_ACTION'].includes(intent)){
       expect(calls).toHaveLength(1);expect(f.repository.read).not.toHaveBeenCalled();expect(response.body.reads).toEqual([]);expect(response.body).not.toHaveProperty('createTask');
     }
-    if(intent==='OUT_OF_SCOPE'){expect(response.body.text).toContain('Eu fico focada');expect(response.body.text).not.toMatch(/Paris|for\s|redação pronta/);}
+    if(intent==='OUT_OF_SCOPE'){expect(response.body.text).toContain('agenda e organização');expect(response.body.text).not.toMatch(/Paris|for\s|redação pronta/);}
     if(intent==='AGENDA_QUERY'){expect(response.body.reads).toHaveLength(1);expect(response.body).not.toHaveProperty('createTask');}
     if(text.startsWith('Crie'))expect(response.body.createTask.title).toBe('academia');
     if(text.startsWith('Reserve')){expect(response.body.intent).toBe('agenda_action');expect(response.body).not.toHaveProperty('createTask');}
@@ -81,11 +83,12 @@ describe('explicit current request after another conversation domain',()=>{
     const payloads:ReturnType<typeof geminiPayload>[]=[];
     const model=createGeminiAdapter(async payload=>{
       payloads.push(payload);
-      return Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall:{name:'classify_intent',args:{intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:{kind:'create_task',sourceText:current,requestExpression:'então agende',title:'ir à academia',dateExpression:'amanhã',timeExpression:'às 7 horas da noite'}}}}]}}]});
+      const args={domainIntent:'AGENDA_ACTION',certain:true,explicitAction:true,reply:null,proposals:[{name:'create_task',args:{title:'ir à academia',dueDate:'2026-10-05',dueTime:'19:00'}}]};
+      return Response.json({candidates:[{finishReason:'STOP',content:{parts:[{functionCall:{name:'respond_turn',args}}]}}]});
     });
     const f=fixture(model),response=await f.ask(current,[{role:'user',text:first},{role:'assistant',text:'Posso ajudar com sua agenda.'}]);
     expect(response.status).toBe(200);expect(response.body.domainIntent).toBe('AGENDA_ACTION');expect(response.body.createTask).toMatchObject({title:'ir à academia',dueDate:'2026-10-05',dueTime:'19:00'});
-    expect(payloads).toHaveLength(1);expect(payloads[0]!.contents).toEqual([{role:'user',parts:[{text:current}]}]);expect(f.repository.read).not.toHaveBeenCalled();
+    expect(payloads).toHaveLength(1);expect(payloads[0]!.contents.at(-1)).toEqual({role:'user',parts:[{text:current}]});expect(payloads[0]!.contents).toHaveLength(3);expect(f.repository.read).not.toHaveBeenCalled();
   });
   it('a previous explicit action does not authorize a current ambiguous reply',async()=>{
     const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:false,reply:null}),interpret:vi.fn()};

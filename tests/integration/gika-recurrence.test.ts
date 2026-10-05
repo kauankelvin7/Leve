@@ -7,7 +7,7 @@ import { moveScheduleToDate, scheduleInstants } from '../../packages/domain/src/
 import { recurrenceConfirmationSchema, recurrenceChoiceSchema, recurrenceEnvelope, type RecurrenceConfirmation } from '../../packages/domain/src/gikaRecurrence';
 import { gikaInterpretationSchema } from '../../packages/domain/src/gika';
 const state = vi.hoisted(() => ({ model: null as ModelAdapter | null, inputs: [] as ModelInput[] }));
-vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classify: async () => ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => { state.inputs.push(input); return state.model!.interpret(input, signal); } }) }));
+vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classificationUsesProvider: false, classify: async () => ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => { state.inputs.push(input); return state.model!.interpret(input, signal); } }) }));
 import { app } from '../../server/app';
 const zone = 'America/Sao_Paulo';
 const today = () => Temporal.Now.instant().toZonedDateTimeISO(zone).toPlainDate().toString();
