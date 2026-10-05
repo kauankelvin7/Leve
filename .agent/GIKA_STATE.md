@@ -1,3 +1,27 @@
+## Retomada vigente — experiência da assistente e listas de compras
+
+Pedido atual autoriza concluir a lógica e validar localmente sem depender de Preview;
+o usuário fará a avaliação de Gemini real depois. Branch `feat/gika-assistant-experience`,
+entrada `5fe6d07ab41487638288e318165fe17930cfdf17`. Main/produção permanecem intactas
+e não serão integradas nesta entrega local. As seções antigas abaixo são históricas;
+esta retomada e `assistant_experience` em GIKA_TASKS prevalecem.
+
+Lacuna comprovada: compras já possui command layer, mas não existia tool/descriptor/
+bridge da Gika. Integração agora cria uma lista regular vazia e consulta metadados de
+listas/modelos/ciclos ativos, sem transformar pedido em tarefa, ler itens ou liberar
+escrita genérica. Auth, UID, policy, envelope canônico, stock/quota, controls, receipts
+e ACK precedem sucesso. Contexto contém nomes/tipos/counts mínimos, sem autoridade.
+Links fecham e cancelam o dialog antes de abrir a lista convencional.
+
+Evidência final local: unit802PASS, integração320PASS, ampla Gika123PASS/0FAIL
+em33.8min; bridge23/policy34 e sete UIshopping incluídos. Audit0/lint/typecheck/build,
+Glasscheck/selftest, desktop/mobile-dark/reflow/Axe PASS. Runtime fingerprint estável:
+cc7de6dac63b445e289a8c129fac5470b45ba336dc804d23fce1701e3021317f.
+Primeiras falhas preservadas: bridge1FAIL/schema2FAIL e fullunit797PASS2FAIL por
+listas exatas antigas de ferramentas. Corrigidas sem liberar escrita em consulta;
+nenhum timeout/retry/assertion relaxado. Gemini real NOT_RUN, usuário valida depois.
+Entrega local concluída; publicar checkpoint isolado e aguardar essa validação.
+
 ## Correção vigente — prioridade da mensagem atual
 
 Base `main@a6d8c433920ca7fa719eecf0910873aac1045fbb`. Classificação usa somente o pedido atual; histórico não mantém OUT_OF_SCOPE. Ações simples completas recebem proposta semântica grounded em fragmentos literais atuais, normalizados pelo software antes dos validators existentes. Criação amanhã às7horas da noite resolve19:00; reagendamento mantém confirmação. Nenhum novo writer/policy/command/persistência. Evidência e limites de intervalos/lembretes: `docs/gika/CURRENT_TURN_ROUTING_EVIDENCE.md`.

@@ -9,6 +9,9 @@ function assistantContext(message: GikaMessage): string {
     return `Resultado da interface: ${JSON.stringify(message.contextOutcome)}. Confira o estado atual da agenda antes de outra alteração.`.slice(0, 1000);
   }
   const facts: unknown[] = [];
+  if (message.createdShoppingList) facts.push({ outcome: 'shopping_list_created', title: message.createdShoppingList.title });
+  if (message.shoppingLists) facts.push({ outcome: 'shopping_lists_read', partial: message.shoppingLists.partial,
+    items: message.shoppingLists.items.slice(0, 5).map(({ title, listKind, itemCount, pendingItemCount }) => ({ title, listKind, itemCount, pendingItemCount })) });
   if (message.createdTask) {
     const { title, dueDate, dueTime } = message.createdTask;
     facts.push({ outcome: 'created', title, dueDate, dueTime });

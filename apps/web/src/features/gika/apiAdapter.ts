@@ -6,6 +6,8 @@ import { gikaInterpretationSchema } from '../../../../../packages/domain/src/gik
 import { apiRequest, ApiError } from '../../platform/api';
 import { firebaseAuth } from '../../platform/firebase';
 import { createTaskEnvelope, executeCreateTask } from './commandBridge';
+import { shoppingListEnvelope } from '../../../../../packages/domain/src/gikaShopping';
+import { executeCreateShoppingList } from './shoppingBridge';
 import { gikaRequestSchema, gikaResponseSchema, type GikaAdapter } from './conversation';
 
 export function createApiAdapter(): GikaAdapter {
@@ -58,6 +60,19 @@ export function createApiAdapter(): GikaAdapter {
     };
     if (pending) return pending.kind === 'complete' ? completeWithRecovery(pending.task) : updateWithRecovery(pending.task);
     const response = await interpret();
+    if (response.createShoppingList) {
+      const executeList = async (list: NonNullable<typeof response.createShoppingList>) => executeCreateShoppingList(list, await shoppingListEnvelope(list, input), uid, active);
+      let createdShoppingList;
+      try { createdShoppingList = await executeList(response.createShoppingList); }
+      catch (error) {
+        // Recover only the original committed descriptor, never reinterpret a new intent.
+        if (!(error instanceof ApiError) || error.code !== 'OPERATION_MISMATCH') throw error;
+        const recovered = await interpret();
+        if (!recovered.createShoppingList) throw error;
+        createdShoppingList = await executeList(recovered.createShoppingList);
+      }
+      return gikaResponseSchema.parse({ text: 'Lista de compras criada.', simulated: false, reads: [], createdShoppingList });
+    }
     if (response.updateTask) return updateWithRecovery(response.updateTask);
     if (response.completeTask) return completeWithRecovery(response.completeTask);
     if (!response.createTask) return gikaResponseSchema.parse(response);

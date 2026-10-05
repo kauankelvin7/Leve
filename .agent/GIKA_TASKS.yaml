@@ -459,12 +459,13 @@ glass_rc_uat_continuation:
 assistant_experience:
   entry_checkpoint: "f949b63ad3bc349ed6c95e12587051e43073699c"
   branch: feat/gika-assistant-experience
-  status: awaiting_preview_access
-  scope: "Semântica, contexto, personalidade PT-BR, limites proporcionais, chat e voz; sem nova milestone."
-  authorization: "Pedido atual permite merge/push main somente após todos os gates PASS."
+  status: local_validation_passed_awaiting_user
+  scope: "Semântica, contexto, personalidade PT-BR, limites proporcionais, chat/voz e lacuna de criar/consultar listas de compras; sem nova milestone."
+  authorization: "Pedido mais recente autoriza concluir lógica/gates e publicar branch isolada; usuário valida Gemini real depois, não integrar main nesta entrega."
   plan: .agent/GIKA_ASSISTANT_EXECPLAN.md
   evidence: docs/gika/ASSISTANT_EXPERIENCE.md
-  tested_runtime: "afd313259b62b23e97925671d7fda2b7063b86a7"
-  gates: "CI37285083676 audit0/lint/typecheck/build/745unit/306integration/8critical PASS; ampla final116PASS0FAIL25.2min, Glass check/selftest PASS; primeiras falhas preservadas, timing/guardas intactos."
-  blocker: "Preview Vercel SSO302/API401, nenhuma credencial Vercel disponível; não foi possível executar Gemini real."
-  next_action: "Após liberação do Preview executar42eval+5ações reais sintéticas; main merge/push e deploy check somente com todos os gates PASS."
+  previous_tested_runtime: "afd313259b62b23e97925671d7fda2b7063b86a7"
+  shopping_runtime_sha256: "cc7de6dac63b445e289a8c129fac5470b45ba336dc804d23fce1701e3021317f"
+  gates: "Shopping final local: audit0/lint/typecheck/build/802unit/320integration PASS; ampla Gika123PASS0FAIL33.8min inclui fluxos críticos, sete shopping UI, voz, HMAC, Axe e reflow; Glass check/selftest PASS. Primeiras falhas preservadas, timing/guardas intactos."
+  blocker: "Gemini real NOT_RUN; usuário assumiu validação posterior. Preview protegido não bloqueia conclusão dos gates locais."
+  next_action: "Usuário valida Gemini real no Preview da branch isolada; 61 evals reais e ações/HMAC ainda pendentes. Não integrar main/produção nesta entrega."

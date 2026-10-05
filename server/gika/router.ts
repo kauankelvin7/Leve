@@ -9,7 +9,7 @@ import { scopedIntent } from './scopeIntent.ts';
 import { prepareRecurrence, recurrenceEffect } from './recurrencePolicy.ts';
 import { hashCanonicalValue } from '../hash.ts';
 import { issueConfirmation } from './confirmation.ts';
-import { assessCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
+import { assessCreation, assessShoppingCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
 import { validateReschedule,resolveRescheduleIntent,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
@@ -25,6 +25,7 @@ import { readSummary } from './readSummary.ts';
 import { consumeGikaQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 import { semanticBatch, semanticCompletion, semanticCreation, semanticReschedule, semanticTurnSchema, semanticUpdate, type SemanticTurn } from './semanticTurn.ts';
+import { createShoppingListDescriptorSchema, shoppingListsResultSchema } from '../../packages/domain/src/gikaShopping.ts';
 // Two bounded 10s provider phases plus 5s for authorization/reads; client deadline is 30s.
 const OPERATION_DEADLINE_MS = 25_000;
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
@@ -101,6 +102,11 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             await repository.authorize(identity, 'receipt');
             return gikaInterpretationSchema.parse({ text: 'Confira o escopo antes de alterar a rotina.', simulated: false, reads: [], recurrenceConfirmation: recovered.confirmation });
           }
+          if (recovered.kind === 'shopping_create') {
+            await repository.authorize(identity, 'receipt');
+            if (assessReplay(recovered.kind, 'verified').kind !== 'allow') throw new GikaFault('GIKA_POLICY');
+            return gikaInterpretationSchema.parse({ text: 'Preparando a lista de compras…', intent: 'agenda_action', domainIntent: 'AGENDA_ACTION', simulated: false, reads: [], createShoppingList: recovered.list });
+          }
           // Historical snapshot only; the bridge still needs a freshly authorized command ack.
           await repository.authorize(identity, 'receipt');
           const decision = assessReplay(recovered.kind, 'verified');
@@ -161,7 +167,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           const interpreted = await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal,{correlationId:response.locals.correlationId});
           stage = 'policy';
           const calls = validateToolCalls(interpreted);
-        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
+        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'get_shopping_lists', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
@@ -196,13 +202,33 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         stage = 'policy';
         const calls = validateToolCalls(interpreted);
-        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
+        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'get_shopping_lists', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = await repository.authorize(identity);
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
         if (calls[0]?.name === 'respond_conversation') {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
           return gikaInterpretationSchema.parse({ text: !semantic && classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : calls[0].args.text, intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
+        }
+        if (calls[0]?.name === 'create_shopping_list') {
+          const list = createShoppingListDescriptorSchema.parse(calls[0].args);
+          if (!actionRequested || classification.intent !== 'AGENDA_ACTION' || assessShoppingCreation('verified').kind !== 'allow') throw new GikaFault('GIKA_POLICY');
+          if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+          return gikaInterpretationSchema.parse({ text: 'Preparando a lista de compras…', intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], createShoppingList: list });
+        }
+        if (calls[0]?.name === 'get_shopping_lists') {
+          if (!repository.readShoppingLists) throw new GikaFault('GIKA_INVALID_RESPONSE');
+          stage = 'read';
+          const parsed = shoppingListsResultSchema.safeParse(await repository.readShoppingLists(identity.uid));
+          if (!parsed.success) throw new GikaFault('GIKA_INVALID_RESPONSE');
+          const shoppingLists = parsed.data;
+          if (shoppingLists.items.length >= 50) shoppingLists.partial = true;
+          const afterRead = await repository.authorize(identity);
+          if (JSON.stringify(afterRead) !== JSON.stringify(current) || signal.aborted) throw new GikaFault('GIKA_POLICY');
+          const text = shoppingLists.partial ? 'A consulta das suas listas de compras está incompleta. Confira também suas listas no Leve.'
+            : shoppingLists.items.length ? `Encontrei ${shoppingLists.items.length} ${shoppingLists.items.length === 1 ? 'lista de compras' : 'listas de compras'}.`
+              : 'Você ainda não tem listas de compras ativas.';
+          return gikaInterpretationSchema.parse({ text, intent: 'agenda_query', domainIntent: classification.intent, simulated: false, reads: [], shoppingLists });
         }
         if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
           const intent=semantic ? semanticBatch(calls[0],current) : validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
@@ -338,7 +364,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => { if (call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
+        const ranges = calls.map(call => { if (call.name === 'get_shopping_lists' || call.name === 'create_shopping_list' || call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         stage = 'read';
         for (const range of ranges) {

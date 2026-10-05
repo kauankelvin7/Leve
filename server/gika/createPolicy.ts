@@ -246,6 +246,7 @@ export function validateToolCalls(calls: ModelCall[]): ToolCall[] {
     return parsed.data;
   });
   if (tools.some(tool => tool.name === 'respond_conversation') && tools.length !== 1) throw new GikaFault('GIKA_POLICY');
+  if (tools.some(tool => tool.name === 'create_shopping_list' || tool.name === 'get_shopping_lists') && tools.length !== 1) throw new GikaFault('GIKA_POLICY');
   if (tools.some(tool => tool.name === 'create_task' || tool.name === 'complete_task' || tool.name === 'update_task' || tool.name === 'reschedule_task' || tool.name === 'batch_complete' || tool.name === 'batch_reschedule' || tool.name === 'propose_organization') && tools.length !== 1) {
     const first = tools[0];
     // Schemas above normalize property order and reject unknown fields before collapsing repetition.

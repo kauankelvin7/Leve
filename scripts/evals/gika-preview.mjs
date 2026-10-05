@@ -34,14 +34,16 @@ try {
       return { status: response.status, body: await response.json() };
     }, { token, text: item.text, conversation: item.conversation });
     const { body, status } = response;
-    const effect = body.createTask || body.completeTask || body.updateTask || body.rescheduleTask || body.batchConfirmation || body.recurrenceConfirmation;
+    const effect = body.createTask || body.createShoppingList || body.completeTask || body.updateTask || body.rescheduleTask || body.batchConfirmation || body.recurrenceConfirmation;
     let pass = status === 200 && body.simulated === false;
     const tomorrow = Temporal.Now.plainDateISO('America/Sao_Paulo').add({ days: 1 }).toString();
     const titleKey = text => text?.trim().toLocaleLowerCase('pt-BR');
     if (item.kind === 'create') pass &&= Boolean(body.createTask && titleKey(body.createTask.title) === titleKey(item.title) && body.createTask.dueDate === tomorrow && body.createTask.dueTime === item.time);
+    if (item.kind === 'shopping-create') pass &&= Boolean(body.createShoppingList && titleKey(body.createShoppingList.title) === titleKey(item.title) && !body.createTask && !body.shoppingLists && body.reads?.length === 0);
+    if (item.kind === 'shopping-read') pass &&= Boolean(body.shoppingLists && !effect && body.reads?.length === 0);
     if (item.kind === 'read') pass &&= Boolean(body.reads?.length && !effect);
-    if (item.kind === 'outside') pass &&= body.domainIntent === 'OUT_OF_SCOPE' && !effect && body.reads?.length === 0;
-    if (['conversation', 'clarify', 'no-effect'].includes(item.kind)) pass &&= !effect && body.reads?.length === 0 && typeof body.text === 'string';
+    if (item.kind === 'outside') pass &&= body.domainIntent === 'OUT_OF_SCOPE' && !effect && !body.shoppingLists && body.reads?.length === 0;
+    if (['conversation', 'clarify', 'no-effect'].includes(item.kind)) pass &&= !effect && !body.shoppingLists && body.reads?.length === 0 && typeof body.text === 'string';
     evidence.push({ id: item.id, kind: item.kind, status, result: pass ? 'PASS' : 'FAIL', durationMs: Date.now() - started,
       ...(body.correlationId ? { correlationId: body.correlationId } : {}), ...(body.code ? { code: body.code } : {}) });
     console.log(JSON.stringify(evidence.at(-1)));

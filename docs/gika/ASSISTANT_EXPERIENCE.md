@@ -71,6 +71,69 @@ somente no final e nunca é enviada automaticamente. Cancelar/regravar preserva 
 anterior. Deadlines encerram reconhecimento travado; offline, fechamento e troca de conta
 abortam a captura. A disponibilidade do reconhecimento depende do navegador.
 
+## Compras: contrato disponível na Gika
+
+O pedido “Crie uma lista de compras com o nome Jantar” expôs uma lacuna real: o Leve
+possuía `shoppingList.create`, mas a Gika não tinha ferramenta, descriptor nem bridge
+para esse domínio. Uma lista não deve virar tarefa nem receber uma pergunta genérica
+de agenda. A continuação autorizada adiciona `create_shopping_list` (somente título,
+até 100 caracteres) e `get_shopping_lists` (sem seletor de conta/IDs do modelo).
+
+Criação exige ação explícita e certa, uma proposta por turno e policy específica de
+lista normal. Não pergunta data/horário, pois não são campos da lista. Falta de nome
+deve gerar apenas a pergunta pelo nome; o contexto pode completar esse campo. O
+provider interpreta o pedido, sem regex por frase ou blacklist por assunto.
+
+O bridge deriva `shoppingList.create` com `{title,listKind:'regular',cycleKey:null}`,
+`entityId=operationId=requestId`, `expectedRevision=0` e hash do texto original. Usa
+`sendCommand` autenticado/online, sem outbox automática de proposta IA. O servidor
+valida envelope canônico, estoque de 50 listas, quota de comandos e modo normal;
+guarda snapshot mínimo no receipt transacional existente. Recuperação de resposta
+perdida precede provider/quota e exige UID, texto, descriptor, hash e ACK consistentes.
+Nenhum sucesso antes de ACK conferido. Troca de conta/abort descarta o resultado.
+
+Consulta retorna só metadados das listas/modelos ativos do UID autenticado: nome,
+tipo, revisão e contadores. Uma query limitada a 50, sem ler itens em subcoleções;
+saturação ou registro inválido sinaliza `partial`, sem anunciar ausência completa.
+O contexto envia até cinco nomes/tipos/contadores, sem IDs, revisões ou receipts.
+Links do resultado abrem a lista convencional e fecham/cancelam o dialog da Gika.
+
+| Capacidade | Gika nesta versão |
+|---|---|
+| Agenda | Consulta, criação simples, conclusão, renomeação, reagendamento e organização com guardas existentes |
+| Compras | Criar uma lista normal vazia e consultar listas/modelos ativos |
+| Itens, modelos e ciclos de compras | Gerenciar pela tela Compras; a Gika explica a limitação, sem criar tarefa no lugar |
+| Notas, categorias, import/export e administração de conta | Continuam nas telas próprias; nenhuma tool de escrita genérica |
+| Conhecimento geral | Fora do domínio, mesmo quando o assunto pode aparecer em título de tarefa/lista |
+
+Não há nova permissão Firestore, migration, dependência, configuração Firebase/Vercel,
+alteração de billing, modelo/thinking ou ampliação de quota. As operações convencionais
+continuam independentes da Gika. O usuário fará a validação real do provider depois;
+os gates locais provam contratos e efeitos emulados, não precisão semântica do Gemini.
+
+Para validar depois no Preview da branch, usando somente conta/dados de teste:
+
+1. “Crie uma lista de compras com o nome Jantar”: lista normal criada e aberta em Compras,
+   sem tarefa extra nem pergunta por data/horário.
+2. “Quais listas de compras eu tenho?”: listas reais da conta, tipos/contadores coerentes;
+   indicação de consulta parcial se aplicável.
+3. “Cria uma lista de compras” e depois “Feira”: perguntar só o nome e completar o pedido
+   pelo contexto. Uma nova intenção explícita de tarefa deve prevalecer sobre esse contexto.
+4. “Põe arroz nessa lista”: explicar a capacidade atual e orientar a abrir Compras,
+   sem criar tarefa/item fictício nem anunciar sucesso.
+5. “Cria duas listas, Jantar e Feira” ou “Cria Jantar já com arroz”: não executar apenas
+   metade do pedido nem inventar batch/item tool.
+6. “Me ensina uma receita de jantar”: fora do domínio; “agenda preparar jantar amanhã às
+   sete da noite”: tarefa válida às19:00, sem confundir título/assunto com conhecimento geral.
+7. Reagendar uma tarefa: prévia, cancelar e confirmação/HMAC seguem o fluxo existente;
+   “sim” em conversa não substitui o botão assinado.
+
+O dataset opt-in de provider em `scripts/evals/gika-cases.mjs` contém 61 pedidos sintéticos,
+incluindo oito paráfrases novas de criação de listas, três consultas, follow-up de nome,
+pedido incompleto, itens não suportados e negação. Frases de teste não são regras lexicais
+do produto. O runner restringe host/audiência a Preview, não executa comandos e registra
+somente IDs técnicos/status/resultados; esses casos ainda **não foram executados ao vivo**.
+
 ## Evidência
 
 Testes determinísticos de contratos e fixtures não demonstram compreensão real do provedor.
@@ -91,3 +154,23 @@ gates acima. Glass check/selftest PASS. Não houve alteração de runtime durant
 Avaliação real ainda bloqueada por Deployment Protection do Preview (SSO302/API401Vercel),
 sem credencial disponível; dataset de 42 casos e cinco fluxos de ação/contexto pronto em
 `scripts/evals`. Main e produção permanecem sem estas mudanças até completar essa validação.
+
+## Checkpoint local de compras — 2026-10-05
+
+Runtime estável durante o ciclo completo: SHA256
+`cc7de6dac63b445e289a8c129fac5470b45ba336dc804d23fce1701e3021317f`.
+Audit produção: zero vulnerabilidades; lint, typecheck web/server, build e Glass
+check/selftest PASS. **802 unit, 320 integration e 123 Gika E2E PASS**, zero falhas
+no ciclo E2E completo (33.8min), sem aumentar timeout/retry ou enfraquecer guardas.
+Inclui sete novos shopping E2E, desktop/mobile-dark/200%/Axe, criação/reload,
+isolamento, recuperação de ACK, cancelamento ao navegar, voz e HMAC existentes.
+
+Primeiras falhas foram preservadas: contrato de compras ausente (bridge1FAIL e
+schema2FAIL); fixture do bridge corrigida; fullunit797PASS/2FAIL por allowlists
+exatas antigas, atualizadas mantendo consulta sem escrita. Resultado final802PASS.
+Artefatos visuais atuais permanecem no cache local; imagens históricas M1 restauradas.
+
+Não executado: Gemini real, microfone físico ou smoke hospedado deste checkpoint.
+O usuário assumiu essa validação posterior; o dataset opt-in agora tem61casos.
+Lógica local entregue em `feat/gika-assistant-experience`; sem merge main, deploy,
+alteração de Firebase, configuração externa ou produção.

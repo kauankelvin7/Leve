@@ -13,7 +13,7 @@ export const organizationRequestSchema = z.object({
   args: z.object({ period: z.enum(['day', 'week']) }).strict(),
 }).strict();
 const proposalSchema = z.union([toolCallSchema, organizationRequestSchema]);
-const readNames = new Set(['get_today', 'get_day', 'get_week']);
+const readNames = new Set(['get_today', 'get_day', 'get_week', 'get_shopping_lists']);
 
 /** The provider interprets the request. This closed proposal never contains entity identity,
  * account authority, a revision, a grant or an acknowledgement of a committed effect. */
@@ -36,6 +36,7 @@ export const semanticTurnSchema = z.object({
   if (turn.domainIntent === 'AGENDA_QUERY') {
     if (turn.explicitAction || turn.proposals.some(call => !readNames.has(call.name) && call.name !== 'respond_conversation')) invalid('Consulta não pode propor mutação.');
   }
+  if (turn.proposals.some(call => call.name === 'get_shopping_lists') && turn.proposals.length !== 1) invalid('Consulte as listas de compras em um pedido separado.');
   const effects = turn.proposals.filter(call => !readNames.has(call.name) && call.name !== 'respond_conversation');
   if (effects.length && (!turn.explicitAction || turn.domainIntent !== 'AGENDA_ACTION' || turn.proposals.length !== 1)) invalid('Uma ação explícita por pedido.');
   if (turn.proposals.some(call => call.name === 'respond_conversation') && turn.proposals.length !== 1) invalid('Esclarecimento não pode ser misturado com operações.');

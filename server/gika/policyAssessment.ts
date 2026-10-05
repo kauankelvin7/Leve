@@ -4,8 +4,8 @@ import type { RescheduleResolution } from '../../packages/domain/src/gikaResched
 import type { ReadResult } from '../../packages/domain/src/gika.ts';
 import { backendLog } from '../logger.ts';
 import { classifyGikaAction, isRegisteredMutation, type GikaMutationAction, type GikaPolicyDecision, type GikaPolicyFacts } from './actionPolicy.ts';
-const effects = { create_task: 'create', complete_task: 'complete', update_task: 'rename', reschedule_task: 'reschedule' } as const;
-const fields = { create_task: ['title', 'dueDate', 'dueTime'], complete_task: ['status'], update_task: ['title'], reschedule_task: ['dueDate'] };
+const effects = { create_shopping_list: 'create', create_task: 'create', complete_task: 'complete', update_task: 'rename', reschedule_task: 'reschedule' } as const;
+const fields = { create_shopping_list: ['title'], create_task: ['title', 'dueDate', 'dueTime'], complete_task: ['status'], update_task: ['title'], reschedule_task: ['dueDate'] };
 export function assessPolicy(facts: GikaPolicyFacts): GikaPolicyDecision {
   const started = Date.now(); const decision = classifyGikaAction(facts); const elapsed = Date.now() - started;
   backendLog('info', 'gika.policy_decision', {
@@ -16,17 +16,21 @@ export function assessPolicy(facts: GikaPolicyFacts): GikaPolicyDecision {
   return decision;
 }
 function base(action: GikaMutationAction, authorization: GikaPolicyFacts['authorization']): GikaPolicyFacts {
-  return { action, effect: effects[action], cardinality: action === 'create_task' ? 'new' : 'one',
-    entity: 'task', state: action === 'create_task' ? 'new' : 'pending', recurring: false, recurrenceScope: 'none',
+  const creates = action === 'create_task' || action === 'create_shopping_list';
+  return { action, effect: effects[action], cardinality: creates ? 'new' : 'one',
+    entity: action === 'create_shopping_list' ? 'shopping_list' : 'task', state: creates ? 'new' : 'pending', recurring: false, recurrenceScope: 'none',
     fields: fields[action], validation: 'valid', authorization, completeness: 'complete', noOp: false };
 }
 export function assessCreation(complete: boolean, authorization: GikaPolicyFacts['authorization']) {
   return assessPolicy({ ...base('create_task', authorization), validation: complete ? 'valid' : 'missing' });
 }
-export function assessMissingIntent(action: Exclude<GikaMutationAction, 'create_task'>, authorization: GikaPolicyFacts['authorization']) {
+export function assessShoppingCreation(authorization: GikaPolicyFacts['authorization']) {
+  return assessPolicy(base('create_shopping_list', authorization));
+}
+export function assessMissingIntent(action: Exclude<GikaMutationAction, 'create_task' | 'create_shopping_list'>, authorization: GikaPolicyFacts['authorization']) {
   return assessPolicy({ ...base(action, authorization), validation: 'missing' });
 }
-export function assessResolution(action: Exclude<GikaMutationAction, 'create_task'>, intent: { title: string; patch?: object }, read: ReadResult, resolution: { task?: unknown; resolution?: { status: CompletionResolution['status'] | UpdateResolution['status'] | RescheduleResolution['status'] } }, authorization: GikaPolicyFacts['authorization']) {
+export function assessResolution(action: Exclude<GikaMutationAction, 'create_task' | 'create_shopping_list'>, intent: { title: string; patch?: object }, read: ReadResult, resolution: { task?: unknown; resolution?: { status: CompletionResolution['status'] | UpdateResolution['status'] | RescheduleResolution['status'] } }, authorization: GikaPolicyFacts['authorization']) {
   // Same exact-title semantics as the adopted resolvers; no fuzzy/new query.
   const matches = read.items.filter(item => item.title.trim().toLocaleLowerCase('pt-BR') === intent.title.trim().toLocaleLowerCase('pt-BR'));
   const target = matches.length === 1 ? matches[0] : undefined;
@@ -40,8 +44,8 @@ export function assessResolution(action: Exclude<GikaMutationAction, 'create_tas
     noOp: ['already_completed', 'unchanged'].includes(resolution.resolution?.status ?? ''),
   });
 }
-export function assessReplay(kind: 'create' | 'complete' | 'update' | 'reschedule', authorization: GikaPolicyFacts['authorization']) {
-  const action = ({ create: 'create_task', complete: 'complete_task', update: 'update_task', reschedule: 'reschedule_task' } as const)[kind];
+export function assessReplay(kind: 'shopping_create' | 'create' | 'complete' | 'update' | 'reschedule', authorization: GikaPolicyFacts['authorization']) {
+  const action = ({ shopping_create: 'create_shopping_list', create: 'create_task', complete: 'complete_task', update: 'update_task', reschedule: 'reschedule_task' } as const)[kind];
   return assessPolicy({ ...base(action, authorization), execution: 'replay', state: 'historical' });
 }
 

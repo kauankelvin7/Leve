@@ -18,6 +18,7 @@ import { createReminderJobs } from '../reminder-jobs.ts';
 import { commandCreationResultSchema, createTaskDescriptorSchema, taskActivityInput, type CreateTaskDescriptor } from '../../packages/domain/src/gika.ts';
 
 import { creationUndoEnvelope } from '../../packages/domain/src/gikaUndo.ts';
+import { createShoppingListDescriptorSchema, shoppingListCommandFields, type CreateShoppingListDescriptor } from '../../packages/domain/src/gikaShopping.ts';
 
 const names: Record<string, string> = { activity: 'activities', category: 'categories', note: 'notes', shoppingList: 'shoppingLists', shoppingItem: 'items' };
 const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200 };
@@ -61,6 +62,13 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
 
   // Minimal reconciliation snapshot in the EXISTING atomic receipt, never a second writer/outbox.
   let gika: { requestTextHash: string; task: CreateTaskDescriptor } | undefined;
+  let gikaShopping: { requestTextHash: string; list: CreateShoppingListDescriptor } | undefined;
+  if (command.gikaShopping) {
+    const list = createShoppingListDescriptorSchema.parse({ title: validatedInput.title });
+    const canonical = shoppingListCommandFields(list, command.operationId, command.gikaShopping.requestTextHash);
+    if (commandHash(command) !== commandHash(canonical)) throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da lista de compras.');
+    gikaShopping = { ...command.gikaShopping, list };
+  }
   if (command.gika) {
     const activity = activityInputSchema.parse(validatedInput);
     if (command.command !== 'activity.create' || activity.schedule.type !== 'task') throw new AppError(422, 'VALIDATION_ERROR', 'Confira os dados da tarefa.');
@@ -115,6 +123,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
+    if (command.gikaShopping && controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Mantenha seu rascunho.');
     const batchConfirmation = command.gikaBatch ? verifyBatchConfirmation(identity.uid, command) : undefined;
     if (batchConfirmation) {
       if (controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
@@ -225,7 +234,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
       if (pendingDelta) transaction.update(parent, { pendingItemCount: Math.max(0, (parentData?.pendingItemCount ?? parentData?.itemCount ?? 0) + pendingDelta), summaryUpdatedAt: now, updatedAt: now });
     }
     transaction.update(root, { dataVersion: profile!.data()!.dataVersion + 1, updatedAt: now });
-    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gika ? { gika } : {}), ...(batchConfirmation ? { gikaBatch: { ...command.gikaBatch!, confirmation: batchConfirmation } } : {}), ...(recurrenceEffect ? { gikaRecurrence: recurrenceReceipt(command, recurrenceEffect) } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
+    transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(gikaShopping ? { gikaShopping } : {}), ...(gika ? { gika } : {}), ...(batchConfirmation ? { gikaBatch: { ...command.gikaBatch!, confirmation: batchConfirmation } } : {}), ...(recurrenceEffect ? { gikaRecurrence: recurrenceReceipt(command, recurrenceEffect) } : {}), ...(rescheduleTask ? { gikaReschedule: { ...command.gikaReschedule, task: rescheduleTask, ...(confirmation ? { confirmation } : {}) } } : {}), ...(completionTask ? { gikaCompletion: { ...command.gikaCompletion, task: completionTask } } : {}), ...(updateTask ? { gikaUpdate: { ...command.gikaUpdate, task: updateTask } } : {}) });
     transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
     transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
 

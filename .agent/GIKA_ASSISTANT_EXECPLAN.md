@@ -1,5 +1,30 @@
 # Gika assistant experience
 
+## Continuação autorizada: compras sem depender de Preview
+
+Entrada `5fe6d07ab41487638288e318165fe17930cfdf17`, mesma branch isolada. O usuário
+mostrou um pedido válido de criar lista chamado Jantar recebendo uma pergunta genérica.
+Compras existe no domínio/command layer, mas não no contrato de ferramentas da Gika.
+Teste de bridge reproduziu a ausência: `createShoppingList` rejeitado pelo schema.
+
+Entregar criação de uma lista normal por pedido explícito e consulta bounded das listas
+ativas, com resultados reais após ACK. Reutilizar `shoppingList.create`, requestId estável,
+revisão zero, receipt transacional e namespace UID; nenhuma escrita do modelo. Não ampliar
+para itens/modelos/ciclos/exclusão em silêncio. Esses pedidos devem receber explicação
+contextual da capacidade, sem criar tarefa ou conteúdo geral no lugar. Contexto projeta
+somente nomes/counts recentes de listas, sem IDs/metadados de autoridade.
+
+Ownership: confirmation_contract possui server/domain e novos testes de policy/integração;
+root possui frontend, bridge/contexto, novos testes UI/bridge, evals e documentos;
+diagnostic_review revisa somente leitura. Emuladores/testes orquestrados pelo root.
+
+Gates: regressão antes/depois; policy/tool schemas adversariais; isolamento/replay/quotas/
+stock/serviceControls em emuladores; bridge auth/ACK/tamper; UI desktop/mobile/Axe; audit,
+lint, ambos typechecks, build, unit/integration e regressões críticas Gika. Nenhum retry,
+timeout ou assertion enfraquecido. Rollback pelo commit focal; sem migration/configuração
+externa. O usuário validará Gemini real depois: esta continuação publica somente a branch
+isolada, não integra main nem declara avaliação real PASS por fixtures.
+
 ## Objective
 Complete the assistant experience requested by the owner: semantic agenda interpretation,
 contextual PT-BR conversation, usable chat/voice, and existing command security.
@@ -97,3 +122,23 @@ After access: run the 42 held-out cases plus five hosted action/context checks i
 `scripts/evals`, review results, fix only demonstrated bugs, then integrate/push main and
 verify the exact production deployment. Documentation-only evidence commits do not change
 this tested runtime.
+
+## Checkpoint local de compras — 2026-10-05
+
+Runtime estável durante o ciclo completo: SHA256
+`cc7de6dac63b445e289a8c129fac5470b45ba336dc804d23fce1701e3021317f`.
+Audit produção: zero vulnerabilidades; lint, typecheck web/server, build e Glass
+check/selftest PASS. **802 unit, 320 integration e 123 Gika E2E PASS**, zero falhas
+no ciclo E2E completo (33.8min), sem aumentar timeout/retry ou enfraquecer guardas.
+Inclui sete novos shopping E2E, desktop/mobile-dark/200%/Axe, criação/reload,
+isolamento, recuperação de ACK, cancelamento ao navegar, voz e HMAC existentes.
+
+Primeiras falhas foram preservadas: contrato de compras ausente (bridge1FAIL e
+schema2FAIL); fixture do bridge corrigida; fullunit797PASS/2FAIL por allowlists
+exatas antigas, atualizadas mantendo consulta sem escrita. Resultado final802PASS.
+Artefatos visuais atuais permanecem no cache local; imagens históricas M1 restauradas.
+
+Não executado: Gemini real, microfone físico ou smoke hospedado deste checkpoint.
+O usuário assumiu essa validação posterior; o dataset opt-in agora tem61casos.
+Lógica local entregue em `feat/gika-assistant-experience`; sem merge main, deploy,
+alteração de Firebase, configuração externa ou produção.

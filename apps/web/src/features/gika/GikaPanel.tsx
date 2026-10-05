@@ -39,7 +39,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
     if (status === 'error') { notifyCharacter('error'); return; }
     const outcome = latest?.contextOutcome?.state;
     if (outcome === 'uncertain') { notifyCharacter('error'); return; }
-    const acknowledged = latest?.role === 'assistant' && !latest.simulated && (outcome ? outcome === 'confirmed' : Boolean(latest.createdTask || latest.completedTask || latest.updatedTask));
+    const acknowledged = latest?.role === 'assistant' && !latest.simulated && (outcome ? outcome === 'confirmed' : Boolean(latest.createdTask || latest.completedTask || latest.updatedTask || latest.createdShoppingList));
     const needsChoice = latest?.role === 'assistant' && !latest.simulated && !outcome && Boolean(latest.confirmation || latest.recurrenceChoice || latest.recurrenceConfirmation || latest.batchConfirmation || [latest.completionResolution, latest.updateResolution, latest.rescheduleResolution].some(item => item?.status === 'clarify' || item?.status === 'ambiguous'));
     notifyCharacter(acknowledged ? 'ack' : needsChoice ? 'clarify' : 'idle');
   }, [status, latest]);
@@ -135,7 +135,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
         <div className="gika-suggestions" aria-label="Sugestões de perguntas">{suggestions.map(({ text, icon }) => <button type="button" key={text}
           disabled={status === 'loading'} onClick={() => { setDraft(text); composer.current?.focus({ preventScroll: true }); }}><Icon name={icon} /><span>{text}</span></button>)}</div>
       </div>}
-      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} onOutcome={conversation.recordOutcome} active={open} online={online} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
+      <ol className="gika-messages" aria-label="Mensagens da conversa">{messages.map((message,index) => <GikaMessage key={message.id} message={message} onOpenList={close} onOutcome={conversation.recordOutcome} active={open} online={online} superseded={Boolean(message.batchConfirmation?.plan.organization) && (draft.trim().length > 0 || messages.slice(index + 1).some(item=>item.role==='user'))} />)}</ol>
       {status === 'loading' && <GikaLoading demo={demo} />}
       {status === 'error' && <GikaError code={errorCode} online={online} onRetry={() => void retry()} />}
       <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">{status === 'loading' ? (demo ? 'Preparando uma resposta de demonstração…' : 'Preparando uma resposta…') : status === 'error' ? 'Não consegui responder agora. Tente novamente em alguns instantes.' : messages.at(-1)?.role === 'assistant' ? messages.at(-1)?.text : ''}</div>
