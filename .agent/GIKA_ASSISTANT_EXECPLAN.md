@@ -76,3 +76,24 @@ Preview of identical backend `5fe3d5e8faef1e103a1c50beffb539e53afadc98` is succe
 SSO 302. An external access request is pending; no credential is available to change protection.
 42 held-out real-provider cases and synthetic read/create/reschedule-HMAC/rename/complete
 follow-ups are ready to execute there. No live semantic result is claimed yet.
+
+## Final candidate checkpoint
+Runtime tested: `afd313259b62b23e97925671d7fda2b7063b86a7`. CI run `37285083676`
+PASS: audit 0, lint/boundaries, both TypeScript projects, build, 745 unit, 306 integration,
+eight critical E2E. Complete final local Gika E2E: **116 PASS / 0 FAIL in 25.2m**. Glass
+check/selftest PASS, max blur 24px. No timing/retry/security assertions weakened.
+
+No runtime edits during that final cycle. Seven generated historical screenshot files copied
+to ignored task evidence then restored. Main remains `f949b63ad3bc349ed6c95e12587051e43073699c`;
+no production data/service mutation. Public production bundle read-only check: `leve-db`
+present, `leve-preview` absent.
+
+Current Preview (exact tested runtime) is successful:
+`https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a261bab.vercel.app`.
+It and the requested identical-backend `5fe3d5e` Preview still redirect `/entrar` to Vercel
+SSO (302); API requests are intercepted by Vercel 401. This is the only outstanding access
+blocker. No Vercel credential is available. Do not invent live PASS or integrate main yet.
+After access: run the 42 held-out cases plus five hosted action/context checks in
+`scripts/evals`, review results, fix only demonstrated bugs, then integrate/push main and
+verify the exact production deployment. Documentation-only evidence commits do not change
+this tested runtime.

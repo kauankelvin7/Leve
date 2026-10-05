@@ -33,6 +33,7 @@ breve é bem-vinda, sem transformar Gika em assistente geral. Resultado só é a
 | Mensagem atual | 2.000 caracteres; mantido, adequado a pedidos de agenda e voz curta |
 | Resposta | 1.000 caracteres; mantido para conversa curta, cards carregam dados estruturados |
 | Corpo respond | 12 KiB UTF-8; mantido e calculado após serialização |
+| Escolha de recorrência | Parser de 24 KiB para pedido original de até 12 KiB + token de até 8.192 caracteres; não amplia o limite do pedido original |
 | Histórico enviado | Até 12 turnos (seis pares), 1.000 caracteres/turno; antes seis turnos apenas conversacionais |
 | Mensagens visíveis | Até 120 em memória por conta; antes 40; não persistidas nem todas enviadas ao modelo |
 | Interpretação comum | Uma chamada upstream em vez de classificar + interpretar |
@@ -42,7 +43,9 @@ breve é bem-vinda, sem transformar Gika em assistente geral. Resultado só é a
 | Diário | `GIKA_DAILY_LIMIT` opcional, inteiro positivo; agora conta reservas upstream; ausente não impõe teto diário interno |
 | Deadline | 10s por chamada upstream; 25s por operação (duas fases + 5s de servidor), cliente 30s; antes operação 15s incompatível com duas chamadas válidas de 8s |
 | Read / batch / tools | 50 itens por consulta, sete dias por intervalo, até cinco itens em lote e três ferramentas; mantidos |
+| Campos e datas | Título até 120 caracteres; datas propostas dentro de ±366 dias do contexto civil; mantidos como guardas da interpretação, sem ampliar busca histórica |
 | Voz | Gesto explícito; PT-BR; prévia parcial; revisão e envio manual; sem upload de áudio pelo Leve |
+| Deadlines da voz | 15s para iniciar, 45s de captação, 10s para finalizar a transcrição; evitam captura travada e preservam o rascunho |
 
 O teto anterior permitia três pedidos × duas chamadas = seis chamadas upstream por minuto.
 A nova contagem mantém esse envelope máximo, distribui melhor as interações curtas e cobra
@@ -81,3 +84,10 @@ contratos antigos do harness; dois detectaram resultado confirmado tratado como 
 O resultado verificado agora prevalece no estado visual. Guardas/timing e primeiras evidências
 preservados. A avaliação de Gemini real é separada e aguarda acesso ao Preview protegido; não
 considerar estes números prova de compreensão do provedor nem autorização de release.
+
+No runtime `afd313259b62b23e97925671d7fda2b7063b86a7`, ciclo completo final: **116 E2E PASS,
+zero falhas, 25.2 minutos**; mesmos tempos/retries/guardas. CI desse SHA confirma todos os
+gates acima. Glass check/selftest PASS. Não houve alteração de runtime durante esse ciclo.
+Avaliação real ainda bloqueada por Deployment Protection do Preview (SSO302/API401Vercel),
+sem credencial disponível; dataset de 42 casos e cinco fluxos de ação/contexto pronto em
+`scripts/evals`. Main e produção permanecem sem estas mudanças até completar essa validação.

@@ -428,3 +428,14 @@ originais preservados no cache ignorado, screenshots históricos gerados pelo te
 Lint/build das correções PASS. Preview do backend idêntico `5fe3d5e` terminou success, mas
 `/entrar` redireciona 302 para SSO Vercel; liberação temporária solicitada externamente.
 Avaliação real (42 casos e cinco fluxos de ação/contexto) pendente. Main ainda não integrada.
+
+Resultado final local: runtime `afd313259b62b23e97925671d7fda2b7063b86a7`, ampla final
+**116 PASS/0 FAIL em 25.2m**, sem editar runtime durante o ciclo. CI `37285083676` PASS:
+audit0/lint/boundaries/doisTS/build/745unit/306integration/8critical. Glass check/selftest PASS,
+blur≤24px. Primeiras falhas/artefatos permanecem preservados; imagens históricas geradas pelo
+harness foram copiadas ao cache e restauradas. Bundle Production consultado read-only contém
+leve-db e não leve-preview, nenhum dado/configuração de produção alterado.
+Preview exato `afd3132`: https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a261bab.vercel.app
+terminou success, mas continua SSO302; API interceptada401Vercel. Preview5fe backend idêntico
+também SSO302, pedido externo de liberação pendente. Único blocker: avaliação Gemini real
+impossível com acessos atuais. Não marcar Gika pronta nem integrar main antes desse teste.
