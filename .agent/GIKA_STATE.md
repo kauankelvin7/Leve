@@ -414,3 +414,7 @@ E2E focal final de envio/contexto/UI: 11 PASS; ampla final em andamento sem rela
 retry ou guardas. Scripts de eval são exclusivamente Preview/sintéticos, com audiência
 leve-preview validada e artefatos sem prompts/respostas/credenciais. Publicação candidata
 na branch isolada serve para validar provider real; main continua condicionada aos gates.
+
+Revisão final: esclarecimento específico de consulta era substituído pelo fallback genérico
+de período. Regressão focal FAIL antes; fluxo semântico agora preserva a pergunta específica,
+sem mudar fallback legado/policy/autorização. 51 testes de roteamento/domínio PASS depois.

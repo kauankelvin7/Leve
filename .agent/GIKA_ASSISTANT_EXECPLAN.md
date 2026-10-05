@@ -59,3 +59,5 @@ for that compatibility path (production uses semantic proposals).
 No timeout/retry/assertion changes in E2E. No external service, billing, model or secret change.
 Live model results must remain separate from fixture evidence. Candidate publication is for
 Preview evaluation only; do not declare readiness or integrate main before remaining gates.
+Final review also reproduced a query clarification overwritten by a generic period question;
+semantic routing now preserves the focused question. Before: 1 FAIL; after: 51 routing PASS.

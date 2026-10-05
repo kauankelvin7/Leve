@@ -66,6 +66,15 @@ afterEach(() => {
 
 // Controlled respond_turn outputs prove routing boundaries, not provider semantic accuracy.
 describe('single semantic turn through the real Gemini adapter and router', () => {
+  it('preserves a focused query clarification instead of asking again for an already supplied period', async () => {
+    const f = fixture({ domainIntent: 'AGENDA_QUERY', certain: true, explicitAction: false, reply: null,
+      proposals: [{ name: 'respond_conversation', args: { text: 'Você quer consultar esta semana ou a próxima?' } }] });
+    const response = await f.ask('Mostra a agenda da semana que vem, ou desta, ainda não decidi');
+    expect(response.status).toBe(200);
+    expect(response.body.text).toBe('Você quer consultar esta semana ou a próxima?');
+    expect(response.body.reads).toEqual([]);
+    expect(f.repository.read).not.toHaveBeenCalled();
+  });
   it.each([
     { text: 'eu quero agendar para amanhã às 7 horas da noite é ir à academia', proposal: create, field: 'createTask', expected: { title: 'ir à academia', dueDate: tomorrow, dueTime: '19:00', timeZone: context.timeZone } },
     { text: 'dá baixa em Academia, acabei ela hoje', proposal: complete, field: 'completeTask', expected: { id: task.id, title: task.title, revision: task.revision, dueDate: context.today } },

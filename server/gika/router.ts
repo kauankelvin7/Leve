@@ -202,7 +202,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
         if (calls[0]?.name === 'respond_conversation') {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
-          return gikaInterpretationSchema.parse({ text: classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : calls[0].args.text, intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
+          return gikaInterpretationSchema.parse({ text: !semantic && classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : calls[0].args.text, intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
         }
         if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
           const intent=semantic ? semanticBatch(calls[0],current) : validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
