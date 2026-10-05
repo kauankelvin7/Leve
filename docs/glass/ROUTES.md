@@ -8,7 +8,6 @@ Fonte: `apps/web/src/app/App.tsx`, React Router. O harness não modifica o route
 | /registrar | Público, formulário |
 | /recuperar | Público, formulário |
 | /privacidade | Público, texto/teclado |
-| /apoie | Público, apoio via GitHub Sponsors e Pix configurável |
 | /hoje | Conta sintética, agenda/launcher/Gika/cronômetro |
 | /calendario | Conta sintética, Mês/Semana/Dia e sheet móvel |
 | /atividade/:id | Atividade sintética, editor/detalhe/timer |
