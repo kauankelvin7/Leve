@@ -250,15 +250,20 @@ Hospedagem autorizada: `https://leve-agenda.vercel.app`. Histórico operacional 
 
 ## Apoie o Leve
 
-O **Leve** é desenvolvido e mantido como um projeto gratuito. Se ele te ajuda, ou se você quer apoiar a continuidade do desenvolvimento, pode contribuir pelo GitHub Sponsors.
+O **Leve** é gratuito e open source. Se quiser ajudar a manter o projeto, há duas formas preparadas:
+
+- **GitHub Sponsors** — apoio integrado ao GitHub, com contribuição única ou recorrente conforme as opções disponíveis no perfil.
+- **Pix direto** — disponível na página pública de apoio quando a chave estiver configurada no ambiente de produção.
 
 <p align="center">
-  <a href="https://github.com/sponsors/kauankelvin7"><strong>💜 Apoiar o Leve no GitHub Sponsors</strong></a>
+  <a href="https://github.com/sponsors/kauankelvin7"><strong>Apoiar pelo GitHub Sponsors</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://leve-agenda.vercel.app/apoie"><strong>Ver formas de apoio</strong></a>
 </p>
 
-O apoio é totalmente voluntário e ajuda a sustentar o tempo dedicado a manutenção, segurança, acessibilidade, testes e novas melhorias — sem transformar os recursos essenciais do Leve em um paywall.
+O apoio é voluntário e ajuda a sustentar manutenção, segurança, acessibilidade, testes e novas melhorias. **Nenhum recurso essencial do Leve depende de pagamento.**
 
-Não há vantagem funcional exclusiva para patrocinadores: a ideia é simples — **ajudar a manter o Leve gratuito, cuidado e disponível para continuar evoluindo**.
+A chave Pix não fica versionada no repositório. A página lê `VITE_SUPPORT_PIX_KEY`, que é pública no navegador e deve receber apenas uma chave que possa ser divulgada — de preferência uma chave aleatória.
 
 ---
 
