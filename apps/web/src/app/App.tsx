@@ -25,6 +25,7 @@ const NoteDetail = lazy(() => import('../features/notes/NoteDetail').then(module
 const Shopping = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.Shopping })));
 const ShoppingDetail = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.ShoppingDetail })));
 const Settings = lazy(() => import('../features/settings/Settings').then(module => ({ default: module.Settings })));
+const Support = lazy(() => import('../features/content/Support').then(module => ({ default: module.Support })));
 const Trash = lazy(() => import('../features/trash/Trash').then(module => ({ default: module.Trash })));
 const Search = lazy(() => import('../features/content/Search').then(module => ({ default: module.Search })));
 const ActivityDetail = lazy(() => import('../features/activities/ActivityDetail').then(module => ({ default: module.ActivityDetail })));
@@ -78,7 +79,7 @@ function NotFound() {
 export function App() {
   return <><RouteFocus /><RouteMetadata /><SeasonalExperience /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
-    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} />
+    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} /><Route path="/apoie" element={<Support />} />
     <Route element={<Protected />}><Route element={<Shell />}>
       <Route path="/hoje" element={<Today />} />
       <Route path="/calendario" element={<Calendar />} />

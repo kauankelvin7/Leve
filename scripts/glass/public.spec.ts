@@ -4,7 +4,7 @@ for (const [width,height] of viewports) for (const appearance of ['light','dark'
   test(`public ${width} ${appearance}`, async ({ page }) => {
     await page.setViewportSize({width,height}); await instrument(page);
     await page.emulateMedia({colorScheme:appearance, reducedMotion:'reduce'});
-    for (const route of ['/entrar','/registrar','/recuperar','/privacidade']) {
+    for (const route of ['/entrar','/registrar','/recuperar','/privacidade','/apoie']) {
       await page.goto(route); await expect(page.getByRole('heading',{level:1})).toBeVisible();
       await setAppearance(page,appearance);
       await inspect(page, `public-${route.slice(1)}-${width}-${appearance}`);
