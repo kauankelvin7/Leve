@@ -464,4 +464,5 @@ assistant_experience:
   authorization: "Pedido atual permite merge/push main somente após todos os gates PASS."
   plan: .agent/GIKA_ASSISTANT_EXECPLAN.md
   evidence: docs/gika/ASSISTANT_EXPERIENCE.md
-  next_action: "Concluir E2E ampla, avaliação real Preview e revisão; não publicar main antes dos gates."
+  gates: "CI candidato: audit/lint/typecheck/build/745unit/306integration/8critical PASS; ampla local110PASS6FAIL, seis afetados corrigidos6PASS; timing/guardas intactos."
+  next_action: "Validar último checkpoint em E2E e executar eval real Preview assim que SSO for liberado; não publicar main antes dos gates."

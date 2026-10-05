@@ -75,11 +75,19 @@ try {
   expect(envelope.payload).toEqual(move.confirmation.action.task.patch);
   await expect(page.getByRole('group', { name: 'Tarefa reagendada', exact: true })).toContainText(title);
   evidence.results.push({ step, result: 'PASS' });
+  step = 'rename-followup';
+  const renamed = `${title} revisada`;
+  const update = await ask(`Agora chama essa tarefa de "${renamed}"`);
+  expect(update.updateTask.id).toBe(ack.entityId);
+  expect(update.updateTask.revision).toBe(ack.revision);
+  expect(update.updateTask.patch.title).toBe(renamed);
+  await expect(page.getByRole('group', { name: 'Tarefa atualizada', exact: true })).toContainText(renamed);
+  evidence.results.push({ step, result: 'PASS' });
   step = 'complete-followup';
   const complete = await ask('Já terminei essa tarefa, marca como concluída');
   expect(complete.completeTask.id).toBe(ack.entityId);
-  expect(complete.completeTask.revision).toBe(ack.revision);
-  await expect(page.getByRole('group', { name: 'Tarefa concluída', exact: true })).toContainText(title);
+  expect(complete.completeTask.revision).toBe(ack.revision + 1);
+  await expect(page.getByRole('group', { name: 'Tarefa concluída', exact: true })).toContainText(renamed);
   evidence.results.push({ step, result: 'PASS' });
 } catch (error) {
   if (!evidence.results.some(item => item.step === step && item.result === 'FAIL')) evidence.results.push({ step, result: 'FAIL', errorClass: error.name });

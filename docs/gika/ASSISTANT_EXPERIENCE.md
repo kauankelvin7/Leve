@@ -74,3 +74,10 @@ Testes determinísticos de contratos e fixtures não demonstram compreensão rea
 Resultados de unit/integration/E2E e avaliação real devem ser registrados separadamente no
 ExecPlan, sem chamar mocks de eval semântica ao vivo. Prompts, credenciais e respostas privadas
 não devem ser registrados nos artefatos de avaliação.
+
+Checkpoint local: CI audit/lint/typecheck/build, 745 unit, 306 integration e oito fluxos críticos
+PASS. Ampla UI 110 PASS/6 FAIL; seis casos afetados corrigidos e reexecutados PASS. Quatro eram
+contratos antigos do harness; dois detectaram resultado confirmado tratado como prévia pendente.
+O resultado verificado agora prevalece no estado visual. Guardas/timing e primeiras evidências
+preservados. A avaliação de Gemini real é separada e aguarda acesso ao Preview protegido; não
+considerar estes números prova de compreensão do provedor nem autorização de release.

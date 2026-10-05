@@ -44,8 +44,9 @@ Revert the isolated assistant commit(s). No schema migration or external resourc
 Architecture and implementation reviewed. Candidate is awaiting complete E2E and live
 Preview evaluation; main integration is explicitly authorized only after all gates pass.
 Completed checkpoints: production audit 0 vulnerabilities, lint/boundaries, both TypeScript
-projects, build, 742 unit and 306 emulator integration tests. Final unit rerun includes two
-new legacy grounding regressions. Focused UI/context/submit run: 11 PASS.
+projects, build, 745 unit and 306 emulator integration tests (candidate CI), plus eight critical
+browser journeys. Final unit includes two legacy grounding regressions and focused query
+clarification. Focused UI/context/submit run: 11 PASS.
 
 Preserved first failures in ignored `.cache/gika-assistant`: UI Stop inherited a submit
 interaction; stable disabled Send and separate Stop fixed it. Local classifier fixtures were
@@ -61,3 +62,17 @@ Live model results must remain separate from fixture evidence. Candidate publica
 Preview evaluation only; do not declare readiness or integrate main before remaining gates.
 Final review also reproduced a query clarification overwritten by a generic period question;
 semantic routing now preserves the focused question. Before: 1 FAIL; after: 51 routing PASS.
+
+Complete browser run: 110 PASS / 6 FAIL in 27.6m. Four failures were stale harness contracts
+(real suggestion, minimal agenda context, stable disabled Send in two cases). Two exposed a
+real presentation regression: writing verified context reclassified the old confirmation
+preview as pending. Verified outcomes now take precedence; confirmed shows ACK then idle,
+cancelled/undone are terminal and uncertainty is not success. All six affected cases PASS
+in a focused rerun (1.9m), with the original timing, write/ACK/HMAC and Axe guards intact.
+Generated historical screenshots were copied to ignored task evidence and restored.
+
+Preview of identical backend `5fe3d5e8faef1e103a1c50beffb539e53afadc98` is successful at
+`https://leve-agenda-vercel-cf6mshyzg-kauans-projects-6a261bab.vercel.app`, but returns Vercel
+SSO 302. An external access request is pending; no credential is available to change protection.
+42 held-out real-provider cases and synthetic read/create/reschedule-HMAC/rename/complete
+follow-ups are ready to execute there. No live semantic result is claimed yet.

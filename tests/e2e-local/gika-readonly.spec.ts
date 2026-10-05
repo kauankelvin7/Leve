@@ -37,7 +37,7 @@ test('contrato real mostra tool result escapado, sem confirmação/undo ou comma
   const commands: string[] = []; page.on('request', request => { if (request.method() === 'POST' && request.url().includes('/api/commands')) commands.push(request.url()); });
   await page.route('**/api/gika/respond', route => route.fulfill({ json: { text: 'Veja sua agenda para o período consultado.', simulated: false, reads: [read] } }));
   await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
-  await page.getByRole('button', { name: 'O que tenho amanhã?', exact: true }).click();
+  await page.getByRole('button', { name: 'O que tenho hoje?', exact: true }).click();
   await page.getByRole('button', { name: 'Enviar pergunta' }).click();
   const result = page.getByRole('region', { name: 'Agenda de 01/10/2026' });
   await expect(result).toBeVisible(); await expect(result).toContainText(read.items[0]!.title);
@@ -125,7 +125,7 @@ test('E70: 503, timeout e resposta inválida permitem consultar calendário apó
   await expect(page.locator('#page-title')).toHaveText('Calendário');
 });
 
- test('general conversation keeps only bounded general turns, then agenda query has no mutation and no timezone microcopy', async ({page}) => {
+ test('conversation keeps bounded minimal agenda context without mutation or timezone microcopy', async ({page}) => {
    await enter(page);
    const requests: Record<string,unknown>[]=[]; const commands:string[]=[];
    page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/api/commands'))commands.push(request.url());});
@@ -145,7 +145,13 @@ test('E70: 503, timeout e resposta inválida permitem consultar calendário apó
    await expect(page.locator('#gika-voice-privacy')).toHaveCount(0);
    await composer.fill('Como você pode ajudar?');await composer.press('Enter');
    await expect(composer).toHaveValue('');
-   expect(JSON.stringify(requests[2]!.conversation)).not.toContain(read.items[0]!.title);
+   expect(requests[2]!.conversation).toHaveLength(4);
+   const projected = JSON.stringify(requests[2]!.conversation);
+   expect(projected).toContain(read.items[0]!.title);
+   expect(projected).not.toContain(read.items[0]!.id);
+   expect(projected).not.toContain('revision');
+   expect(projected).not.toContain('seriesId');
+   expect(projected).not.toContain('confirmationToken');
    expect(commands).toEqual([]);
    expect((await new AxeBuilder({page}).include('.gika-panel').analyze()).violations).toEqual([]);
    await page.getByRole('button',{name:'Fechar Gika'}).click();

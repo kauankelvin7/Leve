@@ -418,3 +418,13 @@ na branch isolada serve para validar provider real; main continua condicionada a
 Revisão final: esclarecimento específico de consulta era substituído pelo fallback genérico
 de período. Regressão focal FAIL antes; fluxo semântico agora preserva a pergunta específica,
 sem mudar fallback legado/policy/autorização. 51 testes de roteamento/domínio PASS depois.
+
+CI do candidato `5fe3d5e`: audit/lint/typecheck/build, 745 unit, 306 integration e oito E2E
+críticos PASS. Ampla local: 110 PASS/6 FAIL em 27.6m; quatro expectativas antigas do harness
+(sugestão real, contexto mínimo de agenda e Send desabilitado em dois casos), duas regressões
+reais do estado visual após confirmar. ContextOutcome verificado agora prevalece sobre prévia
+antiga; seis originais reexecutados PASS em 1.9m, sem mudar timeout/retry ou guardas. Artefatos
+originais preservados no cache ignorado, screenshots históricos gerados pelo teste restaurados.
+Lint/build das correções PASS. Preview do backend idêntico `5fe3d5e` terminou success, mas
+`/entrar` redireciona 302 para SSO Vercel; liberação temporária solicitada externamente.
+Avaliação real (42 casos e cinco fluxos de ação/contexto) pendente. Main ainda não integrada.

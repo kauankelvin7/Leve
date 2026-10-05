@@ -37,8 +37,10 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
   useEffect(() => {
     if (status === 'loading') { notifyCharacter('working'); return; }
     if (status === 'error') { notifyCharacter('error'); return; }
-    const acknowledged = latest?.role === 'assistant' && !latest.simulated && Boolean(latest.createdTask || latest.completedTask || latest.updatedTask);
-    const needsChoice = latest?.role === 'assistant' && !latest.simulated && Boolean(latest.confirmation || latest.recurrenceChoice || latest.recurrenceConfirmation || latest.batchConfirmation || [latest.completionResolution, latest.updateResolution, latest.rescheduleResolution].some(item => item?.status === 'clarify' || item?.status === 'ambiguous'));
+    const outcome = latest?.contextOutcome?.state;
+    if (outcome === 'uncertain') { notifyCharacter('error'); return; }
+    const acknowledged = latest?.role === 'assistant' && !latest.simulated && (outcome ? outcome === 'confirmed' : Boolean(latest.createdTask || latest.completedTask || latest.updatedTask));
+    const needsChoice = latest?.role === 'assistant' && !latest.simulated && !outcome && Boolean(latest.confirmation || latest.recurrenceChoice || latest.recurrenceConfirmation || latest.batchConfirmation || [latest.completionResolution, latest.updateResolution, latest.rescheduleResolution].some(item => item?.status === 'clarify' || item?.status === 'ambiguous'));
     notifyCharacter(acknowledged ? 'ack' : needsChoice ? 'clarify' : 'idle');
   }, [status, latest]);
   useEffect(() => {
