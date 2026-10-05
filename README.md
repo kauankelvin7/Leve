@@ -15,7 +15,6 @@
   <img alt="Firebase" src="https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?logo=firebase&logoColor=black">
   <img alt="PWA" src="https://img.shields.io/badge/PWA-instal%C3%A1vel-5A0FC8?logo=pwa&logoColor=white">
   <img alt="Licença MIT" src="https://img.shields.io/badge/licen%C3%A7a-MIT-green">
-  <a href="https://github.com/sponsors/kauankelvin7"><img alt="Apoie no GitHub Sponsors" src="https://img.shields.io/badge/Apoie-GitHub%20Sponsors-EA4AAA?logo=githubsponsors&logoColor=white"></a>
 </p>
 
 ![Leve — entrada desktop](docs/screenshots/desktop.png)
@@ -41,7 +40,6 @@
 - [Segurança e operação](#segurança-e-operação)
 - [Privacidade e acessibilidade](#privacidade-e-acessibilidade)
 - [Status do projeto](#status-do-projeto)
-- [Apoie o Leve](#apoie-o-leve)
 - [Autor](#autor)
 - [Licença](#licença)
 
@@ -245,25 +243,6 @@ O resumo público está em `/privacidade`. A conta permite exportar e excluir da
 Release final homologada e aceita: validações em aparelho, instalação e atualização do PWA, notificações, acessibilidade manual, capacidade e rollback foram executadas. A base está coberta por testes automatizados, emuladores e homologação manual.
 
 Hospedagem autorizada: `https://leve-agenda.vercel.app`. Histórico operacional em [CONTINUAR.md](CONTINUAR.md).
-
----
-
-## Apoie o Leve
-
-O **Leve** é gratuito e open source. Se quiser ajudar a manter o projeto, há duas formas preparadas:
-
-- **GitHub Sponsors** — apoio integrado ao GitHub, com contribuição única ou recorrente conforme as opções disponíveis no perfil.
-- **Pix direto** — disponível na página pública de apoio quando a chave estiver configurada no ambiente de produção.
-
-<p align="center">
-  <a href="https://github.com/sponsors/kauankelvin7"><strong>Apoiar pelo GitHub Sponsors</strong></a>
-  &nbsp;·&nbsp;
-  <a href="https://leve-agenda.vercel.app/apoie"><strong>Ver formas de apoio</strong></a>
-</p>
-
-O apoio é voluntário e ajuda a sustentar manutenção, segurança, acessibilidade, testes e novas melhorias. **Nenhum recurso essencial do Leve depende de pagamento.**
-
-A chave Pix não fica versionada no repositório. A página lê `VITE_SUPPORT_PIX_KEY`, que é pública no navegador e deve receber apenas uma chave que possa ser divulgada — de preferência uma chave aleatória.
 
 ---
 
