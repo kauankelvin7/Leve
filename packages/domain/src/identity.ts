@@ -55,6 +55,7 @@ export const commandEnvelopeSchema = z.object({
   gikaCompletion: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
   gikaUndo: z.object({ uid: z.string().min(1).max(128), creationOperationId: z.uuid() }).strict().optional(),
   gika: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
+  gikaShopping: z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().optional(),
 }).strict().refine(command => !command.gikaBatch || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate && !command.gikaReschedule && !command.gikaRecurrence && ['activity.update', 'activity.setStatus'].includes(command.command) && (command.expectedRevision ?? 0) > 0 && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação em lote inválida.').refine(command => !command.gikaRecurrence || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate && !command.gikaReschedule && ['activity.update', 'activity.updateFuture', 'activity.setStatus'].includes(command.command) && Number.isInteger(command.expectedRevision) && (command.expectedRevision ?? 0) > 0 && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação recorrente inválida.').refine(command => !command.gikaReschedule || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate
   && command.command === 'activity.update' && (command.expectedRevision ?? 0) > 0
   && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de reagendamento inválida.').refine(command => !command.gikaUpdate || (!command.gika && !command.gikaUndo && !command.gikaCompletion
@@ -66,7 +67,9 @@ export const commandEnvelopeSchema = z.object({
   && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de criação inválida.').refine(command => !command.gikaUndo || (!command.gika
   && command.command === 'activity.trash' && command.expectedRevision === 1
   && command.entityId === command.gikaUndo.creationOperationId
-  && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Não foi possível validar essa ação.');
+  && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Não foi possível validar essa ação.').refine(command => !command.gikaShopping || (!command.gika && !command.gikaUndo && !command.gikaCompletion && !command.gikaUpdate && !command.gikaReschedule && !command.gikaRecurrence && !command.gikaBatch
+  && command.command === 'shoppingList.create' && command.expectedRevision === 0 && command.entityId === command.operationId
+  && command.clientCreatedAt === undefined && command.dependsOn === undefined), 'Operação de lista de compras inválida.');
 
 export type CommandEnvelope = z.infer<typeof commandEnvelopeSchema>;
 export type CommandResult = {

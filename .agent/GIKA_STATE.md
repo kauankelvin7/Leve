@@ -1,3 +1,27 @@
+## Retomada vigente — experiência da assistente e listas de compras
+
+Pedido atual autoriza concluir a lógica e validar localmente sem depender de Preview;
+o usuário fará a avaliação de Gemini real depois. Branch `feat/gika-assistant-experience`,
+entrada `5fe6d07ab41487638288e318165fe17930cfdf17`. Main/produção permanecem intactas
+e não serão integradas nesta entrega local. As seções antigas abaixo são históricas;
+esta retomada e `assistant_experience` em GIKA_TASKS prevalecem.
+
+Lacuna comprovada: compras já possui command layer, mas não existia tool/descriptor/
+bridge da Gika. Integração agora cria uma lista regular vazia e consulta metadados de
+listas/modelos/ciclos ativos, sem transformar pedido em tarefa, ler itens ou liberar
+escrita genérica. Auth, UID, policy, envelope canônico, stock/quota, controls, receipts
+e ACK precedem sucesso. Contexto contém nomes/tipos/counts mínimos, sem autoridade.
+Links fecham e cancelam o dialog antes de abrir a lista convencional.
+
+Evidência final local: unit802PASS, integração320PASS, ampla Gika123PASS/0FAIL
+em33.8min; bridge23/policy34 e sete UIshopping incluídos. Audit0/lint/typecheck/build,
+Glasscheck/selftest, desktop/mobile-dark/reflow/Axe PASS. Runtime fingerprint estável:
+cc7de6dac63b445e289a8c129fac5470b45ba336dc804d23fce1701e3021317f.
+Primeiras falhas preservadas: bridge1FAIL/schema2FAIL e fullunit797PASS2FAIL por
+listas exatas antigas de ferramentas. Corrigidas sem liberar escrita em consulta;
+nenhum timeout/retry/assertion relaxado. Gemini real NOT_RUN, usuário valida depois.
+Entrega local concluída; publicar checkpoint isolado e aguardar essa validação.
+
 ## Correção vigente — prioridade da mensagem atual
 
 Base `main@a6d8c433920ca7fa719eecf0910873aac1045fbb`. Classificação usa somente o pedido atual; histórico não mantém OUT_OF_SCOPE. Ações simples completas recebem proposta semântica grounded em fragmentos literais atuais, normalizados pelo software antes dos validators existentes. Criação amanhã às7horas da noite resolve19:00; reagendamento mantém confirmação. Nenhum novo writer/policy/command/persistência. Evidência e limites de intervalos/lembretes: `docs/gika/CURRENT_TURN_ROUTING_EVIDENCE.md`.
@@ -381,3 +405,61 @@ No Preview `42771a10bfeb9beee555aa50531f6ff4100be0c0`, READ real PASS. CREATE re
 Prova antes: 4 regressões unitárias FAIL (18 PASS) e integração focal retornando 422 em vez de 200; log original `.cache/preflight/hosted/gika-quoted-before.log` preservado. Correção mínima de duas linhas: reconhecer `a tarefa` após verbo explícito e retirar somente aspas duplas delimitadoras externas, preservando aspas internas. Depois: 91 unit focais PASS, teste adicional de contrato Gemini→tools/schema→descritor→policy com criação allow/título inventado rejeitado; arquivo de criação 23/23 PASS; integração Gika 101/101 PASS, lint/boundaries/typecheck web+server/build PASS. Ferramentas, modelo, env, Firebase, infraestrutura e política global intactos neste ajuste.
 
 Smoke READ/CREATE/CONFIRMATION-HMAC do Preview desse reparo ainda pendente; publicar somente `feat/gika-integration` e validar esses três, sem main/Production/nova fase.
+
+## Revisão da experiência da assistente — 2026-10-05
+
+Pedido novo do proprietário autoriza revisão integral da Gika/chat/voz em branch isolada e
+integração em main somente após gates aprovados. Base atualizada `f949b63ad3bc349ed6c95e12587051e43073699c`,
+branch `feat/gika-assistant-experience`; isto substitui restrições de publicação das tarefas históricas.
+Nenhuma milestone histórica foi reaberta. ExecPlan: `.agent/GIKA_ASSISTANT_EXECPLAN.md`.
+
+Implementação: turno semântico estruturado para domínio/proposta em uma chamada comum;
+contexto de ações/esclarecimentos bounded; resultados de confirmação/undo atualizam a projeção;
+chat acompanha rolagem só perto do fim; parar resposta explícito; voz com transcrição parcial,
+tempo, regravação e deadlines. Preservados comandos, schemas, identidade, receipts, revisions,
+HMAC do texto original, recorrência, batch, quotas transacionais e serviceControls.
+
+Evidência até o checkpoint de Preview: audit produção 0; lint/boundaries, dois TS e build PASS;
+unit ampla 736 PASS antes de últimos testes de contexto/escopo; integração ampla 306 PASS.
+UI focal 12 PASS. Primeira UI 9 PASS/2 FAIL demonstrou clique no botão Stop reutilizado como
+submit; `preventDefault` corrigiu causa, sem timeout/retry/assertion relaxados. Primeira integração
+285 PASS/21 FAIL por contar classificação local das fixtures como chamada provider; fixtures
+agora declaram custo local zero, provider conta por default e produção usa turno único.
+Unit posterior de diagnóstico falhou somente por campo técnico novo `phase`; contratos exatos
+foram atualizados e 50 focais PASS. Logs originais/artefatos sintéticos ficam no cache ignorado.
+E2E ampla e avaliação real ainda pendentes; não declarar Gika pronta nem integrar main ainda.
+
+Checkpoint atual: 744 unit PASS, lint/boundaries, typecheck web/server e build PASS. Deadline
+de organização reproduzido (duas fases de 8s retornavam 504 sob teto total 15s); corrigido
+para 25s dentro do cliente 30s, teste focal PASS. Grounding legado por conjunto de palavras
+aceitava nome negado/substituição numérica: duas regressões FAIL antes, 86 focais PASS após
+preservar span literal e números. Produção usa interpretação semântica, não esse fallback.
+E2E focal final de envio/contexto/UI: 11 PASS; ampla final em andamento sem relaxar timeout,
+retry ou guardas. Scripts de eval são exclusivamente Preview/sintéticos, com audiência
+leve-preview validada e artefatos sem prompts/respostas/credenciais. Publicação candidata
+na branch isolada serve para validar provider real; main continua condicionada aos gates.
+
+Revisão final: esclarecimento específico de consulta era substituído pelo fallback genérico
+de período. Regressão focal FAIL antes; fluxo semântico agora preserva a pergunta específica,
+sem mudar fallback legado/policy/autorização. 51 testes de roteamento/domínio PASS depois.
+
+CI do candidato `5fe3d5e`: audit/lint/typecheck/build, 745 unit, 306 integration e oito E2E
+críticos PASS. Ampla local: 110 PASS/6 FAIL em 27.6m; quatro expectativas antigas do harness
+(sugestão real, contexto mínimo de agenda e Send desabilitado em dois casos), duas regressões
+reais do estado visual após confirmar. ContextOutcome verificado agora prevalece sobre prévia
+antiga; seis originais reexecutados PASS em 1.9m, sem mudar timeout/retry ou guardas. Artefatos
+originais preservados no cache ignorado, screenshots históricos gerados pelo teste restaurados.
+Lint/build das correções PASS. Preview do backend idêntico `5fe3d5e` terminou success, mas
+`/entrar` redireciona 302 para SSO Vercel; liberação temporária solicitada externamente.
+Avaliação real (42 casos e cinco fluxos de ação/contexto) pendente. Main ainda não integrada.
+
+Resultado final local: runtime `afd313259b62b23e97925671d7fda2b7063b86a7`, ampla final
+**116 PASS/0 FAIL em 25.2m**, sem editar runtime durante o ciclo. CI `37285083676` PASS:
+audit0/lint/boundaries/doisTS/build/745unit/306integration/8critical. Glass check/selftest PASS,
+blur≤24px. Primeiras falhas/artefatos permanecem preservados; imagens históricas geradas pelo
+harness foram copiadas ao cache e restauradas. Bundle Production consultado read-only contém
+leve-db e não leve-preview, nenhum dado/configuração de produção alterado.
+Preview exato `afd3132`: https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a261bab.vercel.app
+terminou success, mas continua SSO302; API interceptada401Vercel. Preview5fe backend idêntico
+também SSO302, pedido externo de liberação pendente. Único blocker: avaliação Gemini real
+impossível com acessos atuais. Não marcar Gika pronta nem integrar main antes desse teste.

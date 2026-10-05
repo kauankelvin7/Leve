@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { createVoiceInput, nativeRecognition, voiceBusy, type Recognition, type VoiceState } from '../../apps/web/src/features/gika/useVoiceInput';
+import { createVoiceInput, nativeRecognition, voiceBusy, VOICE_DEADLINES, type Recognition, type VoiceState } from '../../apps/web/src/features/gika/useVoiceInput';
 import { GIKA_MAX_INPUT } from '../../apps/web/src/features/gika/conversation';
 
 class Native implements Recognition {
@@ -11,18 +11,20 @@ class Native implements Recognition {
   start = vi.fn(); stop = vi.fn(); abort = vi.fn();
   constructor() { Native.instances.push(this); }
 }
-afterEach(() => { Native.instances = []; vi.unstubAllGlobals(); });
+const controllers: ReturnType<typeof createVoiceInput>[] = [];
+afterEach(() => { controllers.forEach(controller => controller.dispose()); controllers.length = 0; Native.instances = []; vi.unstubAllGlobals(); vi.useRealTimers(); });
 function fixture(base = '') {
   let draft = base;
   const states: VoiceState[] = [], text = vi.fn((value: string) => { draft = value; });
   const controller = createVoiceInput(Native, state => states.push(state), text, () => draft);
+  controllers.push(controller);
   return { controller, states, text, draft: () => draft, edit: (value: string) => { draft = value; } };
 }
 const result = (transcript: string, isFinal = true) => ({ results: [{ isFinal, 0: { transcript } }] });
 
 it.each(['o que eu tenho hoje', 'academia amanhã', 'organiza meu dia'])('PT-BR final is draft only: %s', transcript => {
   const f = fixture(); f.controller.start(''); const native = Native.instances[0]!;
-  expect(native).toMatchObject({ lang: 'pt-BR', continuous: false, interimResults: false, maxAlternatives: 1 });
+  expect(native).toMatchObject({ lang: 'pt-BR', continuous: false, interimResults: true, maxAlternatives: 1 });
   native.onstart!(); expect(voiceBusy(f.states.at(-1)!)).toBe(true);
   native.onresult!(result(transcript)); expect(f.text).not.toHaveBeenCalled();
   native.onspeechend!(); expect(native.stop).toHaveBeenCalledOnce(); native.onend!();
@@ -30,9 +32,47 @@ it.each(['o que eu tenho hoje', 'academia amanhã', 'organiza meu dia'])('PT-BR 
 });
 it('partial results never enter the draft; cumulative final results do not duplicate words', () => {
   const f = fixture('Já digitado\n'); f.controller.start(f.draft()); const native = Native.instances[0]!;
-  native.onresult!(result('ignorado', false)); expect(f.text).not.toHaveBeenCalled();
+  native.onstart!(); native.onresult!(result('academia', false)); expect(f.text).not.toHaveBeenCalled();
+  expect(f.states.at(-1)).toMatchObject({ status: 'listening', transcript: 'academia', elapsedSeconds: 0 });
   native.onresult!(result('academia')); native.onresult!({ results: [{ isFinal: true, 0: { transcript: 'academia' } }, { isFinal: true, 0: { transcript: 'amanhã' } }] }); native.onend!();
   expect(f.draft()).toBe('Já digitado\nacademia amanhã');
+});
+it('recording again replaces only the previous voice contribution after a successful final', () => {
+  const f = fixture('Já digitado'); f.controller.start(f.draft()); const first = Native.instances[0]!;
+  first.onresult!(result('academia')); first.onend!();
+  expect(f.draft()).toBe('Já digitado academia');
+  f.controller.start(f.draft()); const second = Native.instances[1]!;
+  second.onresult!(result('leitura')); expect(f.draft()).toBe('Já digitado academia'); second.onend!();
+  expect(f.draft()).toBe('Já digitado leitura');
+  f.controller.start(f.draft()); f.controller.cancel();
+  expect(f.draft()).toBe('Já digitado leitura');
+  f.edit('Novo texto'); f.controller.start(f.draft()); const last = Native.instances.at(-1)!;
+  last.onresult!(result('amanhã')); last.onend!(); expect(f.draft()).toBe('Novo texto amanhã');
+});
+it('elapsed time starts with the actual microphone event and stops with speech', () => {
+  vi.useFakeTimers(); const f = fixture('Preservado'); f.controller.start(f.draft()); const native = Native.instances[0]!;
+  vi.advanceTimersByTime(2000); expect(f.states.at(-1)).toEqual({ status: 'starting' });
+  native.onstart!(); vi.advanceTimersByTime(3000);
+  expect(f.states.at(-1)).toMatchObject({ status: 'listening', elapsedSeconds: 3 });
+  native.onspeechend!(); vi.advanceTimersByTime(2000);
+  expect(f.states.at(-1)).toMatchObject({ status: 'processing', elapsedSeconds: 3 });
+  f.controller.cancel(); expect(vi.getTimerCount()).toBe(0); expect(f.draft()).toBe('Preservado');
+});
+it.each(['start', 'processing'] as const)('%s deadline releases the composer and ignores late speech without replacing draft', phase => {
+  vi.useFakeTimers(); const f = fixture('Preservado'); f.controller.start(f.draft()); const native = Native.instances[0]!;
+  const lateResult = native.onresult!, lateEnd = native.onend!;
+  if (phase === 'processing') { native.onstart!(); native.onspeechend!(); }
+  vi.advanceTimersByTime(VOICE_DEADLINES[phase]);
+  expect(f.states.at(-1)?.status).toBe('error'); expect(voiceBusy(f.states.at(-1)!)).toBe(false);
+  expect(native.abort).toHaveBeenCalledOnce(); expect(f.draft()).toBe('Preservado'); expect(f.text).not.toHaveBeenCalled();
+  lateResult(result('tardia')); lateEnd(); expect(f.draft()).toBe('Preservado'); expect(vi.getTimerCount()).toBe(0);
+});
+it('capture limit stops native recognition and bounds a browser that never ends', () => {
+  vi.useFakeTimers(); const f = fixture('Preservado'); f.controller.start(f.draft()); const native = Native.instances[0]!;
+  native.onstart!(); native.onresult!(result('fala parcial', false)); vi.advanceTimersByTime(VOICE_DEADLINES.capture);
+  expect(native.stop).toHaveBeenCalledOnce(); expect(f.states.at(-1)).toMatchObject({ status: 'processing', transcript: 'fala parcial' });
+  expect(f.text).not.toHaveBeenCalled(); vi.advanceTimersByTime(VOICE_DEADLINES.processing);
+  expect(f.states.at(-1)?.status).toBe('error'); expect(f.draft()).toBe('Preservado'); expect(vi.getTimerCount()).toBe(0);
 });
 it.each(['cancel', 'dispose'] as const)('%s invalidates late callbacks, including unmount/account replacement', operation => {
   const f = fixture('Preservado'); f.controller.start(f.draft()); const native = Native.instances[0]!, lateResult = native.onresult!, lateEnd = native.onend!;

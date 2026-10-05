@@ -1,5 +1,28 @@
 # Gika — Decision Log
 
+## ADR-GIKA-027 — listas de compras como capacidade explícita, sem escrita genérica
+
+- Data: 2026-10-05
+- Status: accepted
+- Contexto: um pedido legítimo de lista chamada Jantar recebeu fallback de agenda;
+  o produto já tem listas, mas as ferramentas da Gika só operavam tarefas.
+- Decisão: registrar criação de lista regular vazia e consulta bounded de metadados
+  de todos os tipos ativos, usando schema/tool/policy próprios e o command layer
+  `shoppingList.create` existente. Não reutilizar descriptor de tarefa nem dar ao
+  modelo acesso a IDs/paths, itens, ciclos/modelos ou comandos arbitrários.
+- Contratos: criação deriva revisão0/operationId=entityId=requestId/payload fixo;
+  metadata exclusiva `gikaShopping` + hash do texto e snapshot no receipt atômico.
+  Recovery valida UID/texto/hash/descriptor/ACK antes de provider/quota. Nova criação
+  exige controls normal; receipt já confirmado continua reconciliável. Leitura
+  limitada a50 sem fanout, reautorizada e parcial em saturação/inconsistência.
+- Alternativas consideradas: converter lista em tarefa; novo writer paralelo;
+  habilitar generic tools para todo domínio. Rejeitadas por semântica/segurança.
+- Consequências: compras simples passa a ser capacidade real; itens e demais áreas
+  ficam na UI convencional, com esclarecimento honesto. Interface mostra sucesso
+  só após ACK e abre lista fechando/cancelando o dialog. Custo/infra/modelo intactos.
+  Avaliação local usa provider sintético; Gemini real será validado pelo usuário,
+  sem declarar precisão semântica ao vivo nem integrar main antecipadamente.
+
 Registre decisões que alterem arquitetura, contratos, segurança, UX ou estratégia de rollout.
 
 Formato:

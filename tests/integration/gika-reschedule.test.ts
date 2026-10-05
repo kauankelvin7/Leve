@@ -4,7 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import type { ModelAdapter, ModelInput } from '../../server/gika/model';
 import { auth, db } from '../../server/platform/firebase';
 const state = vi.hoisted(() => ({ model: null as ModelAdapter | null, inputs: [] as ModelInput[] }));
-vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classify: async () => ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => {
+vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classificationUsesProvider: false, classify: async () => ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => {
   state.inputs.push(input); return state.model!.interpret(input, signal);
 } }) }));
 import { app } from '../../server/app';

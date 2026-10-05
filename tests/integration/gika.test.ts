@@ -5,7 +5,7 @@ import type { ModelAdapter, ModelInput } from '../../server/gika/model';
 import { GikaFault } from '../../server/gika/model';
 import { auth, db } from '../../server/platform/firebase';
 const state = vi.hoisted(() => ({ model: null as ModelAdapter | null, inputs: [] as ModelInput[], routing: null as Record<string, unknown> | null }));
-vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classify: async () => state.routing ?? ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => {
+vi.mock('../../server/gika/gemini.ts', () => ({ createGeminiAdapter: () => ({ classificationUsesProvider: false, classify: async () => state.routing ?? ({intent:'AGENDA_ACTION' as const,certain:true,reply:null}), interpret: async (input: ModelInput, signal: AbortSignal) => {
   state.inputs.push(input); return state.model!.interpret(input, signal);
 } }) }));
 import { app } from '../../server/app';
@@ -141,6 +141,20 @@ it('serializes concurrent quota claims, isolates UIDs, and expires the rolling b
   expect(first?.gikaDayKey).toBeUndefined();
 });
 
+it('allows conversational follow-ups after the short burst while enforcing six actual reservations per rolling minute', async () => {
+  const { consumeGikaQuota } = await import('../../server/gika/quota');
+  const uid = `quota-turn-${crypto.randomUUID()}`;
+  const now = Date.UTC(2026, 9, 5, 12);
+  for (let index = 0; index < 3; index++) await consumeGikaQuota(uid, now, null);
+  await expect(consumeGikaQuota(uid, now + 9_999, null)).rejects.toMatchObject({ code: 'GIKA_QUOTA' });
+  const secondBurst = await Promise.allSettled(Array.from({ length: 6 }, () => consumeGikaQuota(uid, now + 10_000, null)));
+  expect(secondBurst.filter(result => result.status === 'fulfilled')).toHaveLength(3);
+  expect(secondBurst.filter(result => result.status === 'rejected')).toHaveLength(3);
+  await expect(consumeGikaQuota(uid, now + 59_999, null)).rejects.toMatchObject({ code: 'GIKA_QUOTA' });
+  await consumeGikaQuota(uid, now + 60_000, null);
+  expect((await db.doc(`usageBuckets/${uid}_gika`).get()).data()?.gikaRequestTimesMs).toHaveLength(4);
+});
+
 it('enforces an explicitly configured daily cap without adding dated counter documents', async () => {
   const { consumeGikaQuota } = await import('../../server/gika/quota');
   const uid = `quota-daily-${crypto.randomUUID()}`;
@@ -151,6 +165,8 @@ it('enforces an explicitly configured daily cap without adding dated counter doc
   const matches = await db.collection('usageBuckets').where('gikaDayKey', '==', '2026-10-04').get();
   expect(matches.docs.filter(item => item.id === `${uid}_gika`)).toHaveLength(1);
   expect((await db.doc(`usageBuckets/${uid}_gika`).get()).data()).toMatchObject({ gikaDayCount: 2, gikaDayKey: '2026-10-04' });
+  await consumeGikaQuota(uid, start + 24 * 60 * 60_000, 2);
+  expect((await db.doc(`usageBuckets/${uid}_gika`).get()).data()).toMatchObject({ gikaDayCount: 1, gikaDayKey: '2026-10-05' });
 });
 
 it('fails closed before Gemini when the Firestore quota transaction fails or stored counter is malformed', async () => {

@@ -12,7 +12,7 @@ export type GikaPolicyDecision = z.infer<typeof gikaPolicyDecisionSchema>;
 const factsSchema = z.object({
   action: z.string().min(1).max(80), effect: z.enum(['create', 'complete', 'rename', 'reschedule', 'destructive']),
   cardinality: z.enum(['new', 'one', 'none', 'ambiguous', 'multiple', 'series', 'bulk']),
-  entity: z.enum(['task', 'event', 'none']), state: z.enum(['new', 'pending', 'completed', 'canceled', 'missing', 'historical']),
+  entity: z.enum(['task', 'shopping_list', 'event', 'none']), state: z.enum(['new', 'pending', 'completed', 'canceled', 'missing', 'historical']),
   recurrenceInspected: z.boolean().default(false), futureAllowed: z.boolean().default(false),
   recurring: z.boolean(), recurrenceScope: z.enum(['none', 'unspecified', 'occurrence', 'future', 'series']),
   fields: z.array(z.string().min(1).max(40)).max(8), validation: z.enum(['valid', 'missing', 'invalid']),
@@ -21,6 +21,7 @@ const factsSchema = z.object({
 }).strict();
 export type GikaPolicyFacts = z.input<typeof factsSchema>;
 const registry = {
+  create_shopping_list: { effect: 'create', fields: ['title'] },
   create_task: { effect: 'create', fields: ['title', 'dueDate', 'dueTime'] },
   complete_task: { effect: 'complete', fields: ['status'] },
   update_task: { effect: 'rename', fields: ['title'] },
@@ -42,6 +43,7 @@ export function classifyGikaAction(input: unknown): GikaPolicyDecision {
     || (f.action === 'reschedule_task' && !f.fields.includes('dueDate'))) return { kind: 'deny', reason: 'FIELD_NOT_ALLOWED' };
   if (f.completeness !== 'complete') return { kind: 'deny', reason: 'INCOMPLETE_RESOLUTION' };
   if (['multiple', 'series', 'bulk'].includes(f.cardinality)) return { kind: 'deny', reason: 'BULK_NOT_SUPPORTED' };
+  if (f.action === 'create_shopping_list' && f.recurring) return { kind: 'deny', reason: 'RECURRENCE_NOT_SUPPORTED' };
   if (f.cardinality === 'ambiguous') return { kind: 'clarify', reason: 'AMBIGUOUS_TARGET' };
   if (f.recurring) {
     if (f.recurrenceScope === 'unspecified') return { kind: 'clarify', reason: 'RECURRENCE_SCOPE_REQUIRED' };
@@ -49,12 +51,12 @@ export function classifyGikaAction(input: unknown): GikaPolicyDecision {
   }
   if (f.validation === 'missing') return { kind: 'clarify', reason: 'MISSING_REQUIRED_DATA' };
   if (f.cardinality === 'none') return f.entity === 'none' && f.state === 'missing' && f.action !== 'create_task' ? { kind: 'clarify', reason: 'TARGET_NOT_FOUND' } : { kind: 'deny', reason: 'INVALID_FACTS' };
-  if (f.entity !== 'task') return { kind: 'deny', reason: 'UNSUPPORTED_TARGET' };
+  if (f.entity !== (f.action === 'create_shopping_list' ? 'shopping_list' : 'task')) return { kind: 'deny', reason: 'UNSUPPORTED_TARGET' };
   if (f.noOp) return { kind: 'deny', reason: 'NO_CHANGE_REQUIRED' };
   if (f.execution === 'replay') {
-    if (f.state !== 'historical' || f.cardinality !== (f.action === 'create_task' ? 'new' : 'one')) return { kind: 'deny', reason: 'INVALID_FACTS' };
+    if (f.state !== 'historical' || f.cardinality !== (f.action === 'create_task' || f.action === 'create_shopping_list' ? 'new' : 'one')) return { kind: 'deny', reason: 'INVALID_FACTS' };
     // Historical descriptor only. Existing receipt/command auth and ack remain mandatory.
-  } else if (f.action === 'create_task') {
+  } else if (f.action === 'create_task' || f.action === 'create_shopping_list') {
     if (f.cardinality !== 'new' || f.state !== 'new') return { kind: 'deny', reason: 'INVALID_FACTS' };
   } else {
     if (f.cardinality !== 'one' || !['pending', 'completed', 'canceled'].includes(f.state)) return { kind: 'deny', reason: 'INVALID_FACTS' };

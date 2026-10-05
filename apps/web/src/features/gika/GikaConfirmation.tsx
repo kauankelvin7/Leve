@@ -2,7 +2,7 @@ import { useCharacterEvent } from './character/CharacterEvents';
 import { useEffect, useRef, useState } from 'react';
 import type { GikaConfirmation as Confirmation, ConfirmationState } from '../../../../../packages/domain/src/gikaConfirmation';
 import type { RescheduledTask } from '../../../../../packages/domain/src/gikaReschedule';
-import type { GikaRequest } from './conversation';
+import type { GikaContextOutcome, GikaRequest } from './conversation';
 import { ApiError } from '../../platform/api';
 import { Icon } from '../../components/ui/Icon';
 import { confirmGikaAction } from './confirmationBridge';
@@ -32,7 +32,7 @@ export function GikaConfirmationCard({ confirmation, state, result, feedbackRef,
   </section>;
 }
 
-export function GikaConfirmation({ confirmation, context, active }: { confirmation: Confirmation; context: { uid: string; request: GikaRequest }; active: boolean }) {
+export function GikaConfirmation({ confirmation, context, active, onOutcome }: { onOutcome?: (outcome: GikaContextOutcome) => void; confirmation: Confirmation; context: { uid: string; request: GikaRequest }; active: boolean }) {
   const notifyCharacter = useCharacterEvent();
   const [errorText, setErrorText] = useState<string | undefined>();
   const [state, setState] = useState<ConfirmationState>('awaiting_confirmation');
@@ -43,17 +43,17 @@ export function GikaConfirmation({ confirmation, context, active }: { confirmati
     return () => { controller.current?.abort(); controller.current = null; };
   }, [active]);
   function focusFeedback() { requestAnimationFrame(() => { if (feedback.current?.closest('dialog')?.open) feedback.current.focus({ preventScroll: true }); }); }
-  function cancel() { if (!active || controller.current || state !== 'awaiting_confirmation') return; setState('cancelled'); notifyCharacter('idle'); focusFeedback(); }
+  function cancel() { if (!active || controller.current || state !== 'awaiting_confirmation') return; setState('cancelled'); onOutcome?.({ state: 'cancelled', tasks: [] }); notifyCharacter('idle'); focusFeedback(); }
   async function confirm() {
     if (!active || controller.current || !['awaiting_confirmation', 'failed'].includes(state) || !retryAllowed) return;
     const hadFocus = document.activeElement === action.current, pending = new AbortController(); controller.current = pending; setState('confirming'); notifyCharacter('working');
     try {
       const ack = await confirmGikaAction(confirmation, context.request, context.uid, AbortSignal.any([pending.signal, AbortSignal.timeout(30_000)]));
       if (pending.signal.aborted || controller.current !== pending) return;
-      setResult(ack); setState('confirmed'); notifyCharacter('ack');
+      setResult(ack); setState('confirmed'); onOutcome?.({ state: 'confirmed', tasks: [{ title: ack.title, dueDate: ack.dueDate, dueTime: ack.dueTime }] }); notifyCharacter('ack');
     } catch (error) {
       if (pending.signal.aborted || controller.current !== pending) return;
-      notifyCharacter('error');
+      notifyCharacter('error'); onOutcome?.({ state: 'uncertain', tasks: [] });
       const code = error instanceof ApiError ? error.code : '';
       setErrorText(code === 'GIKA_CONFIRMATION_EXPIRED' ? 'Essa prévia expirou. Faça o pedido novamente.' : ['AUTH_REQUIRED', 'FORBIDDEN', 'EMAIL_UNVERIFIED'].includes(code) ? 'Entre na conta que fez esse pedido para mover a tarefa.' : code === 'GIKA_RESCHEDULE_CONFLICT' ? 'Essa tarefa mudou antes do reagendamento. Faça o pedido novamente.' : undefined);
       setRetryAllowed(!['AUTH_REQUIRED', 'FORBIDDEN', 'EMAIL_UNVERIFIED', 'GIKA_CONFIRMATION_INVALID', 'OPERATION_MISMATCH'].includes(code));

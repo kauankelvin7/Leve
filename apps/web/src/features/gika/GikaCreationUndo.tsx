@@ -4,7 +4,7 @@ import { Icon } from '../../components/ui/Icon';
 import { ApiError } from '../../platform/api';
 import { executeCreationUndo } from './creationUndoBridge';
 
-export function GikaCreationUndo({ context, active }: { context: CreationUndoContext; active: boolean }) {
+export function GikaCreationUndo({ context, active, onUndone }: { onUndone?: () => void; context: CreationUndoContext; active: boolean }) {
   const [state, setState] = useState<'ready' | 'pending' | 'done' | 'error' | 'conflict' | 'removed' | 'auth'>('ready');
   const controller = useRef<AbortController | null>(null);
   const action = useRef<HTMLButtonElement>(null);
@@ -27,7 +27,7 @@ export function GikaCreationUndo({ context, active }: { context: CreationUndoCon
     const pending = new AbortController(); controller.current = pending; setState('pending');
     try {
       await executeCreationUndo(context, AbortSignal.any([pending.signal, AbortSignal.timeout(30_000)]));
-      if (!pending.signal.aborted && controller.current === pending) finish('done');
+      if (!pending.signal.aborted && controller.current === pending) { finish('done'); onUndone?.(); }
     } catch (error) {
       if (!pending.signal.aborted && controller.current === pending) {
         const code = error instanceof ApiError ? error.code : '';

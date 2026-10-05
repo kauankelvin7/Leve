@@ -9,7 +9,7 @@ import { scopedIntent } from './scopeIntent.ts';
 import { prepareRecurrence, recurrenceEffect } from './recurrencePolicy.ts';
 import { hashCanonicalValue } from '../hash.ts';
 import { issueConfirmation } from './confirmation.ts';
-import { assessCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
+import { assessCreation, assessShoppingCreation, assessMissingIntent, assessResolution, assessReplay } from './policyAssessment.ts';
 import { validateReschedule,resolveRescheduleIntent,resolveReschedule,isRescheduleRequest } from './reschedulePolicy.ts';
 import { validateUpdate, resolveUpdate, resolveUpdateIntent, isUpdateRequest } from './updatePolicy.ts';
 import { validateCompletion, resolveCompletion, resolveCompletionIntent } from './completePolicy.ts';
@@ -21,12 +21,21 @@ import { bounded, GikaFault, type ModelAdapter } from './model.ts';
 import { readRange } from './policy.ts';
 import { normalizeCurrentAction, isCreationRequest, resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
+import { readSummary } from './readSummary.ts';
 import { consumeGikaQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
+import { semanticBatch, semanticCompletion, semanticCreation, semanticReschedule, semanticTurnSchema, semanticUpdate, type SemanticTurn } from './semanticTurn.ts';
+import { createShoppingListDescriptorSchema, shoppingListsResultSchema } from '../../packages/domain/src/gikaShopping.ts';
+// Two bounded 10s provider phases plus 5s for authorization/reads; client deadline is 30s.
+const OPERATION_DEADLINE_MS = 25_000;
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
 export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
   const router = Router();
-  router.use(express.json({ limit: GIKA_MAX_REQUEST_BYTES, strict: true }));
+  const parseTurn = express.json({ limit: GIKA_MAX_REQUEST_BYTES, strict: true });
+  // A choice appends an <=8KiB opaque token to the original bounded request. Keep
+  // the interpretation cap unchanged while allowing that transport overhead here.
+  const parseChoice = express.json({ limit: GIKA_MAX_REQUEST_BYTES * 2, strict: true });
+  router.use((request, response, next) => (request.path === '/choose-recurrence' ? parseChoice : parseTurn)(request, response, next));
   const bodyError: ErrorRequestHandler = (error, _request, _response, next) => {
     if (error?.type === 'entity.too.large') { next(new AppError(413, 'PAYLOAD_TOO_LARGE', 'Conteúdo acima do limite permitido.')); return; }
     if (error?.type === 'entity.parse.failed') { next(new AppError(400, 'VALIDATION_ERROR', 'Confira a pergunta e tente novamente.')); return; }
@@ -93,6 +102,11 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             await repository.authorize(identity, 'receipt');
             return gikaInterpretationSchema.parse({ text: 'Confira o escopo antes de alterar a rotina.', simulated: false, reads: [], recurrenceConfirmation: recovered.confirmation });
           }
+          if (recovered.kind === 'shopping_create') {
+            await repository.authorize(identity, 'receipt');
+            if (assessReplay(recovered.kind, 'verified').kind !== 'allow') throw new GikaFault('GIKA_POLICY');
+            return gikaInterpretationSchema.parse({ text: 'Preparando a lista de compras…', intent: 'agenda_action', domainIntent: 'AGENDA_ACTION', simulated: false, reads: [], createShoppingList: recovered.list });
+          }
           // Historical snapshot only; the bridge still needs a freshly authorized command ack.
           await repository.authorize(identity, 'receipt');
           const decision = assessReplay(recovered.kind, 'verified');
@@ -106,19 +120,33 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         await consumeQuota(identity.uid);
         stage = 'model';
         const routingInput = { text: input.text, context, ...(input.conversation ? { conversation: input.conversation } : {}) };
-        const classified = model.classify ? await model.classify(routingInput, signal, { correlationId: response.locals.correlationId }) : null;
-        const parsedIntent = gikaIntentClassificationSchema.safeParse(classified);
+        let semantic: SemanticTurn | null = null;
+        if (model.turn) {
+          const proposed = semanticTurnSchema.safeParse(await model.turn(routingInput, signal, { correlationId: response.locals.correlationId }));
+          if (!proposed.success) throw new GikaFault('GIKA_MALFORMED_CALL');
+          semantic = proposed.data;
+        }
+        const classified = !semantic && model.classify ? await model.classify(routingInput, signal, { correlationId: response.locals.correlationId }) : null;
+        const parsedIntent = semantic ? { success: true as const, data: {
+          intent: semantic.domainIntent, certain: semantic.certain, reply: semantic.reply, currentAction: null,
+        } } : gikaIntentClassificationSchema.safeParse(classified);
         const authorized = await repository.authorize(identity);
         if (JSON.stringify(authorized) !== JSON.stringify(context) || signal.aborted) throw new GikaFault('GIKA_POLICY');
-        if (!parsedIntent.success || !parsedIntent.data.certain) return gikaInterpretationSchema.parse({ text: 'Você quer ajuda para organizar sua rotina ou fazer um pedido sobre sua agenda?', intent: 'conversation', simulated: false, reads: [] });
+        if (semantic?.domainIntent === 'OUT_OF_SCOPE') return gikaInterpretationSchema.parse({ text: 'Minha especialidade é sua agenda e organização. Posso ajudar a transformar isso em uma tarefa ou reservar um horário para estudar.', intent: 'conversation', domainIntent: 'OUT_OF_SCOPE', simulated: false, reads: [] });
+        if (!parsedIntent.success || !parsedIntent.data.certain) return gikaInterpretationSchema.parse({ text: semantic?.reply ?? 'Você quer ajuda para organizar sua rotina ou fazer um pedido sobre sua agenda?', intent: 'conversation', simulated: false, reads: [] });
         const classification = parsedIntent.data;
         requestDomainIntent = classification.intent;
         const normalizedAction = classification.currentAction ? normalizeCurrentAction(classification.currentAction, input.text, context) : null;
         const actionText = normalizedAction ?? input.text;
         if (classification.intent === 'OUT_OF_SCOPE') return gikaInterpretationSchema.parse({ text: 'Eu fico focada na sua agenda e organização no Leve. Posso ajudar a reservar um horário de estudo ou adicionar uma tarefa à sua agenda.', intent: 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
         if (classification.intent === 'SOCIAL' || classification.intent === 'GIKA_META' || classification.intent === 'ORGANIZATION_CONVERSATION') return gikaInterpretationSchema.parse({ text: classification.reply ?? 'Posso ajudar com sua agenda e organização no Leve. Como posso te ajudar?', intent: 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
-        const actionRequested = isCreationRequest(actionText) || isUpdateRequest(input.text) || isRescheduleRequest(input.text) || /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text);
-        const period = classification.intent === 'AGENDA_ACTION' ? organizationPeriod(input.text) : null;
+        if (semantic && !semantic.proposals.length) return gikaInterpretationSchema.parse({
+          text: semantic.reply ?? (classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : 'O que você quer mudar na sua agenda?'),
+          intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [],
+        });
+        const actionRequested = semantic ? semantic.explicitAction : isCreationRequest(actionText) || isUpdateRequest(input.text) || isRescheduleRequest(input.text) || /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text);
+        const organizationRequest = semantic?.proposals.find(call => call.name === 'request_organization');
+        const period = semantic ? organizationRequest?.args.period ?? null : classification.intent === 'AGENDA_ACTION' ? organizationPeriod(input.text) : null;
         if (period) {
           const range = period==='week' ? readRange({name:'get_week',args:{date:context.today}},context) : {startDate:context.today,endDate:Temporal.PlainDate.from(context.today).add({days:6}).toString(),timeZone:context.timeZone};
           // Daily reads today; weekly reads the existing civil week. No history expansion.
@@ -134,11 +162,12 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           if(scope==='future'||scope==='all')return gikaInterpretationSchema.parse({text:'Não posso organizar próximas ocorrências ou séries em grupo. Use sua agenda para esse escopo.',simulated:false,reads:[],organizationResolution:{status:'unsupported_scope'}});
           const planning = planningContext(read,context);
           if(!planning?.tasks.length)return gikaInterpretationSchema.parse({text:'Não encontrei tarefas pendentes para organizar nesse período.',simulated:false,reads:[],organizationResolution:{status:'empty'}});
+          if (model.turn || (model.classify && model.classificationUsesProvider !== false)) { stage = 'quota'; await consumeQuota(identity.uid); }
           stage = 'model';
           const interpreted = await model.interpret({text:input.text,context,planning:{...planning,endDate:range.endDate}},signal,{correlationId:response.locals.correlationId});
           stage = 'policy';
           const calls = validateToolCalls(interpreted);
-        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
+        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'get_shopping_lists', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
           if(calls.length!==1)throw new GikaFault('GIKA_POLICY');
           const after = await repository.authorize(identity);
           if(JSON.stringify(after)!==JSON.stringify(context))throw new GikaFault('GIKA_POLICY');
@@ -158,27 +187,51 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         stage = 'model';
         let interpreted;
-        if (normalizedAction && classification.currentAction?.kind === 'create_task') {
+        if (semantic) {
+          interpreted = semantic.proposals;
+        } else if (normalizedAction && classification.currentAction?.kind === 'create_task') {
           const proposal = resolveCreationIntent(normalizedAction, context);
           interpreted = proposal.task ? [{ name: 'create_task', args: { title: proposal.task.title, dueDate: proposal.task.dueDate, dueTime: proposal.task.dueTime } }] : [{ name: 'respond_conversation', args: { text: proposal.clarification } }];
         } else if (normalizedAction && classification.currentAction?.kind === 'reschedule_task') {
           const proposal = resolveRescheduleIntent(normalizedAction, context);
           interpreted = 'clarification' in proposal ? [{ name: 'respond_conversation', args: { text: proposal.clarification } }] : [{ name: 'reschedule_task', args: proposal }];
         } else {
+          if (model.classify && model.classificationUsesProvider !== false) { stage = 'quota'; await consumeQuota(identity.uid); }
+          stage = 'model';
           interpreted = await model.interpret({ text: input.text, context, agendaIntent: classification.intent, ...(input.conversation ? { conversation: input.conversation } : {}) }, signal, { correlationId: response.locals.correlationId });
         }
         stage = 'policy';
         const calls = validateToolCalls(interpreted);
-        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
+        if (classification.intent === 'AGENDA_QUERY' && calls.some(call => !['get_today', 'get_day', 'get_week', 'get_shopping_lists', 'respond_conversation'].includes(call.name))) throw new GikaFault('GIKA_POLICY');
         // Recheck account/policy after the upstream wait, before exposing data.
         const current = await repository.authorize(identity);
         if (current.today !== context.today || current.timeZone !== context.timeZone || current.weekStartsOn !== context.weekStartsOn) throw new GikaFault('GIKA_POLICY');
         if (calls[0]?.name === 'respond_conversation') {
           if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
-          return gikaInterpretationSchema.parse({ text: classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : calls[0].args.text, intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
+          return gikaInterpretationSchema.parse({ text: !semantic && classification.intent === 'AGENDA_QUERY' ? 'Qual período da sua agenda você quer consultar?' : calls[0].args.text, intent: classification.intent === 'AGENDA_ACTION' ? 'agenda_action' : 'conversation', domainIntent: classification.intent, simulated: false, reads: [] });
+        }
+        if (calls[0]?.name === 'create_shopping_list') {
+          const list = createShoppingListDescriptorSchema.parse(calls[0].args);
+          if (!actionRequested || classification.intent !== 'AGENDA_ACTION' || assessShoppingCreation('verified').kind !== 'allow') throw new GikaFault('GIKA_POLICY');
+          if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+          return gikaInterpretationSchema.parse({ text: 'Preparando a lista de compras…', intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], createShoppingList: list });
+        }
+        if (calls[0]?.name === 'get_shopping_lists') {
+          if (!repository.readShoppingLists) throw new GikaFault('GIKA_INVALID_RESPONSE');
+          stage = 'read';
+          const parsed = shoppingListsResultSchema.safeParse(await repository.readShoppingLists(identity.uid));
+          if (!parsed.success) throw new GikaFault('GIKA_INVALID_RESPONSE');
+          const shoppingLists = parsed.data;
+          if (shoppingLists.items.length >= 50) shoppingLists.partial = true;
+          const afterRead = await repository.authorize(identity);
+          if (JSON.stringify(afterRead) !== JSON.stringify(current) || signal.aborted) throw new GikaFault('GIKA_POLICY');
+          const text = shoppingLists.partial ? 'A consulta das suas listas de compras está incompleta. Confira também suas listas no Leve.'
+            : shoppingLists.items.length ? `Encontrei ${shoppingLists.items.length} ${shoppingLists.items.length === 1 ? 'lista de compras' : 'listas de compras'}.`
+              : 'Você ainda não tem listas de compras ativas.';
+          return gikaInterpretationSchema.parse({ text, intent: 'agenda_query', domainIntent: classification.intent, simulated: false, reads: [], shoppingLists });
         }
         if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
-          const intent=validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
+          const intent=semantic ? semanticBatch(calls[0],current) : validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
           if('clarification' in intent)return gikaInterpretationSchema.parse({text:intent.clarification,simulated:false,reads:[]});
           const range={startDate:intent.date,endDate:intent.date,timeZone:current.timeZone};
           const read=readResultSchema.parse(await repository.read(identity.uid,range));
@@ -194,8 +247,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({text:resolved.plan.items.length === 1 ? 'Confira a tarefa antes de continuar.' : `Confira as ${resolved.plan.items.length} tarefas antes de continuar.`,simulated:false,reads:[],batchConfirmation:issueBatchConfirmation(identity.uid,input,resolved.plan)});
         }
         if (calls[0]?.name === 'reschedule_task') {
-          const scoped = scopedIntent(input.text, calls[0].args);
-          const intent = validateReschedule(calls[0].args, normalizedAction ?? scoped.text, current);
+          const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
+          const intent = semantic ? semanticReschedule(calls[0].args, current) : validateReschedule(calls[0].args, normalizedAction ?? scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('reschedule_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -231,8 +284,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(committed || resolved.task ? { rescheduleTask: committed ?? resolved.task, ...(receipt ? (receipt.confirmation ? { confirmation: receipt.confirmation } : {}) : { confirmation: issueConfirmation(identity.uid, input, resolved.task!, decision) }) } : { rescheduleResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'update_task') {
-          const scoped = scopedIntent(input.text, calls[0].args);
-          const intent = validateUpdate(calls[0].args, scoped.text, current);
+          const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
+          const intent = semantic ? semanticUpdate(calls[0].args, current) : validateUpdate(calls[0].args, scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('update_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], updateResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -268,8 +321,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(committed || resolved.task ? { updateTask: committed ?? resolved.task } : { updateResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'complete_task') {
-          const scoped = scopedIntent(input.text, calls[0].args);
-          const intent = validateCompletion(calls[0].args, scoped.text, current);
+          const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
+          const intent = semantic ? semanticCompletion(calls[0].args, current) : validateCompletion(calls[0].args, scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('complete_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], completionResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -305,13 +358,13 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(committed || resolved.task ? { completeTask: committed ?? resolved.task } : { completionResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'create_task') {
-          const intent = validateCreation(calls[0].args, actionText, current);
+          const intent = semantic ? semanticCreation(calls[0].args, current) : validateCreation(calls[0].args, actionText, current);
           const decision = assessCreation(Boolean(intent.task), 'verified');
           if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });
         }
         // Validate policy for ALL calls before ANY agenda reads.
-        const ranges = calls.map(call => { if (call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
+        const ranges = calls.map(call => { if (call.name === 'get_shopping_lists' || call.name === 'create_shopping_list' || call.name === 'respond_conversation' || call.name === 'create_task' || call.name === 'complete_task' || call.name === 'update_task' || call.name === 'reschedule_task' || call.name === 'batch_complete' || call.name === 'batch_reschedule' || call.name === 'propose_organization') throw new GikaFault('GIKA_POLICY'); return readRange(call, current); });
         const reads = [];
         stage = 'read';
         for (const range of ranges) {
@@ -323,10 +376,9 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         const text = reads.length === 0
           ? (isRescheduleRequest(input.text) ? 'Não movi nenhuma tarefa. Informe o título, o dia atual e a nova data.' : isUpdateRequest(input.text) ? ('clarification' in resolveUpdateIntent(input.text, current) ? 'Qual tarefa você quer renomear e qual será o novo título?' : 'Não alterei nenhuma tarefa. Reformule o pedido ou use sua agenda.') : /^(?:terminei|conclu|marca|complete|marque)/i.test(input.text) ? ('clarification' in resolveCompletionIntent(input.text, current) ? 'Qual tarefa você quer concluir? Informe o título e o dia.' : 'Não concluí nenhuma tarefa. Reformule o pedido ou use sua agenda.') : isCreationRequest(input.text) ? resolveCreationIntent(input.text, current).clarification ?? 'Não adicionei nenhuma tarefa. Reformule o pedido ou use sua agenda.' : 'Como posso te ajudar? Você pode conversar comigo ou fazer um pedido sobre sua agenda.')
-          : reads.some(read => read.partial) ? 'Esta consulta mostra parte da sua agenda. Confira o calendário para ver mais.'
-          : 'Veja sua agenda para o período consultado.';
+          : readSummary(reads,current);
         return gikaInterpretationSchema.parse({ text, domainIntent: classification.intent, intent: reads.length ? 'agenda_query' : actionRequested ? 'agenda_action' : 'conversation', simulated: false, reads });
-      }, controller.signal, 15_000);
+      }, controller.signal, OPERATION_DEADLINE_MS);
       if (!controller.signal.aborted) response.json({ ...result, domainIntent: result.domainIntent ?? requestDomainIntent ?? (result.reads.length ? 'AGENDA_QUERY' : result.intent === 'conversation' ? undefined : 'AGENDA_ACTION'), intent: requestDomainIntent === 'AGENDA_ACTION' && !result.reads.length ? 'agenda_action' : result.intent ?? (result.reads.length ? 'agenda_query' : 'agenda_action') });
     } catch (error) {
       gikaDiagnostic(error instanceof GikaFault && error.diagnosticClass?.startsWith('ServiceControls') ? 'config_error'

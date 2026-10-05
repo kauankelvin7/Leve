@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { firebaseAuth } from '../../platform/firebase';
+import { conversationContext } from './conversationContext';
 import { ApiError } from '../../platform/api';
-import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, GIKA_MAX_REQUEST_BYTES, gikaResponseSchema, type GikaAdapter, type GikaMessage, type GikaRequest } from './conversation';
+import { GIKA_MAX_INPUT, GIKA_MAX_MESSAGES, gikaResponseSchema, type GikaAdapter, type GikaMessage, type GikaRequest, type GikaContextOutcome } from './conversation';
 
 export function useGikaConversation(adapter: GikaAdapter) {
   const [draft, setDraft] = useState('');
@@ -38,10 +39,8 @@ export function useGikaConversation(adapter: GikaAdapter) {
     const trimmed = text.trim();
     if (!navigator.onLine || controller.current || !trimmed || trimmed.length > GIKA_MAX_INPUT) return;
     if (!pending.current || pending.current.text !== trimmed) {
-      const conversation = messages.flatMap((message, index) => message.role === 'assistant' && message.intent === 'conversation' && messages[index - 1]?.role === 'user' ? [messages[index - 1]!, message].map(turn => ({ role: turn.role, text: turn.text.slice(0, 1000) })) : []).slice(-6);
       const requestId = crypto.randomUUID();
-      // Keep whole recent pairs within the unchanged JSON body cap, including multibyte text.
-      while (conversation.length && new TextEncoder().encode(JSON.stringify({ requestId, text: trimmed, conversation })).byteLength > GIKA_MAX_REQUEST_BYTES) conversation.splice(0, 2);
+      const conversation = conversationContext(messages, { requestId, text: trimmed });
       pending.current = { requestId, text: trimmed, ...(conversation.length ? { conversation } : {}) };
       const request = pending.current;
       setMessages(current => [...current, { id: request.requestId, role: 'user' as const, text: trimmed }].slice(-GIKA_MAX_MESSAGES));
@@ -54,7 +53,7 @@ export function useGikaConversation(adapter: GikaAdapter) {
     try {
       const response = gikaResponseSchema.parse(await adapter(request, active.signal));
       if (active.signal.aborted || controller.current !== active) return;
-      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { intent: response.intent, reads: response.reads, createdTask: response.createdTask, completedTask: response.completedTask, completionResolution: response.completionResolution, updatedTask: response.updatedTask, updateResolution: response.updateResolution, rescheduleTask: response.rescheduleTask, confirmation: response.confirmation, rescheduleResolution: response.rescheduleResolution, organizationPreview: response.organizationPreview, batchConfirmation: response.batchConfirmation, recurrenceChoice: response.recurrenceChoice, recurrenceConfirmation: response.recurrenceConfirmation, ...((response.rescheduleTask || response.recurrenceChoice || response.recurrenceConfirmation || response.batchConfirmation) && originatingUid ? { rescheduleContext: { uid: originatingUid, request } } : {}), ...(response.createdTask && originatingUid && response.createdTask.id === request.requestId ? { creationUndo: { uid: originatingUid, creationOperationId: request.requestId, entityId: response.createdTask.id, revision: 1 as const } } : {}) }) }].slice(-GIKA_MAX_MESSAGES));
+      setMessages(current => [...current, { id: `${request.requestId}:response`, role: 'assistant' as const, text: response.text, simulated: response.simulated, ...(response.simulated ? { preview: response.preview } : { intent: response.intent, reads: response.reads, createdShoppingList: response.createdShoppingList, shoppingLists: response.shoppingLists, createdTask: response.createdTask, completedTask: response.completedTask, completionResolution: response.completionResolution, updatedTask: response.updatedTask, updateResolution: response.updateResolution, rescheduleTask: response.rescheduleTask, confirmation: response.confirmation, rescheduleResolution: response.rescheduleResolution, organizationPreview: response.organizationPreview, batchConfirmation: response.batchConfirmation, recurrenceChoice: response.recurrenceChoice, recurrenceConfirmation: response.recurrenceConfirmation, ...((response.rescheduleTask || response.recurrenceChoice || response.recurrenceConfirmation || response.batchConfirmation) && originatingUid ? { rescheduleContext: { uid: originatingUid, request } } : {}), ...(response.createdTask && originatingUid && response.createdTask.id === request.requestId ? { creationUndo: { uid: originatingUid, creationOperationId: request.requestId, entityId: response.createdTask.id, revision: 1 as const } } : {}) }) }].slice(-GIKA_MAX_MESSAGES));
       setDraft(current => current.trim() === trimmed ? '' : current);
       pending.current = null;
       setStatus('idle');
@@ -65,5 +64,10 @@ export function useGikaConversation(adapter: GikaAdapter) {
     }
   }
 
-  return { draft, setDraft, messages, status, errorCode, online, send, cancel, retry: () => pending.current ? send(pending.current.text) : Promise.resolve() };
+  function recordOutcome(id: string, outcome: GikaContextOutcome) {
+    if (ownerUid.current !== firebaseAuth?.currentUser?.uid) return;
+    setMessages(current => current.map(message => message.id === id ? { ...message, contextOutcome: outcome } : message));
+  }
+
+  return { recordOutcome, draft, setDraft, messages, status, errorCode, online, send, cancel, retry: () => pending.current ? send(pending.current.text) : Promise.resolve() };
 }

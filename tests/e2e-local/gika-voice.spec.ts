@@ -45,6 +45,9 @@ test('M7-T1 explicit gesture, accessible listening, editable final and conscious
   const input = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
   await page.getByRole('button', { name: 'Usar voz', exact: true }).focus(); await page.keyboard.press('Enter');
   await expect(page.locator('#gika-voice-status')).toHaveText('Ouvindo…'); await expect(page.locator('.gika-character')).toHaveAttribute('data-character-state', 'listening'); await expect(page.getByRole('button', { name: 'Enviar pergunta', exact: true })).toBeDisabled();
+  await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.current!.onresult?.({ results: [{ isFinal: false, 0: { transcript: 'o que eu tenho' } }] }));
+  await expect(page.getByLabel('Transcrição da voz')).toHaveText('o que eu tenho'); await expect(input).toHaveValue('');
+  await expect(page.getByLabel('Tempo de captação')).not.toHaveText('0:00'); expect(requests).toBe(0); expect(commands).toBe(0);
   expect((await new AxeBuilder({ page }).include('.gika-panel').analyze()).violations).toEqual([]);
   await finish(page, 'o que eu tenho hoje'); await expect(page.locator('.gika-character')).toHaveAttribute('data-character-state', 'idle'); await expect(input).toHaveValue('o que eu tenho hoje'); await expect(input).toBeEditable();
   expect(requests).toBe(0); expect(commands).toBe(0); await input.fill('O que eu tenho hoje?'); await page.getByRole('button', { name: 'Enviar pergunta', exact: true }).click();
@@ -55,6 +58,18 @@ test('M7-T1 cancellation ignores a late final and preserves typed text', async (
   const input = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true }); await input.fill('Já digitado'); await page.getByRole('button', { name: 'Usar voz', exact: true }).click();
   await page.getByRole('button', { name: 'Cancelar voz', exact: true }).click(); await finish(page, 'academia amanhã'); await expect(input).toHaveValue('Já digitado'); expect(requests).toBe(0);
   expect(await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.aborts)).toBe(1);
+});
+test('record again keeps the existing draft until the new final replaces only dictated text', async ({ page }) => {
+  await speech(page); await enter(page); let requests = 0;
+  page.on('request', request => { if (/\/api\/(?:gika|commands)/u.test(request.url())) requests++; });
+  const input = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  await input.fill('Já digitado'); await page.getByRole('button', { name: 'Usar voz', exact: true }).click();
+  await finish(page, 'academia amanhã'); await expect(input).toHaveValue('Já digitado academia amanhã');
+  await page.getByRole('button', { name: 'Gravar novamente', exact: true }).click();
+  await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.current!.onresult?.({ results: [{ isFinal: false, 0: { transcript: 'leitura amanhã' } }] }));
+  await expect(page.getByLabel('Transcrição da voz')).toHaveText('leitura amanhã'); await expect(input).toHaveValue('Já digitado academia amanhã');
+  await finish(page, 'leitura amanhã'); await expect(input).toHaveValue('Já digitado leitura amanhã');
+  await expect(input).toBeEditable(); expect(requests).toBe(0);
 });
 test('M7-T1 denied microphone leaves textual composer functional without requests', async ({ page }) => {
   await speech(page, true); await enter(page); let requests = 0; page.on('request', request => { if (/\/api\/(?:gika|commands)/u.test(request.url())) requests++; });
@@ -109,7 +124,7 @@ test('M7-T2 mobile dark append, double start, processing, cancellation and layou
   await expect(page.locator('#gika-voice-status')).toHaveText('Preparando o texto…'); await input.press('Enter'); expect(requests).toBe(0);
   await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.current!.onend?.()); await expect(input).toHaveValue('Já digitado academia amanhã'); await expect(input).toBeEditable(); expect(requests).toBe(0);
   expect(await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, composerBottom: document.querySelector('.gika-composer')!.getBoundingClientRect().bottom > innerHeight }))).toEqual({ overflow: false, composerBottom: false });
-  await page.getByRole('button', { name: 'Usar voz', exact: true }).dblclick(); await expect.poll(() => page.evaluate(() => (window as unknown as VoiceBrowser).__voice.starts)).toBe(2);
+  await page.getByRole('button', { name: 'Gravar novamente', exact: true }).dblclick(); await expect.poll(() => page.evaluate(() => (window as unknown as VoiceBrowser).__voice.starts)).toBe(2);
   await expect(page.locator('#gika-voice-status')).toContainText('cancelada'); expect(await page.evaluate(() => (window as unknown as VoiceBrowser).__voice.aborts)).toBe(1);
   await expect(input).toHaveValue('Já digitado academia amanhã'); expect(requests).toBe(0);
 });

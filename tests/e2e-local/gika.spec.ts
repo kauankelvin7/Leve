@@ -113,6 +113,7 @@ test('mock responde sem consulta, comandos ou duplicação por envio repetido', 
   await question.fill('O que tenho amanhã?');
   await question.press('Enter');
   await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Parar resposta' })).toBeEnabled();
   await question.press('Enter');
   await expect(page.locator('.gika-message.is-assistant')).toContainText('Nenhuma tarefa foi consultada ou criada');
   await expect(page.locator('.gika-message.is-user')).toHaveCount(1);
@@ -315,6 +316,7 @@ test('rascunho editado durante resposta é mantido e offline cancela a resposta'
   const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
   await question.fill('Primeira pergunta'); await question.press('Enter');
   await expect(page.getByRole('button', { name: 'Enviar pergunta' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Parar resposta' })).toBeEnabled();
   await question.fill('Próxima pergunta');
   await expect(page.locator('.gika-message.is-assistant')).toHaveCount(1);
   await expect(question).toHaveValue('Próxima pergunta');

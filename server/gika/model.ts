@@ -1,11 +1,15 @@
 import type { z } from 'zod';
 import type { gikaIntentClassificationSchema } from '../../packages/domain/src/gika.ts';
+import type { SemanticTurn } from './semanticTurn.ts';
 /** Provider-independent boundary. No persistence, identity or command access. */
 export type ModelContext = { today: string; timeZone: string; weekStartsOn: 0 | 1 };
-export type ModelInput = { text: string; context: ModelContext; classifyOnly?: boolean; agendaIntent?: 'AGENDA_QUERY' | 'AGENDA_ACTION'; conversation?: { role: 'user' | 'assistant'; text: string }[]; planning?: { startDate: string; endDate: string; tasks: {ref:number;title:string;status:string;dueDate:string;dueTime:string|null;timeZone:string;recurring:boolean}[] } };
+export type ModelInput = { text: string; context: ModelContext; turnOnly?: boolean; classifyOnly?: boolean; agendaIntent?: 'AGENDA_QUERY' | 'AGENDA_ACTION'; conversation?: { role: 'user' | 'assistant'; text: string }[]; planning?: { startDate: string; endDate: string; tasks: {ref:number;title:string;status:string;dueDate:string;dueTime:string|null;timeZone:string;recurring:boolean}[] } };
 export type ModelCall = { name: string; args: Record<string, unknown> };
 export interface ModelAdapter {
   readonly diagnosticModel?: string;
+  /** Only trusted in-process classifiers may opt out; provider adapters reserve by default. */
+  readonly classificationUsesProvider?: boolean;
+  turn?(input: ModelInput, signal: AbortSignal, diagnostics?: { correlationId: string }): Promise<SemanticTurn>;
   classify?(input: ModelInput, signal: AbortSignal, diagnostics?: { correlationId: string }): Promise<z.infer<typeof gikaIntentClassificationSchema>>;
   interpret(input: ModelInput, signal: AbortSignal, diagnostics?: { correlationId: string }): Promise<ModelCall[]>;
 }

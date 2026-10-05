@@ -10,21 +10,23 @@ import { completionDescriptorSchema, completionResultSchema, type CompletionDesc
 import { z } from 'zod';
 import { Temporal } from '@js-temporal/polyfill';
 import type { DecodedIdToken } from 'firebase-admin/auth';
-import { activityInputSchema } from '../../packages/domain/src/content.ts';
+import { activityInputSchema, shoppingListInputSchema } from '../../packages/domain/src/content.ts';
 import { entityIdSchema, timeZoneSchema } from '../../packages/domain/src/identity.ts';
 import { commandCreationResultSchema, createTaskDescriptorSchema, readItemSchema, readResultSchema, type CreateTaskDescriptor, type GikaRequest, type ReadResult } from '../../packages/domain/src/gika.ts';
 import { db } from '../platform/firebase.ts';
 import { AppError } from '../errors.ts';
 import { GikaFault, type ModelContext } from './model.ts';
 import { hashValue } from '../hash.ts';
+import { createShoppingListDescriptorSchema, shoppingListCommandFields, shoppingListReadItemSchema, shoppingListsResultSchema, type CreateShoppingListDescriptor, type ShoppingListsResult } from '../../packages/domain/src/gikaShopping.ts';
 
 export type ReadRange = { startDate: string; endDate: string; timeZone: string };
 export interface ReadRepository {
   authorize(identity: DecodedIdToken, purpose?: 'receipt'): Promise<ModelContext>;
   read(uid: string, range: ReadRange): Promise<ReadResult>;
+  readShoppingLists?(uid: string): Promise<ShoppingListsResult>;
   inspectRecurrence?(uid: string, task: RecurrenceTask): Promise<RecurrenceSnapshot | null>;
   recoverBatch?(uid:string, request:GikaRequest):Promise<{confirmation:BatchConfirmation;result:BatchResult}|null>;
-  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | { kind: 'recurrence'; confirmation: RecurrenceConfirmation } | null>;
+  recoverMutation(uid: string, request: GikaRequest): Promise<{ kind: 'shopping_create'; list: CreateShoppingListDescriptor } | { kind: 'create'; task: CreateTaskDescriptor } | { kind: 'complete'; task: CompletionDescriptor } | { kind: 'update'; task: UpdateDescriptor } | { kind: 'reschedule'; task: RescheduleDescriptor; confirmation?: GikaConfirmation } | { kind: 'recurrence'; confirmation: RecurrenceConfirmation } | null>;
 }
 const trustedProfileSchema = z.object({ uid: entityIdSchema, accountState: z.literal('active'), timeZone: timeZoneSchema, weekStartsOn: z.union([z.literal(0), z.literal(1)]) });
 export const firestoreReads: ReadRepository = {
@@ -67,8 +69,16 @@ export const firestoreReads: ReadRepository = {
     const receipt = await db.doc(`commandReceipts/${entityIdSchema.parse(uid)}_${request.requestId}`).get();
     if (!receipt.exists) return null;
     const data = receipt.data()!;
-    const metadata = data.gikaRecurrence ?? data.gikaReschedule ?? data.gikaUpdate ?? data.gikaCompletion ?? data.gika;
+    const metadata = data.gikaShopping ?? data.gikaRecurrence ?? data.gikaReschedule ?? data.gikaUpdate ?? data.gikaCompletion ?? data.gika;
     if (data.uid !== uid || !metadata || metadata.requestTextHash !== hashValue(request.text)) throw new AppError(409, 'OPERATION_MISMATCH', 'Este pedido já foi usado com outros dados. Envie um novo pedido.');
+    if (data.gikaShopping) {
+      const meta = z.object({ requestTextHash: z.string().regex(/^[a-f0-9]{64}$/), list: createShoppingListDescriptorSchema }).strict().safeParse(data.gikaShopping);
+      const response = commandCreationResultSchema.safeParse(data.response);
+      if (!meta.success || !response.success || response.data.operationId !== request.requestId || response.data.entityId !== request.requestId
+        || [data.gika, data.gikaUndo, data.gikaCompletion, data.gikaUpdate, data.gikaReschedule, data.gikaRecurrence, data.gikaBatch].some(value => value !== undefined)) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      if (data.hash !== commandHash(shoppingListCommandFields(meta.data.list, request.requestId, meta.data.requestTextHash))) throw new GikaFault('GIKA_INVALID_RESPONSE');
+      return { kind: 'shopping_create', list: meta.data.list };
+    }
     if (data.gikaRecurrence) {
       const confirmation = recurrenceConfirmationSchema.parse(data.gikaRecurrence.confirmation);
       const effect = confirmation.effect;
@@ -140,5 +150,19 @@ export const firestoreReads: ReadRepository = {
     if (items.size > 50) partial = true;
     const sorted = [...items.values()].sort((a, b) => a.id.localeCompare(b.id));
     return readResultSchema.parse({ ...range, partial, cached: false, items: sorted.slice(0, 50) });
+  },
+  async readShoppingLists(uid) {
+    const snapshot = await db.collection(`users/${entityIdSchema.parse(uid)}/shoppingLists`).limit(50).get();
+    let partial = snapshot.size >= 50;
+    const items: ShoppingListsResult['items'] = [];
+    for (const document of snapshot.docs) {
+      const data = document.data();
+      if (data.deletedAt || data.archivedAt) continue;
+      const input = shoppingListInputSchema.safeParse({ title: data.title, listKind: data.listKind, cycleKey: data.cycleKey });
+      const item = shoppingListReadItemSchema.safeParse({ id: document.id, title: data.title, listKind: data.listKind, revision: data.revision, itemCount: data.itemCount, pendingItemCount: data.pendingItemCount });
+      if (!input.success || !item.success || !entityIdSchema.nullable().safeParse(data.sourceTemplateId).success || data.schemaVersion !== 1 || data.deletedAt !== null || data.archivedAt !== null) { partial = true; continue; }
+      items.push(item.data);
+    }
+    return shoppingListsResultSchema.parse({ items: items.sort((a, b) => a.id.localeCompare(b.id)), partial, cached: false });
   },
 };

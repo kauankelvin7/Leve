@@ -35,11 +35,12 @@ export function safeGikaError(error: unknown) {
 }
 
 export function gikaDiagnostic(stage: GikaStage, context: {
-  correlationId?: string; model: string; upstreamStatus?: number; apiKeyPresent?: boolean; error?: unknown;
+  correlationId?: string; model: string; phase?: 'semantic' | 'classification' | 'interpretation' | 'planning'; upstreamStatus?: number; apiKeyPresent?: boolean; error?: unknown;
 }) {
   backendLog(context.error === undefined ? 'info' : 'warn',
     stage === 'upstream_response' ? 'gika.upstream.response' : 'gika.diagnostic', {
       correlationId: context.correlationId, model: context.model, stage,
+      ...(context.phase === undefined ? {} : { phase: context.phase }),
       ...(context.upstreamStatus === undefined ? {} : { upstreamStatus: context.upstreamStatus }),
       ...(context.apiKeyPresent === undefined ? {} : { keyPresent: context.apiKeyPresent }),
       ...(context.error === undefined ? {} : safeGikaError(context.error)),
