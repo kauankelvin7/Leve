@@ -101,7 +101,7 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
     }
     try {
       const activityData = activity.data()!;
-      const result = await sender({ tokens, data: { title: 'Lembrete do Leve', body: reminderMessage(activityData, reserved.reminderSpecId), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
+      const result = await sender({ tokens, data: { title: String(activityData.title ?? 'Sua atividade'), body: reminderMessage(activityData, reserved.reminderSpecId), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
       const invalid = result.responses.flatMap((response, index) => !response.success && ['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(response.error?.code ?? '') ? [tokenRecords[index]!] : []);
       await invalidateNotificationTokens(reserved.uid, invalid, now);
       const deliveredTokenHashes = [...new Set([...(reserved.deliveredTokenHashes ?? []), ...result.responses.flatMap((response, index) => response.success ? [hashValue(tokens[index]!)] : [])])];

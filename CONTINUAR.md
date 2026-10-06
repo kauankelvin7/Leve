@@ -1,5 +1,20 @@
 # Leve — ponto exato de retomada
 
+## Entrega vigente — identidade das notificações (06/10/2026)
+
+Base: `0316a5f` na main, com notificações automáticas e mensagens úteis já integradas.
+Novo ajuste: branch `fix/branded-push-notifications`. PNGs derivados do favicon
+oficial, badge monocromático, ícones separados any/maskable e apple-touch-icon.
+A notificação usa o título da atividade, contexto de horário no corpo e ação
+"Ver atividade". Worker atualizado e ícones em cache para uso offline.
+Relatório: `docs/frontend/NOTIFICATIONS_REPORT.md`. A identificação do domínio
+e a disposição nativa são controladas pelo Chrome/Android; aparência final e
+atualização de uma instalação existente exigem conferir em aparelho real.
+Autorização de integração à main preservada do pedido anterior sobre notificações;
+seguir os checks CI/Planner/Seasonal do PR antes de integrar.
+
+## Histórico da entrega visual
+
 **Atualizado em:** 06/10/2026
 
 **Entrega atual:** `refine/visual-hierarchy-components`

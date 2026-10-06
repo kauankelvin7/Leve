@@ -1,5 +1,5 @@
-const CACHE = 'leve-shell-v7';
-const SHELL = ['/', '/theme-init.js', '/manifest.webmanifest', '/favicon.svg?v=3', '/robots.txt'];
+const CACHE = 'leve-shell-v8';
+const SHELL = ['/', '/theme-init.js', '/manifest.webmanifest', '/favicon.svg?v=3', '/icons/icon-192.png?v=4', '/icons/badge-96.png?v=4', '/robots.txt'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
@@ -32,7 +32,7 @@ self.addEventListener('push', event => {
   try { payload = event.data?.json() ?? {}; } catch { /* Usa a mensagem segura abaixo. */ }
   const data = payload.data ?? payload.notification ?? payload;
   event.waitUntil(Promise.all([
-    self.registration.showNotification(data.title ?? 'Leve', { body: data.body ?? 'Você tem um lembrete.', icon: '/favicon.svg?v=3', data: { url: data.url ?? '/hoje' }, tag: data.tag, renotify: true, silent: false, vibrate: [140, 70, 180] }),
+    self.registration.showNotification(data.title ?? 'Leve', { body: data.body ?? 'Você tem um lembrete.', icon: '/icons/icon-192.png?v=4', badge: '/icons/badge-96.png?v=4', actions: [{ action: 'open-activity', title: 'Ver atividade' }], data: { url: data.url ?? '/hoje' }, tag: data.tag, renotify: true, silent: false, vibrate: [140, 70, 180] }),
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
       for (const client of clients) client.postMessage({ type: 'LEVE_REMINDER', data });
     }),

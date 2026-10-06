@@ -59,8 +59,8 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       if (Notification.permission !== 'granted') throw new Error('Permita notificações antes de experimentar.');
       const registration = await navigator.serviceWorker.getRegistration();
       if (!registration?.active) throw new Error('Feche e abra o Leve para concluir a atualização.');
-      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: '“Dentista” começa em 15 minutos. Já já é hora.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
-      await registration.showNotification('Lembrete do Leve', options);
+      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[]; actions?: { action: string; title: string }[] } = { body: 'Seu compromisso começa em 15 minutos.', icon: '/icons/icon-192.png?v=4', badge: '/icons/badge-96.png?v=4', actions: [{ action: 'open-agenda', title: 'Abrir agenda' }], data: { url: '/hoje' }, tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
+      await registration.showNotification('Dentista · exemplo', options);
       setMessage('Exemplo de notificação enviado.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível mostrar o aviso.'); }
     finally { setBusy(false); }
