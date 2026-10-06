@@ -18,6 +18,7 @@ import { Privacy } from '../features/content/Privacy';
 import { Terms } from '../features/content/Terms';
 import { GikaLauncher } from '../features/gika/GikaLauncher';
 import styles from './AppShell.module.css';
+import { SecondaryNavigation, secondaryLinks } from './SecondaryNavigation';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -34,7 +35,19 @@ const Review = lazy(() => import('../features/activities/Review').then(module =>
 
 function RouteFocus() {
   const { pathname } = useLocation();
-  useEffect(() => { document.getElementById('page-title')?.focus(); window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const focus = () => {
+      const title = document.getElementById('page-title');
+      if (!title) return false;
+      title.focus({ preventScroll: true });
+      return true;
+    };
+    if (focus()) return;
+    const observer = new MutationObserver(() => { if (focus()) observer.disconnect(); });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [pathname]);
   return null;
 }
 
@@ -55,7 +68,6 @@ function Shell() {
     ['/hoje', 'day', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
     ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'],
   ] as const;
-  const secondaryLinks = [['/lixeira', 'trash', 'Lixeira'], ['/revisao', 'review', 'Revisão']] as const;
   const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
   return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
@@ -64,8 +76,17 @@ function Shell() {
       <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small style={{ color: 'var(--ink-surface)' }}>Conta e preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
-      <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink className="mobile-profile" to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink></div></div>
-      <div className="workspace-bar"><strong>{[...links, ...secondaryLinks].find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong><span className="workspace-actions"><details className={styles.secondaryNavigation}><summary aria-label="Mais páginas" title="Mais páginas">Mais</summary><nav aria-label="Mais páginas">{secondaryLinks.map(([to, icon, label]) => <NavLink key={to} to={to} onClick={event => event.currentTarget.closest('details')?.removeAttribute('open')}><Icon name={icon} /><span>{label}</span></NavLink>)}</nav></details><Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /><span className="visually-hidden">Adicionar atividade</span></Link><span className="workspace-private">Agenda pessoal</span></span></div>
+      <header className={`workspace-bar ${styles.workspaceBar}`}>
+        <div className="mobile-brand"><Link className="brand" to="/hoje" aria-label="Leve, Meu dia">leve<span>.</span></Link></div>
+        <strong className={styles.currentPage}>{[...links, ...secondaryLinks].find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong>
+        <div className="workspace-actions">
+          <NavLink className={styles.mobileAction} to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink>
+          <SecondaryNavigation />
+          <Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /></Link>
+          <NavLink className={`${styles.mobileAction} ${styles.mobileProfile}`} to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink>
+          <span className="workspace-private">Agenda pessoal</span>
+        </div>
+      </header>
       <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
       <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
       <footer className="page-footer"><span>Leve · sua agenda privada</span><nav className={styles.legalFooter} aria-label="Informações legais"><Link to="/privacidade">Privacidade</Link><Link to="/termos">Termos</Link></nav><button className="text-button" onClick={() => void logout()}>Sair</button></footer>

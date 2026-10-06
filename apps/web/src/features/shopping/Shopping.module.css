@@ -1,0 +1,38 @@
+.page :global(.empty) { display: flex; flex-wrap: wrap; min-height: 112px; gap: 12px; align-items: center; justify-content: center; padding: 20px; }
+
+.overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 22px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+.overview > span {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  gap: 6px;
+  padding: 18px 22px;
+}
+
+.overview > span + span { border-left: 1px solid var(--border-subtle); }
+.overview strong { font: 800 2rem/1 'Nunito', sans-serif; letter-spacing: -.04em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.overview small { color: var(--text-secondary); font-size: .8rem; line-height: 1.4; overflow-wrap: anywhere; }
+
+.composer { margin-top: 28px; scroll-margin-block: 20px; }
+
+@media (max-width: 739px) {
+  .overview { margin-bottom: 18px; }
+  .overview > span { padding: 14px 10px; }
+  .overview strong { font-size: 1.65rem; }
+  .overview small { font-size: .75rem; }
+}
+
+@media (forced-colors: active) {
+  .overview { background: Canvas; color: CanvasText; border-color: ButtonBorder; }
+  .overview small { color: CanvasText; }
+}

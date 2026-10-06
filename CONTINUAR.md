@@ -205,3 +205,31 @@ Commit atômico M5-T1: `4561cf59db395ac4c10c58118890283a3e45ec1e`; branch feat/g
 M5-T1 aprovado; entrada a922594 limpa e branch temporária chore/security-hardening criada. DiceBear9.4.3 em commit separado73e750c, seis avatares padrão idênticos e injeção SVG corrigida. Firebase12.19/Admin13.6/parents preservados; overrides limitados grpc1.14.5 e uuid11.1.1, árvore válida/clean npmci/contratos CJS/v4/multipart/SDK emulados comprovados. Produção audit13(4high/9moderate)→0, auditlevelhigh exit0; completo28→14 dev-only preexistentes/mesmas versões, não ocultados/CI intacto.334 unit/166 integração/53 E2E finais/lint/build/doisTS PASS;check12/1 contraste histórico.152 arquivos produto/harness/CI idênticos à entrada. Fontes docs/security/REPORT.md/INVENTORY.md/GOOGLE_EVIDENCE.md/DEVELOPMENT_REMAINING.md/gates.json e .agent/GIKA_STATE.md. Sem policy/tools/UI/writer/Rules/outbox/arquitetura/segredo/live/billing/push/deploy/merge alterados. feat/gika-integration permanece a922594; parar para revisão antes de integrar chore/security-hardening. M5-T2 não iniciado. SHA real no checkpoint documental posterior.
 
 Commits atômicos hardening: DiceBear `73e750c866b620bb6a44147ecebf2b42d5e51b18`, Firebase/Google `e8c07be3218cb583fffb5af38e7a8beb10c95851`. chore/security-hardening/worktree limpo confirmados após ambos. Checkpoint documental posterior registra SHAs sem mudança funcional; feat ainda a922594. Aguardar revisão antes de integrar, M5-T2 todo.
+
+## Frontend — composição e navegação em 06/10/2026
+
+O pedido posterior autoriza a revisão criativa de todas as telas e o envio para
+`main` após revisão e testes. Base `1ebe813cfe92e1c19ef338a57d579b82ec1aee8c`;
+branch `refine/mobile-layout-and-navigation`.
+
+Menu Mais corrigido na causa raiz: regras de navegação limitadas à sidebar,
+linhas completas e fechamento por Escape, toque fora e navegação. Cabeçalho móvel
+compacto e nomes na barra inferior. Compras e Notas mostram conteúdo salvo antes
+do formulário. Revisão, Busca, Preferências, Lixeira, Privacidade, Termos e estados
+de recurso indisponível receberam ajustes de composição. O hook documental
+vincula o estado a UID e caminho, e o foco aguarda títulos carregados.
+
+Fontes desta entrega: `DESIGN.md` e
+`docs/frontend/MOBILE_REFINEMENT_REPORT.md`, com arquitetura, revisão independente,
+snapshots e limites. Lint/typecheck/build, 802 unitários, 320 de integração e 17
+E2E do shell PASS. Execução ampla local: 181 PASS/1 expectativa antiga de retrato;
+ajuste mantém o alvo de toque >= 44 px e valida o rótulo; repetição focal 2/2 PASS.
+Todos os 182 cenários locais únicos foram observados PASS ao final. CI passa a
+proteger navegação responsiva, páginas públicas e launcher. A integração na main
+está autorizada pelo usuário e condicionada aos checks do PR.
+
+PR #19: referências visuais alinhadas ao Chromium 153 do Playwright/CI, depois de
+reproduzir e inspecionar a divergência com o Chromium 151 do sistema. Comparação
+final sem atualização de snapshots: 7/7 PASS. Tolerâncias preservadas; artefatos
+de falha no CI por sete dias. Usar o navegador do lockfile para capturas canônicas;
+comando reproduzível no relatório desta entrega.

@@ -7,6 +7,7 @@ import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
 import { BackButton } from '../../components/ui/BackButton';
 import styles from './ActivityDetail.module.css';
+import { UnavailableState } from '../../components/ui/UnavailableState';
 
 const duration = (seconds: number) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)}h ` : ''}${Math.floor(seconds % 3600 / 60)}min`;
 const stopwatch = (seconds: number) => [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
@@ -117,7 +118,7 @@ export function ActivityDetail() {
     catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível registrar o tempo.'); }
   }
   if (loading) return <LoadingState variant="detail" label="Abrindo a atividade…" />;
-  if (!activity || activity.deletedAt) return <main><h1 id="page-title" tabIndex={-1}>Atividade indisponível</h1><BackButton to="/hoje" /></main>;
+  if (!activity || activity.deletedAt) return <UnavailableState title={error ? 'Não foi possível abrir a atividade' : 'Atividade indisponível'} description={error || 'Esta atividade pode ter sido removida. As demais continuam na sua agenda.'} to="/hoje" backLabel="Voltar ao Meu dia" icon="day" retry={Boolean(error)} />;
   const category = categories.find(item => item.id === activity.categoryId);
   const total = visibleEntries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
   const runningSeconds = active ? accrued(active) : 0;

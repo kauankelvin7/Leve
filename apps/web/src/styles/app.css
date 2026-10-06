@@ -331,9 +331,9 @@ button:disabled { opacity: .6; cursor: not-allowed; }
 .brand-caption { margin-top: 8px; margin-bottom: 48px; }
 
 /* ── 12. NAVEGAÇÃO ───────────────────────────────────────── */
-nav { display: grid; gap: 4px; }
+.sidebar nav { display: grid; gap: 4px; }
 
-nav a {
+.sidebar nav a {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -346,9 +346,9 @@ nav a {
   transition: background var(--t-base), color var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
-nav a:hover { background: var(--color-accent-hover); }
+.sidebar nav a:hover { background: var(--color-accent-hover); }
 
-nav a.active {
+.sidebar nav a.active {
   background: linear-gradient(
     135deg,
     var(--color-accent-soft),
@@ -1408,8 +1408,8 @@ html {
     -webkit-backdrop-filter: none;
   }
   .sidebar > .brand, .sidebar > .brand-caption, .sidebar-bottom { display: none; }
-  nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
-  nav a { flex-direction: column; gap: 4px; padding: 8px 0; font-size: .625rem; letter-spacing: 0; white-space: nowrap; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+  .sidebar nav a { flex-direction: column; gap: 4px; padding: 8px 0; font-size: .625rem; letter-spacing: 0; white-space: nowrap; }
   .demo-banner { padding-top: 14px; align-items: start; font-size: .75rem; }
   .demo-banner span { max-width: 235px; }
   .demo-banner a { max-width: 64px; }
@@ -1446,7 +1446,7 @@ html {
 }
 
 @media (forced-colors: active) {
-  nav a.active, .day-picker button.selected { outline: 2px solid Highlight; }
+  .sidebar nav a.active, .day-picker button.selected { outline: 2px solid Highlight; }
 }
 
 @media (min-width: 740px) and (max-height: 720px) {

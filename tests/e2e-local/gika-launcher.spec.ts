@@ -45,7 +45,13 @@ test('M9 launcher leaves short shopping list actions reachable on mobile', async
   expect(await gika.evaluate(element => getComputedStyle(element).position)).not.toBe('fixed');
   const target = await gika.boundingBox(), avatar = await gika.locator('img').boundingBox();
   expect(target!.width).toBeGreaterThanOrEqual(44); expect(target!.height).toBeGreaterThanOrEqual(44);
-  expect(avatar!.width).toBeGreaterThanOrEqual(44); expect(avatar!.width).toBeLessThanOrEqual(52);
+  // The compact portrait shares the touch target with its visible label.
+  await expect(gika.getByText('Gika', { exact: true })).toBeVisible();
+  expect(avatar!.width).toBeGreaterThanOrEqual(24); expect(avatar!.width).toBeLessThanOrEqual(32);
+  expect(avatar!.x).toBeGreaterThanOrEqual(target!.x);
+  expect(avatar!.x + avatar!.width).toBeLessThanOrEqual(target!.x + target!.width);
+  expect(avatar!.y).toBeGreaterThanOrEqual(target!.y);
+  expect(avatar!.y + avatar!.height).toBeLessThanOrEqual(target!.y + target!.height);
   await gika.click(); await expect(page.getByRole('dialog', { name: 'Gika', exact: true })).toBeVisible();
   await expect(page.locator('.gika-panel')).toHaveCount(1);
   await expect(gika).toHaveAttribute('aria-expanded', 'true'); await expect(gika).toHaveAttribute('aria-controls', 'gika-dialog');

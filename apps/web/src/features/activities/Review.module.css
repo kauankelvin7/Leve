@@ -29,20 +29,12 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 250px;
+  min-height: 192px;
   margin-bottom: 18px;
-  padding: clamp(26px, 5vw, 48px);
+  padding: clamp(22px, 3vw, 32px);
   align-items: center;
   overflow: hidden;
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent-soft) 52%, var(--color-surface)), color-mix(in srgb, var(--color-surface) 80%, transparent));
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(115deg, color-mix(in srgb, var(--color-solid) 32%, transparent), transparent 42%);
 }
 
 .heroCopy {
@@ -58,8 +50,9 @@
 }
 
 .heroCopy > strong {
-  font: 800 clamp(3.4rem, 10vw, 6.8rem)/.82 var(--font-brand);
+  font: 800 clamp(2.5rem, 5vw, 4.5rem)/1 var(--font-brand);
   letter-spacing: -.065em;
+  overflow-wrap: anywhere;
 }
 
 .heroCopy > p {
@@ -71,12 +64,11 @@
 .completionRing {
   position: relative;
   display: grid;
-  width: clamp(132px, 18vw, 170px);
+  width: clamp(110px, 12vw, 140px);
   aspect-ratio: 1;
   place-items: center;
   border-radius: 50%;
   background: conic-gradient(var(--color-action-primary) var(--review-progress), color-mix(in srgb, var(--color-border) 72%, transparent) 0);
-  box-shadow: 0 18px 40px color-mix(in srgb, var(--color-action-primary) 12%, transparent);
 }
 
 .completionRing::before {
@@ -115,8 +107,8 @@
 
 .metric {
   display: grid;
-  min-height: 192px;
-  padding: 22px;
+  min-height: 160px;
+  padding: 20px;
   align-content: start;
   gap: 8px;
   border-top-width: 1px;
@@ -136,7 +128,7 @@
   width: 42px;
   height: 42px;
   flex: 0 0 42px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--color-accent-border) 65%, white);
   border-radius: 14px;
@@ -250,25 +242,37 @@
   }
 
   .hero {
-    grid-template-columns: 1fr;
-    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) 84px;
+    gap: 16px;
     min-height: auto;
+    padding: 20px;
   }
 
   .heroCopy > strong {
-    font-size: clamp(3.5rem, 18vw, 5.2rem);
+    font-size: 2.6rem;
   }
 
+  .heroCopy > p { font-size: .82rem; line-height: 1.5; }
+
   .completionRing {
-    width: 132px;
-    justify-self: start;
+    width: 84px;
   }
+  .completionRing::before { inset: 6px; }
+  .completionRing strong { font-size: 1.4rem; }
+  .completionRing small { font-size: .6rem; }
 
   .grid {
     grid-template-columns: 1fr;
   }
 
   .metric {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
     min-height: 0;
+    padding: 16px;
+    gap: 6px 12px;
   }
+  .metricIcon { grid-column: 1; grid-row: 1 / 3; width: 36px; height: 36px; margin: 0; }
+  .metric > small { grid-column: 2; align-self: center; }
+  .metric > strong { grid-column: 3; font-size: 1.55rem; overflow-wrap: anywhere; }
+  .metric > span:last-child { grid-column: 2 / -1; margin-top: 0; font-size: .78rem; }
 }
