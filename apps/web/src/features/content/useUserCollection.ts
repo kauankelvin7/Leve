@@ -56,16 +56,16 @@ export function useUserSubcollections<T>(parentPath: string, parentIds: string[]
 
 export function useUserDocument<T>(path: string) {
   const { user } = useAuth();
-  const [item, setItem] = useState<(T & { id: string }) | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const identity = user && path ? `${user.uid}/${path}` : '';
+  const [state, setState] = useState<{ identity: string; item: (T & { id: string }) | null; loading: boolean; error: string }>({ identity: '', item: null, loading: true, error: '' });
   useEffect(() => {
-    if (!user || !firestore || !path) { setItem(null); setLoading(false); setError(''); return; }
-    setLoading(true);
-    return onSnapshot(doc(firestore, `users/${user.uid}/${path}`), snapshot => {
-      setItem(snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } as T & { id: string } : null);
-      setLoading(false); setError('');
-    }, () => { setLoading(false); setError('Não foi possível carregar este item.'); });
-  }, [user, path]);
-  return { item, loading, error };
+    if (!firestore || !identity) { setState({ identity, item: null, loading: false, error: '' }); return; }
+    setState({ identity, item: null, loading: true, error: '' });
+    return onSnapshot(doc(firestore, `users/${identity}`), snapshot => {
+      setState({ identity, item: snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } as T & { id: string } : null, loading: false, error: '' });
+    }, () => { setState({ identity, item: null, loading: false, error: 'Não foi possível carregar este item.' }); });
+  }, [identity]);
+  // An old subscription can finish while another UID or resource is loading.
+  const current = state.identity === identity ? state : { item: null, loading: Boolean(identity), error: '' };
+  return { item: current.item, loading: current.loading, error: current.error };
 }

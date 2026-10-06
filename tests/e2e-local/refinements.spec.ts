@@ -75,7 +75,7 @@ test('tutorial, cores persistentes, unidade condicional e lixeira móvel', async
   const trashHeadingBox = await page.getByRole('heading', { name: 'Lixeira', exact: true }).locator('..').boundingBox();
   expect(trashHeadingBox?.x ?? 999).toBeLessThanOrEqual(24);
   expect(trashHeadingBox?.width ?? 0).toBeGreaterThan(260);
-  await expect(page.locator('.trash-list strong').filter({ hasText: 'Nome muito comprido' })).toHaveCSS('white-space', 'nowrap');
+  await expect(page.locator('.trash-list strong').filter({ hasText: 'Nome muito comprido' })).toHaveCSS('white-space', 'normal');
   await page.screenshot({ path: 'docs/evidence/v2-trash-320.png', fullPage: true });
   await page.getByRole('button', { name: 'Excluir tudo', exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Manter na lixeira', exact: true }).click();

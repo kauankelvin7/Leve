@@ -4,9 +4,27 @@
 
 Pedido vigente: mudar de forma perceptível a aparência dos componentes. A direção agora distingue navegação em tinta escura, superfícies de papel e áreas de trabalho. `editorial.css` concentra essa camada compartilhada. As quatro paletas continuam determinando o acento e o fundo da navegação.
 
-Nunito e DM Sans continuam em toda a interface, inclusive títulos e números. Os painéis têm bordas definidas e pouca sombra. Botões primários ganham base de pressão; os secundários ficam planos. Notas têm borda de caderno e compras usam progresso fino com porcentagens legíveis. Meu dia tem uma data em destaque e atalhos reais para notas, compras e tempo registrado. No celular a composição se comprime sem esconder os acessos. Movimento é curto e respeita a preferência do sistema.
+Nunito e DM Sans continuam em toda a interface, inclusive títulos e números. Os painéis têm bordas definidas e pouca sombra. Botões primários ganham base de pressão; os secundários ficam planos. Notas têm borda de caderno e compras usam progresso fino com porcentagens legíveis. Meu dia tem uma data em destaque e acesso direto à Revisão. No celular a composição se comprime sem esconder os acessos. Movimento é curto e respeita a preferência do sistema.
 
 O carregamento das rotas fica dentro do shell para conservar navegação, guia e cronômetro durante a troca de páginas. Nenhuma nova biblioteca de animação foi adicionada.
+
+## Refinamento de 06/10/2026
+
+Cabeçalhos e resumos ocupam menos altura. Compras e Notas mostram o conteúdo salvo
+antes do formulário; criar ou editar leva o foco ao campo correspondente, mantendo
+o editor e os rascunhos existentes. O resumo de Compras tem três colunas também no
+celular, com quebra de contadores e rótulos em texto ampliado.
+
+O cabeçalho móvel reúne marca, busca, Mais, criação de atividade e perfil. A barra
+inferior mostra o nome dos cinco destinos. Mais usa linhas completas com ícone,
+nome e seta; fecha por Escape, toque fora e mudança de página. Suas regras de layout
+ficam no módulo da navegação, sem herdar a grade móvel da sidebar.
+
+Revisão usa métricas compactas; Busca usa uma lista contínua; Preferências mantém
+todos os atalhos visíveis; Lixeira permite títulos longos. Privacidade e Termos
+aproveitam a largura disponível, e recursos indisponíveis oferecem retorno dentro
+do shell. Escopo, arquitetura e evidências em
+`docs/frontend/MOBILE_REFINEMENT_REPORT.md`.
 
 ## Referências e propósito
 

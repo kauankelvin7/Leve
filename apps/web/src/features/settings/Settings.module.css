@@ -49,7 +49,7 @@
   min-height: 32px;
   font-family: var(--font-brand);
   font-size: 1.55rem;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .layout :global(.content-form h2 svg) {
@@ -101,7 +101,7 @@
 }
 
 .list :global(.row-actions) {
-  width: 100%;
+  width: auto;
   justify-content: flex-start;
 }
 
@@ -115,27 +115,23 @@
   z-index: 8;
   top: 10px;
   display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
   width: fit-content;
   max-width: 100%;
   margin-bottom: 24px;
   padding: 6px;
-  overflow-x: auto;
   border: 1px solid var(--surface-highlight);
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-solid) 72%, transparent);
   box-shadow: 0 10px 28px color-mix(in srgb, var(--color-text) 8%, transparent), inset 0 1px 0 var(--surface-highlight);
-  scrollbar-width: none;
-}
-
-.nav::-webkit-scrollbar {
-  display: none;
 }
 
 .nav a {
-  min-height: 38px;
-  padding: 9px 15px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 9px 12px;
   white-space: nowrap;
   border: 0;
   border-radius: 20px;
@@ -245,11 +241,12 @@
 
 @media (max-width: 739px) {
   .nav {
-    top: 6px;
+    position: static;
     width: 100%;
   }
 
   .layout :global(.content-form h2) {
     font-size: 1.4rem;
   }
+  .list :global(.row-actions) { width: 100%; }
 }

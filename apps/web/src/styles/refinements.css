@@ -525,42 +525,6 @@ textarea {
   min-width: 0;
 }
 
-.shopping-overview {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: -8px 0 24px;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, white);
-  border-radius: calc(var(--radius-panel) + 2px);
-  background: color-mix(in srgb, var(--color-surface) 76%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 62%, transparent), var(--shadow-soft);
-
-}
-
-.shopping-overview > span {
-  display: grid;
-  min-height: 104px;
-  padding: 20px 24px;
-  align-content: center;
-  gap: 5px;
-}
-
-.shopping-overview > span + span {
-  border-left: 1px solid var(--color-border);
-}
-
-.shopping-overview strong {
-  font: 800 clamp(1.9rem, 4vw, 2.65rem)/.9 var(--font-brand);
-  letter-spacing: -.03em;
-}
-
-.shopping-overview small {
-  color: var(--color-text-muted);
-  font-size: .78rem;
-  font-weight: 700;
-  letter-spacing: .015em;
-}
-
 .shopping-composer-heading {
   display: flex;
   align-items: center;
@@ -575,7 +539,7 @@ textarea {
 
 .shopping-lists-section,
 .template-lists {
-  margin-top: clamp(30px, 5vw, 48px);
+  margin-top: 22px;
 }
 
 .shopping-list-cards {
@@ -707,10 +671,6 @@ textarea {
   .shopping-detail-heading { grid-template-columns: 1fr; align-items: start; }
 
   .shopping-heading > .primary { grid-column: 1; grid-row: auto; justify-self: stretch; }
-  .shopping-overview { margin-top: 0; }
-  .shopping-overview > span { min-height: 88px; padding: 16px 12px; text-align: center; }
-  .shopping-overview strong { font-size: 1.9rem; }
-  .shopping-overview small { font-size: .68rem; }
 
   .shopping-list-card { min-height: 174px; }
   .shopping-detail-progress { grid-column: 1; grid-row: auto; width: 100%; min-height: auto; margin-top: 14px; grid-template-columns: auto auto; justify-content: space-between; align-items: baseline; }
@@ -720,9 +680,6 @@ textarea {
 }
 
 @media (max-width: 390px) {
-  .shopping-overview { grid-template-columns: 1fr; }
-  .shopping-overview > span { grid-template-columns: auto 1fr; min-height: 64px; align-items: baseline; justify-content: start; text-align: left; }
-  .shopping-overview > span + span { border-left: 0; border-top: 1px solid var(--color-border); }
   .shopping-list-main { grid-template-columns: auto minmax(0, 1fr) !important; }
   .shopping-list-main b { display: none; }
 }
@@ -922,7 +879,7 @@ body {
 .avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .mobile-profile .avatar { width: 38px; height: 38px; border-radius: 12px; }
 
-.avatar-picker { gap: 14px !important; padding: 18px !important; background: color-mix(in srgb, var(--color-accent-soft) 54%, transparent); }
+.avatar-picker { gap: 12px !important; padding: 12px !important; background: color-mix(in srgb, var(--color-accent-soft) 54%, transparent); }
 .avatar-picker-heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 16px; }
 .avatar-picker-heading p { max-width: 48ch; margin: 0; }
 .avatar-picker-heading button { flex: 0 0 auto; min-height: 40px; padding: 8px 12px; font-size: .8rem; }
@@ -1107,13 +1064,6 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
   line-height: 1.1;
 }
 
-.shopping-overview {
-  margin-bottom: 22px;
-  background: color-mix(in srgb, var(--color-solid) 65%, transparent);
-}
-
-.shopping-overview > span { min-height: 112px; }
-.shopping-overview small { font-size: .74rem; }
 
 .section-heading {
   margin-bottom: 16px;
@@ -1281,7 +1231,6 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
     background: currentColor;
   }
   .sidebar .nav-label { display: none; }
-  .shopping-overview > span { min-height: 82px; }
   .content-form, .activity-composer { padding: 20px; }
   .calendar-panel { border-radius: 22px; }
   .calendar-panel .toolbar { align-items: flex-start; }

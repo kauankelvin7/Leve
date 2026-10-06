@@ -222,10 +222,8 @@
 :root[data-appearance='dark'] .app-shell .timer-state.is-running {
   background: color-mix(in srgb, var(--color-action-primary) 22%, var(--color-solid));
 }
-:root[data-appearance='dark'] .app-shell .day-overview,
-:root[data-appearance='dark'] .app-shell .shopping-overview { color: var(--color-text); }
-:root[data-appearance='dark'] .app-shell .day-overview :is(.eyebrow, p),
-:root[data-appearance='dark'] .app-shell .shopping-overview :is(strong, small) { color: var(--color-text); }
+:root[data-appearance='dark'] .app-shell .day-overview { color: var(--color-text); }
+:root[data-appearance='dark'] .app-shell .day-overview :is(.eyebrow, p) { color: var(--color-text); }
 
 :root[data-appearance='dark'] .auth-page .auth-switch a:hover { background: color-mix(in srgb, var(--color-action-primary) 18%, transparent); }
 :root[data-appearance='dark'] .auth-page .auth-switch a[aria-current='page'] { background: var(--color-solid); color: var(--color-text); }
@@ -253,15 +251,3 @@
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-text) 12%, transparent);
 }
 :root[data-appearance='dark'] .quick-add { background: var(--color-solid); color: var(--color-action-primary); }
-
-@media (forced-colors: active) {
-  .app-shell .shopping-overview,
-  :root[data-appearance='dark'] .app-shell .shopping-overview {
-    color: CanvasText;
-    background: Canvas;
-  }
-  .app-shell .shopping-overview :is(strong, small),
-  :root[data-appearance='dark'] .app-shell .shopping-overview :is(strong, small) {
-    color: CanvasText;
-  }
-}

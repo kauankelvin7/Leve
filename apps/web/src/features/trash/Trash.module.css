@@ -39,6 +39,11 @@
   font-size: .75rem;
 }
 
+.page .list .itemCopy :is(strong, small) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .itemState {
   display: inline-block;
   margin-right: 5px;
@@ -99,7 +104,7 @@
   }
 
   .headingActions button {
-    flex: 1;
+    flex: 0 1 auto;
     justify-content: center;
   }
 

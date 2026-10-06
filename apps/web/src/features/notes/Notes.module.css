@@ -26,17 +26,14 @@
 }
 
 .page :global(.content-form) {
-  margin-bottom: 24px;
+  margin-top: 28px;
   border-top: 4px solid var(--color-action-primary);
+  scroll-margin-block: 20px;
 }
 
 .noteSections {
   display: grid;
-  gap: 32px;
-}
-
-.noteSections > section + section {
-  margin-top: 30px;
+  gap: 24px;
 }
 
 .noteSections > section > h2 {
@@ -70,6 +67,7 @@
   place-content: center;
   gap: 6px;
   text-align: center;
+  min-height: 120px;
 }
 
 .notesEmpty p {
@@ -100,7 +98,7 @@
   }
 
   .headingActions button {
-    flex: 1;
+    flex: 0 1 auto;
     justify-content: center;
   }
 }

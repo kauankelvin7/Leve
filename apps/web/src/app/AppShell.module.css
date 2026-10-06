@@ -24,6 +24,7 @@
   min-height: 44px;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   padding: 8px 10px;
   border-radius: var(--radius-md);
   color: var(--text-primary);
@@ -51,7 +52,9 @@
   top: calc(100% + 8px);
   right: 0;
   display: grid;
-  min-width: 180px;
+  grid-template-columns: minmax(0, 1fr);
+  width: 224px;
+  max-width: calc(100vw - 32px);
   gap: 4px;
   padding: 8px;
   border: 1px solid var(--border-subtle);
@@ -60,8 +63,11 @@
   box-shadow: var(--shadow-dialog);
 }
 
+.secondaryNavigation:not([open]) nav { display: none; }
+
 :global(.workspace-bar) .secondaryNavigation nav a {
   display: flex;
+  flex-direction: row;
   min-height: 44px;
   align-items: center;
   gap: 10px;
@@ -69,7 +75,17 @@
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   text-decoration: none;
+  font-size: .9rem;
+  font-weight: 600;
 }
+
+.secondaryNavigation nav a > span { flex: 1; }
+.secondaryNavigation nav a > svg { width: 20px; height: 20px; flex-shrink: 0; }
+.secondaryNavigation nav a > svg:last-child { width: 16px; height: 16px; color: var(--text-secondary); }
+
+:global(.workspace-bar) .secondaryNavigation nav a:global(.active) { background: var(--color-accent-soft); }
+
+.mobileAction { display: none; }
 
 :global(.workspace-bar) .secondaryNavigation nav a:hover {
   background: color-mix(in srgb, var(--action-primary) 9%, transparent);
@@ -86,8 +102,69 @@
 }
 
 @media (max-width: 739px) {
+  :global(.app-shell) .workspaceBar {
+    position: relative;
+    min-height: 52px;
+    margin: 0;
+    padding-top: env(safe-area-inset-top);
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .workspaceBar :global(.mobile-brand) { min-height: 0; margin: 0; padding: 0; }
+  .workspaceBar :global(.mobile-brand .brand) {
+    display: inline-flex;
+    align-items: baseline;
+    width: auto;
+    height: auto;
+    border: 0;
+    font-size: 2.1rem;
+    text-decoration: none;
+  }
+  .currentPage { display: none; }
+  .workspaceBar :global(.workspace-actions) { gap: 4px; margin-inline-start: auto; }
+  .workspaceBar .mobileAction {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .workspaceBar .mobileProfile { padding: 3px; overflow: hidden; }
+  .mobileProfile :global(.avatar) { width: 36px; height: 36px; }
+  .workspaceBar :global(.quick-add) { box-shadow: none; }
+  .secondaryNavigation summary { padding-inline: 8px; font-size: .8rem; }
+  .secondaryNavigation { position: static; }
+
   :global(.app-shell .sidebar) .primaryNavigation {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     overflow: visible;
   }
+
+  :global(.app-shell .sidebar) .primaryNavigation > :is(a, button) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-height: 56px;
+    padding: 6px 2px;
+    border-radius: 14px;
+  }
+  :global(.app-shell .sidebar) .primaryNavigation :global(.nav-label) {
+    display: block;
+    font-size: .65rem;
+    line-height: 1.2;
+    font-weight: 600;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.app-shell .sidebar) .primaryNavigation a:global(.active)::after { display: none; }
+  :global(.app-shell .sidebar) .primaryNavigation :global(.gika-nav-avatar) { width: 28px; height: 28px; }
 }
