@@ -261,3 +261,25 @@ texto (LCD colorido no Ubuntu, tons de cinza local); capturas e crops inspeciona
 `--disable-lcd-text` somente nesta suíte padroniza a rasterização e preserva o
 executável configurado. Referências, asserts e limites intactos. Repetição focal
 2/2 PASS e revisão complementar sem impedimentos; repetir checks no HEAD final.
+
+### Retomada — acesso GitHub pendente
+
+A implementação está no commit `db4eadb361da6108444b693e5904f3c39fd470e4`,
+publicado no PR #20: https://github.com/kauankelvin7/Leve/pull/20.
+A estabilização de data e rasterização, validada localmente sem atualizar
+referências, está no commit `a397e5597df8c61c503629c13049dece5cbc4b1f`.
+Na tentativa de enviar esse segundo commit, o Git remoto deixou de autenticar e
+`gh api user` confirmou HTTP 401 / Bad credentials. O ambiente continua conectado;
+a rede está liberada. Não houve alteração de credenciais ou criação de segredo.
+
+O PR remoto ainda contém a primeira versão. Os gates Planner e Sazonal e o preview
+passaram; o primeiro CI registrou a diferença de um pixel já diagnosticada e
+corrigida localmente. A `main` permanece na base desta entrega. Não considerar
+o envio concluído nem integrar o HEAD remoto sem publicar a correção e validar
+os checks do novo HEAD.
+
+Próxima ação após restabelecer a conexão GitHub no Codex: conferir status/SHA e
+acesso, enviar a branch `refine/agenda-loading-screen`, atualizar o corpo do PR
+com o HEAD final, acompanhar os checks e integrar conforme autorização vigente.
+O corpo preparado está em `/tmp/leve-agenda-loading-pr.md`; se esse arquivo não
+existir na retomada, reconstruir a partir do relatório e das provas deste bloco.
