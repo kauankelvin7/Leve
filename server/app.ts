@@ -12,7 +12,7 @@ import { deleteAccount, exportAccount, importAccount, resumeAccountDeletions } f
 import { notificationCommand } from './commands/notifications.ts';
 import { emptyTrash } from './commands/trash.ts';
 import { timeEntryCommand } from './commands/time.ts';
-import { materializeRecurringActivities, processReminderTick, purgeExpiredContent, verifyTick } from './reminders.ts';
+import { backfillAutomaticReminderJobs, materializeRecurringActivities, processReminderTick, purgeExpiredContent, verifyTick } from './reminders.ts';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -55,7 +55,7 @@ app.get('/api/version', (_request, response) => {
   const release = configured && /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(configured) ? configured : 'stable';
   response.json({ release });
 });
-app.post('/api/internal/tick', async (request, response) => { verifyTick(request); const reminders = await processReminderTick(); const recurrence = await materializeRecurringActivities(); const trash = await purgeExpiredContent(); const deletions = await resumeAccountDeletions(); response.json({ reminders, recurrence, trash, deletions }); });
+app.post('/api/internal/tick', async (request, response) => { verifyTick(request); const reminderBackfill = await backfillAutomaticReminderJobs(); const reminders = await processReminderTick(); const recurrence = await materializeRecurringActivities(); const trash = await purgeExpiredContent(); const deletions = await resumeAccountDeletions(); response.json({ reminderBackfill, reminders, recurrence, trash, deletions }); });
 app.use('/api', async (request, response, next) => {
   const token = request.headers.authorization?.match(/^Bearer (\S+)$/)?.[1];
   if (!token) throw new AppError(401, 'AUTH_REQUIRED', 'Entre na sua conta para continuar.');

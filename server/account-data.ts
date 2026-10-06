@@ -8,6 +8,7 @@ import { AppError } from './errors.ts';
 import { auth, db } from './platform/firebase.ts';
 import { commandHash } from './commands/identity.ts';
 import { hashCanonicalValue, hashValue } from './hash.ts';
+import { reminderJobsForActivity } from './reminder-jobs.ts';
 
 function publicProfile(profile: UserProfile): AccountArchive['profile'] {
   return { displayName: profile.displayName, locale: 'pt-BR', timeZone: profile.timeZone, weekStartsOn: profile.weekStartsOn, reduceTransparency: profile.reduceTransparency, colorTheme: profile.colorTheme ?? 'green', appearance: profile.appearance ?? 'system', seasonalDetailsEnabled: profile.seasonalDetailsEnabled ?? true, avatarStyle: profile.avatarStyle, avatarSeed: profile.avatarSeed };
@@ -154,6 +155,19 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
       transaction.update(root, { dataVersion: FieldValue.increment(1), updatedAt: new Date().toISOString() });
       return nextCursor;
     });
+  }
+  const reminderJobs = writes.flatMap(write => {
+    if (!write.path.startsWith('activities/')) return [];
+    const activityId = write.path.slice('activities/'.length);
+    const activity = write.value;
+    if (activity.status !== 'pending' || activity.deletedAt) return [];
+    return reminderJobsForActivity(identity.uid, activityId, Number(activity.revision ?? 1), activity, now)
+      .map(job => ({ ref: db.doc(`reminderJobs/${job.id}`), value: job.value }));
+  });
+  for (let offset = 0; offset < reminderJobs.length; offset += 400) {
+    const batch = db.batch();
+    for (const job of reminderJobs.slice(offset, offset + 400)) batch.set(job.ref, job.value);
+    await batch.commit();
   }
   const response: CommandResult = { operationId: command.operationId, entityId: input.importId, revision: 1, serverTime: now, result: 'applied' };
   await db.runTransaction(async transaction => {

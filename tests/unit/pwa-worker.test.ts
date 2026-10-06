@@ -15,12 +15,12 @@ it('exibe os dados aninhados recebidos do FCM e preserva o destino', async () =>
   runInNewContext(worker, { self, caches: {}, fetch: vi.fn(), URL });
   let completion: Promise<unknown> | undefined;
   listeners.get('push')!({
-    data: { json: () => ({ data: { title: 'Leve', body: 'Consulta em 10 minutos', url: '/atividade/abc', tag: 'activity-abc' } }) },
+    data: { json: () => ({ data: { title: 'Lembrete do Leve', body: '“Dentista” começa em 10 minutos. Já já é hora.', url: '/atividade/abc', tag: 'activity-abc' } }) },
     waitUntil: (promise: Promise<unknown>) => { completion = promise; },
   });
   await completion;
-  expect(showNotification).toHaveBeenCalledWith('Leve', expect.objectContaining({
-    body: 'Consulta em 10 minutos',
+  expect(showNotification).toHaveBeenCalledWith('Lembrete do Leve', expect.objectContaining({
+    body: '“Dentista” começa em 10 minutos. Já já é hora.',
     data: { url: '/atividade/abc' },
     tag: 'activity-abc',
   }));

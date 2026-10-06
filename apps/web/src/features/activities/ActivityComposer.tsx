@@ -194,10 +194,13 @@ export function ActivityComposer({
                     </label>
 
                     <fieldset>
-                      <legend>Lembretes</legend>
-                      {kind === 'task' ? <p className="field-hint">Lembretes exigem horário.</p> : null}
+                      <legend>Notificações</legend>
+                      {kind === 'task'
+                        ? <p className="field-hint">Com um horário definido e as notificações ativadas neste aparelho, você recebe um aviso no horário. Lembretes antecipados são opcionais.</p>
+                        : eventAllDay
+                          ? <p className="field-hint">Compromissos de dia inteiro não têm um horário para avisar. Com horário definido e notificações ativadas neste aparelho, o aviso é automático.</p>
+                          : <p className="field-hint">Com as notificações ativadas neste aparelho, você recebe um aviso no horário do compromisso. Se quiser, escolha lembretes antecipados:</p>}
                       {[
-                        { value: '0', label: 'No horário da atividade' },
                         { value: '30', label: '30 minutos antes' },
                         { value: '60', label: '1 hora antes' },
                         { value: '1440', label: '1 dia antes' },

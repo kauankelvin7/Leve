@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { getMessaging } from 'firebase-admin/messaging';
-import type { DocumentReference, QueryDocumentSnapshot } from 'firebase-admin/firestore';
+import { FieldPath, type DocumentReference, type QueryDocumentSnapshot } from 'firebase-admin/firestore';
 import type { Request } from 'express';
 import { AppError } from './errors.ts';
 import { db } from './platform/firebase.ts';
 import { moveScheduleToDate, recurrenceDates, recurrenceDatesThrough, scheduleInstants, type ActivityInput, type RecurrenceRule } from '../packages/domain/src/content.ts';
 import { hashValue } from './hash.ts';
-import { createReminderJobs } from './reminder-jobs.ts';
+import { createReminderJobs, reminderJobsForActivity, reminderMessage } from './reminder-jobs.ts';
 import { validTickSignature } from './tick-signature.ts';
 
 type ReminderDeliveryResult = {
@@ -100,7 +100,8 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       continue;
     }
     try {
-      const result = await sender({ tokens, data: { title: 'Leve', body: String(activity.data()?.title ?? 'Você tem uma atividade.'), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
+      const activityData = activity.data()!;
+      const result = await sender({ tokens, data: { title: 'Lembrete do Leve', body: reminderMessage(activityData, reserved.reminderSpecId), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
       const invalid = result.responses.flatMap((response, index) => !response.success && ['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(response.error?.code ?? '') ? [tokenRecords[index]!] : []);
       await invalidateNotificationTokens(reserved.uid, invalid, now);
       const deliveredTokenHashes = [...new Set([...(reserved.deliveredTokenHashes ?? []), ...result.responses.flatMap((response, index) => response.success ? [hashValue(tokens[index]!)] : [])])];
@@ -128,6 +129,51 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
     }
   }
   return { reclaimed, examined: jobs.size, sent, skipped, retried };
+}
+
+export async function backfillAutomaticReminderJobs() {
+  const stateRef = db.doc('maintenance/defaultReminderBackfill');
+  const now = new Date().toISOString();
+  const leaseId = randomUUID();
+  const claim = await db.runTransaction(async transaction => {
+    const state = await transaction.get(stateRef);
+    if (state.data()?.state === 'complete' || state.data()?.leaseUntil > now) return null;
+    transaction.set(stateRef, { state: 'running', leaseId, leaseUntil: new Date(Date.now() + 120_000).toISOString(), updatedAt: now }, { merge: true });
+    return { cursor: typeof state.data()?.cursor === 'string' ? state.data()!.cursor as string : null };
+  });
+  if (!claim) return { scanned: 0, created: 0, complete: false };
+
+  let query = db.collectionGroup('activities').orderBy(FieldPath.documentId()).limit(50);
+  if (claim.cursor) query = query.startAfter(claim.cursor);
+  const page = await query.get();
+  const candidates = page.docs.flatMap(document => {
+    const data = document.data();
+    const parts = document.ref.path.split('/');
+    if (parts.length !== 4 || parts[0] !== 'users' || parts[2] !== 'activities' || data.status !== 'pending' || data.deletedAt) return [];
+    if (Array.isArray(data.reminderSpecs) && data.reminderSpecs.some((spec: { minutesBefore?: number }) => spec.minutesBefore === 0)) return [];
+    const jobs = reminderJobsForActivity(parts[1]!, document.id, Number(data.revision ?? 1), { ...data, reminderSpecs: [] }, now);
+    const automatic = jobs.find(job => job.value.reminderSpecId === 'at-time');
+    return automatic ? [{ document, activityId: document.id, activityPath: document.ref.path, uid: parts[1]!, revision: Number(data.revision ?? 1), job: automatic }] : [];
+  });
+  const written = await db.runTransaction(async transaction => {
+    const state = await transaction.get(stateRef);
+    if (state.data()?.leaseId !== leaseId) return 0;
+    const refs = [...page.docs.map(document => document.ref), ...candidates.map(candidate => db.doc(`reminderJobs/${candidate.job.id}`))];
+    const snapshots = refs.length ? await transaction.getAll(...refs) : [];
+    const activitySnapshots = snapshots.slice(0, page.docs.length);
+    const jobSnapshots = snapshots.slice(page.docs.length);
+    let created = 0;
+    candidates.forEach((candidate, index) => {
+      const activity = activitySnapshots[page.docs.findIndex(document => document.ref.path === candidate.activityPath)]?.data();
+      if (!activity || activity.revision !== candidate.revision || activity.status !== 'pending' || activity.deletedAt || jobSnapshots[index]?.exists) return;
+      transaction.create(db.doc(`reminderJobs/${candidate.job.id}`), candidate.job.value);
+      created++;
+    });
+    const complete = page.empty;
+    transaction.set(stateRef, { state: complete ? 'complete' : 'running', cursor: page.docs.at(-1)?.ref.path ?? state.data()?.cursor ?? null, leaseId: null, leaseUntil: null, updatedAt: now }, { merge: true });
+    return created;
+  });
+  return { scanned: page.size, created: written, complete: page.empty };
 }
 
 export async function materializeRecurringActivities() {

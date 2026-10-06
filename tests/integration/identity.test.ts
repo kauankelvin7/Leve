@@ -4,9 +4,11 @@ import request from 'supertest';
 import { initializeTestEnvironment, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
 import { collection, doc, getDoc, getDocs, limit, query, setDoc } from 'firebase/firestore';
 import { app } from '../../server/app';
+import { scheduleInstants } from '../../packages/domain/src/content';
 import { auth, db } from '../../server/platform/firebase';
 import { hashCanonicalValue, hashValue } from '../../server/hash';
-import { processReminderTick } from '../../server/reminders';
+import { backfillAutomaticReminderJobs, processReminderTick } from '../../server/reminders';
+import { reminderMessage } from '../../server/reminder-jobs';
 
 const projectId = 'demo-leve';
 const authBase = 'http://localhost:9099/identitytoolkit.googleapis.com/v1';
@@ -66,14 +68,18 @@ describe('API autenticada', () => {
   it('importa dois lotes concorrentes sem duplicar entidades nem reservas', async () => {
     const user = await createUser('import-concurrent@example.test');
     await seedAccount(user.uid);
+    const dueDate = new Date(Date.now() + 2 * 86400_000).toISOString().slice(0, 10);
     const archive = { format: 'leve-account-export', version: 1, exportedAt: new Date().toISOString(), profile,
-      data: { categories: [], series: [], notes: [], shoppingLists: [], activities: Array.from({ length: 401 }, (_, index) => ({ ...activityPayload, id: `source-${index}` })) } };
+      data: { categories: [], series: [], notes: [], shoppingLists: [], activities: Array.from({ length: 401 }, (_, index) => ({ ...activityPayload, ...(index === 0 ? { schedule: { ...activityPayload.schedule, dueDate, dueTime: '10:00' } } : {}), id: `source-${index}` })) } };
     const importId = '90000000-0000-4000-8000-000000000002';
     const body = contentCommand('account.import', importId, '90000000-0000-4000-8000-000000000001', 0, { importId, archive });
     const responses = await Promise.all([1, 2].map(() => request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(body)));
     expect(responses.map(response => response.status)).toEqual([200, 200]);
     expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(401);
     expect((await db.doc(`users/${user.uid}/internal/counts`).get()).data()).toMatchObject({ activities: 401, reserved_activities: 0 });
+    expect((await db.collection('reminderJobs').where('uid', '==', user.uid).get()).docs.map(job => job.data())).toEqual([
+      expect.objectContaining({ reminderSpecId: 'at-time', state: 'pending' }),
+    ]);
     expect((await db.doc(`users/${user.uid}/imports/${importId}`).get()).data()).toMatchObject({ state: 'completed', cursor: 401 });
     expect((await db.doc('serviceControls/global').get()).data()?.activeImports).toBe(0);
   });
@@ -434,6 +440,61 @@ describe('comandos de conteúdo', () => {
     expect(occurrences.docs.at(-1)!.data().occurrenceKey <= horizon).toBe(true);
     expect(jobs.size).toBe(occurrences.size);
     expect(jobs.docs.every(job => job.data().activityRevision === 1 && job.data().state === 'pending')).toBe(true);
+  });
+
+  it('agenda aviso automático para atividades com horário sem exigir seleção manual', async () => {
+    const user = await createUser('aviso-automatico@example.test');
+    await seedAccount(user.uid);
+    const date = new Date(Date.now() + 2 * 86400_000).toISOString().slice(0, 10);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'tarefa-com-hora', '94000000-0000-4000-8000-000000000010', 0, {
+      ...activityPayload,
+      title: 'Enviar documento',
+      schedule: { ...activityPayload.schedule, dueDate: date, dueTime: '10:00' },
+    })).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'tarefa-sem-hora', '94000000-0000-4000-8000-000000000011', 0, {
+      ...activityPayload,
+      schedule: { ...activityPayload.schedule, dueDate: date },
+    })).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', 'compromisso-com-lembrete', '94000000-0000-4000-8000-000000000012', 0, {
+      ...activityPayload,
+      title: 'Dentista',
+      schedule: { type: 'event', allDay: false, startDate: date, startTime: '11:00', endDate: date, endTime: '12:00', timeZone: 'America/Sao_Paulo', disambiguation: 'reject' },
+      reminderSpecs: [{ id: 'before-30', minutesBefore: 30 }],
+    })).expect(200);
+
+    const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    const created = jobs.docs.map(job => job.data());
+    expect(created).toHaveLength(3);
+    expect(created).toEqual(expect.arrayContaining([
+      expect.objectContaining({ activityId: 'tarefa-com-hora', reminderSpecId: 'at-time', state: 'pending' }),
+      expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'at-time', state: 'pending' }),
+      expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'before-30', state: 'pending' }),
+    ]));
+    expect(reminderMessage({ kind: 'event', title: 'Dentista', reminderSpecs: [{ id: 'before-30', minutesBefore: 30 }] }, 'before-30'))
+      .toBe('“Dentista” começa em 30 minutos. Já já é hora.');
+    expect(reminderMessage({ kind: 'task', title: 'Enviar documento' }, 'at-time'))
+      .toBe('Chegou a hora de “Enviar documento”. Toque para abrir sua agenda.');
+  });
+
+  it('recupera atividades agendadas anteriormente sem duplicar avisos', async () => {
+    const user = await createUser('aviso-retroativo@example.test');
+    await seedAccount(user.uid);
+    const dueDate = new Date(Date.now() + 2 * 86400_000).toISOString().slice(0, 10);
+    const schedule = { type: 'task' as const, dueDate, dueTime: '10:00', timeZone: 'America/Sao_Paulo', disambiguation: 'reject' as const };
+    await db.doc(`users/${user.uid}/activities/atividade-antiga`).set({
+      ...activityPayload,
+      schedule,
+      ...scheduleInstants(schedule),
+      kind: 'task', status: 'pending', revision: 1, deletedAt: null,
+    });
+
+    const first = await backfillAutomaticReminderJobs();
+    const second = await backfillAutomaticReminderJobs();
+    expect(first).toMatchObject({ scanned: 1, created: 1, complete: false });
+    expect(second).toMatchObject({ scanned: 0, created: 0, complete: true });
+    const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(jobs.docs).toHaveLength(1);
+    expect(jobs.docs[0]!.data()).toMatchObject({ reminderSpecId: 'at-time', state: 'pending' });
   });
 
   it('aplica criação uma vez e detecta reutilização ou revisão divergente', async () => {

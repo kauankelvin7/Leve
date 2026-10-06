@@ -59,9 +59,9 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
       if (Notification.permission !== 'granted') throw new Error('Permita notificações antes de experimentar.');
       const registration = await navigator.serviceWorker.getRegistration();
       if (!registration?.active) throw new Error('Feche e abra o Leve para concluir a atualização.');
-      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: 'Teste de lembrete do Leve.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
-      await registration.showNotification('Leve', options);
-      setMessage('Aviso de teste enviado.');
+      const options: NotificationOptions & { renotify?: boolean; vibrate?: number[] } = { body: '“Dentista” começa em 15 minutos. Já já é hora.', icon: '/favicon.svg', tag: 'leve-device-preview', renotify: true, silent: false, vibrate: [140, 70, 180] };
+      await registration.showNotification('Lembrete do Leve', options);
+      setMessage('Exemplo de notificação enviado.');
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível mostrar o aviso.'); }
     finally { setBusy(false); }
   }
@@ -71,7 +71,7 @@ export function NotificationSettings({ compact = false }: { compact?: boolean })
     <p>{permission === 'denied' ? 'Notificações bloqueadas. Libere a permissão nas configurações do navegador ou do aparelho.' : permission === 'unsupported' ? 'Este navegador não oferece notificações.' : permission === 'granted' ? activeDeviceId ? 'Notificações ativas.' : 'Permissão concedida. Ative este aparelho.' : 'Ative para permitir notificações.'}</p>
     <div className="dialog-actions">
       <button type="button" disabled={busy || permission === 'denied' || permission === 'unsupported'} onClick={() => void enable()}>{busy ? 'Aguarde…' : activeDeviceId ? 'Renovar notificações' : 'Ativar notificações'}</button>
-      {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Testar notificação</button>}
+      {permission === 'granted' && <button type="button" disabled={busy} onClick={() => void previewNotification()}>Ver exemplo de notificação</button>}
       {activeDeviceId && <button type="button" disabled={busy} onClick={() => void disable()}>Desativar notificações</button>}
     </div>
     <p role="status">{message}</p>

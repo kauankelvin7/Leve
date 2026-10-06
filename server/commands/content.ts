@@ -297,7 +297,8 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
     const horizon = new Date(Date.now() + 45 * 86400_000).toISOString().slice(0, 10);
     const dates = recurrenceDatesThrough(firstDate, nextRule, horizon);
     // Conservative bounded execution, including potential reminder writes; no partial split.
-    if (effect && (!dates.length || dates.length > GIKA_RECURRENCE_FUTURE_LIMIT || future.size + dates.length * (1 + input.activity.reminderSpecs.length) + 7 > 450)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração precisa ser feita pela sua agenda.');
+    const automaticReminderCount = input.activity.reminderSpecs.some(spec => spec.minutesBefore === 0) ? 0 : 1;
+    if (effect && (!dates.length || dates.length > GIKA_RECURRENCE_FUTURE_LIMIT || future.size + dates.length * (1 + input.activity.reminderSpecs.length + automaticReminderCount) + 7 > 450)) throw new AppError(422, 'GIKA_POLICY', 'Essa alteração precisa ser feita pela sua agenda.');
     future.docs.forEach(document => transaction.delete(document.ref));
     transaction.update(seriesRef, { state: 'split', splitAt: current.occurrenceKey, updatedAt: now });
     transaction.create(nextSeriesRef, { activity: input.activity, recurrence: nextRule, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now, materializedThrough: dates.at(-1) ?? firstDate, materializedCount: dates.length, state: 'active', previousSeriesId: current.seriesId });
