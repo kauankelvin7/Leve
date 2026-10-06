@@ -471,9 +471,13 @@ describe('comandos de conteúdo', () => {
       expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'before-30', state: 'pending' }),
     ]));
     expect(reminderMessage({ kind: 'event', title: 'Dentista', reminderSpecs: [{ id: 'before-30', minutesBefore: 30 }] }, 'before-30'))
-      .toBe('“Dentista” começa em 30 minutos. Já já é hora.');
+      .toBe('Seu compromisso começa em 30 minutos.');
     expect(reminderMessage({ kind: 'task', title: 'Enviar documento' }, 'at-time'))
-      .toBe('Chegou a hora de “Enviar documento”. Toque para abrir sua agenda.');
+      .toBe('Sua tarefa está marcada para agora.');
+    expect(reminderMessage({ kind: 'event', reminderSpecs: [{ id: 'custom', minutesBefore: 75 }] }, 'custom'))
+      .toBe('Seu compromisso começa em 1 hora e 15 minutos.');
+    expect(reminderMessage({ kind: 'task', reminderSpecs: [{ id: 'custom', minutesBefore: 1500 }] }, 'custom'))
+      .toBe('Sua tarefa está marcada para daqui a 1 dia e 1 hora.');
   });
 
   it('recupera atividades agendadas anteriormente sem duplicar avisos', async () => {

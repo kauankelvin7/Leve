@@ -31,23 +31,23 @@ export function createReminderJobs(transaction: Transaction, uid: string, activi
 }
 
 function reminderLeadTime(minutes: number) {
-  if (minutes < 60) return `${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
-  const hours = minutes / 60;
-  if (hours < 24) return `${hours} ${hours === 1 ? 'hora' : 'horas'}`;
-  const days = minutes / 1440;
-  return `${days} ${days === 1 ? 'dia' : 'dias'}`;
+  const parts = [
+    { amount: Math.floor(minutes / 1440), singular: 'dia', plural: 'dias' },
+    { amount: Math.floor(minutes % 1440 / 60), singular: 'hora', plural: 'horas' },
+    { amount: minutes % 60, singular: 'minuto', plural: 'minutos' },
+  ].filter(part => part.amount > 0).map(part => `${part.amount} ${part.amount === 1 ? part.singular : part.plural}`);
+  return new Intl.ListFormat('pt-BR', { type: 'conjunction' }).format(parts);
 }
 
 export function reminderMessage(activity: ReminderActivity, reminderSpecId: string) {
-  const title = typeof activity.title === 'string' && activity.title.trim() ? activity.title.trim() : 'sua atividade';
   const specs = Array.isArray(activity.reminderSpecs) ? activity.reminderSpecs as { id: string; minutesBefore: number }[] : [];
   const minutesBefore = specs.find(spec => spec.id === reminderSpecId)?.minutesBefore ?? 0;
   if (activity.kind === 'event') {
     return minutesBefore === 0
-      ? `“${title}” começa agora. Toque para ver os detalhes.`
-      : `“${title}” começa em ${reminderLeadTime(minutesBefore)}. Já já é hora.`;
+      ? 'Seu compromisso começa agora.'
+      : `Seu compromisso começa em ${reminderLeadTime(minutesBefore)}.`;
   }
   return minutesBefore === 0
-    ? `Chegou a hora de “${title}”. Toque para abrir sua agenda.`
-    : `Hora de “${title}” em ${reminderLeadTime(minutesBefore)}. Você ainda tem um tempinho.`;
+    ? 'Sua tarefa está marcada para agora.'
+    : `Sua tarefa está marcada para daqui a ${reminderLeadTime(minutesBefore)}.`;
 }
