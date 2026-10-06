@@ -81,10 +81,11 @@ cliente falhou: React manteve o Meu dia visível enquanto a nova rota aguardava.
 A prova do fallback foi ajustada para a abertura direta de Notas, que realmente
 aciona esse estado. A implementação de navegação permaneceu intacta.
 
-## Envio pendente
+## Envio
 
 PR #20 aberto: https://github.com/kauankelvin7/Leve/pull/20.
-A correção de rasterização e data foi validada e salva em commit local, mas seu
-push recebeu falha de autenticação. Uma consulta da API GitHub confirmou
-HTTP 401 / Bad credentials. A integração à main aguarda a reconexão do GitHub
-no Codex, envio do HEAD final e aprovação dos checks. Retomada em `CONTINUAR.md`.
+A correção de rasterização e data foi validada e salva em commit local. Houve uma
+interrupção de acesso durante seu push, confirmada por HTTP 401 / Bad credentials.
+A autenticação foi restabelecida e confirmada pela API GitHub às 13:16 UTC.
+O envio é retomado para aprovação dos checks do HEAD final e integração à main
+conforme autorização vigente. Histórico em `CONTINUAR.md`.
