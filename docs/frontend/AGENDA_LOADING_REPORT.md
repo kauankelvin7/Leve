@@ -40,6 +40,8 @@ abertura inicial; a redução de movimento aqui segue o sistema.
   navegação móvel, compras/notas, recursos indisponíveis, páginas públicas e
   launcher. Referências e tolerâncias das suítes anteriores preservadas.
 - Revisão independente de código e dos três snapshots: sem impedimentos.
+- Repetição focal após padronizar a rasterização: 2/2 PASS, com as mesmas
+  referências e limites; revisão complementar sem impedimentos.
 - 11 paletas × claro/escuro × 320/390/1366 px: 66 composições sem transbordamento.
 - Axe sem violações nas 22 combinações de paleta/aparência e nos cenários de
   texto a 200%, contraste maior e cores forçadas.
@@ -50,12 +52,20 @@ abertura inicial; a redução de movimento aqui segue o sistema.
 
 As capturas foram inspecionadas em claro e escuro e geradas com o Chromium 153
 do Playwright 1.63.0, correspondente ao lockfile e ao CI. A suíte entra no gate
-de navegador existente. As referências ficam em
+de navegador existente. A data é fixada em 05/10/2026 para que a ambientação
+sazonal opcional não altere as referências em outros meses. As referências ficam em
 `tests/e2e-local/agenda-loading.spec.ts-snapshots`:
 
 - `agenda-opening-green-light-390-linux.png`;
 - `agenda-opening-orange-dark-390-linux.png`;
 - `agenda-opening-purple-light-1366-linux.png`.
+
+O primeiro CI detectou um pixel no contorno da letra “u”: a imagem do Ubuntu
+usava antialiasing LCD colorido, enquanto a referência local usava tons de cinza.
+Os artefatos foram baixados e comparados; a geometria e a ilustração eram idênticas.
+A suíte da abertura usa `--disable-lcd-text` para rasterização consistente,
+preservando o navegador configurado. Nenhum limite de diferença, máscara ou estilo
+da página foi alterado para essa correção.
 
 Comando de comparação, sem atualizar referências:
 

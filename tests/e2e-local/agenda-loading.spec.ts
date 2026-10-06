@@ -3,6 +3,20 @@ import AxeBuilder from '@axe-core/playwright';
 import { colorThemeIds } from '../../packages/domain/src/themes';
 import { isolatedTestAccount } from '../helpers/gikaBatch';
 
+test.use({
+  launchOptions: {
+    ...(process.env.LEVE_CHROMIUM_EXECUTABLE ? { executablePath: process.env.LEVE_CHROMIUM_EXECUTABLE } : {}),
+    // Linux distributions differ in LCD text rasterization. Use grayscale for
+    // these exact comparisons without changing pixel limits or page styles.
+    args: ['--disable-lcd-text'],
+  },
+});
+
+test.beforeEach(async ({ page }) => {
+  // Keep optional seasonal decorations out of these loading references.
+  await page.clock.install({ time: new Date('2026-10-05T12:00:00.000Z') });
+});
+
 async function login(page: Page) {
   const email = await isolatedTestAccount('agenda-opening');
   await page.goto('/entrar');

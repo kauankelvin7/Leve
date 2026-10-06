@@ -254,3 +254,10 @@ forçadas e retorno após a sessão. Revisão independente sem impedimentos.
 Capturas Chromium 153 do lockfile e gate incluído no CI. Fontes: `DESIGN.md` e
 `docs/frontend/AGENDA_LOADING_REPORT.md`. Próximo passo: checks do PR e integração
 da mudança validada à `main`.
+
+Revisão do gate de abertura: data fixa em 05/10/2026 para excluir variação sazonal
+das referências. Um pixel divergente no primeiro CI foi localizado no contorno de
+texto (LCD colorido no Ubuntu, tons de cinza local); capturas e crops inspecionados.
+`--disable-lcd-text` somente nesta suíte padroniza a rasterização e preserva o
+executável configurado. Referências, asserts e limites intactos. Repetição focal
+2/2 PASS e revisão complementar sem impedimentos; repetir checks no HEAD final.
