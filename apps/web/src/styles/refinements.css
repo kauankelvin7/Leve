@@ -373,19 +373,6 @@
   position: relative;
 }
 
-.loading-state-screen { min-height: 100svh; }
-
-.loading-brand {
-  margin-bottom: 24px;
-  font-family: 'Nunito', 'DM Sans', sans-serif;
-  font-size: clamp(2.5rem, 9vw, 4.5rem);
-  font-weight: 900;
-  letter-spacing: -.075em;
-  line-height: 1;
-}
-
-.loading-brand span { color: var(--color-coral); }
-
 .loading-label {
   margin: 14px 0 26px;
   color: var(--color-text-muted);

@@ -26,6 +26,22 @@ aproveitam a largura disponível, e recursos indisponíveis oferecem retorno den
 do shell. Escopo, arquitetura e evidências em
 `docs/frontend/MOBILE_REFINEMENT_REPORT.md`.
 
+## Abertura da agenda — 06/10/2026
+
+O carregamento inicial tem uma composição própria: marca compacta, agenda de
+papel ilustrada em SVG, folhas sobrepostas, mensagem em destaque e indicador
+indeterminado. Cores derivam dos tokens da aparência já salva no aparelho.
+O movimento limita-se à folha, ao contorno de um dia e ao indicador; a preferência
+do sistema por movimento reduzido deixa tudo estático.
+
+A ilustração é decorativa. A mensagem usa uma única região de status e permanece
+legível com texto ampliado, contraste maior e cores forçadas. A tela tem superfícies
+opacas e respeita safe areas. Não há percentual, etapas fictícias ou tempo mínimo
+de exibição. A composição vive em `AgendaLoadingScreen` e seu módulo CSS; a variante
+`screen` de `LoadingState` a seleciona.
+
+Evidências e comando de revisão em `docs/frontend/AGENDA_LOADING_REPORT.md`.
+
 ## Referências e propósito
 
 Agenda pessoal, calendário, notas e compras para uso cotidiano. A referência visual consultada é https://leve-agenda-gih.kauankelvin20.chatgpt.site/ (Meu dia, Calendário, Minhas notas e Compras). Reaproveitar princípios de hierarquia e espaçamento, sem copiar textos motivacionais, identidade ou dados de exemplo.
