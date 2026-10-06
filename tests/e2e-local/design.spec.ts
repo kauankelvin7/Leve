@@ -51,8 +51,18 @@ test('paletas acompanham navegação e calendário funciona em desktop e celular
   await expect(page.getByLabel('Data', { exact: true })).toHaveValue(/\d{4}-\d{2}-\d{2}/);
   for (const [width, height] of [[390, 844], [853, 1280], [1024, 768], [1366, 768], [1920, 1080], [2560, 1440]] as const) {
     await page.setViewportSize({ width, height });
-    for (const [route, label] of [['/hoje', 'Meu dia'], ['/calendario', 'Calendário'], ['/notas', 'Notas'], ['/compras', 'Compras'], ['/buscar', 'Buscar'], ['/lixeira', 'Lixeira'], ['/configuracoes', 'Perfil e preferências']] as const) {
-      await page.getByRole('link', { name: label, exact: true }).click();
+    if (width === 390) {
+      await expect(page.getByRole('navigation', { name: 'Principal' }).locator(':scope > a, :scope > button')).toHaveCount(5);
+    }
+    for (const [route, label] of [['/hoje', 'Meu dia'], ['/calendario', 'Calendário'], ['/notas', 'Notas'], ['/compras', 'Compras'], ['/revisao', 'Revisão'], ['/lixeira', 'Lixeira'], ['/buscar', 'Buscar'], ['/configuracoes', 'Perfil e preferências']] as const) {
+      if (route === '/revisao' || route === '/lixeira') {
+        await page.locator('summary[aria-label="Mais páginas"]').click();
+        await page.getByRole('navigation', { name: 'Mais páginas' }).getByRole('link', { name: label, exact: true }).click();
+      } else if (['/hoje', '/calendario', '/notas', '/compras'].includes(route)) {
+        await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: label, exact: true }).click();
+      } else {
+        await page.getByRole('link', { name: label, exact: true }).click();
+      }
       await expect(page).toHaveURL(new RegExp(route + '$'));
       await expect(page.locator('#page-title')).toHaveText(route === '/configuracoes' ? 'Preferências' : label);
       await page.locator('.sidebar').evaluate(async element => {

@@ -156,7 +156,7 @@ for (const mobile of [false, true]) test(`M3-T3 ${mobile ? 'mobile dark' : 'desk
   await page.screenshot({ path: `/tmp/leve-m3-undo-${mobile ? 'mobile-dark' : 'desktop-light'}.png` });
   await page.getByRole('button', { name: 'Fechar Gika' }).click(); await page.goto(`/hoje?dia=${dueDate}`);
   await expect(page.locator('.day-activity').filter({ hasText: title })).toHaveCount(1);
-  await page.goto('/lixeira'); await expect(page.locator('.trash-item').filter({ hasText: title })).toHaveCount(1);
+  await page.goto('/lixeira'); await expect(page.locator('.trash-list > li').filter({ hasText: title })).toHaveCount(1);
   await page.reload(); await page.getByRole('button', { name: 'Pergunte à Gika' }).click(); await expect(page.locator('.gika-message')).toHaveCount(0);
 });
 

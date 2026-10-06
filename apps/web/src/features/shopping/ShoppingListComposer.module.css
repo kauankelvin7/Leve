@@ -1,0 +1,53 @@
+.composer {
+  max-width: none;
+  padding: clamp(24px, 3.2vw, 34px);
+}
+
+.heading {
+  gap: 15px;
+  padding-bottom: 18px;
+}
+
+.composer form {
+  grid-template-columns: minmax(0, 1.8fr) minmax(220px, .8fr) auto;
+  align-items: end;
+  margin-top: 20px;
+  gap: 16px;
+}
+
+.composer .actions {
+  grid-column: auto;
+  align-self: end;
+}
+
+.composer .actions :global(.primary) {
+  white-space: nowrap;
+}
+
+@media (max-width: 1199px) {
+  .composer form {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, .7fr);
+  }
+
+  .composer .actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 739px) {
+  .composer {
+    padding: 20px;
+  }
+
+  .composer form {
+    grid-template-columns: 1fr;
+  }
+
+  .composer .actions {
+    grid-column: 1;
+  }
+
+  .composer .actions > * {
+    flex: 1;
+  }
+}

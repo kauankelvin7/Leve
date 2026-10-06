@@ -468,8 +468,6 @@
     font-size: .875rem; white-space: nowrap;
   }
 
-  .calendar-filters > label { flex: 1 1 10rem; max-width: none; }
-
   .calendar-time-panel {
     padding: 16px;
   }

@@ -6,6 +6,7 @@ import { useActiveTimeEntry, useActivityTimeEntries, useUserCollection, useUserD
 import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
 import { BackButton } from '../../components/ui/BackButton';
+import styles from './ActivityDetail.module.css';
 
 const duration = (seconds: number) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)}h ` : ''}${Math.floor(seconds % 3600 / 60)}min`;
 const stopwatch = (seconds: number) => [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
@@ -120,7 +121,7 @@ export function ActivityDetail() {
   const category = categories.find(item => item.id === activity.categoryId);
   const total = visibleEntries.reduce((sum, entry) => sum + (entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry)), 0);
   const runningSeconds = active ? accrued(active) : 0;
-  return <main><header className="page-heading activity-detail-heading"><BackButton to="/hoje">Meu dia</BackButton><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
+  return <main><header className={`page-heading ${styles.detailHeading}`}><BackButton to="/hoje">Meu dia</BackButton><div><p className="eyebrow">{activity.kind === 'task' ? 'Tarefa' : 'Compromisso'}</p><h1 id="page-title" tabIndex={-1}>{activity.title}</h1><p className={styles.detailMeta}>{category?.name ?? 'Sem categoria'} · {activity.status === 'pending' ? 'Pendente' : activity.status === 'completed' ? 'Concluída' : 'Cancelado'}</p></div></header>
     <section className="panel content-form"><h2>Detalhes</h2><p>{activity.descriptionPlain || 'Sem descrição.'}</p><p>{activity.schedule.type === 'task' ? activity.schedule.dueDate ?? 'Sem prazo' : activity.schedule.startDate}</p>{activity.estimatedMinutes ? <p>Estimativa: {activity.estimatedMinutes} minutos.</p> : null}<div className="dialog-actions">{activity.kind === 'task'
       ? <button className="primary" onClick={() => void status(activity.status === 'completed' ? 'pending' : 'completed')}>{activity.status === 'completed' ? 'Reabrir' : 'Concluir'}</button>
       : activity.status === 'canceled'
@@ -139,8 +140,8 @@ export function ActivityDetail() {
         {active && active.paused ? <button type="button" className="primary" disabled={timerBusy} onClick={() => void resumeTimer()}><Icon name="clock" />Retomar</button> : null}
         {active ? <button type="button" disabled={timerBusy} onClick={() => void stopTimer('Cronômetro finalizado e tempo salvo.')}>Finalizar</button> : null}
       </div>
-      <details className="manual-time-details"><summary>Adicionar tempo manualmente</summary><form className="manual-time" onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>
-      <div className="time-history-heading"><div><p className="eyebrow">Registros</p><h3>Histórico</h3></div><span>{visibleEntries.length ? `${visibleEntries.length} ${visibleEntries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
-      {visibleEntries.length ? <ul className="time-history">{visibleEntries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : entry.paused ? 'Pausado' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className="muted time-history-empty">Nenhum tempo registrado.</p>}
+      <details className={`${styles.manualTimeDetails} manual-time-details`}><summary>Adicionar tempo manualmente</summary><form className={`${styles.manualTime} manual-time`} onSubmit={addManual}><label>Tempo em minutos <input name="minutes" type="number" min="1" max="1440" required placeholder="Ex.: 25" /></label><button>Adicionar</button></form></details>
+      <div className={`${styles.timeHistoryHeading} time-history-heading`}><div><p className="eyebrow">Registros</p><h3>Histórico</h3></div><span>{visibleEntries.length ? `${visibleEntries.length} ${visibleEntries.length === 1 ? 'registro' : 'registros'}` : 'Nenhum registro'}</span></div>
+      {visibleEntries.length ? <ul className={`${styles.timeHistory} time-history`}>{visibleEntries.slice(0, 10).map(entry => <li key={entry.id}><span>{new Date(entry.startedAt).toLocaleDateString('pt-BR')}</span><strong>{duration(entry.endedAt ? entry.durationSeconds : accrued(entry as OpenEntry))}</strong><small>{entry.source === 'manual' ? 'Manual' : entry.source === 'timer' ? entry.endedAt ? 'Cronômetro' : entry.paused ? 'Pausado' : 'Em andamento' : 'Sessão recuperada'}</small></li>)}</ul> : <p className={`muted ${styles.timeHistoryEmpty} time-history-empty`}>Nenhum tempo registrado.</p>}
     </section><p role="status">{error || message}</p></main>;
 }

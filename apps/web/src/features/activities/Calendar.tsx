@@ -30,6 +30,8 @@ import { createPlannerDraft, plannerDraftToSearchParams } from './calendar/calen
 import { moveTimedActivity, resizeTimedActivity } from './calendar/calendarMutationModel';
 import { buildCalendarUpdateCommand, type CalendarMutationScope } from './calendar/calendarCommandModel';
 import { RecurrenceScopeDialog } from './calendar/RecurrenceScopeDialog';
+import { PageHeader } from '../../components/ui/PageHeader';
+import styles from './Calendar.module.css';
 
 type PendingCalendarMutation = {
   item: StoredActivity;
@@ -267,13 +269,9 @@ export function Calendar() {
   const viewName = view === 'month' ? 'mensal' : view === 'week' ? 'semanal' : 'diária';
   const title = rangeTitle(view, bounds.startDate, bounds.endDate);
 
-  return <main className="calendar-page">
-    <header className="page-heading">
-      <p className="eyebrow">Visão {viewName}</p>
-      <h1 id="page-title" tabIndex={-1}>Calendário</h1>
-      <p>Veja o que está marcado.</p>
-      <Link className="button primary" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Nova atividade</Link>
-    </header>
+  return <main className={styles.page}>
+    <PageHeader eyebrow={`Visão ${viewName}`} title="Calendário" description="Veja o que está marcado."
+      actions={<Link className="button primary" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Nova atividade</Link>} />
 
     <div className="calendar-view-switcher" role="group" aria-label="Visualização do calendário">
       {(['month', 'week', 'day'] as const).map(option => <button
@@ -285,7 +283,7 @@ export function Calendar() {
       >{option === 'month' ? 'Mês' : option === 'week' ? 'Semana' : 'Dia'}</button>)}
     </div>
 
-    <div className="calendar-filters">
+    <div className={styles.filters}>
       {view === 'month' ? <label className="month-field" htmlFor="calendar-month-filter">Mês<input id="calendar-month-filter" type="month" value={month} onChange={event => {
         if (/^\d{4}-\d{2}$/.test(event.target.value)) {
           setMonth(event.target.value);
@@ -330,9 +328,9 @@ export function Calendar() {
       {partial ? <p role="status" className="muted">Mostrando parte das atividades.</p> : null}
     </section>}
 
-    {view === 'month' ? <>{sheetOpen ? <button className="calendar-sheet-backdrop" aria-label="Fechar atividades do dia" onClick={() => setSheetOpen(false)} /> : null}<section className={`calendar-agenda glass glass-strong${sheetOpen ? ' open' : ''}`} aria-labelledby="selected-date"><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className="calendar-sheet-actions"><span className="count-badge">{selectedItems.length} atividades</span><button className="calendar-sheet-close" aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
+    {view === 'month' ? <>{sheetOpen ? <button className={styles.sheetBackdrop} aria-label="Fechar atividades do dia" onClick={() => setSheetOpen(false)} /> : null}<section className={`calendar-agenda glass glass-strong${sheetOpen ? ' open' : ''}`} aria-labelledby="selected-date"><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className={styles.sheetActions}><span className="count-badge">{selectedItems.length} atividades</span><button className={styles.sheetClose} aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
       {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} className={item.status === 'completed' ? 'is-completed' : undefined} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><span className="calendar-item-title"><strong>{item.title}</strong>{item.status === 'completed' ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}</span><small>{resolveActivityLabel(item, categories.items)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade neste dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
-      <Link className="button primary calendar-add" to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Mostrando parte das atividades.</p>}{categories.error && <p role="status">{categories.error}</p>}
+      <Link className={`button primary ${styles.add}`} to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Mostrando parte das atividades.</p>}{categories.error && <p role="status">{categories.error}</p>}
     </section></> : categories.error ? <p role="status">{categories.error}</p> : null}
 
     <RecurrenceScopeDialog

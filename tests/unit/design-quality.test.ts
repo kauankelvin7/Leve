@@ -24,6 +24,7 @@ describe('qualidade visual base', () => {
   const root = resolve(import.meta.dirname, '../..');
   const tokens = JSON.parse(readFileSync(resolve(root, 'design-tokens.json'), 'utf8')) as { color: Record<string, string> };
   const css = readFileSync(resolve(root, 'apps/web/src/styles/app.css'), 'utf8');
+  const settingsCss = readFileSync(resolve(root, 'apps/web/src/features/settings/Settings.module.css'), 'utf8');
 
   it('mantém texto e ações acima do contraste AA', () => {
     expect(contrast(tokens.color.text!, tokens.color.canvas!)).toBeGreaterThanOrEqual(4.5);
@@ -33,7 +34,7 @@ describe('qualidade visual base', () => {
 
   it('mantém um foco de teclado visível em todos os temas', () => {
     expect(css).toContain(':focus-visible');
-    expect(css).toContain('outline: 3px solid var(--color-focus)');
+    expect(settingsCss).toContain('outline: 3px solid var(--color-focus)');
     expect(css).toContain(':root[data-theme=purple]');
     expect(css).toContain(':root[data-theme=blue]');
     expect(css).toContain(':root[data-theme=red]');

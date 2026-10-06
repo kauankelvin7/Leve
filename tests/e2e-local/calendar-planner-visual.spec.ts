@@ -76,7 +76,7 @@ test('Mês, Semana e Dia permanecem contidos nos seis viewports de homologação
         await page.getByRole('button', { name: /17 de setembro de 2026/ }).click();
         await expect(page.locator('.calendar-agenda.open')).toBeVisible();
         await inspect(page, 'calendar-mobile-sheet');
-        await page.locator('.calendar-sheet-close').click();
+        await page.getByRole('button', { name: 'Fechar', exact: true }).click();
         await expect(page.locator('.calendar-agenda.open')).toHaveCount(0);
       }
       if (view === 'Semana' && viewport.width <= 430) {

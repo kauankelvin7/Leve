@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui/Icon';
+import styles from './LegalPage.module.css';
 
 const topics = [
   ['profile', 'Conta e identidade', 'Nome, e-mail, fuso horário e preferências para manter sua agenda sincronizada.'],
@@ -9,8 +10,8 @@ const topics = [
 ] as const;
 
 export function Privacy() {
-  return <main className="legal-page">
-    <header className="legal-hero page-heading"><span className="legal-mark" aria-hidden="true"><Icon name="profile" /></span><div><p className="eyebrow">Transparência</p><h1 id="page-title" tabIndex={-1}>Privacidade no Leve</h1><p>Você organiza sua rotina. Esta página explica, com clareza, o que fica guardado, por quê e quais escolhas estão sempre nas suas mãos.</p></div></header>
+  return <main className={styles.page}>
+    <header className={`legal-hero page-heading ${styles.hero}`}><span className="legal-mark" aria-hidden="true"><Icon name="profile" /></span><div><p className="eyebrow">Transparência</p><h1 id="page-title" tabIndex={-1}>Privacidade no Leve</h1><p>Você organiza sua rotina. Esta página explica, com clareza, o que fica guardado, por quê e quais escolhas estão sempre nas suas mãos.</p></div></header>
     <section className="legal-summary" aria-label="Resumo de privacidade"><strong>Em poucas palavras</strong><span>Seus dados são privados por conta</span><span>Não vendemos informações</span><span>Você pode exportar ou excluir</span></section>
     <div className="legal-grid">
       {topics.map(([icon, title, text]) => <section className="panel content-form legal-card" key={title}><span className="legal-card-icon"><Icon name={icon} /></span><h2>{title}</h2><p>{text}</p></section>)}
@@ -18,5 +19,6 @@ export function Privacy() {
       <section className="panel content-form legal-card legal-wide"><p className="eyebrow">Serviços e escolhas</p><h2>O que você controla</h2><ul className="legal-list"><li><strong>Firebase</strong><span>Autenticação e armazenamento privado da conta.</span></li><li><strong>Hospedagem web</strong><span>Entrega do aplicativo e das páginas públicas.</span></li><li><strong>Seu aparelho</strong><span>O modo offline e as notificações são opcionais e podem ser desligados nas Preferências.</span></li></ul></section>
       <section className="panel content-form legal-card legal-contact"><h2>Quer exercer um direito?</h2><p>Para pedir acesso, correção ou exclusão, use o contato informado pelo responsável pelo seu ambiente do Leve. Se você já tem uma conta, as ações de exportação e exclusão ficam em <Link to="/configuracoes">Preferências</Link>.</p><Link className="button primary" to="/entrar">Entrar no Leve</Link></section>
     </div>
+    <nav className={styles.footer} aria-label="Informações legais"><Link to="/termos">Termos de uso</Link><Link to="/entrar">Entrar</Link></nav>
   </main>;
 }

@@ -1,0 +1,24 @@
+.page {
+  width: min(100%, 1040px);
+  margin-inline: auto;
+  padding: clamp(16px, 3vw, 36px) 0 clamp(40px, 7vw, 88px);
+}
+
+.hero h1 { max-width: 18ch; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; text-wrap: balance; }
+.hero > div > p:last-child { max-width: 68ch; line-height: 1.7; }
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle, var(--color-border));
+}
+
+.footer a { min-height: 44px; display: inline-flex; align-items: center; color: var(--action-primary, var(--color-action-primary)); font-weight: 700; }
+
+@media (max-width: 640px) {
+  .page { padding-top: 12px; }
+}

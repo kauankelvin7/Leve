@@ -6,37 +6,21 @@ import { firestore } from '../../platform/firebase';
 import { sendCommand } from '../../platform/api';
 import { useAuth } from '../identity/AuthProvider';
 import { useUserCollection, useUserSubcollections } from '../content/useUserCollection';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import { DayNavigation, useCurrentDay } from './DayNavigation';
 import { useLiveQueries } from '../content/useLiveQueries';
-import { LoadError } from '../../components/ui/LoadError';
-import { ActivityColorPicker } from '../../components/ui/ActivityColorPicker';
-import { LoadingState } from '../../components/ui/LoadingState';
 import { Icon } from '../../components/ui/Icon';
-import { formatCivilDate } from '../../platform/formatters';
 import { DailyBrief } from './DailyBrief';
 import { GikaSuggestion } from '../gika/GikaSuggestion';
 import { plannerDraftFromSearchParams } from './calendar/calendarDraftModel';
-
-type StoredActivity = Activity & { id: string };
-
-function describe(activity: StoredActivity) {
-  if (activity.schedule.type === 'task') {
-    if (!activity.schedule.dueDate) return 'Sem data';
-    const date = formatCivilDate(activity.schedule.dueDate);
-    return activity.schedule.dueTime ? `${date} · ${activity.schedule.dueTime}` : date;
-  }
-  return activity.schedule.allDay
-    ? `${formatCivilDate(activity.schedule.startDate)} · dia inteiro`
-    : `${formatCivilDate(activity.schedule.startDate)} · ${activity.schedule.startTime}–${activity.schedule.endTime}`;
-}
-
-function timedEvent(activity: StoredActivity | null) {
-  return activity?.schedule.type === 'event' && !activity.schedule.allDay
-    ? activity.schedule
-    : null;
-}
+import { PageHeader } from '../../components/ui/PageHeader';
+import { TodayOverview } from './TodayOverview';
+import type { StoredActivity } from './TodayActivityRow';
+import { ActivityAgenda } from './ActivityAgenda';
+import { ActivityComposer } from './ActivityComposer';
+import { TodayAside } from './TodayAside';
+import todayAsideStyles from './TodayAside.module.css';
 
 export function Today() {
   const { user, session } = useAuth();
@@ -68,7 +52,7 @@ export function Today() {
   const shoppingItems = useUserSubcollections<ShoppingItem>('shoppingLists', activeShoppingLists.map(list => list.id), 'items');
   const pendingShoppingItems = activeShoppingLists.reduce((t, l) => t + (l.pendingItemCount ?? l.itemCount), 0);
 
-  const composer = useRef<HTMLElement>(null);
+  const composer = useRef<HTMLElement | null>(null);
   const [optimisticStatus, setOptimisticStatus] = useState<Record<string, Activity['status']>>({});
   const [message, setMessage] = useState('');
   const [statusFilter, setStatusFilter] = useState(() => localStorage.getItem('leve.today.statusFilter') ?? 'all');
@@ -83,7 +67,6 @@ export function Today() {
   const { items: categories } = useUserCollection<Category>('categories');
   const pending = useRef<CommandEnvelope | null>(null);
   const futureSeriesId = useRef('');
-  const editingEvent = timedEvent(editing);
 
   useEffect(() => { document.title = 'Meu dia · Leve'; }, []);
   useEffect(() => {
@@ -287,66 +270,6 @@ export function Today() {
     } finally { setBusy(false); }
   }
 
-  function activityRow(activity: StoredActivity) {
-    const color = activity.colorHex ?? categories.find(c => c.id === activity.categoryId)?.colorHex ?? '#ddd';
-    const categoryName = categories.find(c => c.id === activity.categoryId)?.name ?? 'Sem categoria';
-    const isCompleted = activity.status === 'completed';
-    const taskTime = activity.schedule.type === 'task' ? activity.schedule.dueTime : null;
-    const meta = activity.kind === 'task'
-      ? [taskTime, categoryName, activity.estimatedMinutes ? `${activity.estimatedMinutes} min estimados` : null].filter(Boolean).join(' · ')
-      : [describe(activity), categoryName, activity.estimatedMinutes ? `${activity.estimatedMinutes} min estimados` : null].filter(Boolean).join(' · ');
-
-    return (
-      <li
-        key={activity.id}
-        className={`day-activity ${activity.kind === 'task' ? 'checklist-item' : 'event-item'}${isCompleted ? ' is-completed' : ''}`}
-        style={{ borderLeft: `4px solid ${color}` }}
-        aria-label={`${activity.title}${isCompleted ? ', concluída' : ''}`}
-      >
-        <div className="activity-manage">
-          {activity.kind === 'task' ? (
-            <label className="activity-main checklist-main">
-              <input
-                type="checkbox"
-                checked={isCompleted}
-                disabled={busy}
-                onChange={() => void changeStatus(activity, isCompleted ? 'pending' : 'completed')}
-                aria-label={isCompleted ? `Reabrir ${activity.title}` : `Concluir ${activity.title}`}
-              />
-              <span>
-                <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
-                <small>{meta}</small>
-                {isCompleted ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}
-              </span>
-            </label>
-          ) : (
-            <div className="activity-main event-main">
-              <span className="event-marker" aria-hidden="true" />
-              <span>
-                <strong><Link to={`/atividade/${activity.id}`}>{activity.title}</Link></strong>
-                <small>{meta}</small>
-                {isCompleted ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}
-              </span>
-            </div>
-          )}
-          <div className="row-actions">
-            {activity.kind === 'event' ? <button
-              disabled={busy}
-              onClick={() => void changeStatus(activity, activity.status === 'pending' ? 'completed' : 'pending')}
-              aria-label={`${activity.status === 'completed' ? 'Reabrir' : activity.status === 'canceled' ? 'Reativar' : 'Concluir'} ${activity.title}`}
-            >{activity.status === 'completed' ? 'Reabrir' : activity.status === 'canceled' ? 'Reativar' : 'Concluir'}</button> : null}
-            <Link className="button activity-timer-link" to={`/atividade/${activity.id}#cronometro`} aria-label={`Abrir cronômetro de ${activity.title}`}>
-              <Icon name="clock" /><span>Cronômetro</span>
-            </Link>
-            <button disabled={busy} onClick={() => startEdit(activity)} aria-label={`Editar ${activity.title}`}>Editar</button>
-            <button disabled={busy} onClick={() => void trash(activity)} aria-label={`Excluir ${activity.title}`}>Excluir</button>
-            {activity.seriesId ? <button disabled={busy} onClick={() => void trashSeries(activity)} aria-label={`Excluir toda a série de ${activity.title}`}>Excluir série</button> : null}
-          </div>
-        </div>
-      </li>
-    );
-  }
-
   const pendingCount = activities.filter(a => a.status === 'pending').length;
   const taskCount = activities.filter(a => a.kind === 'task' && a.status !== 'canceled').length;
   const completedTaskCount = activities.filter(a => a.kind === 'task' && a.status === 'completed').length;
@@ -362,26 +285,22 @@ export function Today() {
 
   return (
     <main className="today-page">
-      {/* Page header */}
-      <header className="page-heading">
-        <p className="eyebrow">Sua agenda</p>
-        <h1 id="page-title" tabIndex={-1}>Meu dia</h1>
-        <p className="user-greeting">Olá, <strong>{session!.profile!.displayName || 'que bom ter você aqui'}</strong>.</p>
-        {!composerOpen && <button
+      <PageHeader
+        eyebrow="Sua agenda"
+        title="Meu dia"
+        description={<span className="user-greeting">Olá, <strong>{session!.profile!.displayName || 'que bom ter você aqui'}</strong>.</span>}
+        actions={!composerOpen && <button
           className="primary"
           onClick={openNewActivity}
           aria-expanded={false}
         >
           <Icon name="plus" />Nova atividade
         </button>}
-      </header>
+      />
 
-      <section className="day-overview" aria-label="Resumo do dia selecionado">
-        <div className="day-overview-date"><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { month: 'long' })}</span><strong>{Temporal.PlainDate.from(selectedDay).day}</strong><span>{Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
-        <div className="day-overview-content"><p className="eyebrow">Resumo</p><h2>{loading ? 'Abrindo o dia…' : pendingTaskCount ? `${pendingTaskCount} ${pendingTaskCount === 1 ? 'tarefa' : 'tarefas'} ${selectedDay === today ? 'para hoje' : 'neste dia'}` : taskCount ? 'Checklist em dia' : pendingCount ? `${pendingCount} ${pendingCount === 1 ? 'compromisso' : 'compromissos'} neste dia` : 'Nada planejado'}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}<nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/notas"><Icon name="note" />Notas</Link><Link to="/compras"><Icon name="basket" />Compras</Link><Link to="/revisao"><Icon name="clock" />Tempo registrado</Link></nav></div>
-      </section>
+      <TodayOverview selectedDay={selectedDay} today={today} loading={loading} pendingTaskCount={pendingTaskCount} taskCount={taskCount} pendingCount={pendingCount} plannedMinutes={plannedMinutes} />
 
-      <div className="agenda-layout">
+      <div className={`agenda-layout ${todayAsideStyles.todayLayout}`}>
         {/* Main column */}
         <div>
           {/* Day navigation panel */}
@@ -409,361 +328,71 @@ export function Today() {
           <DailyBrief selectedDay={selectedDay} today={today} activities={activities} notes={notes} shoppingItems={shoppingItems.items} />
 
           {/* Composer */}
-          {composerOpen && (
-            <section ref={composer} className="panel activity-composer" aria-labelledby="new-activity">
-              <h2 id="new-activity">{editing ? 'Editar atividade' : 'Nova atividade'}</h2>
-              <form key={editing?.id ?? (plannerDraft ? `${plannerDraft.startDate}:${plannerDraft.startTime}:${plannerDraft.endDate}:${plannerDraft.endTime}` : 'new')} onSubmit={save}>
-                {/* Kind */}
-                <label>
-                  Tipo
-                  <select
-                    value={kind}
-                    onChange={e => { setKind(e.target.value as 'task' | 'event'); setEventAllDay(false); pending.current = null; }}
-                  >
-                    <option value="task">Tarefa</option>
-                    <option value="event">Compromisso</option>
-                  </select>
-                </label>
+          {composerOpen ? <ActivityComposer
+            composer={composer}
+            editing={editing}
+            kind={kind}
+            setKind={setKind}
+            eventAllDay={eventAllDay}
+            setEventAllDay={setEventAllDay}
+            recurrenceFrequency={recurrenceFrequency}
+            setRecurrenceFrequency={setRecurrenceFrequency}
+            editScope={editScope}
+            setEditScope={setEditScope}
+            selectedDay={selectedDay}
+            plannerDraft={plannerDraft}
+            activeCategories={activeCategories}
+            busy={busy}
+            message={message}
+            messageTone={messageTone}
+            onSave={save}
+            onClose={closeComposer}
+            clearPending={() => { pending.current = null; }}
+          /> : null}
 
-                {/* Title */}
-                <label>
-                  Título
-                  <input
-                    name="title"
-                    required
-                    maxLength={120}
-                    defaultValue={editing?.title ?? ''}
-                    placeholder={kind === 'task' ? 'Ex.: estudar capítulo 3' : 'Ex.: consulta médica'}
-                    onChange={() => { pending.current = null; }}
-                    autoFocus
-                  />
-                </label>
-
-                {/* All-day toggle for events */}
-                {kind === 'event' && (
-                  <label className="check-label">
-                    <input
-                      type="checkbox"
-                      checked={eventAllDay}
-                      onChange={e => setEventAllDay(e.target.checked)}
-                    />
-                    Compromisso de dia inteiro
-                  </label>
-                )}
-
-                {/* Core schedule */}
-                {kind === 'task' ? (
-                  <div className="task-schedule-block">
-                    <label>
-                      Data
-                      <input
-                        name="dueDate"
-                        type="date"
-                        defaultValue={
-                          editing?.schedule.type === 'task'
-                            ? editing.schedule.dueDate ?? selectedDay
-                            : selectedDay
-                        }
-                      />
-                    </label>
-                    <details
-                      className="task-time-details"
-                      open={Boolean(editing?.schedule.type === 'task' && editing.schedule.dueTime)}
-                    >
-                      <summary>Adicionar horário <span>opcional</span></summary>
-                      <label>
-                        Horário
-                        <input
-                          name="dueTime"
-                          type="time"
-                          defaultValue={editing?.schedule.type === 'task' ? editing.schedule.dueTime ?? '' : ''}
-                        />
-                      </label>
-                    </details>
-                  </div>
-                ) : (
-                  <div className="date-fields">
-                    <label>
-                      Início
-                      <input
-                        name="dueDate"
-                        type="date"
-                        required
-                        defaultValue={
-                          editing?.schedule.type === 'event'
-                            ? editing.schedule.startDate
-                            : plannerDraft?.startDate ?? selectedDay
-                        }
-                      />
-                    </label>
-                    {!eventAllDay && (
-                      <label>
-                        Horário inicial
-                        <input
-                          name="dueTime"
-                          type="time"
-                          required
-                          defaultValue={editingEvent?.startTime ?? plannerDraft?.startTime ?? ''}
-                        />
-                      </label>
-                    )}
-                  </div>
-                )}
-
-                {kind === 'event' && eventAllDay ? (
-                  <label>
-                    Último dia
-                    <input
-                      name="allDayEndDate"
-                      type="date"
-                      required
-                      defaultValue={
-                        editing?.schedule.type === 'event' && editing.schedule.allDay
-                          ? Temporal.PlainDate.from(editing.schedule.endDateExclusive).subtract({ days: 1 }).toString()
-                          : plannerDraft?.startDate ?? selectedDay
-                      }
-                    />
-                  </label>
-                ) : kind === 'event' ? (
-                  <div className="date-fields">
-                    <label>
-                      Fim
-                      <input name="endDate" type="date" required defaultValue={editingEvent?.endDate ?? plannerDraft?.endDate ?? ''} />
-                    </label>
-                    <label>
-                      Horário final
-                      <input name="endTime" type="time" required defaultValue={editingEvent?.endTime ?? plannerDraft?.endTime ?? ''} />
-                    </label>
-                  </div>
-                ) : null}
-
-                <details className="optional-fields" open={Boolean(editing)}>
-                  <summary>Mais opções <span>opcional</span></summary>
-                  <div className="optional-fields-content">
-                    <label>
-                      Categoria
-                      <select name="categoryId" defaultValue={editing?.categoryId ?? ''}>
-                        <option value="">Sem categoria</option>
-                        {activeCategories.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <ActivityColorPicker value={editing?.colorHex} />
-
-                    <label>
-                      Tempo estimado <small>(minutos)</small>
-                      <input name="estimatedMinutes" type="number" min="5" max="1440" step="5" defaultValue={editing?.estimatedMinutes ?? ''} placeholder="Ex.: 45" />
-                    </label>
-
-                    <label>
-                      Descrição <small>(opcional)</small>
-                      <textarea
-                        name="description"
-                        maxLength={5000}
-                        rows={3}
-                        placeholder="Contexto, observações ou detalhes úteis"
-                        defaultValue={editing?.descriptionPlain ?? ''}
-                      />
-                    </label>
-
-                    <fieldset>
-                      <legend>Lembretes</legend>
-                      {kind === 'task' ? <p className="field-hint">Lembretes exigem horário.</p> : null}
-                      {[
-                        { value: '0', label: 'No horário da atividade' },
-                        { value: '30', label: '30 minutos antes' },
-                        { value: '60', label: '1 hora antes' },
-                        { value: '1440', label: '1 dia antes' },
-                      ].map(r => (
-                        <label key={r.value} className="check-label">
-                          <input
-                            type="checkbox"
-                            name="reminders"
-                            value={r.value}
-                            defaultChecked={editing?.reminderSpecs.some(s => s.minutesBefore === Number(r.value))}
-                          />
-                          {r.label}
-                        </label>
-                      ))}
-                    </fieldset>
-
-                    {!editing ? (
-                      <fieldset>
-                        <legend>Repetição</legend>
-                        <label>
-                          Frequência
-                          <select value={recurrenceFrequency} onChange={e => setRecurrenceFrequency(e.target.value)}>
-                            <option value="none">Não repetir</option>
-                            <option value="daily">Diária</option>
-                            <option value="weekly">Semanal</option>
-                            <option value="monthly">Mensal</option>
-                          </select>
-                        </label>
-                        {recurrenceFrequency !== 'none' && (
-                          <>
-                            <div className="date-fields">
-                              <label>
-                                Repetir a cada
-                                <input name="recurrenceInterval" type="number" min="1" max="30" defaultValue="1" />
-                              </label>
-                              <label>
-                                Até <small>(opcional)</small>
-                                <input name="recurrenceUntil" type="date" min={selectedDay} />
-                              </label>
-                            </div>
-                            {recurrenceFrequency === 'monthly' && (
-                              <label>
-                                Quando o dia não existir
-                                <select name="monthlyPolicy" defaultValue="lastDay">
-                                  <option value="lastDay">Usar o último dia do mês</option>
-                                  <option value="skip">Pular aquele mês</option>
-                                </select>
-                              </label>
-                            )}
-                            <small className="field-hint">Até 180 ocorrências.</small>
-                          </>
-                        )}
-                      </fieldset>
-                    ) : null}
-                  </div>
-                </details>
-
-                {editing?.seriesId ? (
-                  <fieldset>
-                    <legend>Aplicar alteração</legend>
-                    <label className="check-label">
-                      <input
-                        type="radio"
-                        name="editScope"
-                        checked={editScope === 'occurrence'}
-                        onChange={() => setEditScope('occurrence')}
-                      />
-                      Somente esta ocorrência
-                    </label>
-                    <label className="check-label">
-                      <input
-                        type="radio"
-                        name="editScope"
-                        checked={editScope === 'future'}
-                        onChange={() => setEditScope('future')}
-                      />
-                      Esta e as futuras
-                    </label>
-                  </fieldset>
-                ) : null}
-
-                <div className="dialog-actions">
-                  <button className="primary" disabled={busy}>
-                    {busy ? 'Salvando…' : editing ? 'Atualizar atividade' : 'Adicionar atividade'}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={closeComposer}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-                {message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
-              </form>
-            </section>
-          )}
-
-          {/* Activity list */}
-          <section className="real-activities" aria-labelledby="activity-title">
-            <div className="section-heading daily-checklist-heading">
-              <div>
-                <p className="eyebrow">Checklist</p>
-                <h2 id="activity-title">Tarefas do dia</h2>
-              </div>
-              <span className="muted">{taskCount ? `${completedTaskCount} de ${taskCount} concluídas` : 'Nenhuma tarefa'}</span>
-            </div>
-
-            {taskCount > 0 ? (
-              <div className="checklist-progress-row" aria-label={`Progresso do checklist: ${completedTaskCount} de ${taskCount} tarefas concluídas`}>
-                <progress className="checklist-progress" max={Math.max(taskCount, 1)} value={completedTaskCount} />
-                <strong>{Math.round((completedTaskCount / taskCount) * 100)}%</strong>
-              </div>
-            ) : null}
-
-            <div className="activity-filters" aria-label="Filtros de atividades">
-              <label>Estado<select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
-              <label>Categoria<select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{activeCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
-            </div>
-
-            {!composerOpen && message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
-            {activityQuery.error && <LoadError message={activityQuery.error} retry={activityQuery.retry} />}
-            {activityQuery.partial && <p role="status">Mostrando parte das atividades.</p>}
-            {activityQuery.cached && activities.length > 0 && <p className="muted" role="status">Sem conexão. Mostrando dados salvos.</p>}
-
-            {loading ? (
-              <LoadingState label="Carregando seu dia…" />
-            ) : (
-              <>
-                {visibleTasks.length ? (
-                  <ul className="activity-list checklist-list">
-                    {visibleTasks.map(activityRow)}
-                  </ul>
-                ) : !activityQuery.error ? (
-                  <div className="empty checklist-empty">
-                    <p>{activities.some(activity => activity.kind === 'task') ? 'Nenhuma tarefa com estes filtros.' : 'Nenhuma tarefa neste dia.'}</p>
-                    <button className="text-link" onClick={openNewActivity}>Adicionar tarefa</button>
-                  </div>
-                ) : null}
-
-                {visibleEvents.length ? (
-                  <section className="day-events" aria-labelledby="events-title">
-                    <div className="section-heading">
-                      <div>
-                        <h3 id="events-title">Compromissos</h3>
-                      </div>
-                      <span className="muted">{visibleEvents.length} {visibleEvents.length === 1 ? 'compromisso' : 'compromissos'}</span>
-                    </div>
-                    <ul className="activity-list event-list">
-                      {visibleEvents.map(activityRow)}
-                    </ul>
-                  </section>
-                ) : null}
-              </>
-            )}
-          </section>
+          <ActivityAgenda
+            activities={activities}
+            tasks={visibleTasks}
+            events={visibleEvents}
+            categories={categories}
+            filterCategories={activeCategories}
+            taskCount={taskCount}
+            completedTaskCount={completedTaskCount}
+            statusFilter={statusFilter}
+            categoryFilter={categoryFilter}
+            message={message}
+            messageTone={messageTone}
+            composerOpen={composerOpen}
+            busy={busy}
+            loading={loading}
+            error={activityQuery.error}
+            partial={activityQuery.partial}
+            cached={activityQuery.cached}
+            retry={activityQuery.retry}
+            onStatusFilterChange={setStatusFilter}
+            onCategoryFilterChange={setCategoryFilter}
+            onCreate={openNewActivity}
+            onChangeStatus={(activity, next) => void changeStatus(activity, next)}
+            onEdit={startEdit}
+            onTrash={activity => void trash(activity)}
+            onTrashSeries={activity => void trashSeries(activity)}
+          />
         </div>
 
-        {/* Aside */}
-        <aside className="agenda-aside">
-          <section className="panel today-month-panel">
-            <DayNavigation
-              month
-              selected={selectedDay}
-              today={today}
-              weekStartsOn={session!.profile!.weekStartsOn}
-              onSelect={selectDay}
-              dotsOf={dotsOf}
-            />
-            <div className="month-panel-summary" aria-live="polite">
-              <div><strong>{selectedDate.toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</strong><span>{calendarQuery.loading ? 'Carregando compromissos…' : `${activitiesOn(selectedDay).length} ${activitiesOn(selectedDay).length === 1 ? 'atividade neste dia' : 'atividades neste dia'}`}</span></div>
-              <div className="month-panel-actions"><Link className="button" to="/calendario">Ver calendário completo</Link><button type="button" className="primary" onClick={openNewActivity}><Icon name="plus" />Adicionar</button></div>
-            </div>
-            {calendarQuery.partial ? <p className="muted">Mostrando parte das atividades.</p> : null}
-          </section>
-
-          <article className={`note ${pinnedNote?.paperColorPreset ?? 'butter'}`}>
-            <p className="note-kicker">Fixada no Meu dia</p>
-            <h2>{pinnedNote?.title ?? 'Uma nota para lembrar'}</h2>
-            <p>{pinnedNote?.plainText ?? 'Nenhuma nota fixada.'}</p>
-            <Link to="/notas">Abrir notas</Link>
-          </article>
-
-          <Link className="panel shopping-summary" to="/compras">
-            <strong>Compras</strong>
-            <span>
-              {pendingShoppingItems} {pendingShoppingItems === 1 ? 'item pendente' : 'itens pendentes'}{' '}
-              em {activeShoppingLists.length} {activeShoppingLists.length === 1 ? 'lista' : 'listas'}
-            </span>
-          </Link>
-        </aside>
+        <TodayAside
+          selectedDay={selectedDay}
+          today={today}
+          weekStartsOn={session!.profile!.weekStartsOn}
+          onSelectDay={selectDay}
+          dotsOf={dotsOf}
+          loading={calendarQuery.loading}
+          partial={calendarQuery.partial}
+          selectedActivityCount={activitiesOn(selectedDay).length}
+          pinnedNote={pinnedNote}
+          pendingShoppingItems={pendingShoppingItems}
+          activeShoppingListCount={activeShoppingLists.length}
+          onAddActivity={openNewActivity}
+        />
       </div>
 
       {(noteError || shoppingError || shoppingItems.error) && <p role="alert" className="form-status activity-form-status error" aria-live="assertive">{noteError || shoppingError || shoppingItems.error}</p>}

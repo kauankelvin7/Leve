@@ -15,7 +15,9 @@ import { ActiveTimerBar } from '../features/activities/ActiveTimerBar';
 import { Avatar } from '../components/ui/Avatar';
 import { RouteMetadata } from './RouteMetadata';
 import { Privacy } from '../features/content/Privacy';
+import { Terms } from '../features/content/Terms';
 import { GikaLauncher } from '../features/gika/GikaLauncher';
+import styles from './AppShell.module.css';
 
 const Demo = lazy(() => import('../features/demo/Demo'));
 const Today = lazy(() => import('../features/activities/Today').then(module => ({ default: module.Today })));
@@ -23,7 +25,7 @@ const Calendar = lazy(() => import('../features/activities/Calendar').then(modul
 const Notes = lazy(() => import('../features/notes/Notes').then(module => ({ default: module.Notes })));
 const NoteDetail = lazy(() => import('../features/notes/NoteDetail').then(module => ({ default: module.NoteDetail })));
 const Shopping = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.Shopping })));
-const ShoppingDetail = lazy(() => import('../features/shopping/Shopping').then(module => ({ default: module.ShoppingDetail })));
+const ShoppingDetail = lazy(() => import('../features/shopping/ShoppingDetail').then(module => ({ default: module.ShoppingDetail })));
 const Settings = lazy(() => import('../features/settings/Settings').then(module => ({ default: module.Settings })));
 const Trash = lazy(() => import('../features/trash/Trash').then(module => ({ default: module.Trash })));
 const Search = lazy(() => import('../features/content/Search').then(module => ({ default: module.Search })));
@@ -51,22 +53,22 @@ function Shell() {
   const { pathname } = useLocation();
   const links = [
     ['/hoje', 'day', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
-    ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'], ['/lixeira', 'trash', 'Lixeira'],
-    ['/revisao', 'review', 'Revisão'],
+    ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'],
   ] as const;
+  const secondaryLinks = [['/lixeira', 'trash', 'Lixeira'], ['/revisao', 'review', 'Revisão']] as const;
   const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
   return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
     <aside className="sidebar glass"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
-      <nav aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}<GikaLauncher key={session?.uid} /></nav>
+      <nav className={styles.primaryNavigation} aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}<GikaLauncher key={session?.uid} /></nav>
       <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small style={{ color: 'var(--ink-surface)' }}>Conta e preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <div className="mobile-brand"><span className="brand">leve<span>.</span></span><div className="mobile-actions"><NavLink to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink><NavLink className="mobile-profile" to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink></div></div>
-      <div className="workspace-bar"><span><span className="workspace-prefix">Meu espaço <span aria-hidden="true">/</span></span><strong>{links.find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname === '/revisao' ? 'Revisão' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong></span><span className="workspace-actions"><Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /><span className="visually-hidden">Adicionar atividade</span></Link><span className="workspace-private">Agenda pessoal</span></span></div>
+      <div className="workspace-bar"><strong>{[...links, ...secondaryLinks].find(([to]) => pathname.startsWith(to))?.[2] ?? (pathname === '/buscar' ? 'Buscar' : pathname.startsWith('/atividade') ? 'Atividade' : 'Preferências')}</strong><span className="workspace-actions"><details className={styles.secondaryNavigation}><summary aria-label="Mais páginas" title="Mais páginas">Mais</summary><nav aria-label="Mais páginas">{secondaryLinks.map(([to, icon, label]) => <NavLink key={to} to={to} onClick={event => event.currentTarget.closest('details')?.removeAttribute('open')}><Icon name={icon} /><span>{label}</span></NavLink>)}</nav></details><Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /><span className="visually-hidden">Adicionar atividade</span></Link><span className="workspace-private">Agenda pessoal</span></span></div>
       <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
       <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
-      <footer className="page-footer"><span>Leve · sua agenda privada</span><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
+      <footer className="page-footer"><span>Leve · sua agenda privada</span><nav className={styles.legalFooter} aria-label="Informações legais"><Link to="/privacidade">Privacidade</Link><Link to="/termos">Termos</Link></nav><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
     </div>
   </div>;
 }
@@ -78,7 +80,7 @@ function NotFound() {
 export function App() {
   return <><RouteFocus /><RouteMetadata /><SeasonalExperience /><Suspense fallback={<LoadingState variant="screen" label="Abrindo seu espaço…" />}><Routes>
     <Route path="/" element={<Navigate to="/hoje" replace />} />
-    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} />
+    <Route path="/entrar" element={<Login />} /><Route path="/registrar" element={<Login mode="register" />} /><Route path="/recuperar" element={<Login mode="recovery" />} /><Route path="/privacidade" element={<Privacy />} /><Route path="/termos" element={<Terms />} />
     <Route element={<Protected />}><Route element={<Shell />}>
       <Route path="/hoje" element={<Today />} />
       <Route path="/calendario" element={<Calendar />} />

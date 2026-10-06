@@ -1,6 +1,12 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFile } from 'node:fs/promises';
+
+async function openTrash(page: Page) {
+  const trashLink = page.getByRole('navigation', { name: 'Mais páginas' }).getByRole('link', { name: 'Lixeira', exact: true });
+  if (!await trashLink.isVisible()) await page.locator('details summary[aria-label="Mais páginas"]').click();
+  await trashLink.click();
+}
 
 test('cadastro, verificação, ativação, recuperação, saída e nova entrada funcionam pela interface', async ({ page }) => {
   const pageErrors: string[] = [];
@@ -123,7 +129,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page.getByRole('checkbox', { name: 'Marcar Arroz como pendente' })).toBeChecked();
   const shoppingListUrl = page.url();
   await page.getByRole('button', { name: 'Excluir' }).click();
-  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira' }).click();
+  await openTrash(page);
   await expect(page.getByText('Arroz', { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: 'Arroz' }).getByRole('button', { name: 'Restaurar' }).click();
   await expect(page.getByText('Arroz', { exact: true })).toHaveCount(0);
@@ -156,7 +162,7 @@ test('login, ativação e atividade sobrevivem ao reload', async ({ page }) => {
   await expect(page.getByText(`Compromisso persistente ${suffix}`, { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('button', { name: 'Excluir' }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toHaveCount(0);
-  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira', exact: true }).click();
+  await openTrash(page);
   await expect(page.getByText(activityTitle, { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: activityTitle }).getByRole('button', { name: 'Restaurar' }).click();
   await expect(page.getByText(activityTitle, { exact: true })).toHaveCount(0);
@@ -239,7 +245,7 @@ test('lixeira global restaura item de compras', async ({ page }) => {
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
   const shoppingListUrl = page.url();
   await page.getByRole('button', { name: 'Excluir' }).click();
-  await page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Lixeira' }).click();
+  await openTrash(page);
   await expect(page.getByText('Item para restaurar', { exact: true })).toBeVisible();
   await page.getByRole('listitem').filter({ hasText: 'Item para restaurar' }).getByRole('button', { name: 'Restaurar Item para restaurar', exact: true }).click();
   await expect(page.getByText('Item para restaurar', { exact: true })).toHaveCount(0);

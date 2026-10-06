@@ -44,10 +44,11 @@ async function login(page: Page) {
 
 async function chooseAppearance(page: Page, label: 'Claro' | 'Escuro' | 'Sistema') {
   const control = page.getByLabel(label, { exact: true });
+  if (await control.isChecked()) return;
   await control.focus();
   await page.keyboard.press('Space');
   await expect(control).toBeChecked();
-  await expect(page.getByText('Aparência salva.', { exact: true })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Aparência' }).getByRole('status')).toHaveText('Aparência salva.');
 }
 
 async function setSeasonalPreference(page: Page, enabled: boolean) {
@@ -137,6 +138,9 @@ test('experiência sazonal acompanha Claro, Escuro e Sistema', async ({ page }) 
   await login(page);
   await setSeasonalPreference(page, true);
 
+  if (await page.getByLabel('Escuro', { exact: true }).isChecked()) {
+    await chooseAppearance(page, 'Claro');
+  }
   await chooseAppearance(page, 'Escuro');
   await expect(page.locator('html')).toHaveAttribute('data-appearance', 'dark');
   await expect(page.locator('.seasonal-layer.seasonal-christmas')).toBeVisible();
