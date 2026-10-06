@@ -1,0 +1,131 @@
+.todayAside {
+  align-content: start;
+}
+
+.todayAside > * {
+  transition: translate var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+}
+
+.todayAside > *:hover {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-medium);
+}
+
+.monthPanel {
+  background: color-mix(in srgb, var(--color-solid) 88%, var(--color-canvas-accent)) !important;
+  border-color: color-mix(in srgb, var(--color-action-primary) 24%, var(--editorial-line));
+}
+
+.monthPanel :global(.month-picker) {
+  margin-bottom: 18px;
+}
+
+.monthPanel :global(.month-picker .calendar-day-count) {
+  display: block;
+  color: inherit;
+  font-size: .62rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.monthSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--editorial-line);
+}
+
+.monthSummary > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.monthSummary strong {
+  text-transform: capitalize;
+}
+
+.monthSummary span {
+  color: var(--color-text-muted);
+  font-size: .82rem;
+}
+
+.monthActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.monthActions :is(:global(.button), button) {
+  min-height: 40px;
+  padding: 8px 11px;
+  font-size: .78rem;
+}
+
+.monthActions svg {
+  width: 17px;
+  height: 17px;
+}
+
+.shoppingSummary {
+  display: grid;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.shoppingSummary span {
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 739px) {
+  .todayAside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .todayAside > *:hover {
+    translate: 0;
+  }
+
+  .monthSummary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .monthActions {
+    justify-content: stretch;
+  }
+
+  .monthActions > * {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1366px) {
+  .todayLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .todayAside {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .monthPanel {
+    grid-column: 1 / -1;
+  }
+
+  .monthPanel :global(.month-picker button) {
+    min-height: 46px;
+  }
+}
+
+@media (max-width: 739px) {
+  .todayAside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

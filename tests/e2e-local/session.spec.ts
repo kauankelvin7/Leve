@@ -30,8 +30,10 @@ test('cronômetro explícito, conclusão e registro manual persistem após recar
   await expect(page.locator('.timer-display')).toHaveText('00:00:35');
   await page.locator('.timer-panel').getByRole('button', { name: 'Finalizar', exact: true }).click();
   await expect(page.locator('.time-history')).toContainText('Cronômetro');
+  await expect(page.locator('.time-history li').first()).toHaveCSS('display', 'grid');
   await page.getByRole('button', { name: 'Concluir', exact: true }).click();
   await page.getByText('Adicionar tempo manualmente').click();
+  await expect(page.locator('.manual-time')).toHaveCSS('display', 'flex');
   await page.getByLabel('Tempo em minutos').fill('2');
   await page.locator('.manual-time').getByRole('button', { name: 'Adicionar', exact: true }).click();
   await expect(page.locator('.time-history')).toContainText('Manual');

@@ -15,7 +15,9 @@ import { ThemeSettings } from './ThemeSettings';
 import { Icon } from '../../components/ui/Icon';
 import { requestTutorial } from '../content/Tutorial';
 import { AvatarPicker } from './AvatarPicker';
+import styles from './Settings.module.css';
 import { Link } from 'react-router-dom';
+import { PageHeader } from '../../components/ui/PageHeader';
 
 async function importIdFor(content: string) {
   const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content))).slice(0, 16);
@@ -84,21 +86,17 @@ export function Settings() {
   }
   const importCounts = archive ? { categories: archive.data.categories.length, activities: archive.data.activities.length, series: archive.data.series.length, notes: archive.data.notes.length, lists: archive.data.shoppingLists.length, items: archive.data.shoppingLists.reduce((total, list) => total + list.items.length, 0) } : null;
   return <main>
-    <header className="page-heading">
-      <p className="eyebrow">Conta e aparência</p>
-      <h1 id="page-title" tabIndex={-1}>Preferências</h1>
-      <p>Perfil, aparência e dados.</p>
-    </header>
-    <nav className="settings-nav" aria-label="Seções de preferências">
+    <PageHeader eyebrow="Conta e aparência" title="Preferências" description="Perfil, aparência e dados." />
+    <nav className={styles.nav} aria-label="Seções de preferências">
       <a href="#settings-profile">Perfil</a>
       <a href="#settings-look">Aparência</a>
       <a href="#settings-device">Aparelho</a>
       <a href="#settings-data">Seus dados</a><Link to="/privacidade">Privacidade</Link>
     </nav>
     {(error || message) ? <p role={error ? 'alert' : 'status'} className="form-status settings-feedback" aria-live="polite">{error || message}</p> : null}
-    <div className="settings-layout">
-      <section id="settings-profile" className="settings-section" aria-label="Perfil e categorias">
-        <div className="settings-section-grid">
+    <div className={styles.layout}>
+      <section id="settings-profile" className={styles.section} aria-label="Perfil e categorias">
+        <div className={styles.sectionGrid}>
           <section className="panel content-form">
             <h2><Icon name="profile" />Perfil</h2>
             <form onSubmit={saveProfile}>
@@ -117,27 +115,27 @@ export function Settings() {
               <label>Cor<input name="color" type="color" defaultValue={editingCategory?.colorHex ?? '#86A5C6'} /></label>
               <div className="dialog-actions"><button className="primary" disabled={busy}>{editingCategory ? 'Salvar categoria' : 'Criar categoria'}</button>{editingCategory ? <button type="button" onClick={() => setEditingCategory(null)}>Cancelar</button> : null}</div>
             </form>
-            <ul className="settings-list">{categories.filter(item => !item.deletedAt).map(category => <li key={category.id}><span className="color-dot" style={{ background: category.colorHex }} /><strong>{category.name}</strong><div className="row-actions"><button disabled={busy || Boolean(category.archivedAt)} onClick={() => { setEditingCategory(category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy || Boolean(category.archivedAt)} onClick={() => void archiveCategory(category)}>{category.archivedAt ? 'Arquivada' : 'Arquivar'}</button><button disabled={busy} onClick={() => void trashCategory(category)}>Lixeira</button></div></li>)}</ul>
+            <ul className={styles.list}>{categories.filter(item => !item.deletedAt).map(category => <li key={category.id}><span className="color-dot" style={{ background: category.colorHex }} /><strong>{category.name}</strong><div className="row-actions"><button disabled={busy || Boolean(category.archivedAt)} onClick={() => { setEditingCategory(category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Editar</button><button disabled={busy || Boolean(category.archivedAt)} onClick={() => void archiveCategory(category)}>{category.archivedAt ? 'Arquivada' : 'Arquivar'}</button><button disabled={busy} onClick={() => void trashCategory(category)}>Lixeira</button></div></li>)}</ul>
           </section>
         </div>
       </section>
-      <section id="settings-look" className="settings-section" aria-label="Aparência">
-        <div className="settings-section-grid settings-section-grid-single"><ThemeSettings /></div>
+      <section id="settings-look" className={styles.section} aria-label="Aparência">
+        <div className={`${styles.sectionGrid} ${styles.sectionGridSingle}`}><ThemeSettings /></div>
       </section>
-      <section id="settings-device" className="settings-section" aria-label="Aparelho">
-        <div className="settings-section-grid">
-          <div className="settings-group">
+      <section id="settings-device" className={styles.section} aria-label="Aparelho">
+        <div className={styles.sectionGrid}>
+          <div className={styles.group}>
             <PwaSettings />
             <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Acesse o que já foi carregado mesmo sem internet. As alterações sincronizam quando a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
           </div>
-          <div className="settings-group">
+          <div className={styles.group}>
             <NotificationSettings />
             <section className="panel content-form"><h2><Icon name="question" />Tutorial</h2><button type="button" onClick={requestTutorial}>Ver tutorial novamente</button></section>
           </div>
         </div>
       </section>
-      <section id="settings-data" className="settings-section" aria-label="Seus dados">
-        <div className="settings-section-grid">
+      <section id="settings-data" className={styles.section} aria-label="Seus dados">
+        <div className={styles.sectionGrid}>
           <section className="panel content-form"><h2><Icon name="basket" />Seus dados</h2><p>Faça backup ou importe um arquivo do Leve sem substituir seus dados.</p><button type="button" disabled={busy} onClick={() => void downloadExport()}>Baixar backup</button><label>Importar backup do Leve<input type="file" accept="application/json,.json" onChange={event => void selectImport(event)} /><small className="field-hint">JSON do Leve · até 5 MB.</small></label>{importCounts ? <div className="import-summary"><p><strong>Resumo:</strong> {importCounts.activities} atividades em {importCounts.series} séries, {importCounts.notes} notas, {importCounts.categories} categorias, {importCounts.lists} listas e {importCounts.items} itens.</p><button type="button" className="primary" disabled={busy} onClick={() => void importArchive()}>Importar como cópia</button></div> : null}</section>
           <details className="panel content-form danger-zone"><summary>Excluir conta</summary><p>Remove permanentemente a agenda, as notas, as compras e os avisos. Esta ação não pode ser desfeita.</p><form onSubmit={deleteOwnAccount}>{user?.providerData.some(provider => provider.providerId === 'password') ? <label>Senha atual<input name="password" type="password" autoComplete="current-password" required /></label> : null}<label>Confirmação<input name="confirmation" autoComplete="off" placeholder="Digite EXCLUIR" required /><small className="field-hint">Digite EXCLUIR exatamente como aparece acima.</small></label><button className="danger" disabled={busy}>Excluir conta permanentemente</button></form></details>
         </div>

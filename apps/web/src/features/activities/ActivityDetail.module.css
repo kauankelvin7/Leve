@@ -1,0 +1,120 @@
+.detailHeading > :global(.back-link) {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  min-height: 40px;
+  margin-bottom: 20px;
+  padding: 8px 13px 8px 9px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  color: var(--color-text-muted);
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.detailHeading > :global(.back-link:hover) {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.detailHeading > :global(.back-link) svg {
+  width: 18px;
+  height: 18px;
+}
+
+.detailMeta {
+  max-width: 55ch;
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.manualTimeDetails {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.manualTimeDetails summary {
+  width: fit-content;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+:global(.content-form) .manualTime {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+:global(.content-form) .manualTime label {
+  flex: 1;
+  margin: 0;
+}
+
+.timeHistoryHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 25px;
+  border-top: 1px solid var(--color-border);
+}
+
+.timeHistoryHeading .eyebrow {
+  margin: 0 0 3px;
+  color: var(--color-text-muted);
+}
+
+.timeHistoryHeading h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.timeHistoryHeading span {
+  color: var(--color-text-muted);
+  font-size: .8125rem;
+}
+
+.timeHistory {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeHistory li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.timeHistory small {
+  color: var(--color-text-muted);
+}
+
+.timeHistoryEmpty {
+  margin-bottom: 0;
+}
+
+@media (max-width: 560px) {
+  .manualTime {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .timeHistory li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .timeHistory small {
+    grid-column: 1 / -1;
+  }
+}

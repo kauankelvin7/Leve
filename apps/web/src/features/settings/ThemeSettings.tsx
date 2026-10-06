@@ -4,6 +4,7 @@ import { sendCommand } from '../../platform/api';
 import { storeSeasonalDetailsEnabled } from '../../platform/seasonal/seasonalStorage';
 import { useAuth } from '../identity/AuthProvider';
 import { applyAppearance, applyColorTheme, colorThemes, colorThemeIds, storedAppearance, type Appearance, type ColorTheme } from '../../platform/theme';
+import styles from './Settings.module.css';
 
 const appearanceLabels: Record<Appearance, string> = { light: 'Claro', dark: 'Escuro', system: 'Sistema' };
 
@@ -77,13 +78,13 @@ export function ThemeSettings() {
   return <section className="panel content-form">
     <h2>Aparência e cores</h2>
     <p>Escolha como o Leve deve aparecer.</p>
-    <fieldset className="theme-options">
+    <fieldset className={styles.themeOptions}>
       <legend>Aparência</legend>
       {(Object.keys(appearanceLabels) as Appearance[]).map(value => <label key={value}><input type="radio" name="appearance" checked={appearance === value} disabled={busy} onChange={() => void choose({ appearance: value })} />{appearanceLabels[value]}</label>)}
     </fieldset>
-    <fieldset className="theme-options">
+    <fieldset className={styles.themeOptions}>
       <legend>Paleta</legend>
-      {colorThemeIds.map(value => <label key={value}><input type="radio" name="colorTheme" checked={(profile.colorTheme ?? 'green') === value} disabled={busy} onChange={() => void choose({ colorTheme: value })} /><span className="theme-swatch" style={{ backgroundColor: colorThemes[value].accent }} aria-hidden="true" />{colorThemes[value].label}</label>)}
+      {colorThemeIds.map(value => <label key={value}><input type="radio" name="colorTheme" checked={(profile.colorTheme ?? 'green') === value} disabled={busy} onChange={() => void choose({ colorTheme: value })} /><span className={styles.themeSwatch} style={{ backgroundColor: colorThemes[value].accent }} aria-hidden="true" />{colorThemes[value].label}</label>)}
     </fieldset>
     <fieldset className="accessibility-options">
       <legend>Datas especiais</legend>

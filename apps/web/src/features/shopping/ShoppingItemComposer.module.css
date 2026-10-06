@@ -1,0 +1,29 @@
+.composer {
+  max-width: none;
+  padding: clamp(22px, 3vw, 32px);
+}
+
+.composerForm {
+  margin-top: 20px;
+}
+
+.nameField input {
+  min-height: 54px;
+  font-size: 1.05rem;
+}
+
+.itemFields {
+  display: grid;
+  grid-template-columns: minmax(110px, .55fr) minmax(130px, .6fr) minmax(190px, 1.5fr);
+  gap: 14px;
+}
+
+@media (max-width: 739px) {
+  .composer {
+    padding: 20px;
+  }
+
+  .itemFields {
+    grid-template-columns: 1fr;
+  }
+}

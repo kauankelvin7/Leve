@@ -1,0 +1,110 @@
+.page {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: clamp(96px, 14vh, 144px) clamp(20px, 6vw, 80px) 48px;
+  color: var(--text-primary, var(--color-text));
+  background:
+    radial-gradient(ellipse at 12% 12%, color-mix(in srgb, var(--color-canvas-accent) 64%, transparent), transparent 34rem),
+    radial-gradient(ellipse at 90% 88%, color-mix(in srgb, var(--action-primary, var(--color-action-primary)) 10%, transparent), transparent 32rem),
+    var(--color-canvas);
+}
+
+.brand {
+  position: absolute;
+  top: clamp(24px, 5vh, 48px);
+  left: clamp(20px, 6vw, 80px);
+  color: var(--text-primary, var(--color-text));
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2.6rem, 5vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.09em;
+  line-height: 1;
+}
+
+.brand span { color: var(--action-primary, var(--color-action-primary)); }
+
+.card {
+  position: relative;
+  width: min(100%, 680px);
+  padding: clamp(28px, 6vw, 64px);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle, var(--color-border));
+  border-radius: clamp(24px, 4vw, 36px);
+  background: color-mix(in srgb, var(--surface, var(--color-solid)) 92%, transparent);
+  box-shadow: var(--shadow-floating, var(--shadow-md));
+  text-align: center;
+}
+
+.card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: linear-gradient(90deg, var(--action-primary, var(--color-action-primary)), color-mix(in srgb, var(--action-primary, var(--color-action-primary)) 20%, var(--color-canvas)));
+  content: '';
+}
+
+.code {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--action-primary, var(--color-action-primary)) 26%, var(--border-subtle, var(--color-border)));
+  border-radius: var(--radius-full, 9999px);
+  background: color-mix(in srgb, var(--action-primary, var(--color-action-primary)) 9%, var(--surface, var(--color-solid)));
+  color: var(--action-primary, var(--color-action-primary));
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.eyebrow {
+  margin: 18px 0 8px;
+  color: var(--text-secondary, var(--color-text-muted));
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  max-width: 17ch;
+  margin: 0 auto 18px;
+  color: var(--text-primary, var(--color-text));
+  font-size: clamp(2.15rem, 5.2vw, 3.5rem);
+  font-weight: 850;
+  letter-spacing: -.055em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 54ch;
+  margin: 0 auto;
+  color: var(--text-secondary, var(--color-text-muted));
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.actions :global(.button), .actions :global(button) { min-height: 48px; }
+
+@media (max-width: 480px) {
+  .page { padding-inline: 16px; }
+  .brand { left: 20px; }
+  .card { padding: 32px 22px; }
+  .actions { display: grid; }
+  .actions :global(.button), .actions :global(button) { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page :global(.connection-beacon span) { animation: none; }
+}

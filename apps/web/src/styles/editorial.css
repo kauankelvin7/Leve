@@ -34,24 +34,10 @@
 .app-shell .day-picker:not(.month-picker) button.selected { background: var(--color-action-primary); color: var(--color-action-foreground, white); }
 .app-shell .day-picker:not(.month-picker) strong { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 1.55rem; font-weight: 800; white-space: nowrap; }
 .app-shell .agenda-aside .panel { background: var(--color-accent-soft); box-shadow: none; }
-.app-shell .today-month-panel {
-  background: color-mix(in srgb, var(--color-solid) 88%, var(--color-canvas-accent)) !important;
-  border-color: color-mix(in srgb, var(--color-action-primary) 24%, var(--editorial-line));
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--color-action-primary) 9%, transparent);
-}
 .app-shell .calendar-panel {
   background: color-mix(in srgb, var(--color-solid) 92%, var(--color-canvas-accent));
   border-color: color-mix(in srgb, var(--color-action-primary) 18%, var(--editorial-line));
 }
-.today-month-panel .month-picker { margin-bottom: 18px; }
-.month-panel-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-top: 18px; border-top: 1px solid var(--editorial-line); }
-.month-panel-summary > div:first-child { display: grid; gap: 3px; }
-.month-panel-summary strong { text-transform: capitalize; }
-.month-panel-summary span { color: var(--color-text-muted); font-size: .82rem; }
-.month-panel-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.month-panel-actions :is(.button, button) { min-height: 40px; padding: 8px 11px; font-size: .78rem; }
-.month-panel-actions svg { width: 17px; height: 17px; }
-.today-month-panel .month-picker .calendar-day-count { display: block; color: inherit; font-size: .62rem; line-height: 1; font-weight: 700; }
 .app-shell .activity-manage { padding-block: 5px; }
 .app-shell .activity-manage strong { font-size: 1.05rem; }
 .app-shell .note-grid { gap: 22px; }
@@ -69,8 +55,6 @@
 .app-shell .calendar-panel { overflow: hidden; }
 .app-shell .calendar-day { border-radius: 5px; box-shadow: none; }
 .app-shell .calendar-day[aria-pressed=true] { outline: 2px solid var(--color-action-primary); outline-offset: -2px; }
-.app-shell .settings-nav { border-radius: 10px; box-shadow: none; background: var(--paper-surface); border-color: var(--editorial-line); }
-.app-shell .settings-layout .content-form > h2 { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -.03em; }
 .app-shell .empty { background: repeating-linear-gradient(0deg, transparent, transparent 31px, color-mix(in srgb, var(--color-text) 5%, transparent) 31px, color-mix(in srgb, var(--color-text) 5%, transparent) 32px); border: 1px dashed var(--editorial-line); border-radius: 12px; }
 .app-shell .loading-preview { border-radius: 12px; box-shadow: none; background: var(--paper-surface); }
 .app-shell .loading-state-cards { min-height: 45vh; }
@@ -86,11 +70,6 @@
 .app-shell .timer-state.is-running { background: #e6efe9; }
 .app-shell .timer-actions { margin-top: 22px; }
 .app-shell .timer-actions .primary { min-height: 48px; padding-inline: 18px; }
-.app-shell .manual-time-details { margin-top: 24px; }
-.app-shell .time-history-heading { margin-top: 28px; padding-top: 25px; }
-.app-shell .time-history-heading .eyebrow { margin: 0 0 3px; color: var(--color-text-muted); }
-.app-shell .time-history-heading h3 { font-size: 1.35rem; }
-.app-shell .time-history li { padding: 15px 0; }
 @media (max-width: 739px) { .app-shell .timer-panel { padding: 24px 20px 20px; } .app-shell .timer-heading { align-items: start; flex-direction: column; gap: 16px; } .app-shell .timer-state { align-self: auto; } .app-shell .timer-display { font-size: 4rem; } }
 @media (min-width: 740px) {
   .app-shell .sidebar { background: var(--ink-surface); color: #fffdf8; border: 0; border-radius: 18px; backdrop-filter: none; box-shadow: none; top: clamp(20px, 2.2vw, 48px); height: calc(100dvh - clamp(40px, 4.4vw, 96px)); max-height: none; overflow: auto; overscroll-behavior: contain; padding: 24px 14px 14px; }
@@ -110,12 +89,6 @@
   .app-shell .sidebar .profile-link strong { color: var(--ink-surface); font-size: .94rem; font-weight: 800; letter-spacing: -.015em; }
   .app-shell .sidebar .profile-link small { color: var(--ink-surface); font-size: .72rem; margin-top: 2px; }
   .app-shell .sidebar .profile-avatar { flex: 0 0 auto; width: 42px; height: 42px; box-shadow: 0 0 0 2px #fff, 0 3px 10px #17231e26; }
-}
-@media (max-width: 1366px) {
-  .today-page .agenda-layout { grid-template-columns: minmax(0, 1fr); }
-  .today-page .agenda-aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .today-page .today-month-panel { grid-column: 1 / -1; }
-  .today-page .today-month-panel .month-picker button { min-height: 46px; }
 }
 @media (min-width: 740px) and (max-width: 959px) {
   .app-shell { grid-template-columns: 82px minmax(0, 1fr); gap: 18px; padding: 16px; }
@@ -149,10 +122,6 @@
   .day-shortcuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
   .day-shortcuts a { justify-content: center; min-height: 40px; font-size: .72rem; padding: 7px 6px; }
   .day-shortcuts a:last-child { grid-column: 1 / -1; }
-  .today-page .agenda-aside { grid-template-columns: minmax(0, 1fr); }
-  .month-panel-summary { align-items: stretch; flex-direction: column; }
-  .month-panel-actions { justify-content: stretch; }
-  .month-panel-actions > * { flex: 1; justify-content: center; }
   .app-shell .shopping-overview { padding: 18px; }
   .app-shell .shopping-overview strong { font-size: 2.3rem; }
 }
