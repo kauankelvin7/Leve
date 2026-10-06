@@ -227,3 +227,9 @@ ajuste mantém o alvo de toque >= 44 px e valida o rótulo; repetição focal 2/
 Todos os 182 cenários locais únicos foram observados PASS ao final. CI passa a
 proteger navegação responsiva, páginas públicas e launcher. A integração na main
 está autorizada pelo usuário e condicionada aos checks do PR.
+
+PR #19: referências visuais alinhadas ao Chromium 153 do Playwright/CI, depois de
+reproduzir e inspecionar a divergência com o Chromium 151 do sistema. Comparação
+final sem atualização de snapshots: 7/7 PASS. Tolerâncias preservadas; artefatos
+de falha no CI por sete dias. Usar o navegador do lockfile para capturas canônicas;
+comando reproduzível no relatório desta entrega.

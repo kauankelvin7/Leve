@@ -39,3 +39,11 @@ jobs:
         run: npm run test:e2e:critical
       - name: Responsive navigation, content and public pages
         run: npm run test:e2e:local -- mobile-refinement.spec.ts public-pages.spec.ts gika-launcher.spec.ts
+      - name: Browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failure-evidence
+          path: test-results/
+          retention-days: 7
+          if-no-files-found: ignore

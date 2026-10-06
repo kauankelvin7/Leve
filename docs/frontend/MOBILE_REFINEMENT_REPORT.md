@@ -63,14 +63,16 @@ retorno de recurso inexistente e contadores longos com texto a 200%.
 | `npm run test:e2e` | 17 testes do shell de produção, PASS. |
 | `npm run test:e2e:local` | 181 PASS em 32,5 min; 1 falha na expectativa antiga do tamanho do retrato da Gika. |
 | `gika-launcher.spec.ts` após ajuste | 2/2 PASS: rótulo visível, retrato dentro do botão, área de toque >= 44 px, abrir/fechar/foco e ações alcançáveis. |
+| Comparação final com Chromium 153 do Playwright | 7/7 PASS em execução sem atualizar snapshots: frontend V3, navegação, conteúdo, recursos indisponíveis, launcher e páginas públicas. |
 | Auditoria de dependências de produção | Zero vulnerabilidades. |
 
 Integração foi executada com `FIREBASE_PROJECT_ID=demo-leve`,
 `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` e
 `FIRESTORE_EMULATOR_HOST=localhost:8080`, usando
-`npm run test:integration:inside`. Playwright local usa
-`LEVE_CHROMIUM_EXECUTABLE=/usr/bin/chromium` e a configuração padrão que inicia
-seu próprio servidor com o segredo de teste compartilhado entre API e workers.
+`npm run test:integration:inside`. A suíte funcional ampla e o shell foram
+executados com `LEVE_CHROMIUM_EXECUTABLE=/usr/bin/chromium` (151.0.7922.173).
+A configuração local inicia seu próprio servidor com o segredo de teste
+compartilhado entre API e workers.
 
 Todos os 182 cenários únicos tiveram resultado final observado PASS. A repetição
 focal usa o mesmo código de aplicação da execução ampla, com a expectativa do
@@ -79,6 +81,23 @@ agora compartilha esse espaço com o nome da Gika.
 
 O CI executa os testes críticos existentes e passa a proteger também
 `mobile-refinement.spec.ts`, `public-pages.spec.ts` e `gika-launcher.spec.ts`.
+Em falha, preserva capturas e traces como artefatos por sete dias.
+
+### Navegador das referências visuais
+
+O primeiro CI do PR #19 encontrou diferenças ao comparar referências capturadas
+com Chromium 151 contra o Chromium 153.0.8010.12 distribuído pelo Playwright 1.63.
+O mesmo navegador reproduziu localmente os 2.325 pixels divergentes do menu.
+Os diffs foram inspecionados; as referências afetadas foram recapturadas e
+comparadas novamente, com as tolerâncias existentes.
+
+Para comparação visual reproduzível, instalar o Chromium vinculado ao lockfile e
+usar a configuração padrão. No workspace com cache em `/tmp`:
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH=/tmp/leve-playwright-browsers npx playwright install chromium
+PLAYWRIGHT_BROWSERS_PATH=/tmp/leve-playwright-browsers LEVE_CHROMIUM_EXECUTABLE= npm run test:e2e:local -- frontend-v3-visual.spec.ts mobile-refinement.spec.ts public-pages.spec.ts gika-launcher.spec.ts
+```
 
 As tentativas iniciais registraram: menu fora da tela em 320px; landmark ausente;
 teste que clicava no título coberto pelo popover; espera ausente antes de medir um
