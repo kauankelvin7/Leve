@@ -233,3 +233,24 @@ reproduzir e inspecionar a divergência com o Chromium 151 do sistema. Comparaç
 final sem atualização de snapshots: 7/7 PASS. Tolerâncias preservadas; artefatos
 de falha no CI por sete dias. Usar o navegador do lockfile para capturas canônicas;
 comando reproduzível no relatório desta entrega.
+
+## Frontend — abertura da agenda em 06/10/2026
+
+Pedido posterior: aprimorar a tela “Preparando sua agenda…”. Base da `main`
+`3e9cd3d299b5b90f73d0ee797cf21c218c898f21`; branch
+`refine/agenda-loading-screen`. A autorização de envio à `main` permanece no
+fluxo vigente, após revisão e checks.
+
+Concluído: abertura com marca compacta, ilustração própria em SVG de agenda e
+papéis, texto em destaque e indicador indeterminado. `AgendaLoadingScreen` e seu
+CSS Module são selecionados somente pela variante `screen` de `LoadingState`.
+A mensagem neutraliza localmente o cartão herdado da regra global de status.
+O carregamento continua ligado à sessão, sem atraso mínimo ou progresso fictício.
+
+Provas: lint/limites de arquitetura, typechecks/build PASS; Playwright final
+8/8 PASS sem atualizar snapshots. Foram verificadas 11 paletas × claro/escuro ×
+três larguras (66 composições), Axe, texto a 200%, movimento reduzido, cores
+forçadas e retorno após a sessão. Revisão independente sem impedimentos.
+Capturas Chromium 153 do lockfile e gate incluído no CI. Fontes: `DESIGN.md` e
+`docs/frontend/AGENDA_LOADING_REPORT.md`. Próximo passo: checks do PR e integração
+da mudança validada à `main`.
