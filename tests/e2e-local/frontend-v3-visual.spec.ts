@@ -4,6 +4,14 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 
 async function capture(page: Page, name: string, fullPage = true) {
   mkdirSync('test-results/visual-walkthrough', { recursive: true });
+  await page.evaluate(() => document.fonts.ready);
+  if (new URL(page.url()).pathname === '/hoje') {
+    // Gika opens independently of the live query. Capture the settled page
+    // behind its modal rather than a transient agenda loading state.
+    const summary = page.locator('section[aria-label="Resumo do dia selecionado"] h2');
+    await expect(summary).toBeAttached();
+    await expect(summary).not.toHaveText('Abrindo o dia…');
+  }
   await expect(page).toHaveScreenshot(name, {
     fullPage,
     animations: 'disabled',

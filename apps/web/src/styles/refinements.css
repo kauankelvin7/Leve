@@ -251,7 +251,6 @@
   color: var(--color-action-primary); box-shadow: var(--shadow-md);
 }
 
-.quick-add { background: var(--color-action-primary); color: white !important; }
 .session-recovery { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; padding: 18px 20px; }
 .session-recovery p { margin: 0; }
 .editor-toolbar { position: sticky; top: 0; z-index: 2; }
@@ -763,8 +762,8 @@ textarea {
    REVISÃO VISUAL FINAL — escala, controles e navegação
    ============================================================ */
 :root {
-  --control-height: 50px;
-  --control-radius: 14px;
+  --control-height: 44px;
+  --control-radius: 12px;
   --surface-highlight: color-mix(in srgb, white 74%, transparent);
   --hairline: color-mix(in srgb, var(--color-border) 76%, transparent);
 }
@@ -812,9 +811,9 @@ body {
 @keyframes loading-orbit { to { transform: rotate(360deg); } }
 @keyframes connection-pulse { 50% { transform: scale(.72); opacity: .55; } }
 
-.sidebar nav { gap: 5px; }
+.sidebar > nav { gap: 5px; }
 
-.sidebar nav a,
+.sidebar > nav > a,
 .sidebar-bottom > a:not(.profile-link) {
   min-height: 48px;
   padding: 10px 12px;
@@ -823,7 +822,7 @@ body {
   font-size: .9rem;
 }
 
-.sidebar nav a svg,
+.sidebar > nav > a svg,
 .sidebar-bottom > a svg {
   width: 20px;
   height: 20px;
@@ -831,10 +830,10 @@ body {
   transition: transform var(--duration-fast) var(--easing);
 }
 
-.sidebar nav a:hover svg,
+.sidebar > nav > a:hover svg,
 .sidebar-bottom > a:hover svg { transform: scale(1.08); }
 
-.sidebar nav a.active,
+.sidebar > nav > a.active,
 .sidebar-bottom > a.active {
   background: color-mix(in srgb, var(--color-action-primary) 10%, var(--color-solid));
   border-color: color-mix(in srgb, var(--color-action-primary) 22%, var(--color-solid));
@@ -902,10 +901,6 @@ body {
   border-radius: 15px;
 }
 
-.quick-add {
-  border-radius: 50%;
-  box-shadow: inset 0 1px 0 #ffffff4d, 0 8px 20px color-mix(in srgb, var(--color-action-primary) 24%, transparent);
-}
 
 .page-heading {
   margin-block: clamp(36px, 5vw, 58px) clamp(28px, 3.5vw, 40px);
@@ -937,27 +932,11 @@ body {
   line-height: 1.65;
 }
 
-button,
-.button {
-  min-height: var(--control-height);
-  padding: 11px 18px;
-  border-width: 1px;
-  border-radius: var(--control-radius);
-  font-weight: 700;
-  letter-spacing: -.005em;
-  box-shadow: inset 0 1px 0 var(--surface-highlight), 0 3px 10px color-mix(in srgb, var(--color-text) 6%, transparent);
-}
-
-button.primary,
-.button.primary {
-  box-shadow: inset 0 1px 0 #ffffff40, 0 8px 20px color-mix(in srgb, var(--color-action-primary) 26%, transparent);
-}
-
 button svg,
 .button svg { width: 19px; height: 19px; stroke-width: 1.85; }
 
 .text-button {
-  min-height: 40px;
+  min-height: 44px;
   padding-inline: 10px;
   background: transparent;
   border-color: transparent;
@@ -1197,8 +1176,8 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
     border-radius: 22px;
   }
   .sidebar-bottom { display: none; }
-  .sidebar nav { grid-template-columns: repeat(7, minmax(44px, 1fr)); gap: 2px; overflow-x: auto; }
-  .sidebar nav a {
+  .sidebar > nav { grid-template-columns: repeat(7, minmax(44px, 1fr)); gap: 2px; overflow-x: auto; }
+  .sidebar > nav > a {
     position: relative;
     min-width: 0;
     min-height: 54px;
@@ -1207,8 +1186,8 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
     gap: 0;
     border-radius: 16px;
   }
-  .sidebar nav a svg { width: 23px; height: 23px; }
-  .sidebar nav a.active::after {
+  .sidebar > nav > a svg { width: 23px; height: 23px; }
+  .sidebar > nav > a.active::after {
     content: '';
     position: absolute;
     bottom: 5px;
@@ -1383,14 +1362,12 @@ textarea::placeholder { color: color-mix(in srgb, var(--color-text-muted) 68%, t
 @keyframes timer-pulse { 50% { transform: scale(.72); opacity: .45; } }
 @keyframes timer-dock-in { from { opacity: 0; transform: translate3d(28px, 12px, 0) scale(.94); } to { opacity: 1; transform: none; } }
 
-.app-shell.high-contrast { --editorial-line: #26382e; }
-.app-shell.high-contrast .active-timer-bar { border: 2px solid #101a16; color: #101a16; box-shadow: 0 18px 48px #101a1640; }
-.app-shell.high-contrast .active-timer-label { color: #26382e; }
-.app-shell.high-contrast :is(.panel, input, select, textarea, button, .button) { border-color: #26382e; }
-.app-shell.high-contrast :is(.panel, .timer-panel) { box-shadow: 0 0 0 2px #26382e22, 0 10px 0 #26382e24; }
-.app-shell.high-contrast :is(a, button, .button):focus-visible { outline: 3px solid #101a16; outline-offset: 3px; }
-.app-shell.high-contrast .sidebar { background: #14231d; }
-.app-shell.high-contrast .sidebar nav a:hover, .app-shell.high-contrast .sidebar .sidebar-bottom > a:not(.profile-link):hover { background: #536f61; color: #fff; }
+.app-shell.high-contrast { --editorial-line: var(--color-text); }
+.app-shell.high-contrast .active-timer-bar { border: 2px solid var(--color-text); color: var(--color-text); box-shadow: none; }
+.app-shell.high-contrast .active-timer-label { color: var(--color-text); }
+.app-shell.high-contrast :is(.panel, input, select, textarea, button, .button) { border-color: var(--color-text); }
+.app-shell.high-contrast :is(.panel, .timer-panel) { box-shadow: none; }
+.app-shell.high-contrast :is(a, button, .button):focus-visible { outline: 3px solid var(--color-text); outline-offset: 3px; }
 .accessibility-options { display: grid; gap: 8px; margin: 4px 0 0; padding: 14px; border: 1px solid var(--color-border); border-radius: 12px; }
 .accessibility-options legend { padding: 0 5px; font-weight: 800; }
 .accessibility-options .field-hint { margin: 0; color: var(--color-text-muted); font-size: .78rem; }

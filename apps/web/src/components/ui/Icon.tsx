@@ -12,6 +12,8 @@ const paths = {
   clock: 'M12 7v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
   chevronLeft: 'm15 18-6-6 6-6',
   chevronRight: 'm9 18 6-6-6-6',
+  chevronDown: 'm6 9 6 6 6-6',
+  filter: 'M4 7h16M7 12h10m-7 5h4',
   close: 'M6 6l12 12M18 6 6 18',
   restore: 'M9 7 5 11l4 4M5 11h8a6 6 0 1 1 0 12',
   bold: 'M7 5h6a4 4 0 0 1 0 8H7V5m0 8h7a4 4 0 0 1 0 8H7v-8',

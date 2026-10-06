@@ -42,6 +42,41 @@ de exibição. A composição vive em `AgendaLoadingScreen` e seu módulo CSS; a
 
 Evidências e comando de revisão em `docs/frontend/AGENDA_LOADING_REPORT.md`.
 
+## Hierarquia, navegação e Gika — 06/10/2026
+
+Meu dia coloca as tarefas antes do resumo em áudio. Data e contagem usam uma
+faixa compacta; a semana preserva seus controles sem repetir o resumo. No desktop,
+o mês, a nota fixada e as compras usam uma coluna de apoio. Em telas menores,
+o mês começa recolhido. Filtros e transcrição do áudio podem ser expandidos.
+
+A sidebar usa a mesma coluna de ícone/retrato e texto para os cinco destinos.
+O perfil é tonal e a seleção fica reservada à página atual. O atalho de criação
+superior tem tratamento secundário; Mais sinaliza abertura e página secundária.
+Os nomes na barra inferior têm mais espaço e permanecem legíveis em 320 px.
+No desktop, o painel lateral tem altura dos seus conteúdos, largura limitada a
+224 px e posição sticky. O perfil fica junto à navegação, com rolagem interna em
+janelas baixas. O footer usa divisória, marca pequena e links legais agrupados;
+no celular, ocupa duas linhas e respeita a altura da navegação com texto ampliado.
+
+A semana mantém as datas inteiras a 200% e rola dentro do painel quando necessário.
+No calendário móvel, a agenda do dia usa dialog nativo, com fundo inativo,
+fechamento por Escape e restauração do foco ao dia selecionado. No desktop,
+o mesmo conteúdo continua como seção da página.
+
+Controles comuns possuem uma única definição de raio e resposta ao toque, com
+ações primárias, secundárias e links. Sombras decorativas concorrentes foram
+retiradas. Ações das tarefas preservam pelo menos 44 px. Contraste maior usa
+tokens da aparência atual, incluindo escuro, sem fixar verde.
+
+A Gika tem acolhimento central, perguntas com leitura alinhada à esquerda e
+composer com envio reconhecível. Resultados usam divisórias e metadados em linha
+própria; execução confirmada usa classe semântica explícita. Erro e offline têm
+título e orientação. Reflow prioriza leitura e controles, com rolagem quando
+necessária. Personagem, voz, comandos e confirmações mantêm seus contratos.
+
+Layout de cada área fica no seu módulo; o runtime do tema possui os tokens
+derivados. Evidências em `docs/frontend/VISUAL_POLISH_REPORT.md`.
+
 ## Referências e propósito
 
 Agenda pessoal, calendário, notas e compras para uso cotidiano. A referência visual consultada é https://leve-agenda-gih.kauankelvin20.chatgpt.site/ (Meu dia, Calendário, Minhas notas e Compras). Reaproveitar princípios de hierarquia e espaçamento, sem copiar textos motivacionais, identidade ou dados de exemplo.
@@ -50,7 +85,7 @@ Open Design: https://github.com/nexu-io/open-design. Instaladas as skills `front
 
 ## Cor
 
-Preservar as quatro paletas do perfil. Seleção, hover, foco, controles, navegação desktop/móvel e progresso usam `--color-action-primary` e cores derivadas por `color-mix`. Nunca fixar verde em um estado de navegação. Cores de categorias e do papel são independentes da paleta da interface. Estados possuem nome e semântica além da cor.
+Preservar as onze paletas atuais do perfil. Seleção, hover, foco, controles, navegação desktop/móvel e progresso usam `--color-action-primary` e cores derivadas por `color-mix`. Nunca fixar verde em um estado de navegação. Cores de categorias e do papel são independentes da paleta da interface. Estados possuem nome e semântica além da cor.
 
 ## Tipografia
 

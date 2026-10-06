@@ -1,9 +1,60 @@
 # Leve — ponto exato de retomada
 
-**Atualizado em:** 17/09/2026  
-**Branch atual:** `main`  
-**HEAD funcional sazonal/calendário:** `f7894a5da7845bb03e658b7fb4ffd45289e17963`  
-**Estado:** experiência sazonal, marcadores de datas especiais e refinamento visual em aparelho real integrados e validados; Fase 7 ainda não iniciada
+**Atualizado em:** 06/10/2026
+
+**Entrega atual:** `refine/visual-hierarchy-components`
+
+**Entrada da main:** `e3909468f4f4c398ce2dca20f7d0d66d1cfc772e`
+
+**Estado:** entrega visual implementada e validada; publicação autorizada após checks do PR
+
+**Checkpoint desta entrega:** `refine(ui): improve agenda hierarchy, sidebar and footer`
+
+## Retomada vigente — hierarquia, navegação, componentes e Gika
+
+O usuário autorizou executar todas as etapas estéticas, revisar/testar e integrar
+na main. Meu dia prioriza tarefas e compacta cabeçalho, resumo e semana; mês e
+apoio usam coluna no desktop e composição recolhida no celular. Navegação alinhada,
+perfil tonal, atalhos discretos, controles compartilhados e apresentação da Gika
+com leitura, envio, confirmação e erros mais claros.
+
+Pedido adicional de 06/10: aprimorar grandemente footer e proporções da sidebar.
+Atendido com painel lateral de altura natural, perfil próximo dos atalhos e
+limite de rolagem em janela baixa. Footer redesenhado com divisória e links
+agrupados, saída real e reserva inferior em rem para texto a 200%.
+Revisão adicional corrigiu datas quebradas com texto ampliado e foco escapando
+do painel móvel do calendário. O painel agora usa dialog nativo no celular,
+com Escape, fundo inativo e retorno ao dia selecionado; desktop mantém seção.
+
+ExecPlan: `.agent/VISUAL_POLISH_EXECPLAN.md`. Fonte de evidências e pendências:
+`docs/frontend/VISUAL_POLISH_REPORT.md`. Identidade Nunito/DM Sans e onze paletas
+preservadas. Não há mudança de domínio, Rules, Auth, comandos, IA, rig ou dependências.
+
+Lint/build, 802 unitários, 320 integração, oito fluxos críticos e cinco novos
+E2E PASS. Onze paletas
+em claro/escuro verificadas com Axe; quatro viewports, teclado, rascunhos, filtros,
+erro/offline, texto ampliado, modo sólido, contraste maior e cores forçadas.
+Comparação final sem atualizar referências: 34/34 PASS, incluindo Planner13,
+sazonais7, carregamento, telas públicas, navegação e capturas canônicas. Reflow e
+20 cenários de material/contraste PASS. Versão compilada17/17 PASS. Execução ampla
+inicial85/88 preservada; as três falhas foram reproduzidas e corrigidas.
+
+Retomada de publicação: consultar o PR da branch desta entrega e os checks do
+HEAD candidato. A integração à main está autorizada após CI, Planner e Seasonal;
+confirmar o deployment automático do SHA integrado. As etapas visuais estão
+concluídas; o PR registra a integração, sem depender deste arquivo conter seu próprio SHA.
+
+### Abertura da agenda já integrada
+
+PR #20 confirmado MERGED em 06/10/2026 às 13:24:48 UTC, commit de squash
+`e3909468f4f4c398ce2dca20f7d0d66d1cfc772e`. A interrupção de autenticação e a
+retomada desse PR, descritas mais abaixo, são histórico resolvido.
+
+## Histórico sazonal — 17/09/2026
+
+HEAD sazonal/calendário daquela entrega:
+`f7894a5da7845bb03e658b7fb4ffd45289e17963`. As restrições de fases/publicação
+nos blocos históricos abaixo não substituem a autorização atual para esta entrega.
 
 > Este arquivo registra somente o ponto atual necessário para retomar. O histórico anterior continua preservado no Git, nos ADRs e em `docs/EXECUCAO.md`.
 

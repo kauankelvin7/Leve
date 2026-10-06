@@ -27,7 +27,7 @@ export function GikaConfirmationCard({ confirmation, state, result, feedbackRef,
     <p ref={feedbackRef} tabIndex={-1} role="status" aria-live="polite">{text}</p>
     {(state === 'awaiting_confirmation' || state === 'confirming' || (state === 'failed' && retryAllowed)) && <div className="gika-card-actions">
       {state === 'awaiting_confirmation' && <button type="button" disabled={!active} onClick={onCancel}>Cancelar</button>}
-      <button ref={actionRef} type="button" disabled={state === 'confirming' || !active} onClick={onConfirm}>{state === 'confirming' ? 'Movendo…' : state === 'failed' ? 'Tentar mover novamente' : 'Mover tarefa'}</button>
+      <button className="gika-confirm-action" ref={actionRef} type="button" disabled={state === 'confirming' || !active} onClick={onConfirm}>{state === 'confirming' ? 'Movendo…' : state === 'failed' ? 'Tentar mover novamente' : 'Mover tarefa'}</button>
     </div>}
   </section>;
 }

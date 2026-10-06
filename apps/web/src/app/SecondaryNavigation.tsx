@@ -29,8 +29,9 @@ export function SecondaryNavigation() {
     };
   }, []);
 
-  return <details ref={details} className={styles.secondaryNavigation}>
-    <summary ref={summary} aria-label="Mais páginas" title="Mais páginas">Mais <span aria-hidden="true">⌄</span></summary>
+  const current = secondaryLinks.some(([to]) => pathname.startsWith(to));
+  return <details ref={details} className={styles.secondaryNavigation} data-current={current || undefined}>
+    <summary ref={summary} aria-label="Mais páginas" title="Mais páginas">Mais <Icon name="chevronDown" /></summary>
     <nav aria-label="Mais páginas">{secondaryLinks.map(([to, icon, label]) =>
       <NavLink key={to} to={to} onClick={() => { if (details.current) details.current.open = false; }}>
         <Icon name={icon} /><span>{label}</span><Icon name="chevronRight" />

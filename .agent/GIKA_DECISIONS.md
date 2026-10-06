@@ -278,3 +278,22 @@ Runtime oficial @rive-app/canvas2.44.0/MIT/sem transitivas, necessário para o c
 CSP adiciona somente wasm-unsafe-eval para compilação WASM e blob: em img-src para o decoder oficial das texturas embutidas. JavaScript unsafe-eval não liberado. Bloqueio IMG_BLOB_BLOCKED reproduzido sob CSP exata antes da correção; nove estados renderizam depois, com regressão E2E real. Nenhuma Rule/provider/engine/writer novo.
 
 ADR024 permanece: artifact unsigned/scriptless local serve ao desenvolvimento/revisão, não prova export final licenciado sem splash. Cadet somente após aprovação integral asset/rig; não assinado agora. Busto pequeno119×117nativos, não rig corporal/HD240 ou novos gestos.
+
+## ADR-GIKA-028 — apresentação sem autoridade de execução
+
+Data: 06/10/2026; accepted. O refinamento visual reutiliza a projeção e os handlers
+existentes. Resultados são áreas de leitura com divisórias; confirmações continuam
+explícitas e recebem `gika-confirm-action`, sem depender de `button:last-child`.
+Sugestões preenchem o rascunho e não enviam automaticamente. Erro/offline têm
+hierarquia própria, e scroll/reflow preservam o início da conversa e o composer.
+
+CSS do shell alcança somente seus destinos diretos, evitando contaminar links de
+resultados da Gika. O módulo do componente possui layout e estados; tokens vêm do
+runtime de tema. Nenhuma alteração de tool/schema/policy, signer, commands, ACK,
+recorrência, batch, voice lifecycle, assets/rig ou persistência. Teste visual não
+substitui a avaliação semântica do provider real registrada historicamente.
+
+Complemento da revisão: o calendário mantém queries, data selecionada e ações
+convencionais. `CalendarDaySheet` renderiza seção no desktop e dialog nativo no
+celular; foco, fundo inativo, Escape e restauração de foco pertencem ao browser.
+Datas da semana usam largura mínima com rolagem interna para texto a 200%.

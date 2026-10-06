@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'apps/web/src/features/activities/Calendar.tsx'
+      - 'apps/web/src/features/activities/CalendarDaySheet.tsx'
+      - 'apps/web/src/features/activities/Calendar.module.css'
       - 'apps/web/src/features/activities/Today.tsx'
       - 'apps/web/src/features/activities/calendar/**'
       - 'apps/web/src/components/seasonal/SeasonalCalendarMarker.tsx'
@@ -28,6 +30,8 @@ on:
       - main
     paths:
       - 'apps/web/src/features/activities/Calendar.tsx'
+      - 'apps/web/src/features/activities/CalendarDaySheet.tsx'
+      - 'apps/web/src/features/activities/Calendar.module.css'
       - 'apps/web/src/features/activities/Today.tsx'
       - 'apps/web/src/features/activities/calendar/**'
       - 'apps/web/src/components/seasonal/SeasonalCalendarMarker.tsx'

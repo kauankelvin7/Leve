@@ -12,31 +12,12 @@
 .app-shell .page-heading .eyebrow { margin-bottom: 8px; }
 .app-shell .page-heading > div:first-child + :is(button, .button, span) { grid-column: 2; grid-row: 1; }
 .app-shell .eyebrow { text-transform: none; letter-spacing: .025em; font-size: .8rem; font-weight: 600; }
-.app-shell .panel { background: var(--paper-surface); backdrop-filter: none; -webkit-backdrop-filter: none; border: 1px solid var(--editorial-line); border-radius: 16px; box-shadow: 0 4px 0 color-mix(in srgb, var(--color-text) 4%, transparent); }
-.app-shell button, .app-shell .button { border-radius: 9px; box-shadow: none; min-height: 44px; font-weight: 600; }
-.app-shell :is(button.primary, .button.primary) { box-shadow: 0 3px 0 color-mix(in srgb, var(--color-action-primary) 65%, #17231e); }
-.app-shell :is(button.primary, .button.primary):active { transform: translateY(2px); box-shadow: none; }
-.app-shell :is(input:not([type=checkbox]):not([type=radio]):not([type=color]), select, textarea) { border-radius: 8px; background: var(--paper-surface); box-shadow: none; border-color: var(--editorial-line); }
+.app-shell .panel { background: var(--paper-surface); backdrop-filter: none; -webkit-backdrop-filter: none; border: 1px solid var(--editorial-line); border-radius: 16px; box-shadow: none; }
+.app-shell :is(input:not([type=checkbox]):not([type=radio]):not([type=color]), select, textarea) { border-radius: 10px; background: var(--paper-surface); box-shadow: none; border-color: var(--editorial-line); }
 .app-shell :is(input, select, textarea):focus-visible { outline: 2px solid var(--color-action-primary); outline-offset: 3px; }
-.app-shell .row-actions :is(button, .button) { min-height: 38px; padding: 7px 11px; font-size: .8rem; }
+.app-shell .row-actions :is(button, .button) { min-height: 44px; padding: 8px 11px; font-size: .82rem; }
 .app-shell .page-heading :is(button, .button) { align-self: center; }
 .app-shell .workspace-bar { border: 0; min-height: 42px; }
-.day-overview { display: grid; grid-template-columns: 120px minmax(0, 1fr); background: var(--ink-surface); color: #fffdf8; border-radius: 18px; overflow: hidden; margin-bottom: 24px; }
-.day-overview-date { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 12px; border-right: 1px solid #ffffff38; font-size: .85rem; }
-.day-overview-date strong { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 3.75rem; font-weight: 800; line-height: 1; letter-spacing: -.06em; }
-.day-overview-content { padding: 22px 26px; }
-.day-overview .eyebrow, .day-overview p { color: #f1f0e8; margin-bottom: 8px; }
-.day-overview h2 { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: clamp(1.65rem, 2.6vw, 2.25rem); font-weight: 800; color: inherit; margin-bottom: 8px; letter-spacing: -.035em; }
-.day-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.day-shortcuts a { display: inline-flex; align-items: center; gap: 8px; color: #fffdf8; border: 1px solid #ffffff55; padding: 8px 12px; border-radius: 7px; min-height: 44px; font-size: .85rem; text-decoration: none; }
-.day-shortcuts a:hover { background: #ffffff20; }
-.day-shortcuts a:focus-visible { outline: 2px solid #fffdf8; outline-offset: 3px; }
-.day-shortcuts svg { width: 17px; height: 17px; }
-.app-shell .day-picker:not(.month-picker) { grid-template-columns: repeat(7, minmax(max-content, 1fr)); gap: 5px; overflow-x: auto; }
-.app-shell .day-picker:not(.month-picker) button { border: 0; border-radius: 10px; box-shadow: none; background: transparent; }
-.app-shell .day-picker:not(.month-picker) button.selected { background: var(--color-action-primary); color: var(--color-action-foreground, white); }
-.app-shell .day-picker:not(.month-picker) strong { font-family: 'Nunito', 'DM Sans', sans-serif; font-size: 1.55rem; font-weight: 800; white-space: nowrap; }
-.app-shell .agenda-aside .panel { background: var(--color-accent-soft); box-shadow: none; }
 .app-shell .calendar-panel {
   background: color-mix(in srgb, var(--color-solid) 92%, var(--color-canvas-accent));
   border-color: color-mix(in srgb, var(--color-action-primary) 18%, var(--editorial-line));
@@ -71,37 +52,10 @@
 .app-shell .timer-actions { margin-top: 22px; }
 .app-shell .timer-actions .primary { min-height: 48px; padding-inline: 18px; }
 @media (max-width: 739px) { .app-shell .timer-panel { padding: 24px 20px 20px; } .app-shell .timer-heading { align-items: start; flex-direction: column; gap: 16px; } .app-shell .timer-state { align-self: auto; } .app-shell .timer-display { font-size: 4rem; } }
-@media (min-width: 740px) {
-  .app-shell .sidebar { background: var(--ink-surface); color: #fffdf8; border: 0; border-radius: 18px; backdrop-filter: none; box-shadow: none; top: clamp(20px, 2.2vw, 48px); height: calc(100dvh - clamp(40px, 4.4vw, 96px)); max-height: none; overflow: auto; overscroll-behavior: contain; padding: 24px 14px 14px; }
-  .app-shell .sidebar .brand-caption { margin-bottom: 22px; }
-  .app-shell .sidebar nav { gap: 3px; }
-  .app-shell .sidebar nav a,
-  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link) { min-height: 44px; padding-block: 8px; }
-  .app-shell .sidebar :is(.brand, .brand span, .brand-caption, .sidebar-bottom > a, nav a) { color: #fffdf8; }
-  .app-shell .sidebar nav a { border-radius: 8px; }
-  .app-shell .sidebar nav a:hover { background: #ffffff12; }
-  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link):hover { background: #ffffff12; color: #fffdf8; }
-  .app-shell .sidebar nav a.active { background: #fffdf8; color: var(--ink-surface); border-color: transparent; box-shadow: none; }
-  .app-shell .sidebar .sidebar-bottom > a.active { background: #fffdf8; color: var(--ink-surface); border-color: transparent; box-shadow: none; }
-  .app-shell .sidebar .sidebar-bottom { margin-top: auto; gap: 4px; padding-top: 10px; border-top: 1px solid #ffffff24; }
-  .app-shell .sidebar .profile-link { min-height: 62px; margin-top: 3px; padding: 9px 10px; background: #fffdf8; color: var(--ink-surface); border: 1px solid #ffffff6b; border-radius: 10px; }
-  .app-shell .sidebar .profile-link:hover { background: #fff; transform: translateY(-1px); }
-  .app-shell .sidebar .profile-link strong { color: var(--ink-surface); font-size: .94rem; font-weight: 800; letter-spacing: -.015em; }
-  .app-shell .sidebar .profile-link small { color: var(--ink-surface); font-size: .72rem; margin-top: 2px; }
-  .app-shell .sidebar .profile-avatar { flex: 0 0 auto; width: 42px; height: 42px; box-shadow: 0 0 0 2px #fff, 0 3px 10px #17231e26; }
-}
 @media (min-width: 740px) and (max-width: 959px) {
   .app-shell { grid-template-columns: 82px minmax(0, 1fr); gap: 18px; padding: 16px; }
   .app-shell .sidebar { padding: 18px 8px 10px; }
   .app-shell .sidebar > .brand { margin-inline: auto; font-size: 2rem; }
-  .app-shell .sidebar .brand-caption, .app-shell .sidebar .nav-label, .app-shell .profile-link > span:not(.profile-avatar) { display: none; }
-  .app-shell .sidebar nav a { justify-content: center; padding-inline: 0; }
-  .app-shell .sidebar .sidebar-bottom > a:not(.profile-link) { justify-content: center; overflow: hidden; font-size: 0; }
-  .app-shell .sidebar .profile-link { justify-content: center; padding-inline: 4px; }
-  .app-shell .sidebar .profile-avatar { width: 40px; height: 40px; }
-  .app-shell .sidebar .sidebar-bottom > a svg { width: 22px; height: 22px; flex-shrink: 0; }
-  .day-overview { grid-template-columns: 112px minmax(0, 1fr); }
-  .day-overview-date strong { font-size: 4rem; }
 }
 .app-shell .user-greeting { display: inline-flex; flex-wrap: wrap; gap: .28em; align-items: baseline; margin-top: 8px; color: var(--color-text-muted); }
 .app-shell .user-greeting strong { color: var(--color-text); font-size: 1.08em; font-weight: 800; letter-spacing: -.02em; }
@@ -114,14 +68,6 @@
   .app-shell .page-heading { margin-block: 18px; padding-bottom: 16px; }
   .app-shell .page-heading h1 { font-size: clamp(1.75rem, 7.5vw, 2.1rem); }
   .app-shell .page-heading > :is(button, .button, .primary) { width: fit-content; max-width: 100%; margin-top: 14px; }
-  .day-overview { grid-template-columns: 88px minmax(0, 1fr); margin-bottom: 18px; border-radius: 14px; }
-  .day-overview-date { padding: 18px 8px; font-size: .68rem; line-height: 1.25; }
-  .day-overview-date strong { font-size: clamp(2rem, 10vw, 2.8rem); }
-  .day-overview-content { min-width: 0; padding: 18px 14px 16px; }
-  .day-overview h2 { max-width: 15ch; font-size: clamp(1.35rem, 5.6vw, 1.65rem); line-height: 1.08; letter-spacing: -.025em; overflow-wrap: normal; }
-  .day-overview p { font-size: .78rem; line-height: 1.35; }
-  .day-shortcuts { margin-top: 12px; }
-  .day-shortcuts a { min-height: 44px; font-size: .8rem; padding: 7px 10px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .app-shell .main-wrapper > main { animation: editorial-enter 220ms ease-out both; }
@@ -130,12 +76,6 @@
 }
 @keyframes editorial-enter { from { transform: translateY(5px); } to { transform: none; } }
 
-@media (min-width: 1600px) {
-  .today-page .agenda-layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: clamp(30px, 2vw, 42px); }
-}
-
 @media (forced-colors: active) {
-  .day-overview, .day-overview :is(.eyebrow, p, h2), .day-overview-date span { color: CanvasText; }
-  .day-shortcuts a { color: LinkText; border-color: ButtonBorder; }
   .count-badge { color: CanvasText; background: Canvas; border-color: ButtonBorder; }
 }

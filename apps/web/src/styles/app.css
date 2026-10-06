@@ -246,14 +246,15 @@ button, .button {
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 9px 16px;
+  padding: 9px 14px;
   background: var(--color-field);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-field);
+  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius, 12px);
   cursor: pointer;
   text-decoration: none;
   font-size: .875rem;
   font-weight: 600;
+  box-shadow: none;
   transition:
     background   var(--t-base),
     border-color var(--t-base),
@@ -264,11 +265,11 @@ button, .button {
 button:hover:not(:disabled), .button:hover {
   background: var(--color-solid);
   border-color: color-mix(in srgb, var(--color-action-primary) 60%, var(--color-border));
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 button:active:not(:disabled), .button:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
   transition-duration: 60ms;
 }
 
@@ -276,15 +277,17 @@ button.primary, .button.primary {
   background: var(--color-action-primary);
   color: var(--color-action-foreground, white);
   border-color: var(--color-action-primary);
-  box-shadow: var(--shadow-primary);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-action-primary) 70%, var(--color-canvas));
 }
 
 button.primary:hover:not(:disabled), .button.primary:hover {
   background: var(--color-action-hover);
   border-color: var(--color-action-hover);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-action-primary) 45%, transparent),
-              0 2px 6px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-action-primary) 70%, var(--color-canvas));
 }
+
+button.primary:active:not(:disabled), .button.primary:active { transform: translateY(2px); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { button, .button { transition: none; } button:active:not(:disabled), .button:active, button.primary:active:not(:disabled), .button.primary:active { transform: none; } }
 
 button:disabled { opacity: .6; cursor: not-allowed; }
 
@@ -331,9 +334,9 @@ button:disabled { opacity: .6; cursor: not-allowed; }
 .brand-caption { margin-top: 8px; margin-bottom: 48px; }
 
 /* ── 12. NAVEGAÇÃO ───────────────────────────────────────── */
-.sidebar nav { display: grid; gap: 4px; }
+.sidebar > nav { display: grid; gap: 4px; }
 
-.sidebar nav a {
+.sidebar > nav > a {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -346,9 +349,9 @@ button:disabled { opacity: .6; cursor: not-allowed; }
   transition: background var(--t-base), color var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
-.sidebar nav a:hover { background: var(--color-accent-hover); }
+.sidebar > nav > a:hover { background: var(--color-accent-hover); }
 
-.sidebar nav a.active {
+.sidebar > nav > a.active {
   background: linear-gradient(
     135deg,
     var(--color-accent-soft),
@@ -1408,8 +1411,8 @@ html {
     -webkit-backdrop-filter: none;
   }
   .sidebar > .brand, .sidebar > .brand-caption, .sidebar-bottom { display: none; }
-  .sidebar nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
-  .sidebar nav a { flex-direction: column; gap: 4px; padding: 8px 0; font-size: .625rem; letter-spacing: 0; white-space: nowrap; }
+  .sidebar > nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+  .sidebar > nav > a { flex-direction: column; gap: 4px; padding: 8px 0; font-size: .625rem; letter-spacing: 0; white-space: nowrap; }
   .demo-banner { padding-top: 14px; align-items: start; font-size: .75rem; }
   .demo-banner span { max-width: 235px; }
   .demo-banner a { max-width: 64px; }
@@ -1446,13 +1449,13 @@ html {
 }
 
 @media (forced-colors: active) {
-  .sidebar nav a.active, .day-picker button.selected { outline: 2px solid Highlight; }
+  .sidebar > nav > a.active, .day-picker button.selected { outline: 2px solid Highlight; }
 }
 
 @media (min-width: 740px) and (max-height: 720px) {
   .sidebar { padding-block: 22px 14px; overflow-y: auto; scrollbar-width: thin; }
   .brand-caption { margin-bottom: 22px; }
-  .sidebar nav a, .sidebar-bottom > a:not(.profile-link) { min-height: 42px; padding-block: 8px; }
+  .sidebar > nav > a, .sidebar-bottom > a:not(.profile-link) { min-height: 42px; padding-block: 8px; }
   .profile-link { padding-top: 10px; }
   .profile-avatar { width: 36px; height: 36px; flex-basis: 36px; }
 }

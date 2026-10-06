@@ -1,0 +1,92 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+:global(.app-shell) .heading {
+  margin-block: 16px 20px;
+  padding-bottom: 16px;
+}
+
+.heading :global(.user-greeting) { margin-top: 0; }
+.heading > :global(.primary) { grid-column: 2; grid-row: 1 / 3; }
+.heading > h1 { margin-bottom: 6px; }
+
+.overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  border: 1px solid var(--editorial-line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-action-primary) 7%, var(--paper-surface));
+}
+
+.date { display: flex; align-items: center; gap: 12px; padding-right: 24px; border-right: 1px solid var(--editorial-line); }
+.date strong { font: 800 2.5rem/1 var(--font-brand); letter-spacing: -.04em; color: var(--color-action-primary); }
+.date span { font-size: .875rem; font-weight: 700; }
+.date small { display: block; color: var(--color-text-muted); font-size: .78rem; font-weight: 400; }
+.summary { flex: 1; min-width: 10rem; }
+.summary h2 { margin: 0; font: 800 clamp(1.1rem, 1.6vw, 1.35rem)/1.25 var(--font-brand); }
+.summary p { margin: 4px 0 0; color: var(--color-text-muted); font-size: .82rem; }
+.reviewLink { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; color: var(--color-text-muted); font-size: .82rem; text-underline-offset: 4px; }
+.reviewLink svg { width: 18px; height: 18px; }
+.reviewLink:hover { color: var(--color-text); }
+
+:global(.app-shell) .weekPanel { padding: 12px 14px; margin: 0; box-shadow: none; }
+.weekPanel :global(.toolbar) { gap: 12px; }
+.weekPanel :global(.toolbar h2) { font-size: .9rem; }
+.weekPanel :global(.day-picker:not(.month-picker)) { grid-template-columns: repeat(7, minmax(2rem, 1fr)); overflow-x: auto; padding-block: 3px; margin: 8px 0 0; }
+.weekPanel :global(.day-picker button) { min-height: 60px; padding: 6px 0; }
+.weekPanel :global(.day-picker strong) { font: 800 1.3rem/1.15 var(--font-brand); white-space: nowrap; overflow-wrap: normal; }
+.weekPanel :global(.day-picker button > span:first-child) { white-space: nowrap; }
+
+:global(.app-shell) .activities { max-width: none; margin-top: 24px; }
+.activities :global(.daily-checklist-heading) { flex-wrap: wrap; gap: 6px 12px; }
+.activities :global(.daily-checklist-heading h2) { margin: 0; font: 800 1.2rem/1.3 var(--font-brand); }
+.activities :global(.daily-checklist-heading .muted) { font-size: .82rem; }
+.activities :global(.checklist-progress-row) { margin-block: 10px 2px; }
+.activities :global(.checklist-progress) { height: 4px; }
+
+.filters { margin-block: 8px 12px; }
+.filters summary { display: flex; align-items: center; gap: 8px; min-height: 44px; width: fit-content; max-width: 100%; padding: 4px 0; cursor: pointer; color: var(--color-text-muted); font-size: .82rem; list-style: none; }
+.filters summary::-webkit-details-marker { display: none; }
+.filters summary > svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.filters[open] summary > svg:last-child { rotate: 180deg; }
+.filters summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 4px; }
+.filters :global(.activity-filters) { margin: 4px 0 16px; }
+.support { display: grid; gap: 16px; margin-top: 24px; }
+
+@media (min-width: 1120px) {
+  .layout { grid-template-columns: minmax(0, 1fr) minmax(300px, 340px); gap: 28px; }
+}
+
+@media (max-width: 739px) {
+  .overview { gap: 10px 14px; padding: 14px 16px; }
+  .date { padding-right: 0; border: 0; gap: 8px; }
+  .date strong { font-size: 2rem; }
+  .date span { font-size: .78rem; }
+  .date small { font-size: .72rem; }
+  .summary { min-width: 6rem; }
+  .summary h2 { font-size: 1rem; }
+  .reviewLink { width: 44px; height: 44px; min-height: 44px; justify-content: center; padding: 0; }
+  .reviewLink span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  :global(.app-shell) .heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; margin-block: 14px 18px; }
+  .heading > h1 { font-size: clamp(1.6rem, 7.4vw, 2rem); margin: 0; }
+  .heading > p { grid-column: 1 / -1; margin-top: 8px; }
+  :global(.app-shell) .heading > :global(.primary) { grid-column: 2; grid-row: 1; margin-top: 0; padding-inline: 10px; font-size: .8rem; }
+  :global(.app-shell) .weekPanel { padding: 12px; }
+  :global(.app-shell) .activities { margin-top: 16px; }
+  .weekPanel :global(.toolbar-actions) { gap: 2px; }
+  .weekPanel :global(.toolbar-actions button) { padding-inline: 8px; }
+}
+
+@media (forced-colors: active) {
+  .overview { border-color: CanvasText; background: Canvas; }
+  .date strong, .date small, .summary p, .filters summary { color: CanvasText; }
+  .reviewLink { color: LinkText; }
+}

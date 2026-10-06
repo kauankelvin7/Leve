@@ -72,7 +72,7 @@ export function GikaRecurrence({ choice, confirmation: initial, context, active,
     <p ref={feedback} tabIndex={-1} role="status" aria-live="polite">{text}</p>
     {(state === 'choice' || state === 'preview' || busy || (state === 'failed' && retryAllowed)) && <div className="gika-card-actions">
       {(state === 'choice' || state === 'preview') && <button type="button" disabled={!active} onClick={cancel}>Cancelar</button>}
-      {state === 'choice' ? choice!.options.map(scope => <button key={scope} type="button" disabled={!active} onClick={() => void run(scope)}>{scope === 'occurrence' ? 'Só esta' : 'Esta e as próximas'}</button>) : <button type="button" disabled={!active || busy} onClick={() => void run()}>{state === 'preparing' ? 'Preparando…' : state === 'confirming' ? 'Aplicando…' : state === 'failed' ? 'Tentar novamente' : action}</button>}
+      {state === 'choice' ? choice!.options.map(scope => <button key={scope} type="button" disabled={!active} onClick={() => void run(scope)}>{scope === 'occurrence' ? 'Só esta' : 'Esta e as próximas'}</button>) : <button className="gika-confirm-action" type="button" disabled={!active || busy} onClick={() => void run()}>{state === 'preparing' ? 'Preparando…' : state === 'confirming' ? 'Aplicando…' : state === 'failed' ? 'Tentar novamente' : action}</button>}
     </div>}
   </section>;
 }

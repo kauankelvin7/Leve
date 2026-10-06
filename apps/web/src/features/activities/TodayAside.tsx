@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Note } from '../../../../../packages/domain/src/content';
 import { Icon } from '../../components/ui/Icon';
@@ -35,10 +36,12 @@ export function TodayAside({
   onAddActivity,
 }: TodayAsideProps) {
   const selectedDate = Temporal.PlainDate.from(selectedDay);
+  const [monthOpen, setMonthOpen] = useState(() => window.matchMedia('(min-width: 1120px)').matches);
 
   return (
     <aside className={`agenda-aside ${styles.todayAside}`}>
-      <section className={`panel today-month-panel ${styles.monthPanel}`}>
+      <details className={`panel today-month-panel ${styles.monthPanel}`} open={monthOpen} onToggle={event => setMonthOpen(event.currentTarget.open)}>
+        <summary className={styles.monthToggle}><Icon name="calendar" /><span>Calendário do mês</span><Icon name="chevronDown" /></summary>
         <DayNavigation
           month
           selected={selectedDay}
@@ -53,26 +56,24 @@ export function TodayAside({
             <span>{loading ? 'Carregando compromissos…' : `${selectedActivityCount} ${selectedActivityCount === 1 ? 'atividade neste dia' : 'atividades neste dia'}`}</span>
           </div>
           <div className={`month-panel-actions ${styles.monthActions}`}>
-            <Link className="button" to="/calendario">Ver calendário completo</Link>
-            <button type="button" className="primary" onClick={onAddActivity}><Icon name="plus" />Adicionar</button>
+            <Link className="button" to="/calendario">Abrir calendário</Link>
+            <button type="button" onClick={onAddActivity}><Icon name="plus" />Adicionar</button>
           </div>
         </div>
         {partial ? <p className="muted">Mostrando parte das atividades.</p> : null}
-      </section>
+      </details>
 
-      <article className={`note ${pinnedNote?.paperColorPreset ?? 'butter'}`}>
+      {pinnedNote ? <article className={`note ${pinnedNote.paperColorPreset ?? 'butter'} ${styles.pinnedNote}`}>
         <p className="note-kicker">Fixada no Meu dia</p>
-        <h2>{pinnedNote?.title ?? 'Uma nota para lembrar'}</h2>
-        <p>{pinnedNote?.plainText ?? 'Nenhuma nota fixada.'}</p>
+        <h2>{pinnedNote.title}</h2>
+        <p>{pinnedNote.plainText}</p>
         <Link to="/notas">Abrir notas</Link>
-      </article>
+      </article> : <Link className={`panel ${styles.emptyNote}`} to="/notas"><Icon name="note" /><span><strong>Fixar uma nota</strong><small>Deixe uma anotação à mão.</small></span><Icon name="chevronRight" /></Link>}
 
       <Link className={`panel shopping-summary ${styles.shoppingSummary}`} to="/compras">
-        <strong>Compras</strong>
-        <span>
-          {pendingShoppingItems} {pendingShoppingItems === 1 ? 'item pendente' : 'itens pendentes'}{' '}
-          em {activeShoppingListCount} {activeShoppingListCount === 1 ? 'lista' : 'listas'}
-        </span>
+        <Icon name="basket" />
+        <span><strong>Compras</strong><small>{activeShoppingListCount ? <>{pendingShoppingItems} {pendingShoppingItems === 1 ? 'item pendente' : 'itens pendentes'} em {activeShoppingListCount} {activeShoppingListCount === 1 ? 'lista' : 'listas'}</> : 'Crie sua primeira lista.'}</small></span>
+        <Icon name="chevronRight" />
       </Link>
     </aside>
   );

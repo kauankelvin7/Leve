@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { GIKA_MAX_INPUT } from './conversation';
 import { useVoiceInput } from './useVoiceInput';
+import { Icon } from '../../components/ui/Icon';
 
 type Props = {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
@@ -32,7 +33,7 @@ export function GikaComposer({ textareaRef, draft, open, loading, online, onDraf
   }, [draft, open, textareaRef]);
 
   return <form className="gika-composer" onSubmit={event => { event.preventDefault(); submit(); }}>
-    {!online && <p className="gika-feedback" role="status">A Gika precisa de conexão para responder. Sua agenda continua funcionando normalmente.</p>}
+    {!online && <div className="gika-feedback is-offline" role="status"><div className="gika-feedback-title"><Icon name="question" /><strong>Sem conexão</strong></div><p>A Gika precisa de conexão para responder. Sua agenda continua funcionando normalmente.</p></div>}
     <div className="gika-composer-field">
       <label className="visually-hidden" htmlFor="gika-question">Pergunte à Gika</label>
       <textarea id="gika-question" ref={textareaRef} rows={1} maxLength={GIKA_MAX_INPUT} value={draft} onChange={event => onDraft(event.target.value)} readOnly={voice.busy}
