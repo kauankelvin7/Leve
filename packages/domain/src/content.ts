@@ -89,6 +89,21 @@ export type TimeEntry = EntityMeta & {
   sessionId?: string;
 };
 
+/** Strict shape used when accepting time entries from an account export. */
+export const timeEntryImportSchema = z.object({
+  activityId: entityIdSchema,
+  civilDate: civilDateSchema,
+  timeZone: timeZoneSchema,
+  startedAt: z.iso.datetime(),
+  endedAt: z.iso.datetime().nullable(),
+  durationSeconds: z.number().int().min(0).max(86_400),
+  source: z.enum(['session', 'manual', 'timer']),
+  sessionId: z.uuid().optional(),
+}).strict().superRefine((entry, context) => {
+  if (entry.endedAt && Date.parse(entry.endedAt) < Date.parse(entry.startedAt)) context.addIssue({ code: 'custom', path: ['endedAt'], message: 'O fim não pode ser anterior ao início.' });
+  if (entry.source === 'session' && !entry.sessionId) context.addIssue({ code: 'custom', path: ['sessionId'], message: 'Sessões precisam de um identificador.' });
+});
+
 export const recurrenceRuleSchema = z.object({
   frequency: z.enum(['daily', 'weekly', 'monthly']), interval: z.number().int().min(1).max(30),
   until: civilDateSchema.nullable(), count: z.number().int().min(2).max(366).nullable(),

@@ -14,7 +14,7 @@ export async function emptyTrash(identity: DecodedIdToken, command: CommandEnvel
   const [profile, member] = await db.getAll(root, db.doc(`memberships/${identity.uid}`));
   if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
   const targets: { path: string; type: string; listId?: string }[] = [
-    { path: 'activities', type: 'activity' }, { path: 'notes', type: 'note' }, { path: 'categories', type: 'category' },
+    { path: 'activities', type: 'activity' }, { path: 'series', type: 'series' }, { path: 'notes', type: 'note' }, { path: 'categories', type: 'category' },
   ];
   const lists = await root.collection('shoppingLists').limit(50).get();
   for (const list of lists.docs) targets.push({ path: `shoppingLists/${list.id}/items`, type: 'shoppingItem', listId: list.id });

@@ -13,6 +13,7 @@ import { notificationCommand } from './commands/notifications.ts';
 import { emptyTrash } from './commands/trash.ts';
 import { timeEntryCommand } from './commands/time.ts';
 import { backfillAutomaticReminderJobs, materializeRecurringActivities, processReminderTick, purgeExpiredContent, verifyTick } from './reminders.ts';
+import { requireActiveVerifiedAccount } from './access-control.ts';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -68,7 +69,9 @@ app.use('/api', async (request, response, next) => {
   next();
 });
 app.use('/api/gika', createGikaRouter());
-app.use(express.json({ limit: '10mb', strict: true }));
+// Import archives are capped at 5 MB by the domain policy; keep a small envelope
+// margin without allowing arbitrary 10 MB command bodies through every route.
+app.use(express.json({ limit: '6mb', strict: true }));
 app.get('/api/session', async (_request, response) => {
   const identity = response.locals.identity;
   backendLog('debug', 'firebase.firestore.session_read.started', { correlationId: response.locals.correlationId });
@@ -77,17 +80,19 @@ app.get('/api/session', async (_request, response) => {
   const result: SessionResult = {
     uid: identity.uid, email: identity.email ?? null, emailVerified: identity.email_verified === true,
     membership: memberState,
-    profile: memberState === 'active' ? (profile?.data() as UserProfile ?? null) : null,
+    profile: memberState === 'active' && identity.email_verified === true ? (profile?.data() as UserProfile ?? null) : null,
     serviceMode: controls?.data()?.mode ?? 'normal',
   };
   backendLog('debug', 'firebase.firestore.session_read.completed', { correlationId: response.locals.correlationId, membership: memberState });
   response.json(result);
 });
 app.get('/api/account/export', async (_request, response) => {
+  await requireActiveVerifiedAccount(response.locals.identity);
   response.setHeader('Content-Disposition', `attachment; filename="leve-export-${new Date().toISOString().slice(0, 10)}.json"`);
   response.json(await exportAccount(response.locals.identity));
 });
 app.get('/api/commands/:operationId', async (request, response) => {
+  await requireActiveVerifiedAccount(response.locals.identity);
   const operationId = z.uuid().parse(request.params.operationId);
   const receipt = await db.doc(`commandReceipts/${response.locals.identity.uid}_${operationId}`).get();
   response.json({ result: receipt.exists ? receipt.data()?.response ?? null : null });

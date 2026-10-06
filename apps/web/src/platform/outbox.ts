@@ -1,5 +1,5 @@
 import type { CommandEnvelope } from '../../../../packages/domain/src/identity';
-import { localTransaction, OUTBOX_STORE, SESSION_STORE } from './localData';
+import { localTransaction, DRAFT_STORE, OUTBOX_STORE, SESSION_STORE } from './localData';
 import type { SessionResult } from '../../../../packages/domain/src/identity';
 
 export type PendingCommand = { key: string; operationId: string; uid: string; command: CommandEnvelope; createdAt: string };
@@ -50,6 +50,28 @@ export async function pendingCommands(uid: string): Promise<PendingCommand[]> {
 export async function removeCommand(uid: string, operationId: string) {
   await localTransaction<void>(OUTBOX_STORE, 'readwrite', (store, resolve, reject) => { const request = store.delete(`${uid}:${operationId}`); request.onsuccess = () => resolve(); request.onerror = () => reject(request.error); });
   announceChange();
+}
+
+/** Remove all account-scoped offline state when a session ends or offline mode is disabled. */
+export async function clearLocalData(uid: string) {
+  await localTransaction<void>(SESSION_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.delete(uid); request.onsuccess = () => resolve(); request.onerror = () => reject(request.error);
+  });
+  await localTransaction<void>(OUTBOX_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.index('uid-createdAt').openCursor(IDBKeyRange.bound([uid, ''], [uid, '\uffff']));
+    request.onsuccess = () => { const cursor = request.result; if (!cursor) { resolve(); return; } cursor.delete(); cursor.continue(); };
+    request.onerror = () => reject(request.error);
+  });
+  await localTransaction<void>(DRAFT_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.openCursor();
+    request.onsuccess = () => { const cursor = request.result; if (!cursor) { resolve(); return; } if (String(cursor.value?.uid ?? '') === uid) cursor.delete(); cursor.continue(); };
+    request.onerror = () => reject(request.error);
+  });
+  const prefix = `leve.draft.${uid}:`;
+  for (let index = sessionStorage.length - 1; index >= 0; index -= 1) {
+    const key = sessionStorage.key(index);
+    if (key?.startsWith(prefix)) sessionStorage.removeItem(key);
+  }
 }
 
 async function fallbackLeadership<T>(uid: string, task: () => Promise<T>): Promise<T | undefined> {

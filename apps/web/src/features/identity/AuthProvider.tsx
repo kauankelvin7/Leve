@@ -2,8 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { onIdTokenChanged, signOut, type User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { SessionResult } from '../../../../../packages/domain/src/identity';
-import { firebaseAuth, firestore } from '../../platform/firebase';
-import { cacheSession, readCachedSession } from '../../platform/outbox';
+import { clearFirestorePersistence, firebaseAuth, firestore } from '../../platform/firebase';
+import { cacheSession, clearLocalData, readCachedSession } from '../../platform/outbox';
 import { ApiError, apiRequest } from '../../platform/api';
 import { revokeNotificationDevice } from '../../platform/notifications';
 import { clearQueryCache } from '../content/useLiveQueries';
@@ -65,11 +65,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, () => { if (navigator.onLine) { setError('Não foi possível verificar o acesso à conta.'); setErrorStatus(503); } });
   }, [user, session?.membership, refresh]);
 
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const message = { type: 'LEVE_AUTH_CONTEXT', uid: user?.uid ?? null };
+    navigator.serviceWorker.controller?.postMessage(message);
+    void navigator.serviceWorker.ready.then(registration => registration.active?.postMessage(message)).catch(() => undefined);
+  }, [user?.uid]);
+
   const logout = useCallback(async () => {
     const uid = firebaseAuth?.currentUser?.uid;
     if (uid) await revokeNotificationDevice(uid).catch(() => undefined);
+    if (uid) await clearLocalData(uid).catch(() => undefined);
+    const persistenceCleared = await clearFirestorePersistence().catch(() => false);
     generation.current++; setSession(null); setUser(null); setError(''); setErrorStatus(null);
     if (firebaseAuth) await signOut(firebaseAuth);
+    if (persistenceCleared) window.location.reload();
   }, []);
 
   return <AuthContext.Provider value={{ user, session, loading, error, errorStatus, refresh, logout }}>{children}</AuthContext.Provider>;

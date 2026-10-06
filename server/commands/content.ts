@@ -20,8 +20,8 @@ import { commandCreationResultSchema, createTaskDescriptorSchema, taskActivityIn
 import { creationUndoEnvelope } from '../../packages/domain/src/gikaUndo.ts';
 import { createShoppingListDescriptorSchema, shoppingListCommandFields, type CreateShoppingListDescriptor } from '../../packages/domain/src/gikaShopping.ts';
 
-const names: Record<string, string> = { activity: 'activities', category: 'categories', note: 'notes', shoppingList: 'shoppingLists', shoppingItem: 'items' };
-const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200 };
+const names: Record<string, string> = { activity: 'activities', category: 'categories', note: 'notes', shoppingList: 'shoppingLists', shoppingItem: 'items', series: 'series' };
+const limits: Record<string, number> = { activities: 5000, categories: 50, notes: 500, shoppingLists: 50, items: 200, series: 1000 };
 const emptySchema = z.object({}).strict();
 const itemLocatorSchema = z.object({ listId: entityIdSchema }).strict();
 function recurrenceReceipt(command: CommandEnvelope, effect: RecurrenceEffect) {
@@ -33,6 +33,7 @@ const allowed: Record<string, string[]> = {
   note: ['save', 'trash', 'restore', 'purge'],
   shoppingList: ['create', 'update', 'archive', 'trash', 'restore', 'purge', 'createCycle'],
   shoppingItem: ['create', 'update', 'setChecked', 'trash', 'restore', 'purge'],
+  series: ['purge'],
 };
 
 export async function contentCommand(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
@@ -185,7 +186,7 @@ export async function contentCommand(identity: DecodedIdToken, command: CommandE
     if (creating ? Boolean(old) : !old) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Não foi possível abrir ou criar este item.');
     if (!creating && old?.revision !== command.expectedRevision) throw new AppError(409, 'REVISION_CONFLICT', 'Este item mudou em outra sessão. Seu rascunho foi preservado.', { current: old });
     if (!creating && old?.deletedAt && action !== 'restore') throw new AppError(409, 'ENTITY_DELETED', 'Este item está na lixeira. Seu rascunho foi preservado.');
-    if (action === 'restore' && (!old?.deletedAt || typeof old.purgeAfter !== 'string' || old.purgeAfter <= now)) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Este item não está disponível para restauração.');
+    if (action === 'restore' && (!old?.deletedAt || old.purgingAt || typeof old.purgeAfter !== 'string' || old.purgeAfter <= now)) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Este item não está disponível para restauração.');
 
     const references: DocumentReference[] = [];
     if (parent) references.push(parent);
@@ -257,7 +258,7 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
   const dayRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 10)}`);
   const digest = commandHash(command);
   return db.runTransaction(async transaction => {
-    const [profile, member, receipt, occurrence, nextSeries, counts, controls, minute, day] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef, nextSeriesRef, countsRef, ...(command.gikaRecurrence ? [db.doc('serviceControls/global'), minuteRef, dayRef] : []));
+    const [profile, member, receipt, occurrence, nextSeries, counts, controls, minute, day] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef, nextSeriesRef, countsRef, db.doc('serviceControls/global'), minuteRef, dayRef);
     if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
@@ -265,8 +266,9 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
     }
     const effect = command.gikaRecurrence ? recurrenceEffectSchema.parse(verifyRecurrenceConfirmation(identity.uid, command)) : undefined;
     if (effect && (effect.scope !== 'future' || effect.newSeriesId !== newSeriesId)) throw new AppError(422, 'GIKA_POLICY', 'Esse escopo não está disponível.');
-    if (effect && controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
-    if (effect && ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000)) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
+    if (controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
+    if ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
+    if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
     const current = occurrence?.data();
     if (!current || current.deletedAt || current.revision !== command.expectedRevision || !current.seriesId || !current.occurrenceKey) throw new AppError(409, 'REVISION_CONFLICT', 'A série mudou em outra sessão. Seu rascunho foi preservado.');
     if (nextSeries?.exists) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Não foi possível separar esta série.');
@@ -315,10 +317,8 @@ async function updateFutureActivities(identity: DecodedIdToken, command: Command
     transaction.set(countsRef, { activities: Math.max(0, (counts?.data()?.activities ?? 0) + delta), ...(effect ? { series: (counts?.data()?.series ?? 0) + 1 } : {}) }, { merge: true });
     transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now, ...(effect ? { gikaRecurrence: recurrenceReceipt(command, effect) } : {}) });
-    if (effect) {
-      transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
-      transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
-    }
+    transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
+    transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
     return response;
   });
 }
@@ -328,15 +328,20 @@ async function trashActivitySeries(identity: DecodedIdToken, command: CommandEnv
   const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
   const occurrenceRef = root.collection('activities').doc(command.entityId);
   const now = new Date().toISOString();
+  const minuteRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 16)}`);
+  const dayRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 10)}`);
   const digest = commandHash(command);
   return db.runTransaction(async transaction => {
-    const [profile, member, receipt, occurrence] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), receiptRef, occurrenceRef);
+    const [profile, member, controls, receipt, occurrence, minute, day] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, occurrenceRef, minuteRef, dayRef);
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
     const current = occurrence?.data();
     if (profile?.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+    if (controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Sua agenda continua disponível.');
+    if ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
+    if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
     if (!current || current.deletedAt || current.revision !== command.expectedRevision || !current.seriesId) throw new AppError(409, 'REVISION_CONFLICT', 'Esta ocorrência mudou em outra sessão.');
     const seriesRef = root.collection('series').doc(String(current.seriesId));
     const series = await transaction.get(seriesRef);
@@ -345,10 +350,12 @@ async function trashActivitySeries(identity: DecodedIdToken, command: CommandEnv
     for (const document of occurrences.docs) {
       if (!document.data().deletedAt) transaction.update(document.ref, { deletedAt: now, purgeAfter: new Date(Date.now() + 30 * 86400_000).toISOString(), revision: (document.data().revision ?? 0) + 1, updatedAt: now });
     }
-    transaction.update(seriesRef, { state: 'trashed', updatedAt: now });
+    transaction.update(seriesRef, { state: 'trashed', deletedAt: now, purgeAfter: new Date(Date.now() + 30 * 86400_000).toISOString(), updatedAt: now });
     const response: CommandResult = { operationId: command.operationId, entityId: command.entityId, revision: current.revision + 1, serverTime: now, result: 'applied' };
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
     transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
+    transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
+    transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
     return response;
   });
 }
@@ -403,15 +410,19 @@ async function createActivitySeries(identity: DecodedIdToken, command: CommandEn
   const receiptRef = db.doc(`commandReceipts/${identity.uid}_${command.operationId}`);
   const countsRef = root.collection('internal').doc('counts');
   const now = new Date().toISOString();
+  const minuteRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 16)}`);
+  const dayRef = db.doc(`usageBuckets/${identity.uid}_${now.slice(0, 10)}`);
   const digest = commandHash(command);
   return db.runTransaction(async transaction => {
-    const [profile, member, controls, receipt, counts, series, category] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, countsRef, seriesRef, ...(input.activity.categoryId ? [root.collection('categories').doc(input.activity.categoryId)] : []));
+    const [profile, member, controls, receipt, counts, series, minute, day, category] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), db.doc('serviceControls/global'), receiptRef, countsRef, seriesRef, minuteRef, dayRef, ...(input.activity.categoryId ? [root.collection('categories').doc(input.activity.categoryId)] : []));
     if (member?.data()?.state !== 'active' || profile?.data()?.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     if (receipt?.exists) {
       if (receipt.data()?.hash !== digest) throw new AppError(409, 'OPERATION_MISMATCH', 'Esta operação já foi usada com outros dados.');
       return { ...receipt.data()!.response, result: 'alreadyApplied' } as CommandResult;
     }
-    if (controls?.data()?.mode === 'restricted') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Mantenha seu rascunho.');
+    if (controls?.data()?.mode !== 'normal') throw new AppError(503, 'SERVICE_RESTRICTED', 'Serviço temporariamente restrito. Mantenha seu rascunho.');
+    if ((minute?.data()?.count ?? 0) >= 60 || (day?.data()?.count ?? 0) >= 1000) throw new AppError(429, 'LIMIT_EXCEEDED', 'Limite de alterações atingido. Tente mais tarde.');
+    if (command.clientCreatedAt && Date.now() - Date.parse(command.clientCreatedAt) > 72 * 3600_000) throw new AppError(409, 'OPERATION_EXPIRED', 'Esta alteração antiga precisa ser revisada antes do envio.');
     if (series?.exists) throw new AppError(409, 'ENTITY_UNAVAILABLE', 'Não foi possível criar esta série.');
     if (input.activity.categoryId && (!category?.exists || category.data()?.deletedAt || category.data()?.archivedAt)) throw new AppError(422, 'REFERENCE_UNAVAILABLE', 'A categoria não está disponível.');
     if ((counts?.data()?.activities ?? 0) + (counts?.data()?.reserved_activities ?? 0) + dates.length > limits.activities!) throw new AppError(422, 'STOCK_LIMIT', 'Você atingiu o limite de atividades.');
@@ -427,6 +438,8 @@ async function createActivitySeries(identity: DecodedIdToken, command: CommandEn
     transaction.set(countsRef, { activities: (counts?.data()?.activities ?? 0) + dates.length, series: (counts?.data()?.series ?? 0) + 1 }, { merge: true });
     transaction.update(root, { dataVersion: (profile?.data()?.dataVersion ?? 0) + 1, updatedAt: now });
     transaction.create(receiptRef, { uid: identity.uid, hash: digest, response, createdAt: now });
+    transaction.set(minuteRef, { count: (minute?.data()?.count ?? 0) + 1, updatedAt: now });
+    transaction.set(dayRef, { count: (day?.data()?.count ?? 0) + 1, updatedAt: now });
     return response;
   });
 }

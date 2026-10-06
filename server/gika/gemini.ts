@@ -92,7 +92,7 @@ const transport: GeminiTransport = async (payload, signal, onStage) => {
   const headers = new Headers({ 'Content-Type': 'application/json', 'x-goog-api-key': key });
   // Header only. Never include the secret in URLs, logs or error causes.
   onStage?.('request_started');
-  return fetch(GEMINI_ENDPOINT, { method: 'POST', headers, body, signal });
+  return fetch(GEMINI_ENDPOINT, { method: 'POST', headers, body, signal, redirect: 'error' });
 };
 const callSchema = z.object({ name: z.string().min(1).max(100), args: z.record(z.string(), z.unknown()).default({}), id: z.string().max(128).optional() }).strict();
 const envelopeSchema = z.object({ candidates: z.array(z.object({

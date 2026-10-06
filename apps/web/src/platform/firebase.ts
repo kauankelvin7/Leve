@@ -1,6 +1,6 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { applyActionCode, browserLocalPersistence, browserPopupRedirectResolver, connectAuthEmulator, getAuth, initializeAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
+import { clearIndexedDbPersistence, connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, terminate } from 'firebase/firestore';
 import { offlineEnabled } from './outbox';
 
 const useEmulators = import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === 'true';
@@ -27,6 +27,15 @@ if (useEmulators && firebaseAuth && firestore && !emulatorConnections.__leveFire
   connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
   connectFirestoreEmulator(firestore, 'localhost', 8080);
   emulatorConnections.__leveFirebaseEmulatorsConnected = true;
+}
+
+/** Firestore persistence is account data too. Clear it before an account switch;
+ * the caller reloads so the terminated singleton is recreated for the next user. */
+export async function clearFirestorePersistence() {
+  if (!firestore || !offlineEnabled()) return false;
+  await terminate(firestore).catch(() => undefined);
+  await clearIndexedDbPersistence(firestore).catch(() => undefined);
+  return true;
 }
 
 export async function completeLocalEmailVerification(email: string) {

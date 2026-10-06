@@ -2,13 +2,14 @@ import { createHash } from 'node:crypto';
 import type { DecodedIdToken } from 'firebase-admin/auth';
 import { FieldPath, FieldValue, type Query } from 'firebase-admin/firestore';
 import { accountArchiveSchema, accountDeleteSchema, accountImportSchema, archiveReferenceErrors, type AccountArchive } from '../packages/domain/src/archive.ts';
-import { activityInputSchema, categoryInputSchema, noteInputSchema, notePlainText, recurringActivityInputSchema, scheduleInstants, shoppingItemInputSchema, shoppingListInputSchema } from '../packages/domain/src/content.ts';
+import { activityInputSchema, categoryInputSchema, noteInputSchema, notePlainText, recurringActivityInputSchema, scheduleInstants, shoppingItemInputSchema, shoppingListInputSchema, timeEntryImportSchema } from '../packages/domain/src/content.ts';
 import type { CommandEnvelope, CommandResult, UserProfile } from '../packages/domain/src/identity.ts';
 import { AppError } from './errors.ts';
 import { auth, db } from './platform/firebase.ts';
 import { commandHash } from './commands/identity.ts';
 import { hashCanonicalValue, hashValue } from './hash.ts';
 import { reminderJobsForActivity } from './reminder-jobs.ts';
+import { requireActiveVerifiedAccount } from './access-control.ts';
 
 function publicProfile(profile: UserProfile): AccountArchive['profile'] {
   return { displayName: profile.displayName, locale: 'pt-BR', timeZone: profile.timeZone, weekStartsOn: profile.weekStartsOn, reduceTransparency: profile.reduceTransparency, colorTheme: profile.colorTheme ?? 'green', appearance: profile.appearance ?? 'system', seasonalDetailsEnabled: profile.seasonalDetailsEnabled ?? true, avatarStyle: profile.avatarStyle, avatarSeed: profile.avatarSeed };
@@ -28,6 +29,7 @@ async function documents(path: string) {
 }
 
 export async function exportAccount(identity: DecodedIdToken): Promise<AccountArchive> {
+  await requireActiveVerifiedAccount(identity);
   const root = db.doc(`users/${identity.uid}`);
   const before = await root.get();
   const profile = before.data() as UserProfile | undefined;
@@ -38,8 +40,8 @@ export async function exportAccount(identity: DecodedIdToken): Promise<AccountAr
     documents(`users/${identity.uid}/series`), documents(`users/${identity.uid}/notes`), documents(`users/${identity.uid}/shoppingLists`),
   ]);
   const shoppingLists = await Promise.all(lists.map(async list => ({ ...list, items: await documents(`users/${identity.uid}/shoppingLists/${list.id}/items`) })));
-  const after = await root.get();
-  if (!after.exists || after.data()?.accountState !== 'active' || after.data()?.dataVersion !== profile.dataVersion) throw new AppError(409, 'EXPORT_CHANGED', 'Seus dados mudaram durante a exportação. Tente novamente.');
+  const [after, memberAfter] = await db.getAll(root, db.doc(`memberships/${identity.uid}`));
+  if (!after?.exists || after.data()?.accountState !== 'active' || memberAfter?.data()?.state !== 'active' || after.data()?.dataVersion !== profile.dataVersion) throw new AppError(409, 'EXPORT_CHANGED', 'Seus dados mudaram durante a exportação. Tente novamente.');
   return accountArchiveSchema.parse({ format: 'leve-account-export', version: 1, exportedAt: new Date().toISOString(), profile: publicProfile(profile), data: { categories, activities, timeEntries, series, notes, shoppingLists } });
 }
 
@@ -94,7 +96,8 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
     if (!activityId) continue;
     const entryId = importedId(identity.uid, input.importId, 'timeEntry', source.id);
     const entrySource = source.source === 'manual' ? 'manual' : source.source === 'session' ? 'session' : 'timer';
-    writes.push({ path: `timeEntries/${entryId}`, value: { activityId, civilDate: source.civilDate, timeZone: source.timeZone, startedAt: source.startedAt, endedAt: source.endedAt ?? now, durationSeconds: Number(source.durationSeconds) || 0, source: entrySource, ...(typeof source.sessionId === 'string' ? { sessionId: source.sessionId } : {}), deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
+    const parsed = timeEntryImportSchema.parse({ activityId, civilDate: source.civilDate, timeZone: source.timeZone, startedAt: source.startedAt, endedAt: source.endedAt ?? now, durationSeconds: source.durationSeconds, source: entrySource, ...(typeof source.sessionId === 'string' ? { sessionId: source.sessionId } : {}) });
+    writes.push({ path: `timeEntries/${entryId}`, value: { ...parsed, deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.series) {
     const sourceActivity = source.activity as Record<string, unknown>;
@@ -171,8 +174,8 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
   }
   const response: CommandResult = { operationId: command.operationId, entityId: input.importId, revision: 1, serverTime: now, result: 'applied' };
   await db.runTransaction(async transaction => {
-    const [current, job, counts, controls] = await transaction.getAll(root, importRef, countsRef, controlsRef);
-    if (!current?.exists || current.data()?.accountState !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
+    const [current, member, job, counts, controls] = await transaction.getAll(root, db.doc(`memberships/${identity.uid}`), importRef, countsRef, controlsRef);
+    if (!current?.exists || current.data()?.accountState !== 'active' || member?.data()?.state !== 'active') throw new AppError(403, 'FORBIDDEN', 'Conta indisponível.');
     if (job?.data()?.state === 'completed') return;
     transaction.set(importRef, { state: 'completed', cursor: writes.length, importedAt: now, updatedAt: now }, { merge: true });
     transaction.set(countsRef, { activeImportId: FieldValue.delete(), ...Object.fromEntries(Object.entries(importedCounts).flatMap(([key, amount]) => [[key, FieldValue.increment(amount)], [`reserved_${key}`, FieldValue.increment(-amount)]])) }, { merge: true });

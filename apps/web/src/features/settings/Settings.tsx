@@ -8,7 +8,7 @@ import { apiRequest, sendCommand } from '../../platform/api';
 import { useUserCollection } from '../content/useUserCollection';
 import { useAuth } from '../identity/AuthProvider';
 import { firestore } from '../../platform/firebase';
-import { offlineEnabled, pendingCommands } from '../../platform/outbox';
+import { clearLocalData, offlineEnabled, pendingCommands } from '../../platform/outbox';
 import { NotificationSettings } from './NotificationSettings';
 import { PwaSettings } from './PwaSettings';
 import { ThemeSettings } from './ThemeSettings';
@@ -81,7 +81,7 @@ export function Settings() {
     if (!user) return;
     if (!enabled && (await pendingCommands(user.uid)).length) { setMessage('Sincronize as alterações pendentes antes de remover os dados deste aparelho.'); return; }
     localStorage.setItem('leve.offlineEnabled', String(enabled));
-    if (!enabled && firestore) { await terminate(firestore); await clearIndexedDbPersistence(firestore); }
+    if (!enabled) { await clearLocalData(user.uid).catch(() => undefined); if (firestore) { await terminate(firestore); await clearIndexedDbPersistence(firestore); } }
     window.location.reload();
   }
   const importCounts = archive ? { categories: archive.data.categories.length, activities: archive.data.activities.length, series: archive.data.series.length, notes: archive.data.notes.length, lists: archive.data.shoppingLists.length, items: archive.data.shoppingLists.reduce((total, list) => total + list.items.length, 0) } : null;

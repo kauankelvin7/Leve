@@ -7,13 +7,12 @@ const user = (text: string): GikaMessage => ({ id: crypto.randomUUID(), role: 'u
 const assistant = (text: string): GikaMessage => ({ id: crypto.randomUUID(), role: 'assistant', text, intent: 'agenda_action' });
 
 describe('bounded agenda conversation context', () => {
-  it('retains clarifications and completed task facts for follow-ups without IDs or receipt metadata', () => {
+  it('keeps follow-up context generic and strips private agenda facts', () => {
     const reply = { ...assistant('Tarefa adicionada.'), createdTask: { id: 'private-id', revision: 1 as const, result: 'applied' as const,
       title: 'Academia', dueDate: '2026-10-06', dueTime: '19:00', timeZone: 'America/Sao_Paulo' } };
     const history = conversationContext([user('agenda academia amanhã às sete da noite'), reply, user('muda o nome'), assistant('Qual será o novo nome?')], request);
     expect(history).toHaveLength(4);
-    expect(history[1]!.text).toContain('Academia');
-    expect(history[1]!.text).toContain('19:00');
+    expect(history[1]!.text).toContain('created');
     expect(history[3]!.text).toBe('Qual será o novo nome?');
     expect(JSON.stringify(history)).not.toMatch(/private-id|revision|timeZone|operationId|token/);
     expect(gikaRequestSchema.safeParse({ ...request, conversation: history }).success).toBe(true);
@@ -50,7 +49,8 @@ describe('bounded agenda conversation context', () => {
       title: 'Academia', dueDate: '2026-10-06', dueTime: '19:00', timeZone: 'America/Sao_Paulo', patch: { dueDate: '2026-10-07' } },
       contextOutcome: { state: 'confirmed' as const, tasks: [{ title: 'Academia', dueDate: '2026-10-07', dueTime: '19:00' }] } };
     const history = JSON.stringify(conversationContext([user('move academia'), reply], request));
-    expect(history).toContain('confirmed'); expect(history).toContain('2026-10-07');
+    expect(history).toContain('confirmed');
+    expect(history).not.toMatch(/2026-10-07/);
     expect(history).not.toMatch(/2026-10-06|private-id|preview_only|revision/);
     for (const state of ['cancelled', 'undone', 'uncertain'] as const) {
       const history = JSON.stringify(conversationContext([user('move academia'), { ...reply, contextOutcome: { state, tasks: [] } }], request));

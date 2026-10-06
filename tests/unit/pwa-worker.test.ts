@@ -15,16 +15,16 @@ it('exibe os dados aninhados recebidos do FCM e preserva o destino', async () =>
   runInNewContext(worker, { self, caches: {}, fetch: vi.fn(), URL });
   let completion: Promise<unknown> | undefined;
   listeners.get('push')!({
-    data: { json: () => ({ data: { title: 'Dentista', body: 'Seu compromisso começa em 10 minutos.', url: '/atividade/abc', tag: 'activity-abc' } }) },
+    data: { json: () => ({ data: { uid: 'account-a', title: 'Dentista', body: 'Seu compromisso começa em 10 minutos.', url: '/atividade/abc', tag: 'activity-abc' } }) },
     waitUntil: (promise: Promise<unknown>) => { completion = promise; },
   });
   await completion;
-  expect(showNotification).toHaveBeenCalledWith('Dentista', expect.objectContaining({
-    body: 'Seu compromisso começa em 10 minutos.',
+  expect(showNotification).toHaveBeenCalledWith('Lembrete do Leve', expect.objectContaining({
+    body: 'Chegou a hora de uma atividade. Toque para abrir sua agenda.',
     icon: '/icons/icon-192.png?v=4',
     badge: '/icons/badge-96.png?v=4',
     actions: [{ action: 'open-activity', title: 'Ver atividade' }],
-    data: { url: '/atividade/abc' },
+    data: { url: '/atividade/abc', uid: 'account-a' },
     tag: 'activity-abc',
   }));
 });

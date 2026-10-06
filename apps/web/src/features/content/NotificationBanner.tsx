@@ -11,26 +11,30 @@ export function NotificationBanner() {
   const [notice, setNotice] = useState<{ title: string; body: string; url: string } | null>(null);
   useEffect(() => {
     if (!user || !('serviceWorker' in navigator)) return;
+    const uid = user.uid;
     const receive = (event: MessageEvent) => {
       if (event.data?.type !== 'LEVE_REMINDER') return;
       const data = event.data.data;
-      if (typeof data?.body !== 'string') return;
+      if (typeof data?.body !== 'string' || data.uid !== uid) return;
       playReminderFeedback();
-      setNotice({ title: typeof data.title === 'string' ? data.title : 'Leve', body: data.body, url: typeof data.url === 'string' && /^\/atividade\/[A-Za-z0-9_-]+$/.test(data.url) ? data.url : '/hoje' });
+        setNotice({ title: 'Lembrete do Leve', body: 'Chegou a hora de uma atividade. Toque para abrir sua agenda.', url: typeof data.url === 'string' && /^\/atividade\/[A-Za-z0-9_-]+$/.test(data.url) ? data.url : '/hoje' });
     };
     navigator.serviceWorker.addEventListener('message', receive);
     return () => navigator.serviceWorker.removeEventListener('message', receive);
   }, [user?.uid]);
   useEffect(() => {
+    if (!user) return;
+    const uid = user.uid;
     let alive = true; let stop: (() => void) | undefined;
     setNotice(null);
     void import('firebase/messaging').then(async ({ getMessaging, isSupported, onMessage }) => {
       if (!firebaseApp || !await isSupported() || !alive) return;
       stop = onMessage(getMessaging(firebaseApp), payload => {
         if (!alive) return;
+        if (payload.data?.uid !== uid) return;
         const url = payload.data?.url ?? '';
         playReminderFeedback();
-        setNotice({ title: payload.data?.title ?? payload.notification?.title ?? 'Leve', body: payload.data?.body ?? payload.notification?.body ?? 'Você tem um lembrete.', url: /^\/atividade\/[A-Za-z0-9_-]+$/.test(url) ? url : '/hoje' });
+        setNotice({ title: 'Lembrete do Leve', body: 'Chegou a hora de uma atividade. Toque para abrir sua agenda.', url: /^\/atividade\/[A-Za-z0-9_-]+$/.test(url) ? url : '/hoje' });
       });
     }).catch(() => undefined);
     return () => { alive = false; stop?.(); };

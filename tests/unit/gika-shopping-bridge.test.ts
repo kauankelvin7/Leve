@@ -115,7 +115,7 @@ describe('Gika shopping lists use the existing authenticated command and checked
     await expect(createApiAdapter()(input, new AbortController().signal)).rejects.toMatchObject({ code: 'OPERATION_MISMATCH' });
     expect(fixture.request).toHaveBeenCalledTimes(2);
   });
-  it('context keeps list names and bounded counts, never IDs, receipts or command authority', () => {
+  it('context keeps only bounded list metadata and never sends private names, IDs or command authority', () => {
     const context = conversationContext([
       { id: 'u', role: 'user', text: input.text },
       { id: 'a', role: 'assistant', text: 'Lista de compras criada.', createdShoppingList: { title: 'Jantar', id: 'private-id', revision: 1, result: 'applied' } },
@@ -123,8 +123,9 @@ describe('Gika shopping lists use the existing authenticated command and checked
       { id: 'a2', role: 'assistant', text: 'Suas listas.', shoppingLists: { cached: false, partial: false, items: Array.from({ length: 10 }, (_, i) => ({ id: `private-${i}`, title: `Lista ${i}`, listKind: 'regular' as const, revision: 2, itemCount: i, pendingItemCount: i })) } },
     ], { requestId: crypto.randomUUID(), text: 'E essa lista?' });
     const serialized = JSON.stringify(context);
-    expect(serialized).toContain('shopping_list_created'); expect(serialized).toContain('Jantar'); expect(serialized).toContain('Lista 4');
-    expect(serialized).not.toMatch(/private|revision|requestTextHash|Lista 5/);
+    expect(serialized).toContain('shopping_list_created'); expect(serialized).toContain('shopping_lists_read');
+    const assistantOnly = JSON.stringify(context.filter(turn => turn.role === 'assistant'));
+    expect(assistantOnly).not.toMatch(/private|revision|requestTextHash|Jantar|Lista [0-9]/);
   });
   it('shopping bridge has no direct Firestore writer or provider call', () => {
     const source = readFileSync('apps/web/src/features/gika/shoppingBridge.ts', 'utf8');

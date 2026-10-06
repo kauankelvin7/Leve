@@ -167,14 +167,14 @@ const temporalTitleTokens = new Set(['hoje','amanha','depois','segunda','terca',
 function timeEvidenceHasCue(value: string) {
   return /^as\s/.test(value) || /\d:\d|\dh\b/.test(value) || /\bhoras?\b/.test(value) || /\b(?:manha|tarde|noite)\b/.test(value) || /^(?:meio dia|meia noite)$/.test(value);
 }
-function groundedDateEvidence(text: string, context: ModelContext): { value: string | null; ambiguous: boolean } {
+export function groundedDateEvidence(text: string, context: ModelContext): { value: string | null; ambiguous: boolean } {
   const expressions = [...normalized(text).matchAll(datePattern)].map(match => match[0]);
   const values = expressions.map(expression => resolveCreationIntent(`Adiciona Referência temporal ${expression}`, context).task?.dueDate ?? null);
   if (values.some(value => value === null)) return { value: null, ambiguous: true };
   const unique = [...new Set(values.filter((value): value is string => Boolean(value)))];
   return { value: unique[0] ?? null, ambiguous: unique.length > 1 };
 }
-function groundedTimeEvidence(text: string): { value: string | null; ambiguous: boolean; mentioned: boolean } {
+export function groundedTimeEvidence(text: string): { value: string | null; ambiguous: boolean; mentioned: boolean } {
   const plain = normalized(text);
   const expressions = [...plain.matchAll(semanticTimeEvidencePattern)].map(match => match[0]).filter(timeEvidenceHasCue);
   const parsed = expressions.map(parseGroundedTime);
@@ -204,7 +204,7 @@ function hasSpecificTitleEvidence(text: string) {
     && !/^(?:adicion|cri|agend|marc|marqu|coloc|coloqu|inclu|anot|bot|ponh|consegu)\w*$/.test(token)
   );
 }
-function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext): CreationIntent {
+export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext): CreationIntent {
   const whole = normalized(text);
   if (!createCue.test(whole)) return { clarification: 'Qual tarefa, data e horário você quer usar na sua agenda?' };
   if (unsupportedSemanticAction.test(whole) || recurringOrBatchSemanticAction.test(whole) || /\b(?:e|tambem|depois)\s+(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|conclu\w*|renome\w*|move\w*|reagend\w*)\b/.test(whole)) {

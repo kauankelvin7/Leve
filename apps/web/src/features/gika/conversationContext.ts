@@ -5,45 +5,26 @@ import type { GikaMessage, GikaRequest } from './conversation';
 function assistantContext(message: GikaMessage): string {
   if (message.contextOutcome) {
     // The bridge emits this only after a checked ACK or an explicit local cancellation.
-    // It supersedes the original preview/snapshot so follow-ups do not reuse old dates.
-    return `Resultado da interface: ${JSON.stringify(message.contextOutcome)}. Confira o estado atual da agenda antes de outra alteração.`.slice(0, 1000);
+    // Keep the outcome private to the UI: the provider must not receive task titles,
+    // dates, descriptions or confirmation material from a previous turn.
+    const state = typeof message.contextOutcome.state === 'string' ? message.contextOutcome.state : 'updated';
+    return `Resultado da interface: ${state}. Confira o estado atual da agenda antes de outra alteração.`;
   }
   const facts: unknown[] = [];
-  if (message.createdShoppingList) facts.push({ outcome: 'shopping_list_created', title: message.createdShoppingList.title });
-  if (message.shoppingLists) facts.push({ outcome: 'shopping_lists_read', partial: message.shoppingLists.partial,
-    items: message.shoppingLists.items.slice(0, 5).map(({ title, listKind, itemCount, pendingItemCount }) => ({ title, listKind, itemCount, pendingItemCount })) });
-  if (message.createdTask) {
-    const { title, dueDate, dueTime } = message.createdTask;
-    facts.push({ outcome: 'created', title, dueDate, dueTime });
-  }
-  if (message.completedTask) {
-    const { title, dueDate } = message.completedTask;
-    facts.push({ outcome: 'completed', title, dueDate });
-  }
-  if (message.updatedTask) {
-    const { title, dueDate } = message.updatedTask;
-    facts.push({ outcome: 'renamed', title, dueDate });
-  }
-  if (message.rescheduleTask) {
-    const { title, dueDate, dueTime, patch } = message.rescheduleTask;
-    facts.push({ outcome: 'preview_only', title, dueDate, dueTime, proposed: patch });
-  }
+  if (message.createdShoppingList) facts.push({ outcome: 'shopping_list_created' });
+  if (message.shoppingLists) facts.push({ outcome: 'shopping_lists_read', partial: message.shoppingLists.partial });
+  if (message.createdTask) facts.push({ outcome: 'created' });
+  if (message.completedTask) facts.push({ outcome: 'completed' });
+  if (message.updatedTask) facts.push({ outcome: 'renamed' });
+  if (message.rescheduleTask) facts.push({ outcome: 'preview_only' });
   const recurring = message.recurrenceConfirmation?.effect ?? message.recurrenceChoice?.proposal;
-  if (recurring) {
-    const { title, dueDate, dueTime } = recurring.task;
-    facts.push({ outcome: 'preview_only', title, dueDate, dueTime, proposed: recurring.patch });
-  }
-  if (message.batchConfirmation) facts.push({ outcome: 'preview_only', operation: message.batchConfirmation.plan.action,
-    tasks: message.batchConfirmation.plan.items.map(item => ({ title: item.title, ...item.before, proposed: item.patch })) });
+  if (recurring) facts.push({ outcome: 'preview_only' });
+  if (message.batchConfirmation) facts.push({ outcome: 'preview_only', operation: message.batchConfirmation.plan.action });
   if (message.confirmation || message.batchConfirmation || message.recurrenceConfirmation || message.recurrenceChoice) {
     facts.push({ confirmation: 'Use the original confirmation controls. Conversation never confirms this preview.' });
   }
   for (const read of message.reads ?? []) {
-    facts.push({ outcome: 'read', startDate: read.startDate, endDate: read.endDate, partial: read.partial,
-      // Only a small recent reference window, not another copy of the full agenda.
-      items: read.items.slice(0, 5).map(item => ({ title: item.title, status: item.status,
-        date: item.schedule.type === 'task' ? item.schedule.dueDate : item.schedule.startDate,
-        ...(item.schedule.type === 'task' ? { time: item.schedule.dueTime } : {}) })) });
+    facts.push({ outcome: 'read', partial: read.partial, itemCount: read.items.length });
   }
   return `${message.text}${facts.length ? `\nContexto da interface: ${JSON.stringify(facts)}` : ''}`.slice(0, 1000);
 }

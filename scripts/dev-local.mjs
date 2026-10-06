@@ -51,10 +51,20 @@ const commands = [
   ['API', [node, 'server/dev.ts']],
   ['Web', [node, 'node_modules/vite/bin/vite.js', '--config', 'apps/web/vite.config.ts', '--port', '5174', '--strictPort']],
 ];
-const concurrent = spawn(node, [
-  'node_modules/concurrently/dist/bin/index.js', '--kill-others-on-fail', '--names', commands.map(([name]) => name).join(','),
-  ...commands.map(([, parts]) => parts.map(part => part.includes(' ') ? JSON.stringify(part) : part).join(' ')),
-], { cwd: process.cwd(), env, stdio: 'inherit' });
-
-for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => concurrent.kill(signal));
-concurrent.on('exit', code => process.exitCode = code ?? 1);
+const children = commands.map(([name, parts]) => {
+  const child = spawn(parts[0], parts.slice(1), { cwd: process.cwd(), env, stdio: 'inherit' });
+  child.once('exit', (code, signal) => {
+    if (stopping) return;
+    stopping = true;
+    for (const other of children) if (other !== child && !other.killed) other.kill('SIGTERM');
+    process.exitCode = code ?? (signal ? 1 : 0);
+    console.error(`[${name}] encerrou${signal ? ` com ${signal}` : ` (código ${code ?? 0})`}.`);
+  });
+  return child;
+});
+let stopping = false;
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => {
+  if (stopping) return;
+  stopping = true;
+  for (const child of children) if (!child.killed) child.kill(signal);
+});

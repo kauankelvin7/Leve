@@ -22,15 +22,16 @@ import { readRange } from './policy.ts';
 import { normalizeCurrentAction, isCreationRequest, resolveCreationIntent, validateCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { readSummary } from './readSummary.ts';
-import { consumeGikaQuota } from './quota.ts';
+import { consumeGikaQuota, consumeGikaRecoveryQuota, createGikaRecoveryQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
-import { semanticBatch, semanticCompletion, semanticCreation, semanticReschedule, semanticTurnSchema, semanticUpdate, type SemanticTurn } from './semanticTurn.ts';
+import { semanticTurnSchema, validateSemanticMutation, type SemanticTurn } from './semanticTurn.ts';
 import { createShoppingListDescriptorSchema, shoppingListsResultSchema } from '../../packages/domain/src/gikaShopping.ts';
 // Two bounded 10s provider phases plus 5s for authorization/reads; client deadline is 30s.
 const OPERATION_DEADLINE_MS = 25_000;
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
-export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota) {
+export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota, consumeRecoveryQuota?: typeof consumeGikaRecoveryQuota) {
   const router = Router();
+  const recoveryQuota = consumeRecoveryQuota ?? createGikaRecoveryQuota();
   const parseTurn = express.json({ limit: GIKA_MAX_REQUEST_BYTES, strict: true });
   // A choice appends an <=8KiB opaque token to the original bounded request. Keep
   // the interpretation cap unchanged while allowing that transport overhead here.
@@ -46,6 +47,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/recover-confirmation', async (request, response) => {
     const input = gikaRequestSchema.parse(request.body), identity = response.locals.identity;
     await repository.authorize(identity, 'receipt');
+    recoveryQuota(identity.uid);
     const recovered = await repository.recoverMutation(identity.uid, input);
     await repository.authorize(identity, 'receipt');
     if (recovered?.kind === 'recurrence') { response.json({ recurrenceConfirmation: recovered.confirmation }); return; }
@@ -55,6 +57,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/recover-batch', async(request,response)=>{
     const input=gikaRequestSchema.parse(request.body),identity=response.locals.identity;
     await repository.authorize(identity,'receipt');
+    recoveryQuota(identity.uid);
     const recovered=await repository.recoverBatch?.(identity.uid,input);
     await repository.authorize(identity,'receipt');
     if(!recovered)throw new AppError(409,'OPERATION_MISMATCH','Não encontrei alterações deste pedido. Faça o pedido novamente.');
@@ -64,6 +67,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/choose-recurrence', async (request, response) => {
     const input = selectionSchema.parse(request.body), identity = response.locals.identity;
     await repository.authorize(identity, 'receipt');
+    recoveryQuota(identity.uid);
     const committed = await repository.recoverMutation(identity.uid, { requestId: input.requestId, text: input.text });
     if (committed) {
       await repository.authorize(identity, 'receipt');
@@ -92,6 +96,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const identity = response.locals.identity;
         await repository.authorize(identity, 'receipt');
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
+        recoveryQuota(identity.uid);
         stage = 'recover_batch';
         const recoveredBatch = await repository.recoverBatch?.(identity.uid,input);
         if(recoveredBatch){await repository.authorize(identity,'receipt');return gikaInterpretationSchema.parse({text:'Confira as alterações deste pedido.',simulated:false,reads:[],batchConfirmation:recoveredBatch.confirmation});}
@@ -231,7 +236,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
           return gikaInterpretationSchema.parse({ text, intent: 'agenda_query', domainIntent: classification.intent, simulated: false, reads: [], shoppingLists });
         }
         if(calls[0]?.name==='batch_complete'||calls[0]?.name==='batch_reschedule'){
-          const intent=semantic ? semanticBatch(calls[0],current) : validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
+          const intent=semantic ? validateSemanticMutation(calls[0], input.text, current) : validateBatch(calls[0].args,input.text,current,calls[0].name==='batch_complete'?'complete':'reschedule');
           if('clarification' in intent)return gikaInterpretationSchema.parse({text:intent.clarification,simulated:false,reads:[]});
           const range={startDate:intent.date,endDate:intent.date,timeZone:current.timeZone};
           const read=readResultSchema.parse(await repository.read(identity.uid,range));
@@ -248,7 +253,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         if (calls[0]?.name === 'reschedule_task') {
           const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
-          const intent = semantic ? semanticReschedule(calls[0].args, current) : validateReschedule(calls[0].args, normalizedAction ?? scoped.text, current);
+          const intent = semantic ? validateSemanticMutation(calls[0], input.text, current) : validateReschedule(calls[0].args, normalizedAction ?? scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('reschedule_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], rescheduleResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -285,7 +290,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         if (calls[0]?.name === 'update_task') {
           const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
-          const intent = semantic ? semanticUpdate(calls[0].args, current) : validateUpdate(calls[0].args, scoped.text, current);
+          const intent = semantic ? validateSemanticMutation(calls[0], input.text, current) : validateUpdate(calls[0].args, scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('update_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], updateResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -322,7 +327,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         }
         if (calls[0]?.name === 'complete_task') {
           const scoped = semantic ? { text: input.text, scope: calls[0].args.recurrenceScope } : scopedIntent(input.text, calls[0].args);
-          const intent = semantic ? semanticCompletion(calls[0].args, current) : validateCompletion(calls[0].args, scoped.text, current);
+          const intent = semantic ? validateSemanticMutation(calls[0], input.text, current) : validateCompletion(calls[0].args, scoped.text, current);
           if ('clarification' in intent) { assessMissingIntent('complete_task', 'verified'); return gikaInterpretationSchema.parse({ text: intent.clarification, simulated: false, reads: [], completionResolution: { status: 'clarify', candidates: [] } }); }
           const range = { startDate: intent.date, endDate: intent.date, timeZone: current.timeZone };
           const read = readResultSchema.parse(await repository.read(identity.uid, range));
@@ -358,7 +363,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
             ...(committed || resolved.task ? { completeTask: committed ?? resolved.task } : { completionResolution: resolved.resolution }) });
         }
         if (calls[0]?.name === 'create_task') {
-          const intent = semantic ? semanticCreation(calls[0].args, current) : validateCreation(calls[0].args, actionText, current);
+          const intent = semantic ? validateSemanticMutation(calls[0], input.text, current) : validateCreation(calls[0].args, actionText, current);
           const decision = assessCreation(Boolean(intent.task), 'verified');
           if (intent.task && decision.kind !== 'allow') throw new GikaFault('GIKA_POLICY');
           return gikaInterpretationSchema.parse({ text: intent.task ? 'Preparando a tarefa…' : intent.clarification, intent: 'agenda_action', domainIntent: classification.intent, simulated: false, reads: [], ...(intent.task ? { createTask: intent.task } : {}) });

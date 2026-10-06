@@ -6,7 +6,7 @@ import { AppError } from './errors.ts';
 import { db } from './platform/firebase.ts';
 import { moveScheduleToDate, recurrenceDates, recurrenceDatesThrough, scheduleInstants, type ActivityInput, type RecurrenceRule } from '../packages/domain/src/content.ts';
 import { hashValue } from './hash.ts';
-import { createReminderJobs, reminderJobsForActivity, reminderMessage } from './reminder-jobs.ts';
+import { createReminderJobs, reminderJobsForActivity } from './reminder-jobs.ts';
 import { validTickSignature } from './tick-signature.ts';
 
 type ReminderDeliveryResult = {
@@ -86,9 +86,12 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       return current.data();
     });
     if (!reserved) continue;
-    const activity = await db.doc(`users/${reserved.uid}/activities/${reserved.activityId}`).get();
-    const profile = await db.doc(`users/${reserved.uid}`).get();
-    if (!activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || activity.data()?.revision !== reserved.activityRevision || activity.data()?.status !== 'pending' || activity.data()?.deletedAt || reserved.deliveryWindowEnd < now) {
+    const [activity, profile, membership] = await Promise.all([
+      db.doc(`users/${reserved.uid}/activities/${reserved.activityId}`).get(),
+      db.doc(`users/${reserved.uid}`).get(),
+      db.doc(`memberships/${reserved.uid}`).get(),
+    ]);
+    if (!activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || membership.data()?.state !== 'active' || activity.data()?.revision !== reserved.activityRevision || activity.data()?.status !== 'pending' || activity.data()?.deletedAt || reserved.deliveryWindowEnd < now) {
       if (await updateLeasedJob(snapshot.ref, leaseId, { state: reserved.deliveryWindowEnd < now ? 'expired' : 'obsolete', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
       continue;
     }
@@ -100,8 +103,7 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       continue;
     }
     try {
-      const activityData = activity.data()!;
-      const result = await sender({ tokens, data: { title: String(activityData.title ?? 'Sua atividade'), body: reminderMessage(activityData, reserved.reminderSpecId), url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
+      const result = await sender({ tokens, data: { uid: reserved.uid, title: 'Lembrete do Leve', body: 'Chegou a hora de uma atividade. Toque para abrir sua agenda.', url: `/atividade/${reserved.activityId}`, tag: `activity-${reserved.activityId}` } });
       const invalid = result.responses.flatMap((response, index) => !response.success && ['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'].includes(response.error?.code ?? '') ? [tokenRecords[index]!] : []);
       await invalidateNotificationTokens(reserved.uid, invalid, now);
       const deliveredTokenHashes = [...new Set([...(reserved.deliveredTokenHashes ?? []), ...result.responses.flatMap((response, index) => response.success ? [hashValue(tokens[index]!)] : [])])];
@@ -146,10 +148,12 @@ export async function backfillAutomaticReminderJobs() {
   let query = db.collectionGroup('activities').orderBy(FieldPath.documentId()).limit(50);
   if (claim.cursor) query = query.startAfter(claim.cursor);
   const page = await query.get();
+  const candidateUids = [...new Set(page.docs.map(document => document.ref.path.split('/')[1]).filter((uid): uid is string => Boolean(uid)))];
+  const memberships = new Map((await Promise.all(candidateUids.map(async uid => [uid, await db.doc(`memberships/${uid}`).get()] as const))).map(([uid, snapshot]) => [uid, snapshot.data()?.state]));
   const candidates = page.docs.flatMap(document => {
     const data = document.data();
     const parts = document.ref.path.split('/');
-    if (parts.length !== 4 || parts[0] !== 'users' || parts[2] !== 'activities' || data.status !== 'pending' || data.deletedAt) return [];
+    if (parts.length !== 4 || parts[0] !== 'users' || parts[2] !== 'activities' || memberships.get(parts[1]!) !== 'active' || data.status !== 'pending' || data.deletedAt) return [];
     if (Array.isArray(data.reminderSpecs) && data.reminderSpecs.some((spec: { minutesBefore?: number }) => spec.minutesBefore === 0)) return [];
     const jobs = reminderJobsForActivity(parts[1]!, document.id, Number(data.revision ?? 1), { ...data, reminderSpecs: [] }, now);
     const automatic = jobs.find(job => job.value.reminderSpecId === 'at-time');
@@ -190,8 +194,8 @@ export async function materializeRecurringActivities() {
     if (!uid) continue;
     const root = db.doc(`users/${uid}`);
     await db.runTransaction(async transaction => {
-      const [current, profile, counts] = await transaction.getAll(snapshot.ref, root, root.collection('internal').doc('counts'));
-      if (!current?.exists || current.data()?.state !== 'active' || current.data()?.materializedCount !== data.materializedCount) return;
+      const [current, profile, membership, counts] = await transaction.getAll(snapshot.ref, root, db.doc(`memberships/${uid}`), root.collection('internal').doc('counts'));
+      if (!current?.exists || current.data()?.state !== 'active' || membership?.data()?.state !== 'active' || current.data()?.materializedCount !== data.materializedCount) return;
       if (!dates.length) {
         if (!candidates.length) transaction.update(snapshot.ref, { state: 'completed', updatedAt: new Date().toISOString() });
         return;
@@ -216,7 +220,7 @@ export async function materializeRecurringActivities() {
 
 export async function purgeExpiredContent() {
   const now = new Date().toISOString();
-  const groups = ['activities', 'categories', 'notes', 'shoppingLists', 'items'] as const;
+  const groups = ['activities', 'categories', 'notes', 'shoppingLists', 'items', 'series'] as const;
   const snapshots = await Promise.all(groups.map(group => db.collectionGroup(group).where('purgeAfter', '<=', now).limit(5).get()));
   let purged = 0;
   for (const snapshot of snapshots.flatMap(result => result.docs)) {

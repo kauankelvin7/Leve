@@ -5,6 +5,11 @@ export { parseGikaDailyLimit } from './quotaPolicy.ts';
 
 const MAX_STORED_RESERVATIONS = 6;
 const SHORT_BURST = 3;
+const RECOVERY_MINUTE_LIMIT = 60;
+const RECOVERY_DAILY_LIMIT = 600;
+const RECOVERY_BURST_LIMIT = 12;
+
+type RecoveryWindow = { minuteStartedAt: number; minuteCount: number; burstStartedAt: number; burstCount: number; dayKey: string; dayCount: number };
 
 /** Durable, rolling per-account quota. Reserve immediately before each upstream call. */
 export async function consumeGikaQuota(uid: string, now = Date.now(), dailyLimit = parseGikaDailyLimit(), minuteLimit = parseGikaMinuteLimit()) {
@@ -26,3 +31,44 @@ export async function consumeGikaQuota(uid: string, now = Date.now(), dailyLimit
     }, { merge: true });
   });
 }
+
+/**
+ * Receipt recovery never calls the model and must not spend the durable model
+ * quota. It still needs a cheap per-process guard because the endpoint reads
+ * account-scoped Firestore receipts. The edge rate limit remains the global
+ * control for multi-instance deployments.
+ */
+export function createGikaRecoveryQuota() {
+  const recoveryWindows = new Map<string, RecoveryWindow>();
+  return function consumeGikaRecoveryQuota(uid: string, now = Date.now()) {
+    const dayKey = new Date(now).toISOString().slice(0, 10);
+    const current = recoveryWindows.get(uid);
+    const window: RecoveryWindow = current && now - current.minuteStartedAt < 60_000
+      ? current
+      : { minuteStartedAt: now, minuteCount: 0, burstStartedAt: now, burstCount: 0, dayKey, dayCount: current?.dayKey === dayKey ? current.dayCount : 0 };
+    if (now - window.burstStartedAt >= 10_000) {
+      window.burstStartedAt = now;
+      window.burstCount = 0;
+    }
+    if (window.dayKey !== dayKey) {
+      window.dayKey = dayKey;
+      window.dayCount = 0;
+    }
+    if (window.minuteCount >= RECOVERY_MINUTE_LIMIT || window.burstCount >= RECOVERY_BURST_LIMIT || window.dayCount >= RECOVERY_DAILY_LIMIT) {
+      recoveryWindows.set(uid, window);
+      throw new GikaFault('GIKA_QUOTA');
+    }
+    window.minuteCount += 1;
+    window.burstCount += 1;
+    window.dayCount += 1;
+    recoveryWindows.set(uid, window);
+    if (recoveryWindows.size > 10_000) {
+      for (const [key, value] of recoveryWindows) {
+        if (now - value.minuteStartedAt > 60_000 && value.dayKey !== dayKey) recoveryWindows.delete(key);
+        if (recoveryWindows.size <= 9_000) break;
+      }
+    }
+  };
+}
+
+export const consumeGikaRecoveryQuota = createGikaRecoveryQuota();

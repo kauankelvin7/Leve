@@ -47,12 +47,13 @@ function fixture(turn: unknown, items: ReadItem[] = [task], partial = false) {
       seriesHash: 'a'.repeat(64), targetHash: 'b'.repeat(64), futureHash: null, futureCount: 0, futureAllowed: false }),
   };
   const quota = vi.fn();
+  const recoveryQuota = vi.fn();
   const app = express();
   app.use((_req, res, next) => { res.locals.identity = { uid: 'synthetic-user' }; res.locals.correlationId = 'synthetic-correlation'; next(); });
-  app.use('/gika', createGikaRouter(adapter, repository, quota));
+  app.use('/gika', createGikaRouter(adapter, repository, quota, recoveryQuota));
   app.use((error: AppError, _req: express.Request, res: express.Response, _next: express.NextFunction) => res.status(error.status ?? 422).json({ code: error.code }));
   return {
-    app, http, adapter, repository, quota,
+    app, http, adapter, repository, quota, recoveryQuota,
     ask: (text: string, conversation?: { role: 'user' | 'assistant'; text: string }[]) => request(app).post('/gika/respond').send({ requestId: crypto.randomUUID(), text, ...(conversation ? { conversation } : {}) }),
   };
 }
@@ -122,6 +123,12 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     { status: 'partial', proposal: complete, items: Array.from({ length: 50 }, (_, index) => ({ ...task, id: `synthetic-${index}`, title: index === 0 ? task.title : `Outra ${index}` })), partial: false },
   ])('$status target resolution never provides a completion descriptor', async ({ status, proposal, items, partial }) => {
     const f = fixture(action(proposal), items, partial), response = await f.ask('dá baixa em Academia, acabei ela hoje');
+    if (status === 'not_found') {
+      expect(response.status).toBe(422);
+      expect(response.body.code).toBe('GIKA_POLICY');
+      expect(f.repository.read).not.toHaveBeenCalled();
+      return;
+    }
     expect(response.status).toBe(200);
     expect(response.body.completionResolution.status).toBe(status);
     expect(response.body).not.toHaveProperty('completeTask');
@@ -133,12 +140,10 @@ describe('single semantic turn through the real Gemini adapter and router', () =
   it('an interpretation of bare sim cannot replace the signed confirmation command', async () => {
     const proposal = { name: 'reschedule_task', args: { title: task.title, date: context.today, patch: { dueDate: tomorrow } } };
     const f = fixture(action(proposal)), response = await f.ask('sim', [{ role: 'user', text: 'Move Academia para amanhã' }, { role: 'assistant', text: 'Confirme para continuar.' }]);
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(422);
+    expect(response.body.code).toBe('GIKA_POLICY');
     expect(f.http).toHaveBeenCalledTimes(1);
-    expect(response.body.rescheduleTask).toMatchObject({ id: task.id, revision: task.revision, patch: { dueDate: tomorrow } });
-    expect(response.body.confirmation.policy.kind).toBe('confirm');
-    expect(response.body.confirmation.action.task).toEqual(response.body.rescheduleTask);
-    expect(response.body.confirmation.token).toMatch(/^[A-Za-z0-9_-]+\.[a-f0-9]{64}$/);
+    expect(f.repository.read).not.toHaveBeenCalled();
     expectUncommitted(response.body);
   });
 
@@ -156,7 +161,7 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     expect(response.body).not.toHaveProperty('createTask');
   });
 
-  it('recovers the committed receipt before quota or any provider call', async () => {
+  it('recovers the committed receipt before any provider call under the recovery-only quota', async () => {
     const recovered = { title: 'Snapshot original', dueDate: context.today, dueTime: null, timeZone: context.timeZone };
     const f = fixture(action());
     f.repository.recoverMutation.mockResolvedValue({ kind: 'create', task: recovered });
@@ -165,6 +170,7 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     expect(response.body.createTask).toEqual(recovered);
     expect(f.http).not.toHaveBeenCalled();
     expect(f.quota).not.toHaveBeenCalled();
+    expect(f.recoveryQuota).toHaveBeenCalledExactlyOnceWith('synthetic-user');
     expect(f.repository.read).not.toHaveBeenCalled();
     expect(f.repository.authorize).toHaveBeenCalledTimes(2);
     expect(f.repository.authorize.mock.calls.every(call => call[1] === 'receipt')).toBe(true);
@@ -240,6 +246,7 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     expect(f.repository.recoverMutation).toHaveBeenCalledExactlyOnceWith('synthetic-user', { requestId: original.requestId, text: original.text });
     expect(f.http).not.toHaveBeenCalled();
     expect(f.quota).not.toHaveBeenCalled();
+    expect(f.recoveryQuota).toHaveBeenCalledExactlyOnceWith('synthetic-user');
 
     const oversized = { ...original, conversation: original.conversation.map(turn => ({ ...turn, text: 'á'.repeat(1000) })) };
     expect(gikaRequestSchema.safeParse(oversized).success).toBe(true);
@@ -249,6 +256,7 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     expect(rejected.body.code).toBe('PAYLOAD_TOO_LARGE');
     expect(f.http).not.toHaveBeenCalled();
     expect(f.quota).not.toHaveBeenCalled();
+    expect(f.recoveryQuota).toHaveBeenCalledExactlyOnceWith('synthetic-user');
     expect(f.repository.recoverMutation).toHaveBeenCalledTimes(1);
   });
 });
