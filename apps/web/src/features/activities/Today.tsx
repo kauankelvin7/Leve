@@ -20,7 +20,7 @@ import type { StoredActivity } from './TodayActivityRow';
 import { ActivityAgenda } from './ActivityAgenda';
 import { ActivityComposer } from './ActivityComposer';
 import { TodayAside } from './TodayAside';
-import todayAsideStyles from './TodayAside.module.css';
+import todayStyles from './Today.module.css';
 
 export function Today() {
   const { user, session } = useAuth();
@@ -286,7 +286,7 @@ export function Today() {
   return (
     <main className="today-page">
       <PageHeader
-        eyebrow="Sua agenda"
+        className={todayStyles.heading}
         title="Meu dia"
         description={<span className="user-greeting">Olá, <strong>{session!.profile!.displayName || 'que bom ter você aqui'}</strong>.</span>}
         actions={!composerOpen && <button
@@ -300,11 +300,11 @@ export function Today() {
 
       <TodayOverview selectedDay={selectedDay} today={today} loading={loading} pendingTaskCount={pendingTaskCount} taskCount={taskCount} pendingCount={pendingCount} plannedMinutes={plannedMinutes} />
 
-      <div className={`agenda-layout ${todayAsideStyles.todayLayout}`}>
+      <div className={todayStyles.layout}>
         {/* Main column */}
         <div>
           {/* Day navigation panel */}
-          <section className="panel">
+          <section className={`panel ${todayStyles.weekPanel}`}>
             <DayNavigation
               selected={selectedDay}
               today={today}
@@ -312,20 +312,7 @@ export function Today() {
               onSelect={selectDay}
               dotsOf={dotsOf}
             />
-            <div className="section-heading">
-              <strong>
-                {Temporal.PlainDate.from(selectedDay).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}
-              </strong>
-              <span className="count-badge">
-                {pendingCount} {pendingCount === 1 ? 'pendente' : 'pendentes'}
-              </span>
-            </div>
-            {plannedMinutes > 0 ? <p className="muted">{Math.floor(plannedMinutes / 60) ? `${Math.floor(plannedMinutes / 60)}h ` : ''}{plannedMinutes % 60 ? `${plannedMinutes % 60}min` : ''} planejados</p> : null}
           </section>
-
-          <GikaSuggestion key={session!.uid} uid={session!.uid} today={today} selectedDay={selectedDay} activities={activityQuery.items as StoredActivity[]} loading={activityQuery.loading} error={activityQuery.error} partial={activityQuery.partial} />
-
-          <DailyBrief selectedDay={selectedDay} today={today} activities={activities} notes={notes} shoppingItems={shoppingItems.items} />
 
           {/* Composer */}
           {composerOpen ? <ActivityComposer
@@ -377,6 +364,11 @@ export function Today() {
             onTrash={activity => void trash(activity)}
             onTrashSeries={activity => void trashSeries(activity)}
           />
+
+          <div className={todayStyles.support}>
+            <GikaSuggestion key={session!.uid} uid={session!.uid} today={today} selectedDay={selectedDay} activities={activityQuery.items as StoredActivity[]} loading={activityQuery.loading} error={activityQuery.error} partial={activityQuery.partial} />
+            <DailyBrief selectedDay={selectedDay} today={today} activities={activities} notes={notes} shoppingItems={shoppingItems.items} />
+          </div>
         </div>
 
         <TodayAside

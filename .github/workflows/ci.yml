@@ -38,7 +38,7 @@ jobs:
       - name: Critical Gika commands, confirmation and recovery
         run: npm run test:e2e:critical
       - name: Responsive navigation, content and public pages
-        run: npm run test:e2e:local -- mobile-refinement.spec.ts public-pages.spec.ts gika-launcher.spec.ts agenda-loading.spec.ts
+        run: npm run test:e2e:local -- mobile-refinement.spec.ts public-pages.spec.ts gika-launcher.spec.ts agenda-loading.spec.ts visual-polish.spec.ts
       - name: Browser failure evidence
         if: failure()
         uses: actions/upload-artifact@v4

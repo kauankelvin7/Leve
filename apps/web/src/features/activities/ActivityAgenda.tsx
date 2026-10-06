@@ -2,6 +2,8 @@ import type { Activity, Category } from '../../../../../packages/domain/src/cont
 import { LoadError } from '../../components/ui/LoadError';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { TodayActivityRow, type StoredActivity } from './TodayActivityRow';
+import { Icon } from '../../components/ui/Icon';
+import styles from './Today.module.css';
 
 type ActivityAgendaProps = {
   activities: StoredActivity[];
@@ -48,9 +50,10 @@ export function ActivityAgenda({
     onTrashSeries={onTrashSeries}
   />;
 
-  return <section className="real-activities" aria-labelledby="activity-title">
+  const activeFilters = Number(statusFilter !== 'all') + Number(categoryFilter !== 'all');
+  return <section className={`real-activities ${styles.activities}`} aria-labelledby="activity-title">
     <div className="section-heading daily-checklist-heading">
-      <div><p className="eyebrow">Checklist</p><h2 id="activity-title">Tarefas do dia</h2></div>
+      <h2 id="activity-title">Tarefas do dia</h2>
       <span className="muted">{taskCount ? `${completedTaskCount} de ${taskCount} concluídas` : 'Nenhuma tarefa'}</span>
     </div>
 
@@ -59,10 +62,13 @@ export function ActivityAgenda({
       <strong>{Math.round((completedTaskCount / taskCount) * 100)}%</strong>
     </div> : null}
 
-    <div className="activity-filters" aria-label="Filtros de atividades">
-      <label>Estado<select value={statusFilter} onChange={event => onStatusFilterChange(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
-      <label>Categoria<select value={categoryFilter} onChange={event => onCategoryFilterChange(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{filterCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
-    </div>
+    <details className={styles.filters}>
+      <summary><Icon name="filter" /><span>Filtrar atividades</span>{activeFilters > 0 && <span className="count-badge">{activeFilters} {activeFilters === 1 ? 'filtro ativo' : 'filtros ativos'}</span>}<Icon name="chevronDown" /></summary>
+      <div className="activity-filters" aria-label="Filtros de atividades">
+        <label>Estado<select value={statusFilter} onChange={event => onStatusFilterChange(event.target.value)}><option value="all">Todos</option><option value="pending">Pendentes</option><option value="completed">Concluídas</option><option value="canceled">Canceladas</option></select></label>
+        <label>Categoria<select value={categoryFilter} onChange={event => onCategoryFilterChange(event.target.value)}><option value="all">Todas</option><option value="none">Sem categoria</option>{filterCategories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+      </div>
+    </details>
 
     {!composerOpen && message ? <p role={messageTone === 'error' ? 'alert' : 'status'} className={`form-status activity-form-status ${messageTone}`} aria-live="polite">{message}</p> : null}
     {error ? <LoadError message={error} retry={retry} /> : null}

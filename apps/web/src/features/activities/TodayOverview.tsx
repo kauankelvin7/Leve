@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Temporal } from '@js-temporal/polyfill';
 import { Icon } from '../../components/ui/Icon';
+import styles from './Today.module.css';
 
 type TodayOverviewProps = {
   selectedDay: string;
@@ -32,8 +33,9 @@ export function TodayOverview({
           ? `${pendingCount} ${pendingCount === 1 ? 'compromisso' : 'compromissos'} neste dia`
           : 'Nada planejado';
 
-  return <section className="day-overview" aria-label="Resumo do dia selecionado">
-    <div className="day-overview-date"><span>{date.toLocaleString('pt-BR', { month: 'long' })}</span><strong>{date.day}</strong><span>{date.toLocaleString('pt-BR', { weekday: 'long' })}</span></div>
-    <div className="day-overview-content"><p className="eyebrow">Resumo</p><h2>{summary}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}<nav className="day-shortcuts" aria-label="Acessos rápidos"><Link to="/revisao"><Icon name="clock" />Ver revisão</Link></nav></div>
+  return <section className={styles.overview} aria-label="Resumo do dia selecionado">
+    <div className={styles.date}><strong>{date.day}</strong><span>{date.toLocaleString('pt-BR', { month: 'long' })}<small>{date.toLocaleString('pt-BR', { weekday: 'long' })}</small></span></div>
+    <div className={styles.summary}><h2>{summary}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}</div>
+    <Link className={styles.reviewLink} to="/revisao"><Icon name="clock" /><span>Ver revisão</span></Link>
   </section>;
 }

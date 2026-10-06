@@ -16,14 +16,14 @@
 }
 .gika-panel {
   position: fixed; inset: 0; width: min(460px, calc(100vw - 32px)); max-width: none;
-  height: min(700px, calc(var(--gika-viewport-height, 100dvh) - 32px)); max-height: calc(var(--gika-viewport-height, 100dvh) - 32px);
+  height: min(720px, calc(var(--gika-viewport-height, 100dvh) - 32px)); max-height: calc(var(--gika-viewport-height, 100dvh) - 32px);
   margin: auto max(24px, env(safe-area-inset-right)) auto auto; padding: 0;
-  border: 1px solid var(--color-border); border-radius: 28px; color: var(--color-text);
+  border: 1px solid var(--color-border); border-radius: 24px; color: var(--color-text);
   overflow: hidden; font-family: var(--font-body, 'DM Sans', sans-serif);
 }
 .gika-panel[open] { display: flex; flex-direction: column; }
 .gika-panel::backdrop { background: #101a162e; }
-.gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 8px; }
+.gika-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 14px; border-bottom: 1px solid var(--glass-border); }
 .gika-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .gika-identity-mark { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; color: var(--color-action-primary); background: var(--color-accent-soft); border-radius: 15px; }
 .gika-character, .gika-nav-avatar { position: relative; display: block; width: 56px; height: 56px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-border); }
@@ -38,58 +38,74 @@
 .gika-close:hover { background: var(--color-accent-soft); color: var(--color-text); }
 .gika-demo-notice { flex-shrink: 0; margin: 0 22px; padding: 2px 0 8px; border: 0; font-size: .7rem; line-height: 1.5; color: var(--color-text-muted); }
 .gika-transcript { position: relative; flex: 1; min-height: 0; }
-.gika-content { position: relative; height: 100%; min-height: 0; overflow-y: auto; padding: 24px 22px; overscroll-behavior: contain; scrollbar-gutter: stable; container-type: size; }
+.gika-content { position: relative; height: 100%; min-height: 0; overflow-y: auto; padding: 22px; overscroll-behavior: contain; scrollbar-gutter: stable; container-type: size; }
 .gika-latest { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); min-height: 44px; max-width: calc(100% - 24px); padding: 8px 16px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); font: inherit; font-size: .85rem; box-shadow: 0 2px 8px #101a161a; }
 .gika-content.is-empty { display: flex; flex-direction: column; }
-.gika-welcome { width: 100%; margin: clamp(8px, 4dvh, 28px) 0 0; padding: 0; text-align: center; }
-.gika-welcome-mark { display: inline-grid; place-items: center; width: 135px; height: 133px; }
+.gika-welcome { width: 100%; flex-shrink: 0; margin-block: auto; padding: 8px 0; text-align: center; }
+.gika-welcome-mark { display: inline-grid; place-items: center; width: 112px; height: 112px; }
 .gika-welcome-mark .gika-character { width: 100%; height: 100%; }
-.gika-welcome h3 { margin: 12px 0 8px; font-family: Nunito, sans-serif; font-size: 1.45rem; font-weight: 800; line-height: 1.25; }
+.gika-welcome h3 { margin: 16px 0 8px; font-family: Nunito, sans-serif; font-size: 1.45rem; font-weight: 800; line-height: 1.25; }
 .gika-welcome p { margin: 0; color: var(--color-text-muted); line-height: 1.5; font-size: .875rem; }
 .gika-suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 18px 0 0; }
-.gika-suggestions button { display: flex; align-items: center; gap: 8px; min-height: 52px; min-width: 0; padding: 10px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); color: var(--color-text); font-size: .8rem; text-align: left; line-height: 1.4; }
+.gika-suggestions button { display: flex; justify-content: flex-start; align-items: center; gap: 10px; min-height: 52px; min-width: 0; padding: 10px 12px; border: 1px solid var(--glass-border); border-radius: 12px; background: color-mix(in srgb, var(--color-solid) 95%, var(--color-action-primary)); color: var(--color-text); font-size: .85rem; text-align: left; line-height: 1.4; box-shadow: none; }
 .gika-suggestions button svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--color-action-primary); }
 .gika-suggestions button:hover { background: var(--color-accent-soft); }
-.gika-messages { display: grid; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.gika-messages { display: grid; gap: 22px; margin: 0; padding: 0; list-style: none; }
 .gika-messages:empty { display: none; }
 .gika-message { min-width: 0; }
 .gika-message.is-user { justify-self: end; max-width: 88%; padding: 12px 16px; border-radius: 18px 18px 5px 18px; background: var(--color-accent-soft); }
 .gika-message.is-assistant { padding: 0 2px; }
 .gika-message-author { display: flex; align-items: center; gap: 6px; font-size: .75rem; font-weight: 700; color: var(--color-text-muted); }
 .gika-message-author svg { width: 18px; height: 18px; color: var(--color-action-primary); }
-.gika-message p { margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.65; font-size: .9rem; }
+.gika-message p { margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.65; font-size: .95rem; }
+.gika-message.is-user + .gika-message.is-user, .gika-message.is-assistant + .gika-message.is-assistant { margin-top: -10px; }
+.gika-message.is-user + .gika-message.is-user > .gika-message-author, .gika-message.is-assistant + .gika-message.is-assistant > .gika-message-author { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .gika-loading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 24px; color: var(--color-text-muted); font-size: .8rem; line-height: 1.5; }
 .gika-loading svg { color: var(--color-action-primary); }
 .gika-loading-dots { font-size: 1.5rem; letter-spacing: 2px; }
-.gika-composer { position: relative; flex-shrink: 0; padding: 8px 18px 12px; background: var(--color-solid); }
+.gika-composer { position: relative; flex-shrink: 0; padding: 12px 18px; background: var(--color-solid); border-top: 1px solid var(--glass-border); }
 .gika-composer-field { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px; padding: 4px; border: 1px solid var(--color-border); border-radius: 22px; background: color-mix(in srgb, var(--color-solid) 97%, var(--color-accent-soft)); box-shadow: none; }
 .gika-composer-field:focus-within { border-color: var(--color-action-primary); }
-.gika-panel .gika-composer textarea { flex: 1; min-width: min(100%, 12em); width: 100%; min-height: calc(1.5em + 20px); max-height: 132px; resize: none; overflow-y: auto; padding: 10px 6px 10px 10px; border: 0; border-radius: 14px; color: var(--color-text); background: transparent; font-family: inherit; font-size: 1rem; line-height: 1.5; }
+.gika-panel .gika-composer .gika-composer-field textarea { flex: 1; min-width: min(100%, 12em); width: 100%; min-height: calc(1.5em + 20px); max-height: 132px; resize: none; overflow-y: auto; padding: 10px 6px 10px 10px; border: 0; border-radius: 14px; color: var(--color-text); background: transparent; font-family: inherit; font-size: 1rem; line-height: 1.5; }
 .gika-panel .gika-composer textarea:is(:focus, :focus-visible) { outline: none; box-shadow: none; }
 .gika-composer-field:has(textarea:focus-visible) { outline: 2px solid var(--color-action-primary); outline-offset: 2px; }
 .gika-composer textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
 .gika-composer-actions { display: flex; gap: 2px; flex-shrink: 0; margin-left: auto; }
 .gika-panel .gika-composer-actions button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; }
 .gika-panel .gika-voice { color: var(--color-text-muted); background: transparent; }
-.gika-panel :is(.gika-send, .gika-stop) { color: var(--color-text); background: var(--color-accent-soft); }
-.gika-send:not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--color-action-primary); }
+.gika-panel .gika-send { color: var(--color-action-foreground, white); background: var(--color-action-primary); }
+.gika-panel .gika-send:not(:disabled):hover { background: var(--color-action-hover); box-shadow: none; }
+.gika-panel .gika-send:disabled { color: var(--color-text-muted); background: var(--color-accent-soft); }
+.gika-panel .gika-stop { color: var(--color-text); background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-border); }
 .gika-composer-hint, .gika-voice-hint { display: block; margin: 6px 8px 0; color: var(--color-text-muted); font-size: .65rem; text-align: center; line-height: 1.5; }
 .gika-voice-hint:empty { display: none; }
 .gika-voice-feedback { display: flex; justify-content: center; align-items: baseline; gap: 8px; }
 .gika-voice-time { flex-shrink: 0; color: var(--color-text-muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
 .gika-voice-preview { max-height: 4.5em; margin: 8px 8px 0; padding: 8px; overflow-y: auto; overflow-wrap: anywhere; border: 1px solid var(--color-border); border-radius: 10px; color: var(--color-text); background: var(--color-solid); font-size: .85rem; line-height: 1.5; }
 .gika-feedback { margin: 0 0 12px; font-size: .8rem; line-height: 1.5; color: var(--color-text-muted); }
-.gika-feedback.is-error { margin: 24px 0 0; padding: 14px; border: 1px solid var(--color-border); border-radius: 16px; }
+.gika-feedback.is-error { margin: 22px 0 0; padding: 16px; border: 1px solid color-mix(in srgb, var(--color-danger) 60%, var(--color-border)); border-radius: 14px; background: color-mix(in srgb, var(--color-danger) 5%, var(--color-solid)); color: var(--color-text); }
+.gika-feedback-title { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: .9rem; color: var(--color-text); }
+.gika-feedback-title svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--color-danger); }
+.gika-feedback.is-offline { padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-accent-soft); }
+.gika-feedback.is-offline .gika-feedback-title svg { color: var(--color-text-muted); }
 .gika-feedback p { margin: 0 0 8px; }
 .gika-panel :is(.gika-feedback, .gika-card-actions, .gika-undo) button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-solid); color: var(--color-text); font-size: .8rem; }
 .gika-panel button:disabled { opacity: .55; cursor: not-allowed; }
 .gika-panel .visually-hidden { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: -1px; }
 .gika-demo-preview { display: grid; gap: 12px; margin-top: 16px; }
-.gika-result, .gika-confirmation, .gika-undo { padding: 14px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-solid); font-size: .85rem; }
+.gika-result { margin-top: 14px; padding: 14px 0 0; border-top: 1px solid var(--color-border); font-size: .9rem; }
+.gika-confirmation, .gika-undo { margin-top: 16px; padding: 16px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-solid); font-size: .9rem; }
+.gika-confirmation { border-color: color-mix(in srgb, var(--color-action-primary) 55%, var(--color-border)); }
+.gika-result > ul:not(.gika-batch-items) { display: grid; gap: 0; padding: 0; margin: 12px 0 0; list-style: none; }
+.gika-result > ul:not(.gika-batch-items) > li { display: grid; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
+.gika-result > ul > li > span { color: var(--color-text-muted); font-size: .82rem; line-height: 1.5; }
+.gika-panel .gika-result .gika-result-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; padding: 0; color: var(--color-action-primary); background: transparent; font-size: .9rem; text-decoration: underline; text-underline-offset: 4px; }
+.gika-result-link > svg { width: 16px; height: 16px; flex-shrink: 0; }
 .gika-card-title { display: flex; align-items: center; gap: 8px; }
 .gika-demo-preview ul { margin: 10px 0 0; padding-left: 20px; line-height: 1.8; }
 .gika-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.gika-card-actions button:last-child { background: var(--color-accent-soft); }
+.gika-panel .gika-card-actions .gika-confirm-action { color: var(--color-action-foreground, white); background: var(--color-action-primary); border-color: var(--color-action-primary); }
+.gika-panel .gika-card-actions .gika-confirm-action:hover:not(:disabled) { background: var(--color-action-hover); border-color: var(--color-action-hover); }
 .gika-undo p { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 8px; }
 .gika-undo svg { flex-shrink: 0; }
 .gika-undo button { display: inline-flex; align-items: center; gap: 6px; }
@@ -104,22 +120,20 @@
   .gika-character { width: 48px; height: 48px; }
   .gika-demo-notice { margin: 0 18px; }
   .gika-content { padding-top: 16px; padding-bottom: 16px; }
-  .gika-welcome { margin-top: clamp(8px, 3dvh, 24px); }
-  .gika-welcome-mark { width: 128px; height: 126px; }
+  .gika-welcome-mark { width: 112px; height: 112px; }
   .gika-welcome h3 { font-size: 1.25rem; margin: 14px 0 6px; }
-  .gika-welcome p { font-size: .8rem; }
+  .gika-welcome p { font-size: .875rem; }
   .gika-suggestions { margin-top: 18px; }
   .gika-composer { padding-right: max(14px, env(safe-area-inset-right)); padding-left: max(14px, env(safe-area-inset-left)); padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   .gika-content { padding-right: max(18px, env(safe-area-inset-right)); padding-left: max(18px, env(safe-area-inset-left)); }
 }
 @media (max-width: 400px) {
   .gika-composer-hint { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); }
-  .gika-suggestions { grid-template-columns: 1fr; gap: 6px; margin-top: 20px; }
+  .gika-suggestions { grid-template-columns: 1fr; gap: 8px; margin-top: 20px; }
   .gika-suggestions button { min-height: 44px; }
 }
 /* Keep reading/actions ahead of decoration when available space is small in text units. */
 @container (max-height: 24rem) {
-  .gika-welcome { margin-top: 8px; }
   .gika-welcome-mark { width: 56px; height: 56px; }
   .gika-welcome h3 { margin-top: 8px; }
 }
@@ -143,3 +157,15 @@
 .gika-batch-items li { overflow-wrap: anywhere; }
 .gika-batch-items li > strong, .gika-batch-items li > span { display: block; }
 .gika-batch-items li > span { margin-top: .15rem; }
+
+@media (forced-colors: active) {
+  .gika-panel, .gika-composer { color: CanvasText; background: Canvas; }
+  .gika-kicker, .gika-welcome p, .gika-message-author, .gika-composer-hint, .gika-voice-hint, .gika-feedback { color: CanvasText; }
+  .gika-suggestions button { color: ButtonText; background: ButtonFace; border-color: ButtonBorder; }
+  .gika-suggestions button svg { color: ButtonText; }
+  .gika-panel .gika-composer .gika-composer-field textarea { color: CanvasText; background: Canvas; }
+  .gika-panel .gika-composer .gika-composer-field textarea::placeholder { color: GrayText; }
+  .gika-panel .gika-composer-actions :is(.gika-send, .gika-stop), .gika-panel .gika-card-actions .gika-confirm-action { color: ButtonText; background: ButtonFace; border: 1px solid ButtonBorder; }
+  .gika-panel .gika-result .gika-result-link { color: LinkText; }
+  .gika-feedback-title svg { color: CanvasText; }
+}

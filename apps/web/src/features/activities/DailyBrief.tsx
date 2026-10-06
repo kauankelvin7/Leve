@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Activity, Note, ShoppingItem } from '../../../../../packages/domain/src/content';
 import { Icon } from '../../components/ui/Icon';
 import { buildDailyBrief } from './buildDailyBrief';
+import styles from './DailyBrief.module.css';
 
 type StoredActivity = Activity & { id: string };
 type StoredNote = Note & { id: string };
@@ -47,10 +48,10 @@ export function DailyBrief({ selectedDay, today, activities, notes, shoppingItem
   }
 
   const total = brief.counts.pending + brief.counts.notes + brief.counts.shopping;
-  return <section className="panel daily-brief" aria-labelledby="daily-brief-title">
-    <div className="daily-brief-heading"><span className="daily-brief-icon"><Icon name="volume" /></span><div><p className="eyebrow">Resumo do dia</p><h2 id="daily-brief-title">Ouça sua agenda</h2></div><span className="count-badge">{total} {total === 1 ? 'ponto' : 'pontos'}</span></div>
-    <p className="daily-brief-text">{brief.visual}</p>
-    <div className="daily-brief-actions"><button type="button" className="primary" disabled={!supported} onClick={toggleSpeech}><Icon name={speaking ? 'stop' : 'volume'} />{speaking ? 'Parar áudio' : 'Ouvir resumo'}</button>{!supported ? <small>Áudio indisponível.</small> : null}</div>
+  return <section className={`panel ${styles.brief}`} aria-labelledby="daily-brief-title">
+    <div className={styles.heading}><span className={styles.icon}><Icon name="volume" /></span><div><h2 id="daily-brief-title">Resumo em áudio</h2><p>{total} {total === 1 ? 'item no resumo' : 'itens no resumo'}</p></div><button type="button" disabled={!supported} onClick={toggleSpeech}><Icon name={speaking ? 'stop' : 'play'} />{speaking ? 'Parar áudio' : 'Ouvir resumo'}</button></div>
+    {!supported && <p className="muted">Áudio indisponível neste navegador. Você pode ler o resumo abaixo.</p>}
+    <details className={styles.transcript}><summary>Ler resumo<Icon name="chevronDown" /></summary><p>{brief.visual}</p></details>
     <span className="visually-hidden" aria-live="polite">{speaking ? 'Reproduzindo o resumo do dia.' : ''}</span>
   </section>;
 }

@@ -68,12 +68,12 @@ function Shell() {
     ['/hoje', 'day', 'Meu dia'], ['/calendario', 'calendar', 'Calendário'],
     ['/notas', 'note', 'Notas'], ['/compras', 'basket', 'Compras'],
   ] as const;
-  const shellClasses = ['app-shell', session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
+  const shellClasses = ['app-shell', styles.shell, session?.profile?.reduceTransparency ? 'solid' : '', session?.profile?.reduceMotion ? 'reduce-motion' : '', session?.profile?.highContrast ? 'high-contrast' : ''].filter(Boolean).join(' ');
   return <div className={shellClasses}>
     <a className="skip-link" href="#main-content">Ir para o conteúdo</a>
-    <aside className="sidebar glass"><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
+    <aside className={`sidebar glass ${styles.sidebar}`}><Link className="brand" to="/hoje">leve<span>.</span></Link><p className="brand-caption">Sua agenda pessoal</p>
       <nav className={styles.primaryNavigation} aria-label="Principal">{links.map(([to, icon, label]) => <NavLink key={to} to={to} aria-label={label} title={label}><Icon name={icon} /><span className="nav-label">{label}</span></NavLink>)}<GikaLauncher key={session?.uid} /></nav>
-      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className="profile-link" to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small style={{ color: 'var(--ink-surface)' }}>Conta e preferências</small></span></NavLink></div>
+      <div className="sidebar-bottom"><NavLink to="/buscar"><Icon name="search" />Buscar</NavLink><NavLink className={`profile-link ${styles.profile}`} to="/configuracoes" aria-label="Perfil e preferências"><Avatar className="profile-avatar" name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /><span><strong>{session?.profile?.displayName || 'Seu perfil'}</strong><small>Preferências</small></span></NavLink></div>
     </aside>
     <div className="main-wrapper" id="main-content" tabIndex={-1}>
       <header className={`workspace-bar ${styles.workspaceBar}`}>
@@ -82,14 +82,18 @@ function Shell() {
         <div className="workspace-actions">
           <NavLink className={styles.mobileAction} to="/buscar" aria-label="Buscar"><Icon name="search" /></NavLink>
           <SecondaryNavigation />
-          <Link className="quick-add" to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /></Link>
+          <Link className={`quick-add ${styles.quickAdd}`} to="/hoje?nova=1" aria-label="Adicionar atividade" title="Adicionar atividade"><Icon name="plus" /></Link>
           <NavLink className={`${styles.mobileAction} ${styles.mobileProfile}`} to="/configuracoes" aria-label="Perfil e preferências"><Avatar name={session?.profile?.displayName ?? 'Leve'} seed={session?.profile?.avatarSeed} decorative /></NavLink>
           <span className="workspace-private">Agenda pessoal</span>
         </div>
       </header>
       <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
       <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
-      <footer className="page-footer"><span>Leve · sua agenda privada</span><nav className={styles.legalFooter} aria-label="Informações legais"><Link to="/privacidade">Privacidade</Link><Link to="/termos">Termos</Link></nav><button className="text-button" onClick={() => void logout()}>Sair</button></footer>
+      <footer className={`page-footer ${styles.footer}`}>
+        <div className={styles.footerIdentity}><span className={styles.footerBrand}>leve<span>.</span></span><span>Sua agenda privada</span></div>
+        <nav className={styles.legalFooter} aria-label="Informações legais"><Link to="/privacidade">Privacidade</Link><Link to="/termos">Termos</Link></nav>
+        <button className={`text-button ${styles.logout}`} onClick={() => void logout()}>Sair</button>
+      </footer>
     </div>
   </div>;
 }

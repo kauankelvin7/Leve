@@ -84,7 +84,7 @@ function applyDarkPalette(colorTheme: ColorTheme) {
   );
   root.style.setProperty(
     '--ink-surface',
-    `color-mix(in srgb, ${palette.accent} 28%, ${palette.canvas})`,
+    `color-mix(in srgb, ${palette.accent} 14%, ${palette.canvas})`,
     'important',
   );
 }

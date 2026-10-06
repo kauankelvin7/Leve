@@ -110,7 +110,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
     return () => { viewport?.removeEventListener('resize', update); viewport?.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, []);
 
-  return <CharacterEvents.Provider value={notifyCharacter}><dialog ref={dialog} id="gika-dialog" className="gika-panel glass glass-strong" aria-labelledby="gika-title" aria-describedby="gika-demo-notice"
+  return <CharacterEvents.Provider value={notifyCharacter}><dialog ref={dialog} id="gika-dialog" className="gika-panel glass glass-strong" aria-labelledby="gika-title" aria-describedby={demo || organizationNotice ? 'gika-demo-notice' : undefined}
     onCancel={event => { event.preventDefault(); close(); }}
     onKeyDown={event => {
       if (event.key !== 'Tab') return;
@@ -124,7 +124,7 @@ export function GikaPanel({ open, onClose, adapter = gikaAdapter, demo = simulat
       <div className="gika-identity">{messages.length ? character : <span className="gika-identity-mark"><GikaMark /></span>}<div><h2 id="gika-title">Gika</h2><p className="gika-kicker">Sua assistente de agenda</p></div></div>
       <button type="button" className="gika-close" aria-label="Fechar Gika" onClick={close}><Icon name="close" /></button>
     </header>
-    <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : organizationNotice ?? 'Converse sobre sua agenda ou peça ajuda para organizar o dia.'}</p>
+    {(demo || organizationNotice) && <p className="gika-demo-notice" id="gika-demo-notice">{demo ? 'Demonstração · as respostas são simuladas. Sua agenda não muda.' : organizationNotice}</p>}
     <div className="gika-transcript"><div className={`gika-content${messages.length === 0 ? ' is-empty' : ''}`} ref={transcript} role="region" aria-label="Conversa com Gika" tabIndex={0} onScroll={event => {
       const element = event.currentTarget;
       followTail.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 48;

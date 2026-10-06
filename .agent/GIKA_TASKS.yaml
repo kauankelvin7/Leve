@@ -469,3 +469,24 @@ assistant_experience:
   gates: "Shopping final local: audit0/lint/typecheck/build/802unit/320integration PASS; ampla Gika123PASS0FAIL33.8min inclui fluxos críticos, sete shopping UI, voz, HMAC, Axe e reflow; Glass check/selftest PASS. Primeiras falhas preservadas, timing/guardas intactos."
   blocker: "Gemini real NOT_RUN; usuário assumiu validação posterior. Preview protegido não bloqueia conclusão dos gates locais."
   next_action: "Usuário valida Gemini real no Preview da branch isolada; 61 evals reais e ações/HMAC ainda pendentes. Não integrar main/produção nesta entrega."
+
+presentation_polish:
+  entry_checkpoint: "e3909468f4f4c398ce2dca20f7d0d66d1cfc772e"
+  branch: refine/visual-hierarchy-components
+  status: done
+  owner: root
+  scope: "Hierarquia do Meu dia, navegação, controles, apresentação da Gika, sidebar/footer e correções de reflow/foco do calendário."
+  authorization: "Pedido posterior autoriza executar as etapas estéticas e integrar main após revisão/testes."
+  plan: .agent/VISUAL_POLISH_EXECPLAN.md
+  evidence: docs/frontend/VISUAL_POLISH_REPORT.md
+  acceptance_criteria:
+    - "Tarefas antes do áudio; apoio proporcional e mobile sem transbordamento."
+    - "Navegação alinhada, 44 px nas ações e foco/contraste preservados."
+    - "Sidebar proporcional e footer acessível em janela baixa e texto a 200%."
+    - "Datas inteiras a 200%; calendário móvel modal, com Escape e retorno do foco."
+    - "Gika com leitura/execução explícitas, sem alterar contratos ou personagem."
+    - "Gates, referências inspecionadas e checkpoint atômico."
+  gates: "Audit0/lint/build/802unit/320integration/8 críticos/5 novos E2E PASS; final34/34 sem atualizar referências, material20/reflow e compilado17 PASS. Primeira ampla85/88 e correções registradas."
+  checkpoint: "refine(ui): improve agenda hierarchy, sidebar and footer"
+  publication: authorized_after_remote_checks
+  next_action: "Consultar PR desta branch e checks do HEAD; integrar após CI/Planner/Seasonal e confirmar deployment. Etapas visuais concluídas; avaliação do provider real permanece no escopo histórico."

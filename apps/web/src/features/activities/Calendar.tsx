@@ -31,6 +31,7 @@ import { moveTimedActivity, resizeTimedActivity } from './calendar/calendarMutat
 import { buildCalendarUpdateCommand, type CalendarMutationScope } from './calendar/calendarCommandModel';
 import { RecurrenceScopeDialog } from './calendar/RecurrenceScopeDialog';
 import { PageHeader } from '../../components/ui/PageHeader';
+import { CalendarDaySheet } from './CalendarDaySheet';
 import styles from './Calendar.module.css';
 
 type PendingCalendarMutation = {
@@ -328,10 +329,10 @@ export function Calendar() {
       {partial ? <p role="status" className="muted">Mostrando parte das atividades.</p> : null}
     </section>}
 
-    {view === 'month' ? <>{sheetOpen ? <button className={styles.sheetBackdrop} aria-label="Fechar atividades do dia" onClick={() => setSheetOpen(false)} /> : null}<section className={`calendar-agenda glass glass-strong${sheetOpen ? ' open' : ''}`} aria-labelledby="selected-date"><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className={styles.sheetActions}><span className="count-badge">{selectedItems.length} atividades</span><button className={styles.sheetClose} aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
+    {view === 'month' ? <CalendarDaySheet open={sheetOpen} onClose={() => setSheetOpen(false)}><div className="section-heading"><h2 id="selected-date">{Temporal.PlainDate.from(selected).toLocaleString('pt-BR', { day: 'numeric', month: 'long' })}</h2><div className={styles.sheetActions}><span className="count-badge">{selectedItems.length} {selectedItems.length === 1 ? 'atividade' : 'atividades'}</span><button className={styles.sheetClose} aria-label="Fechar" onClick={() => setSheetOpen(false)}><Icon name="close" /></button></div></div>
       {loading ? <p role="status">Carregando o mês…</p> : error ? <LoadError message={error} retry={activityQuery.retry} /> : selectedItems.length ? <ol className="calendar-list">{selectedItems.map(item => <li key={item.id} className={item.status === 'completed' ? 'is-completed' : undefined} style={{ borderLeft: `5px solid ${colorOf(item)}` }}><Link to={`/atividade/${item.id}`}><span className="calendar-item-title"><strong>{item.title}</strong>{item.status === 'completed' ? <span className="activity-completion-badge"><Icon name="check" />Concluído</span> : null}</span><small>{resolveActivityLabel(item, categories.items)} · {item.kind === 'event' ? 'Compromisso' : 'Tarefa'}</small></Link></li>)}</ol> : <div className="empty"><p>Nenhuma atividade neste dia{category ? ' nesta categoria' : ''}.</p><Link className="text-link" to={`/hoje?dia=${selected}&nova=1`}>Adicionar atividade</Link></div>}
       <Link className={`button primary ${styles.add}`} to={`/hoje?dia=${selected}&nova=1`}><Icon name="plus" />Adicionar neste dia</Link>{partial && <p role="status" className="muted">Mostrando parte das atividades.</p>}{categories.error && <p role="status">{categories.error}</p>}
-    </section></> : categories.error ? <p role="status">{categories.error}</p> : null}
+    </CalendarDaySheet> : categories.error ? <p role="status">{categories.error}</p> : null}
 
     <RecurrenceScopeDialog
       open={Boolean(pendingMutation)}

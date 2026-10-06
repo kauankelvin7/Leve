@@ -82,7 +82,7 @@ export function GikaBatch({ confirmation, context, active, online = true, supers
     <p ref={feedback} tabIndex={-1} role="status" aria-live="polite">{text}</p>
     {(state === 'awaiting_confirmation' || state === 'confirming' || (['partial', 'failed'].includes(state) && retryAllowed)) && <div className="gika-card-actions">
       {state === 'awaiting_confirmation' && <button type="button" disabled={!active} onClick={cancel}>Cancelar</button>}
-      <button type="button" disabled={!executable || state === 'confirming'} onClick={() => void confirm()}>{state === 'confirming' ? 'Aplicando…' : state === 'awaiting_confirmation' ? `${organization ? 'Reorganizar' : verb} ${count} ${noun}` : 'Retomar tarefas'}</button>
+      <button className="gika-confirm-action" type="button" disabled={!executable || state === 'confirming'} onClick={() => void confirm()}>{state === 'confirming' ? 'Aplicando…' : state === 'awaiting_confirmation' ? `${organization ? 'Reorganizar' : verb} ${count} ${noun}` : 'Retomar tarefas'}</button>
     </div>}
   </section>;
 }

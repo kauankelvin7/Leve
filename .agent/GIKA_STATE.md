@@ -1,4 +1,33 @@
-## Retomada vigente — experiência da assistente e listas de compras
+## Retomada vigente — refinamento visual, 06/10/2026
+
+Pedido posterior autoriza executar as etapas do relatório estético, revisar/testar
+e integrar na main. Entrada `e3909468f4f4c398ce2dca20f7d0d66d1cfc772e`;
+branch `refine/visual-hierarchy-components`. Esta autorização substitui a restrição
+histórica de publicação para a entrega visual atual. Não reabre milestones nem
+declara concluída a avaliação do provider real.
+
+Meu dia, navegação, controles e apresentação da Gika implementados. Personagem,
+voz, contratos de comandos, ACK, confirmação, recorrência, batch e desfazer
+preservados. Pedido adicional de sidebar/footer atendido com altura natural do
+painel, perfil próximo dos atalhos, rodapé agrupado e espaço inferior que acompanha
+texto ampliado. ExecPlan: `.agent/VISUAL_POLISH_EXECPLAN.md`; evidência:
+`docs/frontend/VISUAL_POLISH_REPORT.md`. Executor único após limite de uso dos
+auditores paralelos, sem edição concorrente de arquivos.
+
+Datas da semana inteiras a 200%, com rolagem interna quando necessária. Calendário
+móvel usa dialog nativo: fundo inativo, Escape, backdrop, restauração de foco,
+resize para seção desktop e CTA convencional validados. Queries e ações preservadas.
+
+Lint/build, 802 unitários, 320 integração, oito críticos e gate novo5/5 PASS. Onze paletas em
+claro/escuro com Axe, quatro viewports, filtros, rascunhos, erro/offline, texto a
+200%, modo sólido, contraste maior e cores forçadas verificados. Comparação final
+34/34 PASS sem atualizar referências; Planner13, sazonais7 e demais telas incluídos.
+Reflow e material/contraste20 PASS; compilado17/17 PASS. Primeira ampla85/88 e suas
+correções preservadas na evidência. Etapas visuais concluídas. Checkpoint atômico:
+`refine(ui): improve agenda hierarchy, sidebar and footer`. Estado de publicação
+é o PR desta branch; integrar após checks do HEAD e confirmar deployment da main.
+
+## Retomada histórica — experiência da assistente e listas de compras
 
 Pedido atual autoriza concluir a lógica e validar localmente sem depender de Preview;
 o usuário fará a avaliação de Gemini real depois. Branch `feat/gika-assistant-experience`,

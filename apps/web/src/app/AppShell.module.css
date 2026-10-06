@@ -2,20 +2,36 @@
   position: relative;
 }
 
-.legalFooter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
+:global(.app-shell) .footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+  gap: 4px 16px;
+  margin-top: 32px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--editorial-line);
+  color: var(--color-text-muted);
+  font-size: .8125rem;
 }
 
-.legalFooter a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-secondary, var(--color-text-muted));
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+.footerIdentity { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; min-width: 0; }
+.footerBrand { color: var(--color-text); font: 800 1.4rem/1.2 'Nunito', 'DM Sans', sans-serif; }
+.footerBrand > span { color: var(--color-action-primary); }
+.legalFooter { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-left: -8px; }
+.legalFooter a, :global(.page-footer) .logout {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px;
+  padding: 8px; border: 1px solid transparent; border-radius: 8px; background: transparent;
+  color: var(--color-text-muted); font: 500 .8125rem/1.4 'DM Sans', sans-serif;
+  text-decoration: none; text-underline-offset: 4px; box-shadow: none;
+}
+.legalFooter a:hover, :global(.page-footer) .logout:hover { background: var(--color-accent-soft); color: var(--color-text); text-decoration: underline; }
+.legalFooter a:focus-visible, :global(.page-footer) .logout:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+:global(.page-footer) .logout { justify-self: end; }
+
+@media (min-width: 1120px) {
+  :global(.app-shell) .footer { grid-template-columns: minmax(0, 1fr) auto auto; gap: 16px; }
+  .footerIdentity { grid-column: auto; }
+  .legalFooter { margin-left: 0; }
 }
 
 .secondaryNavigation summary {
@@ -40,6 +56,17 @@
 .secondaryNavigation summary:hover {
   background: color-mix(in srgb, var(--action-primary) 9%, transparent);
 }
+
+.secondaryNavigation summary > svg { width: 14px; height: 14px; flex-shrink: 0; }
+.secondaryNavigation[open] summary, .secondaryNavigation[data-current] summary { background: var(--color-accent-soft); color: var(--color-action-primary); }
+.secondaryNavigation[open] summary > svg { rotate: 180deg; }
+
+:global(.workspace-bar) .quickAdd {
+  width: 44px; height: 44px; min-height: 44px;
+  border-radius: 12px; border: 1px solid var(--border-subtle);
+  background: transparent; color: var(--text-primary); box-shadow: none;
+}
+:global(.workspace-bar) .quickAdd:hover { background: var(--color-accent-soft); border-color: var(--color-action-primary); }
 
 .secondaryNavigation summary:focus-visible {
   outline: 2px solid var(--focus-ring);
@@ -87,6 +114,52 @@
 
 .mobileAction { display: none; }
 
+@media (min-width: 740px) {
+  :global(.app-shell) .sidebar {
+    background: var(--ink-surface); color: #fffdf8; border: 1px solid #ffffff14; border-radius: 18px;
+    backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none;
+    align-self: start; top: clamp(20px, 2.2vw, 48px); height: auto;
+    max-height: calc(100dvh - clamp(40px, 4.4vw, 96px));
+    overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; padding: 20px 12px 12px;
+  }
+  :global(.app-shell) .sidebar :global(.brand), :global(.app-shell) .sidebar :global(.brand span), :global(.app-shell) .sidebar :global(.brand-caption) { color: inherit; }
+  :global(.app-shell) .sidebar > :global(.brand) { margin-left: 10px; font-size: 2.65rem; }
+  :global(.app-shell) .sidebar :global(.brand-caption) { margin: 6px 10px 20px; font-size: .75rem; font-weight: 500; }
+  .sidebar > * { flex-shrink: 0; }
+  .sidebar .primaryNavigation { gap: 4px; }
+  .sidebar .primaryNavigation > :is(a, button), .sidebar :global(.sidebar-bottom) > a:not(.profile) {
+    display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; justify-content: start;
+    min-height: 48px; gap: 12px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px;
+    color: inherit; background: transparent; box-shadow: none; font: 500 .9rem/1.4 'DM Sans', sans-serif; text-decoration: none; text-align: left;
+  }
+  .sidebar .primaryNavigation > :is(a, button) > svg, .sidebar :global(.sidebar-bottom) > a > svg { width: 20px; height: 20px; justify-self: center; transform: none; }
+  .sidebar .primaryNavigation :global(.gika-nav-avatar) { width: 32px; height: 32px; }
+  .sidebar .primaryNavigation > :is(a, button):hover, .sidebar :global(.sidebar-bottom) > a:not(.profile):hover { background: #ffffff12; box-shadow: none; color: inherit; }
+  .sidebar .primaryNavigation > :is(a, button):is(:global(.active), [aria-expanded='true']), .sidebar :global(.sidebar-bottom) > a:global(.active) { background: #fffdf8; color: var(--ink-surface); font-weight: 700; box-shadow: none; }
+  .sidebar .primaryNavigation > :is(a, button):focus-visible, .sidebar :global(.sidebar-bottom) > a:focus-visible { outline: 2px solid #fffdf8; outline-offset: 3px; }
+  .sidebar :global(.sidebar-bottom) { margin-top: 12px; gap: 4px; padding-top: 10px; border-top: 1px solid #ffffff24; }
+  .sidebar .profile { min-height: 58px; gap: 10px; padding: 10px; margin-top: 0; border: 1px solid #ffffff20; border-radius: 12px; background: #ffffff08; color: inherit; }
+  .sidebar .profile:hover { background: #ffffff12; color: inherit; transform: none; }
+  .sidebar .profile strong { font-size: .85rem; color: inherit; }
+  .sidebar .profile small { font-size: .75rem; color: inherit; opacity: .8; }
+  .sidebar .profile :global(.profile-avatar) { width: 36px; height: 36px; flex: 0 0 auto; box-shadow: none; }
+  :global(.app-shell.high-contrast) .sidebar .primaryNavigation > :is(a, button):focus-visible,
+  :global(.app-shell.high-contrast) .sidebar :global(.sidebar-bottom) > a:focus-visible { outline: 3px solid #fffdf8; outline-offset: 3px; }
+}
+
+@media (min-width: 960px) {
+  :global(.app-shell).shell { grid-template-columns: clamp(200px, 15vw, 224px) minmax(0, 1fr); gap: clamp(24px, 2.4vw, 40px); }
+}
+
+@media (min-width: 740px) and (max-width: 959px) {
+  :global(.app-shell) .sidebar { top: 16px; max-height: calc(100dvh - 32px); padding-inline: 8px; }
+  :global(.app-shell) .sidebar > :global(.brand) { margin-inline: auto; font-size: 2rem; }
+  .sidebar .primaryNavigation > :is(a, button), .sidebar :global(.sidebar-bottom) > a:not(.profile) { display: flex; justify-content: center; padding-inline: 0; }
+  .sidebar :global(.brand-caption), .sidebar :global(.nav-label), .sidebar .profile > span:not(:global(.profile-avatar)) { display: none; }
+  .sidebar :global(.sidebar-bottom) > a:not(.profile) { font-size: 0; }
+  .sidebar .profile { justify-content: center; padding-inline: 4px; }
+}
+
 :global(.workspace-bar) .secondaryNavigation nav a:hover {
   background: color-mix(in srgb, var(--action-primary) 9%, transparent);
 }
@@ -102,6 +175,8 @@
 }
 
 @media (max-width: 739px) {
+  :global(.app-shell).shell { padding-bottom: calc(5rem + 32px + env(safe-area-inset-bottom)); }
+  .footer { scroll-margin-bottom: calc(5rem + 32px + env(safe-area-inset-bottom)); }
   :global(.app-shell) .workspaceBar {
     position: relative;
     min-height: 52px;
@@ -157,13 +232,13 @@
   }
   :global(.app-shell .sidebar) .primaryNavigation :global(.nav-label) {
     display: block;
-    font-size: .65rem;
+    font-size: .72rem;
     line-height: 1.2;
     font-weight: 600;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    text-align: center;
   }
   :global(.app-shell .sidebar) .primaryNavigation a:global(.active)::after { display: none; }
   :global(.app-shell .sidebar) .primaryNavigation :global(.gika-nav-avatar) { width: 28px; height: 28px; }
