@@ -22,12 +22,25 @@ test('production isolation and PWA assets', async ({ page, request }) => {
   expect(manifest.start_url).toBeTruthy();
 });
 
-test('production service worker caches shell and permits offline reload',async({page,context})=>{
-  await page.goto('/entrar'); await expect(page.getByLabel('E-mail')).toBeVisible();
-  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
-  await page.reload(); await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
-  const cached = await page.evaluate(async()=>{const names=await caches.keys();return (await Promise.all(names.map(async name=>(await (await caches.open(name)).keys()).length))).reduce((a,b)=>a+b,0);});
-  expect(cached).toBeGreaterThan(0); await context.setOffline(true);
-  try { await page.reload(); await expect(page.getByLabel('E-mail')).toBeVisible(); expect(await page.locator('link[rel="stylesheet"]').count()).toBeGreaterThan(0); }
-  finally { await context.setOffline(false); }
+test('production service worker precaches modules for an offline reload', async ({ page, context }) => {
+  await page.goto('/entrar');
+  await expect(page.getByLabel('E-mail')).toBeVisible();
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await page.reload();
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  const cachedAssets = await page.evaluate(async () => {
+    const names = await caches.keys();
+    const requests = (await Promise.all(names.map(async name => (await caches.open(name)).keys()))).flat();
+    return requests.filter(request => new URL(request.url).pathname.startsWith('/assets/')).map(request => request.url);
+  });
+  expect(cachedAssets.length).toBeGreaterThan(0);
+  await context.setOffline(true);
+  try {
+    const response = await page.reload();
+    expect(response?.status()).toBe(200);
+    await expect(page.getByLabel('E-mail')).toBeVisible();
+    expect(await page.locator('link[rel="stylesheet"]').count()).toBeGreaterThan(0);
+  } finally {
+    await context.setOffline(false);
+  }
 });

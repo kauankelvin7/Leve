@@ -269,6 +269,8 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
     await page.getByRole('button', { name: 'Criar minha agenda' }).click();
   }
   await expect(page).toHaveURL(/\/hoje$/);
+  const skipGuide = page.getByRole('button', { name: 'Pular guia', exact: true });
+  if (await skipGuide.isVisible()) await skipGuide.click();
 
   const secondPage = await context.newPage();
   await secondPage.goto('/hoje');
@@ -280,7 +282,7 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
   await page.getByRole('button', { name: 'Adicionar atividade' }).click();
   await expect(secondPage.getByText(onlineTitle, { exact: true })).toBeVisible();
 
-  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
+  expect(await page.evaluate(() => localStorage.getItem('leve.offlineEnabled'))).toBeNull();
   await context.setOffline(true);
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Título').fill(offlineTitle);

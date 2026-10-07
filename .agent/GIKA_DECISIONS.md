@@ -1,5 +1,24 @@
 # Gika — Decision Log
 
+## ADR-GIKA-029 — Offline do sistema por padrão
+
+- Data: 2026-10-07
+- Status: accepted
+- Contexto: o service worker só armazenava a página inicial e dependia de uma
+  visita anterior para capturar módulos. Em uma primeira abertura sem rede, o
+  navegador tinha HTML, mas não JavaScript/CSS suficiente para montar o PWA.
+- Decisão: ativar armazenamento local e fila offline por padrão, mantendo
+  `leve.offlineEnabled=false` como opt-out explícito. O build injeta todos os
+  assets fingerprinted no precache e versiona o cache por hash da lista. O shell
+  autenticado mostra o estado de conexão e informa que alterações aguardam a
+  sincronização.
+- Consequência: o Leve abre a interface já visitada mesmo sem internet e deixa
+  claro quando está trabalhando localmente; a Gika continua exigindo conexão
+  para responder. Navegadores sem IndexedDB seguem abrindo online com fallback
+  de Firestore sem persistência.
+- Evidência: `apps/web/vite.config.ts`, `apps/web/public/sw.js`,
+  `scripts/glass/public.spec.ts`.
+
 ## ADR-GIKA-028 — interpretação completa antes da validação de notificações
 
 - Data: 2026-10-07

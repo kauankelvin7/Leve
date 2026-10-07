@@ -1,5 +1,8 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { createHash } from 'node:crypto';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
@@ -9,6 +12,25 @@ const publicFirebaseKeys = new Set([
   'VITE_FIREBASE_MEASUREMENT_ID', 'VITE_USE_EMULATORS',
 ]);
 
+function offlinePrecachePlugin(): Plugin {
+  return {
+    name: 'leve-offline-precache',
+    apply: 'build' as const,
+    async writeBundle(options) {
+      const outputDir = resolve(options.dir ?? join(projectRoot, 'dist'));
+      const assetsDir = join(outputDir, 'assets');
+      const entries = await readdir(assetsDir, { withFileTypes: true });
+      const assets = entries.filter(entry => entry.isFile()).map(entry => `/assets/${entry.name}`).sort();
+      const fingerprint = createHash('sha256').update(assets.join('\n')).digest('hex').slice(0, 8);
+      const swPath = join(outputDir, 'sw.js');
+      let source = await readFile(swPath, 'utf8');
+      source = source.replace(/const CACHE = 'leve-shell-[^']+';/, `const CACHE = 'leve-shell-${fingerprint}';`);
+      source = source.replace('const PRECACHE_ASSETS = [];', `const PRECACHE_ASSETS = ${JSON.stringify(assets)};`);
+      await writeFile(swPath, source);
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectRoot, '');
   const leaked = Object.keys(env).filter(key => key.startsWith('VITE_') && !publicFirebaseKeys.has(key) && /private|secret|token|password|credential|api.?key|client.?email|service.?account/i.test(key));
@@ -16,7 +38,7 @@ export default defineConfig(({ mode }) => {
   return {
     root: fileURLToPath(new URL('.', import.meta.url)),
     envDir: projectRoot,
-    plugins: [react(), {
+    plugins: [react(), offlinePrecachePlugin(), {
       name: 'gika-character-review',
       apply: 'serve',
       configureServer(server) {

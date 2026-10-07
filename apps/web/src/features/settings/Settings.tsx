@@ -126,7 +126,7 @@ export function Settings() {
         <div className={styles.sectionGrid}>
           <div className={styles.group}>
             <PwaSettings />
-            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Acesse o que já foi carregado mesmo sem internet. As alterações sincronizam quando a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Confiar neste aparelho e permitir uso offline</label></section>
+            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>O Leve mantém o que já foi carregado neste aparelho para continuar funcionando sem internet. As alterações sincronizam quando a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Permitir uso offline neste aparelho (ativo por padrão)</label></section>
           </div>
           <div className={styles.group}>
             <NotificationSettings />

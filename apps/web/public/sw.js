@@ -1,5 +1,9 @@
 const CACHE = 'leve-shell-v9';
 const SHELL = ['/', '/theme-init.js', '/manifest.webmanifest', '/favicon.svg?v=3', '/icons/icon-192.png?v=4', '/icons/badge-96.png?v=4', '/robots.txt'];
+// Vite replaces this list during production builds with every generated
+// module and stylesheet, so a first offline launch has the same shell as an
+// online launch. The empty list keeps the worker useful in development too.
+const PRECACHE_ASSETS = [];
 const clientAccounts = new Map();
 
 function safeNotificationUrl(value) {
@@ -13,7 +17,7 @@ function safeNotificationUrl(value) {
 }
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll([...SHELL, ...PRECACHE_ASSETS])));
 });
 
 self.addEventListener('activate', event => {

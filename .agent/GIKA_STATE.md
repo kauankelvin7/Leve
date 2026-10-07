@@ -509,3 +509,17 @@ Preview exato `afd3132`: https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a
 terminou success, mas continua SSO302; API interceptada401Vercel. Preview5fe backend idêntico
 também SSO302, pedido externo de liberação pendente. Único blocker: avaliação Gemini real
 impossível com acessos atuais. Não marcar Gika pronta nem integrar main antes desse teste.
+## Retomada vigente — offline por padrão e lançamento PWA a frio, 07/10/2026
+
+O modo offline passa a ser uma capacidade do sistema: `offlineEnabled()` retorna
+ativo quando não existe opt-out explícito, e a agenda mantém a sessão, dados já
+carregados e alterações pendentes neste aparelho. O build agora injeta todos os
+módulos e estilos gerados no precache do service worker; isso corrige a primeira
+abertura sem internet, que antes retornava HTML sem os assets e podia parecer um
+erro 500. A agenda autenticada exibe o aviso visual Modo offline/Conexão
+restaurada. Privacidade e Preferências explicam o padrão e o opt-out.
+
+Validação final: typecheck/build e lint/boundaries PASS; 826 testes unitários,
+Playwright local de duas abas com alteração offline PASS e Glass de produção
+offline reload PASS. O service worker produzido contém a lista fingerprinted de
+assets. Captura visual: `/tmp/leve-offline-mode.png`.

@@ -8,6 +8,7 @@ import { asStatusPageCode } from './statusPage';
 import { useAuth } from '../features/identity/AuthProvider';
 import { Login } from '../features/identity/Login';
 import { OutboxStatus } from '../features/content/OutboxStatus';
+import { OfflineStatus } from '../features/content/OfflineStatus';
 import { Tutorial } from '../features/content/Tutorial';
 import { NotificationBanner } from '../features/content/NotificationBanner';
 import { SessionRecovery } from '../features/activities/SessionRecovery';
@@ -87,7 +88,7 @@ function Shell() {
           <span className="workspace-private">Agenda pessoal</span>
         </div>
       </header>
-      <Tutorial /><NotificationBanner /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
+      <Tutorial /><NotificationBanner /><OfflineStatus /><OutboxStatus /><SessionRecovery /><ActiveTimerBar />
       <Suspense fallback={<LoadingState variant="cards" label="Abrindo sua página…" />}><Outlet /></Suspense>
       <footer className={`page-footer ${styles.footer}`}>
         <div className={styles.footerIdentity}><span className={styles.footerBrand}>leve<span>.</span></span><span>Sua agenda privada</span></div>

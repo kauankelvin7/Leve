@@ -507,3 +507,18 @@ presentation_polish:
   checkpoint: "refine(ui): improve agenda hierarchy, sidebar and footer"
   publication: authorized_after_remote_checks
   next_action: "Consultar PR desta branch e checks do HEAD; integrar após CI/Planner/Seasonal e confirmar deployment. Etapas visuais concluídas; avaliação do provider real permanece no escopo histórico."
+offline_default_pwa:
+  status: done
+  owner: root
+  scope: "apps/web service worker, offline storage and authenticated shell status"
+  acceptance_criteria:
+    - "Offline storage and queued mutations are active by default, with explicit opt-out preserved."
+    - "A production build precaches generated JavaScript and CSS for a cold offline launch."
+    - "The authenticated agenda clearly communicates offline and restored states."
+    - "Offline reload Playwright coverage and build/typecheck pass."
+  evidence:
+    - "scripts/glass/public.spec.ts: production service worker precache and offline reload"
+    - "tests/e2e-local/persistent.spec.ts: default offline queue and two-tab sync"
+    - "/tmp/leve-offline-mode.png: authenticated shell visual state"
+  gates: "typecheck/build, lint/boundaries, 826 unit, local persistent Playwright and Glass production PASS"
+  checkpoint: "offline-default-pwa"

@@ -14,7 +14,9 @@ function announceChange() {
 
 channel?.addEventListener('message', () => window.dispatchEvent(new CustomEvent('leve:outbox-changed')));
 
-export function offlineEnabled() { return localStorage.getItem('leve.offlineEnabled') === 'true'; }
+/** Offline support is a system capability. Keep an explicit opt-out for users
+ * who share a device, while new and existing accounts work offline by default. */
+export function offlineEnabled() { return localStorage.getItem('leve.offlineEnabled') !== 'false'; }
 
 export async function cacheSession(uid: string, session: SessionResult) {
   if (!offlineEnabled()) return;

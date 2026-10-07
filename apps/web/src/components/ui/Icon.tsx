@@ -25,6 +25,7 @@ const paths = {
   pause: 'M8 5v14m8-14v14',
   stop: 'M7 7h10v10H7z',
   check: 'm5 12 4 4L19 6',
+  cloud: 'M7 18h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.5-1.5A3.5 3.5 0 0 0 7 18',
 } as const;
 
 export function Icon({ name }: { name: keyof typeof paths }) {

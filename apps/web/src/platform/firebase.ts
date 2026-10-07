@@ -1,4 +1,4 @@
-import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import { applyActionCode, browserLocalPersistence, browserPopupRedirectResolver, connectAuthEmulator, getAuth, initializeAuth } from 'firebase/auth';
 import { clearIndexedDbPersistence, connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, terminate } from 'firebase/firestore';
 import { offlineEnabled } from './outbox';
@@ -19,7 +19,17 @@ const reusedApp = getApps().length > 0;
 const app = configured ? (reusedApp ? getApp() : initializeApp(config)) : null;
 export const firebaseApp = app;
 export const firebaseAuth = app ? (reusedApp ? getAuth(app) : initializeAuth(app, { persistence: browserLocalPersistence, popupRedirectResolver: browserPopupRedirectResolver })) : null;
-export const firestore = app ? (reusedApp ? getFirestore(app) : initializeFirestore(app, offlineEnabled() ? { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) } : {})) : null;
+function createFirestore(instance: FirebaseApp) {
+  if (!offlineEnabled()) return getFirestore(instance);
+  try {
+    return initializeFirestore(instance, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+  } catch {
+    // Some browsers (private mode or a restricted WebView) do not expose a
+    // usable IndexedDB. The agenda must still open online in that case.
+    return getFirestore(instance);
+  }
+}
+export const firestore = app ? (reusedApp ? getFirestore(app) : createFirestore(app)) : null;
 export const emulatorMode = useEmulators;
 const emulatorConnections = globalThis as typeof globalThis & { __leveFirebaseEmulatorsConnected?: boolean };
 if (useEmulators && firebaseAuth && firestore && !emulatorConnections.__leveFirebaseEmulatorsConnected) {

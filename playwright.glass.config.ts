@@ -7,7 +7,10 @@ export default defineConfig({
   timeout: 60_000, expect: { timeout: 10_000 }, workers: 1, retries: 0,
   outputDir: `.cache/glass/${phase}/traces`,
   reporter: [['list'], ['json', { outputFile: `.cache/glass/${phase}/playwright.json` }]],
-  use: { ...devices['Desktop Chrome'], trace: 'retain-on-failure', screenshot: 'only-on-failure' },
+  use: {
+    ...devices['Desktop Chrome'], trace: 'retain-on-failure', screenshot: 'only-on-failure',
+    ...(process.env.LEVE_CHROMIUM_EXECUTABLE ? { launchOptions: { executablePath: process.env.LEVE_CHROMIUM_EXECUTABLE } } : {}),
+  },
   projects: [
     { name: 'public-preview', testMatch: 'public.spec.ts', use: { baseURL: 'http://localhost:4173' } },
     { name: 'authenticated-local', testMatch: 'authenticated.spec.ts', use: { baseURL: 'http://localhost:5174' } },

@@ -179,6 +179,47 @@
   max-width: 100%;
 }
 
+/* ============================================================
+   OFFLINE MODE
+   ============================================================ */
+.offline-mode-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-card);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.offline-mode-banner.is-restored {
+  border-color: color-mix(in srgb, var(--status-success) 35%, var(--color-solid));
+  background: color-mix(in srgb, var(--status-success) 10%, var(--color-solid));
+}
+
+.offline-mode-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--color-action-primary) 14%, var(--color-solid));
+  color: var(--color-action-primary);
+}
+
+.offline-mode-icon svg { width: 20px; height: 20px; }
+.offline-mode-banner strong { display: block; font-size: .92rem; line-height: 1.2; }
+.offline-mode-banner p { margin: 3px 0 0; color: var(--color-text-muted); font-size: .82rem; line-height: 1.45; }
+.offline-mode-badge { padding: 4px 9px; border-radius: var(--radius-full); background: color-mix(in srgb, var(--color-action-primary) 14%, transparent); color: var(--color-action-primary); font-size: .72rem; font-weight: 700; white-space: nowrap; }
+
+@media (max-width: 560px) {
+  .offline-mode-banner { grid-template-columns: auto minmax(0, 1fr); padding: 12px; }
+  .offline-mode-badge { grid-column: 2; justify-self: start; }
+}
+
 /* Row actions */
 .trash-list .row-actions {
   display: flex;
