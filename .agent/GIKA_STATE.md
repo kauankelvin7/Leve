@@ -1,4 +1,19 @@
-## Retomada vigente — horário fixo e opções ampliadas, 07/10/2026
+## Retomada vigente — avisos pela manhã, 07/10/2026
+
+Entrada main46a18a8. Usuário autorizou adotar recomendação de 9h após revisão de
+UX. DEFAULT_DAY_REMINDER_TIME=09:00; fuso IANA da atividade, dueTime/startsAt
+permanecem nulos para dia inteiro. Sem seletor ou campo extra; Gika/formulário
+explicam aviso pela manhã. Com hora usa hora real, sem data não cria job.
+Backfill V4 migra futuros pendentes mantendo IDs e entregas; sender verifica
+todos os jobs sem hora, reagenda divergentes futuros mesmo após a janela antiga
+expirar e obsoleta os que não têm novo horário futuro. Sem reabrir sent/finais.
+Plano `.agent/MORNING_REMINDERS_EXECPLAN.md`, ADR032; gates finais no plano.
+Gates: 831 unitários/327 integração/4 Playwright, lint/boundaries/typechecks/
+build/diff-check PASS. Fixture inválida de retry corrigida para tarefa com hora,
+e integração completa reexecutada. CI/Planner da entrada46a18a8 success.
+Nenhum Gemini live ou recebimento em aparelho real declarado.
+
+## Retomada histórica — horário fixo e opções ampliadas, 07/10/2026
 
 Entrada main `4ab5d2e`, CI37597837836 aprovado. Padrão 00:00 no fuso da atividade
 sem hora agora fixo: sem campo de horário ou menção espontânea no formulário/Gika.

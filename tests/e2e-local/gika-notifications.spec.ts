@@ -68,12 +68,12 @@ test('Gika cria tarefa sem hora e informa o aviso no dia sem expor configuraçã
   await question.fill('Agende ir pra feira amanhã sem horário e me notifique');
   await question.press('Enter');
   const result = page.getByRole('group', { name: 'Tarefa adicionada', exact: true }).last();
-  await expect(result).toContainText('Aviso automático no dia da atividade');
+  await expect(result).toContainText('Aviso automático pela manhã no dia da atividade');
   const applied = await ack;
   expect(applied.status()).toBe(200);
   const jobs = await db.collection('reminderJobs').where('activityId', '==', applied.request().postDataJSON().entityId).get();
   expect(jobs.size).toBe(1);
-  expect(jobs.docs.some(job => job.data().scheduledAt === `${dueDate}T03:00:00.000Z`)).toBe(true);
+  expect(jobs.docs.some(job => job.data().scheduledAt === `${dueDate}T12:00:00.000Z`)).toBe(true);
 });
 
 for (const continuation of [false, true]) test(`real semantic pipeline: ${continuation ? 'complete clarification reply' : 'mixed scheduling and notification'}`, async ({ page }) => {

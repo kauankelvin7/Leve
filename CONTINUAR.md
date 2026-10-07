@@ -1,6 +1,20 @@
 # Leve — ponto exato de retomada
 
-## Entrega vigente — horário fixo, repetição e avisos ampliados (07/10/2026)
+## Entrega vigente — aviso automático pela manhã (07/10/2026)
+
+Entrada main `46a18a8`. Usuário aceitou recomendação de 9h após análise do
+contexto: avisar no dia sem interromper o sono. Padrão interno fixo 09:00 no fuso
+da atividade com data sem hora; sem seletor na atividade. Com hora usa o horário
+real; sem data nenhum job; evento de vários dias usa primeiro dia por ocorrência.
+Antecipações partem das 9h. Formulário/Gika explicam aviso pela manhã.
+Backfill V4 realinha futuros pendentes; sent/finais não reabrem. Sender recupera
+job antigo adquirido antes da migração e reagenda se novo horário ainda futuro,
+mesmo após janela antiga expirar, preservando tokens já entregues. Sem retroativos.
+Plano `.agent/MORNING_REMINDERS_EXECPLAN.md`; decisão ADR032 e relatório
+`docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`. Gates finais no plano.
+
+
+## Histórico — horário fixo, repetição e avisos ampliados (07/10/2026)
 
 Entrada `4ab5d2e`. Repetição em modal: diária/semanal/mensal/anual/personalizada,
 intervalo e término por data/quantidade. Até três avisos antecipados, com novos

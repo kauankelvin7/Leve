@@ -41,7 +41,7 @@ export const activityInputSchema = z.object({
 });
 
 type Schedule = z.infer<typeof taskSchedule> | z.infer<typeof timedSchedule> | z.infer<typeof allDaySchedule>;
-export const DEFAULT_DAY_REMINDER_TIME = '00:00';
+export const DEFAULT_DAY_REMINDER_TIME = '09:00';
 
 /** A reminder time does not turn an all-day activity into a timed event.
  * Compatible disambiguation moves through DST gaps and chooses the first

@@ -92,9 +92,23 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       db.doc(`memberships/${reserved.uid}`).get(),
     ]);
     const record = activity.data();
-    const legacyDayOverride = record?.dayReminderTime && record.dayReminderTime !== '00:00' && record.schedule && (record.schedule.type === 'task' ? !record.schedule.dueTime : record.schedule.allDay);
-    const staleDayJob = legacyDayOverride && reminderJobsForActivity(reserved.uid, reserved.activityId, reserved.activityRevision, record, '0000-01-01T00:00:00.000Z').find(job => job.id === snapshot.id)?.value.scheduledAt !== reserved.scheduledAt;
-    if (staleDayJob || !activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || membership.data()?.state !== 'active' || activity.data()?.revision !== reserved.activityRevision || activity.data()?.status !== 'pending' || activity.data()?.deletedAt || reserved.deliveryWindowEnd < now) {
+    if (!activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || membership.data()?.state !== 'active' || record?.revision !== reserved.activityRevision || record?.status !== 'pending' || record?.deletedAt) {
+      if (await updateLeasedJob(snapshot.ref, leaseId, { state: 'obsolete', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
+      continue;
+    }
+    const withoutTime = record?.schedule && (record.schedule.type === 'task' ? !record.schedule.dueTime : record.schedule.allDay);
+    if (withoutTime) {
+      const expected = reminderJobsForActivity(reserved.uid, reserved.activityId, reserved.activityRevision, record, '0000-01-01T00:00:00.000Z').find(job => job.id === snapshot.id)?.value;
+      if (expected?.scheduledAt !== reserved.scheduledAt) {
+        // Repair a job claimed before backfill; preserve partial delivery history.
+        const patch = expected && typeof expected.scheduledAt === 'string' && expected.scheduledAt > now
+          ? { state: 'pending', scheduledAt: expected.scheduledAt, nextAttemptAt: expected.nextAttemptAt, deliveryWindowEnd: expected.deliveryWindowEnd }
+          : { state: 'obsolete' };
+        if (await updateLeasedJob(snapshot.ref, leaseId, { ...patch, leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
+        continue;
+      }
+    }
+    if (reserved.deliveryWindowEnd < now) {
       if (await updateLeasedJob(snapshot.ref, leaseId, { state: reserved.deliveryWindowEnd < now ? 'expired' : 'obsolete', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
       continue;
     }
@@ -137,7 +151,7 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
 }
 
 export async function backfillAutomaticReminderJobs() {
-  const stateRef = db.doc('maintenance/defaultReminderBackfillV3');
+  const stateRef = db.doc('maintenance/defaultReminderBackfillV4');
   const now = new Date().toISOString();
   const leaseId = randomUUID();
   const claim = await db.runTransaction(async transaction => {

@@ -4,20 +4,20 @@ import { commandEnvelopeSchema, isSeasonalDetailsEnabled, profilePreferencesSche
 import { accountArchiveSchema, archiveReferenceErrors } from '../../packages/domain/src/archive';
 
 describe('Domínio de conteúdo persistente', () => {
-  it('avisa atividades sem hora à meia-noite local sem mudar os instantes da agenda', () => {
+  it('avisa atividades sem hora às 9h locais sem mudar os instantes da agenda', () => {
     const schedule = { type: 'event' as const, allDay: true as const, startDate: '2026-10-08', endDateExclusive: '2026-10-10', timeZone: 'America/Sao_Paulo' };
     expect(scheduleInstants(schedule)).toEqual({ startsAt: null, endsAt: null, dueAt: null });
-    expect(activityReminderInstant({ schedule })).toBe('2026-10-08T03:00:00.000Z');
-    expect(activityReminderInstant({ schedule, dayReminderTime: '08:30' })).toBe('2026-10-08T03:00:00.000Z');
-    expect(activityReminderInstant({ schedule: { ...schedule, startDate: '2018-11-04', endDateExclusive: '2018-11-05' } })).toBe('2018-11-04T03:00:00.000Z');
+    expect(activityReminderInstant({ schedule })).toBe('2026-10-08T12:00:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '08:30' })).toBe('2026-10-08T12:00:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, startDate: '2018-11-04', endDateExclusive: '2018-11-05' } })).toBe('2018-11-04T11:00:00.000Z');
     expect(activityReminderInstant({ schedule: { type: 'task', dueDate: null, dueTime: null, timeZone: 'UTC', disambiguation: 'reject' } })).toBeNull();
   });
 
   it('respeita fuso e horário de verão do aviso separado', () => {
     const schedule = { type: 'task' as const, dueDate: '2026-03-08', dueTime: null, timeZone: 'America/New_York', disambiguation: 'reject' as const };
-    expect(activityReminderInstant({ schedule })).toBe('2026-03-08T05:00:00.000Z');
-    expect(activityReminderInstant({ schedule, dayReminderTime: '02:30' })).toBe('2026-03-08T05:00:00.000Z');
-    expect(activityReminderInstant({ schedule: { ...schedule, dueDate: '2026-11-01' }, dayReminderTime: '01:30' })).toBe('2026-11-01T04:00:00.000Z');
+    expect(activityReminderInstant({ schedule })).toBe('2026-03-08T13:00:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '02:30' })).toBe('2026-03-08T13:00:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, dueDate: '2026-11-01' }, dayReminderTime: '01:30' })).toBe('2026-11-01T14:00:00.000Z');
     expect(activityReminderInstant({ schedule: { ...schedule, dueTime: '15:00' }, dayReminderTime: '00:00' })).toBe('2026-03-08T19:00:00.000Z');
   });
 

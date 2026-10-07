@@ -2,6 +2,17 @@ version: 1
 project: gika
 source_of_truth: true
 
+morning_automatic_reminders:
+  status: done
+  owner: root
+  entry_checkpoint: 46a18a8
+  plan: .agent/MORNING_REMINDERS_EXECPLAN.md
+  acceptance_criteria:
+    - "09:00 fixo no fuso para data sem hora; sem seletor por atividade."
+    - "Gika/formulário explicam aviso pela manhã; data/hora da atividade intactas."
+    - "V4 migra pendentes; sender recupera corrida; entregues não reabrem."
+  gates: "831 unitários/327 integração/4 Playwright PASS; lint/boundaries/typechecks/build/diff-check PASS."
+
 fixed_day_reminders_and_recurrence_options:
   status: done
   owner: root

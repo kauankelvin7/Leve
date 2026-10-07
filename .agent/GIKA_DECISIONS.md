@@ -374,3 +374,17 @@ máximo 30 dias, mesmos reminderSpecs/APIs; não amplia execução pela Gika.
 Referências oficiais e diferença entre Google e Leve em
 `docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`. Nenhum recebimento push real
 ou Gemini live declarado.
+
+
+## ADR-GIKA-032 — aviso automático às 9h para atividades sem hora
+
+Data: 07/10/2026; accepted. Usuário aprovou recomendação após análise contextual.
+Complementa ADR031: o horário fixo passa de 00:00 para 09:00 no fuso da atividade,
+para evitar interrupção do sono. Sem configurar cada atividade. A interface
+explica aviso pela manhã; horários explícitos continuam preservados. Data civil,
+instantes de atividade e aviso são independentes; não inventar dueTime=09:00.
+Antecipações continuam offsets do aviso (um dia antes = 9h do dia anterior).
+Backfill V4 realinha pendentes futuros, sem reabrir sent/finais. Jobs legados
+adquiridos pelo sender são reagendados para novo instante futuro, preservando
+histórico/leases; novos instantes passados são descartados. Sem retroativos.
+Plano `.agent/MORNING_REMINDERS_EXECPLAN.md`; mesma arquitetura/writer/outbox.

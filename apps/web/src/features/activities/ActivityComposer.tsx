@@ -198,9 +198,9 @@ export function ActivityComposer({
                     <fieldset>
                       <legend>Notificações</legend>
                       {kind === 'task'
-                        ? <p className="field-hint">Com as notificações ativadas, você recebe um aviso no horário da tarefa. Se ela tiver só uma data, o aviso chega no dia da atividade.</p>
+                        ? <p className="field-hint">Com as notificações ativadas, você recebe um aviso no horário da tarefa. Se ela tiver só uma data, o aviso chega pela manhã no dia da atividade.</p>
                         : eventAllDay
-                          ? <p className="field-hint">Você recebe um aviso no primeiro dia, com as notificações ativadas neste aparelho. O compromisso continua sendo de dia inteiro.</p>
+                          ? <p className="field-hint">Você recebe um aviso pela manhã no primeiro dia, com as notificações ativadas neste aparelho. O compromisso continua sendo de dia inteiro.</p>
                           : <p className="field-hint">Com as notificações ativadas neste aparelho, você recebe um aviso no horário do compromisso. Se quiser, escolha lembretes antecipados:</p>}
                       <ReminderOptions initial={editing?.reminderSpecs} />
                     </fieldset>

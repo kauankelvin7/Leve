@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { Temporal } from '@js-temporal/polyfill';
 
-test('dia inteiro usa meia-noite e as cores de atividade e nota ficam em modais compactos', async ({ page }) => {
+test('dia inteiro usa 9h e as cores de atividade e nota ficam em modais compactos', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill('leve.local@example.test');

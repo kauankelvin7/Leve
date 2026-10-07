@@ -80,7 +80,7 @@ A regra mostra uma sugestão. A IA é chamada para elaborar um plano somente qua
 
 ## Avisos de atividades sem horário — 07/10/2026
 
-O padrão do Leve é avisar às 00:00 no fuso da atividade quando ela tem uma data
+O padrão do Leve é avisar às 09:00 no fuso da atividade quando ela tem uma data
 mas não tem hora. Eventos de dia inteiro avisam no primeiro dia de cada ocorrência.
 Não é preciso marcar lembrete para receber esse aviso; a permissão de notificações
 do aparelho continua necessária. O horário é uma regra interna fixa do sistema, sem opção de alteração no formulário. Horários já passados não são enviados
@@ -88,5 +88,5 @@ retroativamente e atividade sem data não tem instante de aviso.
 
 Gika deve criar a tarefa com dueTime=null quando a pessoa informa data e pede
 notificação sem escolher hora; não exigir horário nem prometer aviso contínuo.
-Avisos antecipados opcionais permanecem no formulário; a Gika não configura antecipações pela conversa. Não mencionar 00:00 espontaneamente: explicar que o aviso ocorre no dia da atividade, com permissão ativa.
+Avisos antecipados opcionais permanecem no formulário; a Gika não configura antecipações pela conversa. Não mencionar 09:00 espontaneamente: explicar que o aviso ocorre pela manhã no dia da atividade, com permissão ativa.
 O sucesso de criação sempre depende do ACK real do comando.

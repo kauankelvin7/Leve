@@ -355,6 +355,7 @@ describe('comandos de conteúdo', () => {
     const activityId = 'atividade-lembrete';
     await db.doc(`users/${user.uid}/activities/${activityId}`).set({
       ...activityPayload,
+      schedule: { ...activityPayload.schedule, dueDate: new Date(now).toISOString().slice(0, 10), dueTime: '12:00' },
       kind: 'task',
       status: 'pending',
       revision: 1,
@@ -467,7 +468,7 @@ describe('comandos de conteúdo', () => {
     expect(created).toHaveLength(4);
     expect(created).toEqual(expect.arrayContaining([
       expect.objectContaining({ activityId: 'tarefa-com-hora', reminderSpecId: 'at-time', state: 'pending' }),
-      expect.objectContaining({ activityId: 'tarefa-sem-hora', reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, state: 'pending' }),
+      expect.objectContaining({ activityId: 'tarefa-sem-hora', reminderSpecId: 'at-time', scheduledAt: `${date}T12:00:00.000Z`, state: 'pending' }),
       expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'at-time', state: 'pending' }),
       expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'before-30', state: 'pending' }),
     ]));
@@ -481,7 +482,7 @@ describe('comandos de conteúdo', () => {
       .toBe('Sua tarefa está marcada para daqui a 1 dia e 1 hora.');
   });
 
-  it('agenda dia inteiro à meia-noite, preserva antecipações e invalida versões antigas', async () => {
+  it('agenda dia inteiro às 9h, preserva antecipações e invalida versões antigas', async () => {
     const user = await createUser('aviso-dia-inteiro@example.test');
     await seedAccount(user.uid);
     const date = new Date(Date.now() + 3 * 86400_000).toISOString().slice(0, 10);
@@ -495,13 +496,13 @@ describe('comandos de conteúdo', () => {
     let jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     expect(jobs.size).toBe(2);
     expect(jobs.docs.map(job => job.data())).toEqual(expect.arrayContaining([
-      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, activityRevision: 1 }),
+      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T12:00:00.000Z`, activityRevision: 1 }),
     ]));
     expect(reminderMessage(activity, 'at-time')).toBe('Você tem um compromisso de dia inteiro para hoje.');
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('update', 'dia-inteiro', '94000000-0000-4000-8000-000000000051', 1, { ...input, dayReminderTime: '08:30' })).expect(200);
     jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     expect(jobs.docs.map(job => job.data())).toEqual(expect.arrayContaining([
-      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, activityRevision: 2 }),
+      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T12:00:00.000Z`, activityRevision: 2 }),
     ]));
     // Old-version jobs are rejected by the existing delivery checks, even if due.
     for (const job of jobs.docs) await job.ref.update({ nextAttemptAt: new Date(Date.now() - 1000).toISOString() });
@@ -536,7 +537,7 @@ describe('comandos de conteúdo', () => {
     const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     expect(jobs.docs).toHaveLength(2);
     expect(jobs.docs.every(job => job.data().reminderSpecId === 'at-time' && job.data().state === 'pending')).toBe(true);
-    expect(jobs.docs.find(job => job.data().activityId === 'atividade-antiga-sem-hora')!.data().scheduledAt).toBe(`${dueDate}T03:00:00.000Z`);
+    expect(jobs.docs.find(job => job.data().activityId === 'atividade-antiga-sem-hora')!.data().scheduledAt).toBe(`${dueDate}T12:00:00.000Z`);
   });
 
   it('materializa série anual com avisos ampliados e avança a janela sem duplicar ocorrências', async () => {
@@ -568,20 +569,39 @@ describe('comandos de conteúdo', () => {
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
     const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     for (const job of jobs.docs) await job.ref.update({ scheduledAt: `${date}T11:30:00.000Z`, nextAttemptAt: `${date}T11:30:00.000Z` });
-    await db.doc('maintenance/defaultReminderBackfillV2').set({ state: 'complete' });
+    await db.doc('maintenance/defaultReminderBackfillV3').set({ state: 'complete' });
     await backfillAutomaticReminderJobs();
     const corrected = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     expect(corrected.size).toBe(2);
-    expect(corrected.docs.map(job => job.data().scheduledAt).sort()).toEqual([`${new Date(Date.parse(date + 'T03:00:00.000Z') - 30 * 60000).toISOString()}`, `${date}T03:00:00.000Z`].sort());
+    expect(corrected.docs.map(job => job.data().scheduledAt).sort()).toEqual([`${new Date(Date.parse(date + 'T12:00:00.000Z') - 30 * 60000).toISOString()}`, `${date}T12:00:00.000Z`].sort());
     // A legacy job already claimed before migration must not send at the old hour.
     const obsolete = corrected.docs[0]!;
     const now = Date.now();
-    await obsolete.ref.update({ scheduledAt: new Date(now - 1000).toISOString(), nextAttemptAt: new Date(now - 1000).toISOString(), deliveryWindowEnd: new Date(now + 600_000).toISOString() });
+    await db.doc(`users/${user.uid}/activities/legado-dia`).set({ ...activityPayload, schedule: { ...activityPayload.schedule, dueDate: date, dueTime: null }, revision: 1, status: 'pending', reminderSpecs: [{ id: 'before-30', minutesBefore: 30 }] });
+    await obsolete.ref.update({ scheduledAt: new Date(now - 1000).toISOString(), nextAttemptAt: new Date(now - 1000).toISOString(), deliveryWindowEnd: new Date(now - 1).toISOString(), deliveredTokenHashes: ['already-delivered-device'] });
     await db.doc('notificationTokens/legacy-active').set({ uid: user.uid, deviceId: 'test-device', token: 'fictional-token', state: 'active' });
     let sends = 0;
     await processReminderTick(async () => { sends++; return { successCount: 1, responses: [{ success: true }] }; });
     expect(sends).toBe(0);
-    expect((await obsolete.ref.get()).data()?.state).toBe('obsolete');
+    expect((await obsolete.ref.get()).data()).toMatchObject({ state: 'pending', scheduledAt: corrected.docs[0]!.data().scheduledAt, leaseId: null, leaseUntil: null, deliveredTokenHashes: ['already-delivered-device'] });
+  });
+
+  it('migra meia-noite para 9h sem reabrir aviso já entregue', async () => {
+    const user = await createUser('aviso-dia-manha@example.test');
+    await seedAccount(user.uid);
+    const date = new Date(Date.now() + 3 * 86400_000).toISOString().slice(0, 10);
+    for (const id of ['dia-pendente', 'dia-enviado']) {
+      await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('create', id, crypto.randomUUID(), 0, { ...activityPayload, schedule: { ...activityPayload.schedule, dueDate: date } })).expect(200);
+    }
+    const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    for (const job of jobs.docs) await job.ref.update({ scheduledAt: `${date}T03:00:00.000Z`, nextAttemptAt: `${date}T03:00:00.000Z`, state: job.data().activityId === 'dia-enviado' ? 'sent' : 'pending', deliveredTokenHashes: ['device-receipt'] });
+    await db.doc('maintenance/defaultReminderBackfillV3').set({ state: 'complete' });
+    await backfillAutomaticReminderJobs();
+    await backfillAutomaticReminderJobs();
+    const corrected = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(corrected.size).toBe(2);
+    expect(corrected.docs.find(job => job.data().activityId === 'dia-pendente')!.data()).toMatchObject({ state: 'pending', scheduledAt: `${date}T12:00:00.000Z`, deliveredTokenHashes: ['device-receipt'] });
+    expect(corrected.docs.find(job => job.data().activityId === 'dia-enviado')!.data()).toMatchObject({ state: 'sent', scheduledAt: `${date}T03:00:00.000Z`, deliveredTokenHashes: ['device-receipt'] });
   });
 
   it('aplica criação uma vez e detecta reutilização ou revisão divergente', async () => {
