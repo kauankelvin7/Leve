@@ -2,6 +2,13 @@ version: 1
 project: gika
 source_of_truth: true
 
+series_delete_dialog:
+  status: done
+  owner: root
+  entry_checkpoint: 65ecd9c
+  plan: .agent/SERIES_DELETE_DIALOG_EXECPLAN.md
+  gates: "Lint/boundaries/typechecks/build/diff-check e Playwright focal2 PASS; snapshots originais preservados."
+
 reminder_button_spacing:
   status: done
   owner: root

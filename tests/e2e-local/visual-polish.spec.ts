@@ -123,6 +123,7 @@ test('Meu dia prioriza tarefas, calendário e filtros recolhem sem perder navega
       await page.goto('/hoje');
       const task = page.locator('.activity-manage').filter({ hasText: title });
       await expect(task).toBeVisible();
+      await page.evaluate(() => document.fonts.ready);
       const box = (await task.boundingBox())!;
       const brief = page.getByRole('region', { name: 'Resumo em áudio', exact: true });
       expect(box.y).toBeLessThan((await brief.boundingBox())!.y);

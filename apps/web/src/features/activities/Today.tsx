@@ -11,6 +11,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { DayNavigation, useCurrentDay } from './DayNavigation';
 import { useLiveQueries } from '../content/useLiveQueries';
 import { Icon } from '../../components/ui/Icon';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { DailyBrief } from './DailyBrief';
 import { GikaSuggestion } from '../gika/GikaSuggestion';
 import { plannerDraftFromSearchParams } from './calendar/calendarDraftModel';
@@ -58,6 +59,8 @@ export function Today() {
   const [statusFilter, setStatusFilter] = useState(() => localStorage.getItem('leve.today.statusFilter') ?? 'all');
   const [categoryFilter, setCategoryFilter] = useState(() => localStorage.getItem('leve.today.categoryFilter') ?? 'all');
   const [busy, setBusy] = useState(false);
+  const [seriesToDelete, setSeriesToDelete] = useState<StoredActivity | null>(null);
+  const [seriesDeleteError, setSeriesDeleteError] = useState('');
   const [messageTone, setMessageTone] = useState<'success' | 'error' | 'info'>('info');
   const [kind, setKind] = useState<'task' | 'event'>(() => plannerDraft ? 'event' : 'task');
   const [eventAllDay, setEventAllDay] = useState(false);
@@ -250,12 +253,14 @@ export function Today() {
   }
 
   async function trashSeries(activity: StoredActivity) {
-    if (busy || !activity.seriesId || !window.confirm('Excluir esta atividade e todas as ocorrências da série?')) return;
+    if (busy || !activity.seriesId) return;
+    setSeriesDeleteError('');
     setBusy(true); setMessage(''); setMessageTone('info');
     try {
       await sendCommand({ command: 'activity.trashSeries', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
+      setSeriesToDelete(null);
       setMessage('A série inteira foi movida para a lixeira.'); setMessageTone('success');
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Não foi possível remover a série.'); setMessageTone('error'); }
+    } catch (error) { const detail = error instanceof Error ? error.message : 'Não foi possível remover a série.'; setMessage(detail); setSeriesDeleteError(detail); setMessageTone('error'); }
     finally { setBusy(false); }
   }
 
@@ -363,7 +368,7 @@ export function Today() {
             onChangeStatus={(activity, next) => void changeStatus(activity, next)}
             onEdit={startEdit}
             onTrash={activity => void trash(activity)}
-            onTrashSeries={activity => void trashSeries(activity)}
+            onTrashSeries={activity => { if (!busy) { setSeriesDeleteError(''); setSeriesToDelete(activity); } }}
           />
 
           <div className={todayStyles.support}>
@@ -389,6 +394,15 @@ export function Today() {
       </div>
 
       {(noteError || shoppingError || shoppingItems.error) && <p role="alert" className="form-status activity-form-status error" aria-live="assertive">{noteError || shoppingError || shoppingItems.error}</p>}
+      {seriesToDelete && <ConfirmDialog title="Excluir esta série?" onClose={() => { if (!busy) setSeriesToDelete(null); }}>
+        <p>Você vai excluir a série <strong>{seriesToDelete.title}</strong>.</p>
+        <p>As ocorrências já criadas, inclusive as passadas, serão movidas para a lixeira por 30 dias. A repetição será encerrada.</p>
+        <div className="dialog-actions">
+          <button type="button" disabled={busy} onClick={() => setSeriesToDelete(null)}>Cancelar</button>
+          <button type="button" className="danger" disabled={busy} onClick={() => void trashSeries(seriesToDelete)}>{busy ? 'Excluindo…' : 'Excluir série'}</button>
+        </div>
+        {seriesDeleteError && <p role="alert" className="form-status error">{seriesDeleteError}</p>}
+      </ConfirmDialog>}
     </main>
   );
 }

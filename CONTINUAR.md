@@ -1,6 +1,14 @@
 # Leve — ponto exato de retomada
 
-## Entrega vigente — aviso automático pela manhã (07/10/2026)
+## Follow-up vigente — modal de exclusão de série (07/10/2026)
+
+Entrada65ecd9c. Excluir série usa modal do Leve em vez de window.confirm:
+explica inclusão de ocorrências passadas e lixeira30dias; cancelar/Escape,
+foco restaurado, estado de envio e erro. APIs/regras de exclusão preservadas.
+Correção do CI visual anterior: aguardar fontes antes da medição geométrica,
+sem mexer em snapshots/tolerâncias. Plano SERIES_DELETE_DIALOG_EXECPLAN.md.
+
+## Entrega anterior — aviso automático pela manhã (07/10/2026)
 
 Entrada main `46a18a8`. Usuário aceitou recomendação de 9h após análise do
 contexto: avisar no dia sem interromper o sono. Padrão interno fixo 09:00 no fuso

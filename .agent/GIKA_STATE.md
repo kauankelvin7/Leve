@@ -1,3 +1,16 @@
+## Follow-up vigente — confirmação de exclusão de série, 07/10/2026
+
+Entrada65ecd9c. window.confirm substituído pelo ConfirmDialog compartilhado em
+Meu dia. Título da rotina e efeito incluindo passado/lixeira30dias explicitados;
+cancelamento, Escape, bloqueio durante envio e erro no modal. ACK fecha dialog;
+mesmo activity.trashSeries, sem mudanças no domínio ou extensão de escopo.
+ConfirmDialog fecha nativamente antes de restaurar foco, incluindo StrictMode.
+CI37605843990 da entrada falhou por medição antes das fontes no visual-polish;
+await document.fonts.ready antes de medir, sem alterar asserções/snapshots.
+Gates: lint/boundaries/typechecks/build/diff-check e Playwright focal2 PASS,
+snapshots originais; cancelamento zero comandos e exclusão ACK200 reais.
+Evidência no plano `.agent/SERIES_DELETE_DIALOG_EXECPLAN.md`.
+
 ## Follow-up vigente — espaçamento dos avisos, 07/10/2026
 
 Entradaae87665. Ajuste isolado ReminderOptions.module.css: gap16 entre grupos e
