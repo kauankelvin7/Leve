@@ -518,7 +518,7 @@ offline_default_pwa:
     - "Offline reload Playwright coverage and build/typecheck pass."
   evidence:
     - "scripts/glass/public.spec.ts: production service worker precache and offline reload"
-    - "tests/e2e-local/persistent.spec.ts: default offline queue and two-tab sync"
+    - "tests/e2e-local/persistent.spec.ts: default offline queue, two-tab sync, and task/note/shopping snapshots after reload"
     - "/tmp/leve-offline-mode.png: authenticated shell visual state"
   gates: "typecheck/build, lint/boundaries, 826 unit, local persistent Playwright and Glass production PASS"
   checkpoint: "offline-default-pwa"

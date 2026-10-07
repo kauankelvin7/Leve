@@ -523,3 +523,7 @@ Validação final: typecheck/build e lint/boundaries PASS; 826 testes unitários
 Playwright local de duas abas com alteração offline PASS e Glass de produção
 offline reload PASS. O service worker produzido contém a lista fingerprinted de
 assets. Captura visual: `/tmp/leve-offline-mode.png`.
+
+Regressão adicional confirmou que, após sincronizar uma atividade, uma nota e
+uma lista de compras, as três áreas reaparecem após recarga sem API/Firestore e
+sem estado de carregamento. A faixa offline explicita esses três conteúdos.

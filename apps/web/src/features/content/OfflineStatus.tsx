@@ -24,7 +24,7 @@ export function OfflineStatus() {
   if (!offline && !restored) return null;
   return <aside className={`offline-mode-banner ${offline ? 'is-offline' : 'is-restored'}`} role="status" aria-live="polite">
     <span className="offline-mode-icon"><Icon name="cloud" /></span>
-    <div><strong>{offline ? 'Modo offline' : 'Conexão restaurada'}</strong><p>{offline ? 'Sua agenda continua disponível. Alterações novas serão sincronizadas quando a conexão voltar.' : 'A conexão voltou. Alterações pendentes serão sincronizadas agora.'}</p></div>
+    <div><strong>{offline ? 'Modo offline' : 'Conexão restaurada'}</strong><p>{offline ? 'Tarefas, notas e compras já sincronizadas continuam disponíveis. Alterações novas serão sincronizadas quando a conexão voltar.' : 'A conexão voltou. Alterações pendentes serão sincronizadas agora.'}</p></div>
     <span className="offline-mode-badge">{offline ? 'Offline' : 'Online'}</span>
   </aside>;
 }

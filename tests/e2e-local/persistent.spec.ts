@@ -258,6 +258,9 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
   const suffix = Date.now();
   const onlineTitle = `Sincronizada entre abas ${suffix}`;
   const offlineTitle = `Criada sem rede ${suffix}`;
+  const noteTitle = `Nota offline ${suffix}`;
+  const noteText = `Conteúdo disponível sem internet ${suffix}.`;
+  const listTitle = `Compras offline ${suffix}`;
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 
   await page.goto('/entrar');
@@ -270,7 +273,7 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
   }
   await expect(page).toHaveURL(/\/hoje$/);
   const skipGuide = page.getByRole('button', { name: 'Pular guia', exact: true });
-  if (await skipGuide.isVisible()) await skipGuide.click();
+  if (await skipGuide.isVisible()) { await skipGuide.click(); await expect(page.getByRole('dialog', { name: /Guia do Leve/ })).toHaveCount(0); }
 
   const secondPage = await context.newPage();
   await secondPage.goto('/hoje');
@@ -281,6 +284,36 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
   await page.getByLabel('Data').fill(today);
   await page.getByRole('button', { name: 'Adicionar atividade' }).click();
   await expect(secondPage.getByText(onlineTitle, { exact: true })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Notas', exact: true }).click();
+  await page.getByLabel('Título').fill(noteTitle);
+  await page.getByLabel('Texto').fill(noteText);
+  await page.getByRole('button', { name: 'Salvar nota' }).click();
+  await expect(page.getByText(noteTitle, { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Compras', exact: true }).click();
+  await page.getByLabel('Nome da lista').fill(listTitle);
+  await page.getByRole('button', { name: 'Criar lista' }).click();
+  await page.waitForURL(/\/compras\//);
+  await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  await expect(page.getByText(onlineTitle, { exact: true })).toBeVisible();
+
+  // Simulate reopening after the network disappears. Firestore must serve its
+  // persistent local snapshot while the session cache keeps the shell signed in.
+  await context.route('**/api/**', route => route.abort());
+  await context.route('**/google.firestore.v1.Firestore/**', route => route.abort());
+  try {
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Meu dia' })).toBeVisible();
+    await expect(page.getByText(onlineTitle, { exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Notas', exact: true }).click();
+    await expect(page.getByText(noteTitle, { exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Compras', exact: true }).click();
+    await expect(page.getByText(listTitle, { exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Meu dia', exact: true }).click();
+  } finally {
+    await context.unroute('**/api/**');
+    await context.unroute('**/google.firestore.v1.Firestore/**');
+  }
 
   expect(await page.evaluate(() => localStorage.getItem('leve.offlineEnabled'))).toBeNull();
   await context.setOffline(true);
