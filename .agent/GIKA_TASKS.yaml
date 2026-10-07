@@ -17,6 +17,18 @@ all_day_reminders_and_color_modal:
   live_evaluation: "NOT_RUN: sem chave Gemini e sem aparelho push; testes em demo-leve."
   checkpoint: "feat: default all-day reminders to midnight and compact color pickers"
 
+note_composer_focus_followup:
+  status: done
+  owner: root
+  entry_checkpoint: f3a31fc
+  plan: .agent/ALL_DAY_REMINDERS_EXECPLAN.md
+  acceptance_criteria:
+    - "Ao criar/editar nota, focar título depois de montar a nova instância do formulário."
+    - "Recuperação automática de draft e seleção de preset não roubam foco."
+    - "Preservar snapshots e asserções existentes."
+  gates: "Chromium bundled153: mobile3/modal1 PASS; lint/boundaries/typechecks/build/830 unitários PASS."
+  checkpoint: "fix(notes): focus composer after form remount"
+
 notification_reasoning:
   status: done
   owner: root

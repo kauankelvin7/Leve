@@ -65,3 +65,18 @@ a exigência original de zero comandos e conversa vazia. Gate crítico reexecuta
 8/8 PASS; lint/build/dois TS e 830 unitários PASS após a correção.
 Transporte do campo de aviso no calendário: 9 unitários focais PASS.
 Os 4 novos E2E também entram no CI para regressão contínua.
+
+## Follow-up — foco de notas após remontagem
+CI37596362807: auditoria/lint/tipos/build/unitários/integração/críticos8/focais4
+PASS, Planner e Seasonal PASS; suíte visual 12/13 com falha ao editar nota.
+O timer de foco podia executar antes de a nova instância do form estar no DOM.
+Notas agora solicita foco com ref e o aplica em useLayoutEffect após formVersion;
+restaurar draft/selecionar preset não rouba foco sem solicitação explícita.
+Mantidas as asserções e snapshots originais; gate focal do modal ganha exigência
+de foco no título ao editar a nota recuperada.
+
+Playwright Chromium153 bundled: mobile-refinement3 + all-day-colors1 = 4 PASS,
+sem atualizar snapshots ou tolerâncias. Antes de instalar esse browser, o Chromium
+do sistema divergiu do snapshot de compras; não foi usado para aprovar esse gate.
+Lint/boundaries/dois TS/build e 830 unitários PASS após a correção.
+Follow-up pronto para integração; CI externo final acompanha o próximo commit.

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react';
 import type { Activity, Note, NoteNode } from '../../../../../packages/domain/src/content';
 import { noteColorPresets, notePresetIds, type NoteColorPreset } from '../../../../../packages/domain/src/notePresets';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
@@ -40,6 +40,7 @@ export function Notes() {
   const [formVersion, setFormVersion] = useState(0);
   const [conflict, setConflict] = useState<StoredNote | null>(null);
   const titleInput = useRef<HTMLInputElement>(null);
+  const focusComposer = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const pending = useRef<CommandEnvelope | null>(null);
@@ -52,6 +53,11 @@ export function Notes() {
   const draftName = editing ? `note:${editing.id}` : 'note:new';
 
   useEffect(() => { document.title = 'Notas · Leve'; }, []);
+  useLayoutEffect(() => {
+    if (!focusComposer.current) return;
+    focusComposer.current = false;
+    titleInput.current?.focus();
+  }, [formVersion]);
   useEffect(() => {
     if (!user || editing) return;
     void readDraft<NoteDraft>(user.uid, 'note:new').then(draft => {
@@ -120,9 +126,9 @@ export function Notes() {
   }
 
   function startNewNote() {
+    focusComposer.current = true;
     resetComposer();
     setMessage('');
-    window.setTimeout(() => titleInput.current?.focus(), 0);
   }
 
   async function beginEdit(note: StoredNote) {
@@ -130,8 +136,9 @@ export function Notes() {
     const stored = user ? await readDraft<NoteDraft>(user.uid, `note:${note.id}`) : null;
     if (stored) revision.current = stored.expectedRevision;
     const next = stored?.payload ?? note;
+    focusComposer.current = true;
     setInitial(next); setPaperPreset(next.paperColorPreset); setFormVersion(value => value + 1);
-    setMessage(stored ? 'Rascunho recuperado deste aparelho.' : ''); window.setTimeout(() => titleInput.current?.focus(), 0);
+    setMessage(stored ? 'Rascunho recuperado deste aparelho.' : '');
   }
 
   async function saveAsCopy() {

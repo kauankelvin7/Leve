@@ -12,6 +12,10 @@ Backfill V2 inclui registros futuros antigos sem duplicar jobs já existentes.
 Gika recebe a capacidade real no prompt Gemini e aceita agendamento com data e
 pedido de aviso sem exigir hora. Não promete notificações contínuas.
 
+Follow-up da verificação externa: edição de notas foca o título após remontar
+o formulário, sem depender de timer. Mobile3/modal1 passaram com os snapshots
+originais no Chromium bundled153; ver ExecPlan para histórico do CI.
+
 Atividade e nota compartilham um seletor compacto com modal nativo, amostra,
 nome e check; Escape, foco, fundo inativo e rolagem interna. Presets e valores
 persistidos preservados. Gates e limites: `.agent/ALL_DAY_REMINDERS_EXECPLAN.md`.

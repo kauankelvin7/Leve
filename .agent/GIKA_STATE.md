@@ -1,6 +1,12 @@
 ## Retomada vigente — avisos sem hora e cores em modal, 07/10/2026
 
-Entrada main `cf865ca`. Pedido do usuário define meia-noite como padrão implícito.
+Entrada main `cf865ca`; entrega integrada em `f3a31fc`.
+Follow-up: foco de edição de notas movido de timer para useLayoutEffect após a
+remontagem do form, sem roubar foco na recuperação automática de draft.
+CI37596362807 teve gates de domínio/Gika/novos fluxos PASS e visual12/13; o único
+caso de foco foi corrigido e validado com snapshots originais: mobile3/modal1 PASS
+no Chromium bundled153, além de lint/build/dois TS/830 unitários.
+ Pedido do usuário define meia-noite como padrão implícito.
 Domínio resolve o aviso às 00:00 no fuso IANA sem alterar os instantes nulos de
 atividades sem hora. `dayReminderTime` opcional preservado em import, leitura Gika
 e movimentação de calendário. Backfill V2 inclui atividades futuras antigas,

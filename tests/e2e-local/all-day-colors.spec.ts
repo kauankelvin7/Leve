@@ -62,6 +62,7 @@ test('dia inteiro usa meia-noite e as cores de atividade e nota ficam em modais 
   const note = page.locator('article.note').filter({ hasText: noteTitle });
   await expect(note).toHaveClass(/studies/);
   await note.getByRole('button', { name: 'Editar', exact: true }).click();
+  await expect(page.getByLabel('Título', { exact: true })).toBeFocused();
   await page.getByRole('button', { name: /Estilo da nota/ }).click();
   dialog = page.getByRole('dialog', { name: 'Estilo da nota', exact: true });
   await expect(dialog.getByRole('button', { name: 'Estudos', exact: true })).toHaveAttribute('aria-pressed', 'true');
