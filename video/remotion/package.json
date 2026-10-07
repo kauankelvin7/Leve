@@ -1,0 +1,17 @@
+{
+  "name": "leve-product-film-remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.tsx",
+    "render:test": "remotion render src/index.tsx LeveProductFilm ../output/motion-test.mp4 --frames=0-299 --codec=h264 --crf=18 --pixel-format=yuv420p --browser-executable=/usr/bin/chromium",
+    "render": "remotion render src/index.tsx LeveProductFilm ../output/leve-product-film-final-render.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --concurrency=4 --browser-executable=/usr/bin/chromium",
+    "postprocess": "ffmpeg -hide_banner -y -i ../output/leve-product-film-final-render.mp4 -vf 'colorspace=iall=bt470bg:all=bt709:irange=pc:range=tv:format=yuv420p,setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709' -an -c:v libx264 -preset medium -crf 17 -pix_fmt yuv420p -x264-params colorprim=bt709:transfer=bt709:colormatrix=bt709 -movflags +faststart ../output/leve-product-film-muted.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.410",
+    "remotion": "4.0.410",
+    "typescript": "5.8.3",
+    "zod": "3.22.3"
+  }
+}

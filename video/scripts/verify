@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""Reproducible structural checks for the final Leve product film artifacts."""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "output"
+errors: list[str] = []
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        errors.append(message)
+
+
+def probe(path: Path) -> dict:
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(path)],
+        check=True, capture_output=True, text=True,
+    )
+    return json.loads(result.stdout)
+
+
+master = OUT / "leve-product-film.mp4"
+muted = OUT / "leve-product-film-muted.mp4"
+readme = OUT / "leve-product-film-readme.mp4"
+poster = OUT / "poster.png"
+srt = OUT / "leve-product-film.srt"
+for artifact in (master, muted, readme, poster, srt):
+    require(artifact.is_file() and artifact.stat().st_size > 0, f"missing or empty artifact: {artifact.relative_to(ROOT)}")
+
+if master.exists() and muted.exists():
+    sha_master = hashlib.sha256(master.read_bytes()).hexdigest()
+    sha_muted = hashlib.sha256(muted.read_bytes()).hexdigest()
+    require(sha_master == sha_muted, "master and muted files must be identical (both have no audio)")
+    info = probe(master)
+    videos = [s for s in info["streams"] if s.get("codec_type") == "video"]
+    audios = [s for s in info["streams"] if s.get("codec_type") == "audio"]
+    require(len(videos) == 1, "master must contain exactly one video stream")
+    require(len(audios) == 0, "master must have no audio stream")
+    if videos:
+        v = videos[0]
+        require((v.get("width"), v.get("height")) == (1920, 1080), "master must be 1920x1080")
+        require(v.get("codec_name") == "h264", "master codec must be H.264")
+        require(v.get("pix_fmt") == "yuv420p", "master pixel format must be yuv420p")
+        require(v.get("r_frame_rate") == "60/1", "master frame rate must be 60 fps")
+        require(v.get("nb_frames") == "4560", "master must contain 4560 frames")
+        require(v.get("color_primaries") == "bt709" and v.get("color_transfer") == "bt709" and v.get("color_space") == "bt709", "master must be tagged BT.709")
+    require(abs(float(info["format"]["duration"]) - 76.0) < 0.001, "master duration must be exactly 76 seconds")
+
+if readme.exists():
+    require(readme.stat().st_size <= 10 * 1024 * 1024, "README MP4 must be at most 10 MB")
+    info = probe(readme)
+    videos = [s for s in info["streams"] if s.get("codec_type") == "video"]
+    require(len(videos) == 1 and not [s for s in info["streams"] if s.get("codec_type") == "audio"], "README MP4 must contain video only")
+    if videos:
+        require((videos[0].get("width"), videos[0].get("height")) == (1280, 720), "README MP4 must be 1280x720")
+        require(abs(float(info["format"]["duration"]) - 76.0) < 0.05, "README MP4 duration must be 76 seconds")
+
+if poster.exists():
+    info = probe(poster)
+    v = info["streams"][0]
+    require((v.get("width"), v.get("height")) == (1920, 1080), "poster must be 1920x1080")
+
+if srt.exists():
+    content = srt.read_text(encoding="utf-8")
+    blocks = [b.strip() for b in re.split(r"\n\s*\n", content.strip()) if b.strip()]
+    require(len(blocks) == 9, "SRT must contain 9 editorial narration cues")
+    end_ms = 0
+    for index, block in enumerate(blocks, 1):
+        lines = block.splitlines()
+        require(len(lines) >= 3 and lines[0] == str(index), f"invalid SRT cue {index}")
+        if len(lines) >= 2:
+            match = re.fullmatch(r"(\d{2}):(\d{2}):(\d{2}),(\d{3}) --> (\d{2}):(\d{2}):(\d{2}),(\d{3})", lines[1])
+            require(match is not None, f"invalid SRT timestamps in cue {index}")
+            if match:
+                values = list(map(int, match.groups()))
+                start = ((values[0] * 60 + values[1]) * 60 + values[2]) * 1000 + values[3]
+                end = ((values[4] * 60 + values[5]) * 60 + values[6]) * 1000 + values[7]
+                require(start >= end_ms and end > start, f"overlapping or empty SRT cue {index}")
+                end_ms = end
+    require(end_ms == 76_000, "SRT must end at 76 seconds")
+    require("ao vivo" not in content.lower(), "SRT must not imply live Gemini generation")
+
+if errors:
+    for error in errors:
+        print(f"FAIL: {error}", file=sys.stderr)
+    sys.exit(1)
+
+print("PASS: required deliverables, MP4 streams/metadata, poster dimensions, SRT timing, and README size")
+print(f"Master SHA-256: {hashlib.sha256(master.read_bytes()).hexdigest()}")
+print(f"README MP4 size: {readme.stat().st_size} bytes")

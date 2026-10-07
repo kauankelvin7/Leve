@@ -1,0 +1,344 @@
+{
+  "run": "run-1",
+  "app": "http://localhost:5174",
+  "branch": "video/product-film",
+  "repoCommit": "33707a4e72b863f1689113f51e95118a5568bebe",
+  "capturedAt": "2026-10-07T19:23:48.024Z",
+  "viewport": "1600x900",
+  "deviceScaleFactor": 2,
+  "locale": "pt-BR",
+  "timezone": "America/Sao_Paulo",
+  "civilDate": "2026-10-07",
+  "data": "Emulator / leve.local@example.test; fictional",
+  "scenes": {
+    "cold-open": {
+      "actions": [],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/opening-today.png",
+          "sha256": "c2073e4db369652434a57a1cef0f38c05f9ca66230307c189dc08e5a56328832",
+          "bytes": 260762,
+          "dimensions": "3200x1800"
+        },
+        {
+          "path": "video/assets/captures/run-1/opening-brand.png",
+          "sha256": "21874af59be68d93b6030b1dc7ffb7ede805b6767792e55dbaa1b31967566481",
+          "bytes": 3759,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "brand": {
+      "actions": [],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/brand-reference.png",
+          "sha256": "21874af59be68d93b6030b1dc7ffb7ede805b6767792e55dbaa1b31967566481",
+          "bytes": 3759,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "today": {
+      "actions": [],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/today.png",
+          "sha256": "c2073e4db369652434a57a1cef0f38c05f9ca66230307c189dc08e5a56328832",
+          "bytes": 260762,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "calendar": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:03.962Z",
+          "type": "click",
+          "target": "Calendário",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 195.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:04.323Z",
+          "type": "click",
+          "target": "Semana",
+          "boundingBox": {
+            "x": 398.578125,
+            "y": 274.4249267578125,
+            "width": 92,
+            "height": 40
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/calendar.png",
+          "sha256": "e820a49bc1419e746083ec16746c4ea8518335fc90fe6f28fc8128148eb8264c",
+          "bytes": 172325,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "notes": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:07.405Z",
+          "type": "click",
+          "target": "Notas",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 247.78125,
+            "width": 198,
+            "height": 48
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/notes.png",
+          "sha256": "81d7d725c236224ed3051a309a589188c16b08ae325c8a92564898b882430b66",
+          "bytes": 258276,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "shopping": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:09.258Z",
+          "type": "click",
+          "target": "Compras",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 299.78125,
+            "width": 198,
+            "height": 48
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/shopping.png",
+          "sha256": "dc5cf4a6f98cd6dc4c053ee097798f1ad7c36ceaf87f5ddebf35431bdfe0dd7d",
+          "bytes": 203082,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "gika": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:11.604Z",
+          "type": "digitação",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 726.390625,
+            "width": 318,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:11.817Z",
+          "type": "envio",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 702.390625,
+            "width": 318,
+            "height": 68
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/gika.png",
+          "sha256": "bb2561f1652eaff3396d90fb6159bf153b81a3ead50799a5f2a7dc21d89abd01",
+          "bytes": 336980,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "offline": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:14.497Z",
+          "type": "click",
+          "target": "Notas",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 247.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:14.629Z",
+          "type": "click",
+          "target": "Compras",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 299.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:14.767Z",
+          "type": "click",
+          "target": "Meu dia",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 143.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:17.043Z",
+          "type": "network-offline",
+          "target": "BrowserContext.setOffline(true)",
+          "boundingBox": null
+        },
+        {
+          "timestamp": "2026-10-07T19:24:18.013Z",
+          "type": "click",
+          "target": "Nova atividade",
+          "boundingBox": {
+            "x": 1406.8125,
+            "y": 184.203125,
+            "width": 158,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:18.160Z",
+          "type": "fill",
+          "target": "Ex.: estudar capítulo 3",
+          "boundingBox": {
+            "x": 330.578125,
+            "y": 790.0713500976562,
+            "width": 694,
+            "height": 46.46875
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:18.182Z",
+          "type": "fill",
+          "target": "",
+          "boundingBox": {
+            "x": 330.578125,
+            "y": 882.3089599609375,
+            "width": 694,
+            "height": 48.46875
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:18.219Z",
+          "type": "click",
+          "target": "Adicionar atividade",
+          "boundingBox": {
+            "x": 762.578125,
+            "y": 1079.46142578125,
+            "width": 162,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T19:24:18.801Z",
+          "type": "network-online",
+          "target": "BrowserContext.setOffline(false)",
+          "boundingBox": null
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/offline-banner.png",
+          "sha256": "739bb950f044d71249a56689e4cd899184719ceb21ad109ea93f7491cffd53d2",
+          "bytes": 264094,
+          "dimensions": "3200x1800"
+        },
+        {
+          "path": "video/assets/captures/run-1/offline-pending.png",
+          "sha256": "b674be551f0043340232c80a100bca8370e6a6821feff4c6d58f3a776c189ca8",
+          "bytes": 229684,
+          "dimensions": "3200x1800"
+        },
+        {
+          "path": "video/assets/captures/run-1/offline-synced.png",
+          "sha256": "c65fb316a8d1348211ace4c3a919dcd6e1dd90e8d4fefde639544088a88ad0cc",
+          "bytes": 276990,
+          "dimensions": "3200x1800"
+        }
+      ]
+    },
+    "closing": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T19:24:22.156Z",
+          "type": "click",
+          "target": "Notas",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 247.78125,
+            "width": 198,
+            "height": 48
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/run-1/closing-same-note.png",
+          "sha256": "8a640e484aae4edef64758c5c0a279aa02bced7bd02920f0c16d63ede9c7b43f",
+          "bytes": 258218,
+          "dimensions": "3200x1800"
+        }
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    }
+  ],
+  "mobile": {
+    "capture": "video/assets/captures/run-1/mobile/calendar-mobile.png",
+    "device": "Playwright Pixel 7 descriptor; 390x844; touch",
+    "sha256": "48ad3fdd40d581203bb779e401b4a5f08d17ffb6343c068139fd37be84009de3",
+    "bytes": 116024
+  }
+}
