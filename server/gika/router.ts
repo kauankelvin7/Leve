@@ -26,6 +26,7 @@ import { consumeGikaQuota, consumeGikaRecoveryQuota, createGikaRecoveryQuota } f
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 import { semanticTurnSchema, validateSemanticMutation, type SemanticTurn } from './semanticTurn.ts';
 import { createShoppingListDescriptorSchema, shoppingListsResultSchema } from '../../packages/domain/src/gikaShopping.ts';
+import { isNotificationCapabilityRequest, notificationCapabilityReply } from './notificationCapability.ts';
 // Two bounded 10s provider phases plus 5s for authorization/reads; client deadline is 30s.
 const OPERATION_DEADLINE_MS = 25_000;
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
@@ -123,6 +124,17 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const context = await repository.authorize(identity);
         stage = 'quota';
         await consumeQuota(identity.uid);
+        if (isNotificationCapabilityRequest(input.text)) {
+          const current = await repository.authorize(identity);
+          if (JSON.stringify(current) !== JSON.stringify(context) || signal.aborted) throw new GikaFault('GIKA_POLICY');
+          return gikaInterpretationSchema.parse({
+            text: notificationCapabilityReply(input.text),
+            intent: 'conversation',
+            domainIntent: 'GIKA_META',
+            simulated: false,
+            reads: [],
+          });
+        }
         stage = 'model';
         const routingInput = { text: input.text, context, ...(input.conversation ? { conversation: input.conversation } : {}) };
         let semantic: SemanticTurn | null = null;

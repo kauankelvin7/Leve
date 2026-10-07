@@ -45,6 +45,23 @@ describe('Gika semantic domain classification and software boundary',()=>{
     if(text.startsWith('Crie'))expect(response.body.createTask.title).toBe('academia');
     if(text.startsWith('Reserve')){expect(response.body.intent).toBe('agenda_action');expect(response.body).not.toHaveProperty('createTask');}
   });
+  it.each([
+    'O Leve faz notificações?',
+    'Me avise amanhã de revisar isso',
+    'Quero ser notificado o dia todo',
+    'Poderia agendar para amanhã às 19:00 que eu tenho que ir pra academia, preciso que me notifique',
+  ])('answers notification capability without trusting a provider denial: %s', async text => {
+    const model = { classify: vi.fn().mockRejectedValue(new Error('provider must not be called')), interpret: vi.fn() };
+    const f = fixture(model);
+    const response = await f.ask(text);
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({ intent: 'conversation', domainIntent: 'GIKA_META', reads: [] });
+    expect(response.body.text).toMatch(/notifica(?:ção|ções)/i);
+    expect(response.body.text).toMatch(/horário/i);
+    expect(model.classify).not.toHaveBeenCalled();
+    expect(model.interpret).not.toHaveBeenCalled();
+    expect(f.quota).toHaveBeenCalledTimes(1);
+  });
   it.each(['SOCIAL','OUT_OF_SCOPE','AGENDA_ACTION'])('uncertain %s never reads or proposes a mutation',async intent=>{
     const model={classify:vi.fn().mockResolvedValue({intent,certain:false,reply:null}),interpret:vi.fn()};
     const f=fixture(model),response=await f.ask('Talvez isso amanhã');expect(response.status).toBe(200);expect(model.interpret).not.toHaveBeenCalled();expect(f.repository.read).not.toHaveBeenCalled();expect(response.body).not.toHaveProperty('createTask');
@@ -66,6 +83,7 @@ describe('Gika semantic domain classification and software boundary',()=>{
   });
   it('classifies using the single schema with no agenda functions or private context',()=>{
     const payload=geminiPayload({...input,classifyOnly:true});expect(payload.tools[0]!.functionDeclarations.map(call=>call.name)).toEqual(['classify_intent']);expect(payload.systemInstruction.parts[0]!.text).toContain('Não use listas de palavras');expect(payload.systemInstruction.parts[0]!.text).toContain('A ordem das informações não importa');expect(payload.systemInstruction.parts[0]!.text).toContain('eu quero agendar para amanhã às 7 horas da noite é ir à academia');
+    expect(geminiPayload({...input,turnOnly:true}).systemInstruction.parts[0]!.text).toContain('não geram aviso contínuo ao longo do dia');
     expect(geminiPayload({...input,agendaIntent:'AGENDA_QUERY'}).tools[0]!.functionDeclarations.map(call=>call.name)).toEqual(['get_shopping_lists','respond_conversation','get_today','get_day','get_week']);
     for(const value of [{intent:'GENERAL',certain:true,reply:null},{intent:'OUT_OF_SCOPE',certain:true,reply:'tutorial'},{intent:'AGENDA_ACTION',certain:true,reply:null,uid:'other'}])expect(gikaIntentClassificationSchema.safeParse(value).success).toBe(false);
   });
@@ -100,7 +118,6 @@ describe('explicit current request after another conversation domain',()=>{
 
 it.each([
  ['Me ensine Python','Então reserve amanhã das 19h às 20h para estudar Python'],
- ['Qual a capital da França?','Então me lembre amanhã de pesquisar isso'],
 ])('unsupported/incomplete fields after %s still route current %s as ACTION without invented effects',async(first,current)=>{
  const model={classify:vi.fn().mockResolvedValue({intent:'AGENDA_ACTION',certain:true,reply:null,currentAction:null}),interpret:vi.fn().mockResolvedValue([{name:'respond_conversation',args:{text:'Posso adicionar uma tarefa com horário. Confirme os detalhes para usar sua agenda.'}}])};
  const f=fixture(model),response=await f.ask(current,[{role:'user',text:first},{role:'assistant',text:'Eu fico focada na sua agenda e organização no Leve.'}]);

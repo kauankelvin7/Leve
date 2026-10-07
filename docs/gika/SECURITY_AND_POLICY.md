@@ -114,6 +114,10 @@ O parágrafo anterior registra o escopo histórico M2. Agora somente create_task
 
 Descriptor não é criação concluída: somente commandBridge envia activity.create pelo sendCommand existente. Auth corrente após espera do modelo e guard opcional expectedUid após espera de token impedem envio para conta trocada/desconectada. Middleware /commands verifica token; transação existente revalida membership/profile/controles. Nenhuma nova escrita ou bypass de policy. Receipt validado (applied/alreadyApplied, entity/operation iguais, revisão1) é necessário para createdTask e confirmação na UI. Falhas preservam rascunho sem sucesso falso e sem enfileirar Gika. Cancelamento após envio tem resultado potencialmente incerto, sem alegar rollback. Base mínima de IDs pendentes já exigida pelo domínio está documentada no M3_T1_EXECPLAN; T2/T3 permanecem não autorizados. Não há complete/update/reschedule/delete/batch/series/undo/voz/proatividade.
 
+### Conhecimento de notificações
+
+O domínio já materializa uma notificação automática no horário de atividades com hora definida quando as notificações do aparelho estão ativas. A Gika pode explicar essa capacidade sem consultar a agenda nem chamar o provider. Atividades de dia inteiro não possuem instante de disparo: a resposta deve pedir um horário ou um lembrete antecipado e nunca prometer um aviso contínuo durante o dia. Pedidos que misturam criação e notificação recebem essa orientação server-owned; nenhuma tarefa é criada apenas por explicar a capacidade.
+
 ## M3-T2 — proteção de replay
 
 IDs criados pelo sistema/UI e nunca enviados ao Gemini. Request UUID torna-se operation/entity dentro do namespace UID autenticado; duas contas podem usar mesmo UUID sem consultar receipt/tarefa uma da outra. Envelope gika é strict e limitado a activity.create simples/revision0/entity=operation, sem outras ações/campos. SHA256 de texto vincula ID ao pedido, não é dedup por conteúdo nem prova de autorização. Hash/snapshot privados não são logados nem enviados ao modelo.

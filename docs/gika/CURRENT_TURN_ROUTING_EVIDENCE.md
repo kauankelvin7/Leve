@@ -37,7 +37,7 @@ Uma ação completa grounded não passa por uma segunda interpretação com o hi
 | Qual a capital da França? | Então me lembre amanhã de pesquisar isso | ACTION; esclarecer referência/capacidade, sem inventar reminder |
 | Pedido de ação anterior | Então isso | Incerto; zero proposta/dispatch |
 
-Tarefa simples não possui contrato de reserva com início/fim nem lembrete automático nesses comandos. Os dois exemplos correspondentes classificam a intenção atual corretamente, mas não fingem essas capacidades. Histórico não autoriza alvo, patch ou consentimento de uma mutação incompleta.
+Tarefa simples não possui contrato de reserva com início/fim nem lembrete configurável por essa ferramenta. A capacidade de notificação automática existente é explicada por uma resposta server-owned antes da classificação quando o pedido pergunta por avisos ou mistura agendamento e notificação; ela informa que atividades com horário avisam no instante definido e que atividades de dia inteiro precisam de horário. Histórico não autoriza alvo, patch ou consentimento de uma mutação incompleta.
 
 ## Gates
 
