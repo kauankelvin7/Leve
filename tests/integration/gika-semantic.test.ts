@@ -122,6 +122,26 @@ beforeEach(async () => {
 afterEach(() => vi.restoreAllMocks());
 
 describe('semantic turn through real adapter, Auth/Firestore emulators and command layer', () => {
+  it('mixed scheduling and automatic notification creates the actual task and exactly one at-time job', async () => {
+    const user = await account();
+    const input = { requestId: randomUUID(), text: 'Poderia agendar para amanhã às 19:00 que eu tenho que ir pra feira, preciso que me notifique' };
+    const args = { title: 'ir pra feira', dueDate: tomorrow(), dueTime: '19:00' };
+    const controlled = harness(() => providerResponse(turn([{ name: 'create_task', args }])));
+    const response = await controlled.ask(user.token, input).expect(200);
+    const parsed = gikaInterpretationSchema.parse(response.body);
+    expect(parsed.createTask).toEqual({ ...args, timeZone: zone });
+    const command = commandEnvelopeSchema.parse({ command: 'activity.create', operationId: input.requestId, entityId: input.requestId, expectedRevision: 0,
+      gika: { requestTextHash: hashValue(input.text) }, payload: taskActivityInput(parsed.createTask!) });
+    await dispatch(user.token, command).expect(200);
+    await dispatch(user.token, command).expect(200);
+    const saved = await db.doc(`users/${user.uid}/activities/${input.requestId}`).get();
+    expect(saved.data()?.title).toBe('ir pra feira');
+    expect(saved.data()?.schedule.dueTime).toBe('19:00');
+    const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(jobs.size).toBe(1);
+    expect(jobs.docs[0]?.data()).toMatchObject({ reminderSpecId: 'at-time', state: 'pending', activityId: input.requestId });
+    expectSingleTurn(controlled.transport);
+  });
   it('natural creation returns a descriptor; command persists once and receipt recovery makes no second upstream call', async () => {
     const user = await account(), other = await account();
     const input = { requestId: randomUUID(), text: 'Me ajuda colocando Lavar mochila na agenda de amanhã às 18h.' };

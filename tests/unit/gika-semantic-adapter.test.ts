@@ -16,6 +16,18 @@ const response = (args: unknown, name = 'respond_turn') => Response.json({
 afterEach(() => vi.restoreAllMocks());
 
 describe('one semantic turn through the real Gemini adapter with controlled transport', () => {
+  it('teaches notification capability and mixed intent without downgrading Gemini reasoning', () => {
+    const payload = geminiPayload({ ...input, turnOnly: true });
+    const instruction = payload.systemInstruction.parts.map(part => part.text).join('\n');
+    expect(instruction).toContain('não uma segunda ação');
+    expect(instruction).toContain('feira não é academia');
+    expect(instruction).toContain('título/data/horário precisam estar na mensagem atual');
+    expect(instruction).toContain('Dúvidas sobre funcionamento das notificações são GIKA_META');
+    expect(payload.generationConfig.thinkingConfig).toEqual({ thinkingLevel: 'MEDIUM' });
+    const legacy = geminiPayload({ ...input, classifyOnly: true }).systemInstruction.parts.map(part => part.text).join('\n');
+    expect(legacy).toContain('notificação automática pontual');
+    expect(legacy).not.toContain('Não prometa automação, notificações');
+  });
   it('returns classification and a proposal in one upstream call while preserving contextual content', async () => {
     const turn: SemanticTurn = {
       domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: null,

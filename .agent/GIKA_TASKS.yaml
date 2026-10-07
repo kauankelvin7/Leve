@@ -2,6 +2,23 @@ version: 1
 project: gika
 source_of_truth: true
 
+notification_reasoning:
+  status: done
+  owner: root
+  entry_checkpoint: e3caf7f
+  branch: fix/gika-semantic-notifications
+  plan: .agent/GIKA_NOTIFICATION_REASONING_EXECPLAN.md
+  evidence: docs/gika/NOTIFICATION_REASONING.md
+  acceptance_criteria:
+    - "Gemini recebe pedido completo sem bypass; feira não vira academia."
+    - "Continuação completa aceita; histórico não fornece campos ausentes."
+    - "Restrições de notificação não são descartadas silenciosamente."
+    - "Comando/ACK reais; job at-time único mesmo no retry."
+    - "Gates unitários/integração/Playwright/lint/build e revisão do diff."
+  live_evaluation: "NOT_RUN: GEMINI_API_KEY ausente; sem promessa de precisão universal ou push real."
+  gates: "826 unitários/323 integração/focal9/Playwright crítico8 e notificações2 PASS; lint/boundaries/typechecks/build PASS."
+  checkpoint: "fix(gika): interpret scheduling and notification intent together"
+
 # Hotfix conversacional de produção, sem nova milestone: histórico geral bounded,
 # ferramentas de conversa/leitura/ação separadas; criação exige pedido explícito.
 # Evidência e gates: docs/gika/CONVERSATION_ROUTING_EVIDENCE.md.

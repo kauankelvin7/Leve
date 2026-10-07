@@ -204,10 +204,40 @@ function hasSpecificTitleEvidence(text: string) {
     && !/^(?:adicion|cri|agend|marc|marqu|coloc|coloqu|inclu|anot|bot|ponh|consegu)\w*$/.test(token)
   );
 }
-export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext): CreationIntent {
+type ClarificationTurn = { role: 'user' | 'assistant'; text: string };
+
+/** History establishes only that this is an answer to a scheduling question.
+ * Every task field must still be grounded in the CURRENT text below. */
+function answersSchedulingQuestion(conversation: readonly ClarificationTurn[] | undefined) {
+  const assistant = conversation?.at(-1);
+  const user = conversation?.at(-2);
+  return assistant?.role === 'assistant' && user?.role === 'user'
+    && createCue.test(normalized(user.text))
+    && /\?/.test(assistant.text)
+    && /\b(?:agendar|adicionar|marcar|tarefa|atividade|compromisso)\b/.test(normalized(assistant.text));
+}
+
+export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSchema>, text: string, context: ModelContext, conversation?: readonly ClarificationTurn[]): CreationIntent {
   const whole = normalized(text);
-  if (!createCue.test(whole)) return { clarification: 'Qual tarefa, data e horário você quer usar na sua agenda?' };
-  if (unsupportedSemanticAction.test(whole) || recurringOrBatchSemanticAction.test(whole) || /\b(?:e|tambem|depois)\s+(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|conclu\w*|renome\w*|move\w*|reagend\w*)\b/.test(whole)) {
+  const reminderRequest = /\b(?:me\s+(?:lembre|avise|notifique)|(?:lembre|avise|notifique)-me)\b/.test(whole);
+  if (!createCue.test(whole) && !reminderRequest && !answersSchedulingQuestion(conversation)) return { clarification: 'Qual tarefa, data e horário você quer usar na sua agenda?' };
+  // Conditions are not routing rules: Gemini interprets first. Reject a proposal
+  // that silently drops notification constraints unsupported by this contract.
+  const conditions = groundedTitle(parsed.title, text) ? whole.replace(normalized(parsed.title), '') : whole;
+  const notification = /\b(?:notifi\w*|avis\w*|lembre\w*|alert\w*)\b/.test(conditions);
+  if (notification && /\b(?:nao\s+(?:(?:quero|preciso|deve|me|que|voce|ser|um|nenhum|receber)\s+)*|sem\s+(?:(?:um|uma|nenhum|nenhuma)\s+)*|(?:deslig\w*|desativ\w*|silenci\w*)\s+(?:(?:o|a|os|as)\s+)*)(?:notifi\w*|avis\w*|lembre\w*|alert\w*)\b/.test(conditions)) {
+    return { clarification: 'Atividades com horário têm aviso automático quando as notificações estão ativadas no aparelho. Ainda não consigo desligar esse aviso por atividade pela conversa. Quer agendar mesmo assim?' };
+  }
+  if (notification && /\b(?:dia (?:todo|inteiro)|o tempo todo|continuamente|a cada|de hora em hora|durante o dia|ao longo do dia)\b/.test(conditions)) {
+    return { clarification: groundedTimeEvidence(text).value
+      ? 'O aviso automático é pontual, no horário da atividade, não contínuo durante o dia. Você quer agendar com esse aviso único?'
+      : 'O aviso automático é pontual, não contínuo durante o dia. Qual horário você prefere para receber a notificação?' };
+  }
+  if (notification && /\b(?:antes|antecedencia|antecipad\w*|depois|apos)\b/.test(conditions)) {
+    return { clarification: 'O Leve tem lembretes antecipados, mas ainda não consigo configurá-los pela conversa. Você pode escolhê-los no formulário da atividade. Quer que eu prepare só o agendamento com o aviso automático no horário?' };
+  }
+  const actionText = reminderRequest ? whole.replace(/\b(?:me\s+lembre|lembre-me)\b/g, '') : whole;
+  if (unsupportedSemanticAction.test(actionText) || recurringOrBatchSemanticAction.test(actionText) || /\b(?:e|tambem|depois)\s+(?:adicion\w*|cri\w*|agend\w*|marc\w*|marqu\w*|coloc\w*|coloqu\w*|inclu\w*|anot\w*|bot\w*|ponh\w*|conclu\w*|renome\w*|move\w*|reagend\w*)\b/.test(whole)) {
     return { clarification: 'Posso adicionar uma tarefa simples por vez. Qual única tarefa você quer colocar na agenda?' };
   }
   if (/\bnao\s+(?:quero|queria|gostaria|preciso|adicion\w*|cri\w*|agend\w*|marc\w*|coloc\w*|inclu\w*|anot\w*|bot\w*|ponh\w*)\b/.test(whole) || /\b(?:talvez|se)\b/.test(whole)) {
@@ -226,6 +256,7 @@ export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSc
   }
 
   const time = groundedTimeEvidence(text);
+  if (notification && !time.mentioned) return { clarification: 'Qual horário você prefere para essa atividade? O aviso automático precisa de um horário.' };
   if (time.ambiguous) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };
   if ((parsed.dueTime ?? null) !== time.value) {
     if (time.value === null && parsed.dueTime !== null && time.mentioned) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };

@@ -1,4 +1,21 @@
-## Retomada vigente — refinamento visual, 06/10/2026
+## Retomada vigente — semântica de agendamento e notificação, 07/10/2026
+
+Entrada main e3caf7f; branch fix/gika-semantic-notifications. O pedido completo
+passa por Gemini respond_turn, sem interceptação lexical notificationCapability.
+Modelo e thinking MEDIUM preservados. Resposta completa a esclarecimento aceita
+sem repetir verbo; todos os campos da mutação continuam exigidos no texto atual.
+Condições de avisos contínuos/antecipados/opt-out não podem ser descartadas.
+Job automático at-time usa writer existente; sucesso UI depende de ACK.
+
+ExecPlan: .agent/GIKA_NOTIFICATION_REASONING_EXECPLAN.md. Evidência:
+docs/gika/NOTIFICATION_REASONING.md. Validação local: 826 unitários, 323 integração,
+focal integração9, críticos Playwright8 e gate de notificações2 PASS. Lint,
+boundaries, typechecks/build PASS; aviso de chunks grandes preexistente.
+Checkpoint: fix(gika): interpret scheduling and notification intent together.
+Gemini real NOT_RUN por ausência de chave; testes controlados não são prova de
+precisão live/push. Casos NR01–NR12 em EVALS para avaliação posterior real.
+
+## Retomada histórica — refinamento visual, 06/10/2026
 
 Pedido posterior autoriza executar as etapas do relatório estético, revisar/testar
 e integrar na main. Entrada `e3909468f4f4c398ce2dca20f7d0d66d1cfc772e`;

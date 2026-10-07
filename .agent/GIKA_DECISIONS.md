@@ -1,5 +1,21 @@
 # Gika — Decision Log
 
+## ADR-GIKA-028 — interpretação completa antes da validação de notificações
+
+- Data: 2026-10-07
+- Status: accepted
+- Contexto: atalho de notificações suprimiu agendamento válido e inventou exemplo
+  de academia quando o pedido era feira; continuação pediu campos já claros.
+- Decisão: Gemini decide finalidade/proposta no respond_turn existente. Retirar
+  interceptação regex; manter guardas de dados atuais e restrições não suportadas.
+  Contexto bounded indica resposta a pergunta de agendamento, sem fornecer campos
+  ausentes ou autorizar mutações sobre tarefas antigas. Sem nova escrita/draft.
+- Consequência: notificação pontual não é segunda ação; antecipação, continuidade
+  e opt-out não são ignorados. Modelo/thinking, ACK, auth/quota/receipts e demais
+  confirmações intactos. UI usa texto factual condicionado à permissão no aparelho,
+  revisado com humanizer-br. Evals reais permanecem pendentes sem chave Gemini.
+- Evidência: docs/gika/NOTIFICATION_REASONING.md.
+
 ## ADR-GIKA-027 — listas de compras como capacidade explícita, sem escrita genérica
 
 - Data: 2026-10-05

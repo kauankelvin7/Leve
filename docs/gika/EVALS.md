@@ -394,4 +394,25 @@ Provas determinísticas: `tests/unit/gika-gemini.test.ts`, `tests/unit/gika-crea
 
 ## Follow-up com intenção atual explícita
 
-Regressão exata OUT_OF_SCOPE → `então agende para amanhã ir à academia às 7 horas da noite`: normalizador/civil-time em unit, descriptor → command real → retry/receipt/isolamento em integration, bridge → ACK → reload em E2E. Também cobre ação sem histórico, após SOCIAL/meta/organização, reagendamento às20h com confirmação, pedido incerto, source anterior/adulterado, horário inventado e instruções descartadas. Intervalos/lembretes classificam ACTION mas não inventam contratos ausentes. Evidência em [CURRENT_TURN_ROUTING_EVIDENCE.md](CURRENT_TURN_ROUTING_EVIDENCE.md).
+Regressão exata OUT_OF_SCOPE → `então agende para amanhã ir à academia às 7 horas da noite`: normalizador/civil-time em unit, descriptor → command real → retry/receipt/isolamento em integration, bridge → ACK → reload em E2E. Também cobre ação sem histórico, após SOCIAL/meta/organização, reagendamento às20h com confirmação, pedido incerto, source anterior/adulterado, horário inventado e instruções descartadas. Intervalos/lembretes antecipados classificam ACTION mas não inventam contratos ausentes; aviso automático no horário não é segunda ação. Evidência em [CURRENT_TURN_ROUTING_EVIDENCE.md](CURRENT_TURN_ROUTING_EVIDENCE.md).
+
+## Regressões de agendamento e notificações — 07/10/2026
+
+Fixtures controladas provam contratos; os mesmos prompts devem integrar a
+avaliação live antes de declarar qualidade semântica real. Gemini live NOT_RUN
+nesta entrega por ausência de chave. Referência: [NOTIFICATION_REASONING.md](NOTIFICATION_REASONING.md).
+
+| Caso | Entrada atual/contexto | Resultado esperado |
+| --- | --- | --- |
+| NR01 | Poderia agendar para amanhã às 19:00 que eu tenho que ir pra feira, preciso que me notifique | create_task feira/amanhã/19:00, não academia; sucesso somente após ACK |
+| NR02 | Me lembre de ir pra feira amanhã às 19h | Mesmo agendamento simples e aviso pontual |
+| NR03 | Me avise de ir pra feira amanhã às sete da noite | Hora civil 19:00, sem inventar lembrete antecipado |
+| NR04 | Ir a feira amanhã às 19:00; após pergunta sobre o que agendar | Proposta completa, sem pedir dados já claros |
+| NR05 | Sim; após pergunta sobre hora de tarefa antiga | Sem mutação; não completar campos pelo histórico |
+| NR06 | Às 19h; após título/data antigos | Sem mutação com campos históricos |
+| NR07 | Agende ir pra feira amanhã e me notifique | Perguntar somente horário, sem criação parcial |
+| NR08 | Agende Academia amanhã às 19h e me avise 30 minutos antes | Explicar configuração no formulário, sem descartar antecipação |
+| NR09 | Agende Academia amanhã às 19h e me notifique o dia todo | Explicar aviso pontual, não prometer repetição nem perguntar hora já clara |
+| NR10 | Agende Academia amanhã às 19h sem notificação | Não criar com aviso contra a preferência; explicar limite por atividade |
+| NR11 | O Leve faz notificações? | GIKA_META factual, sem criação/leitura da agenda |
+| NR12 | Repetir requestId após ACK perdido | Receipt/retry, uma tarefa e um job at-time; sem novo provider |

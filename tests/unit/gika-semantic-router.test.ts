@@ -67,6 +67,68 @@ afterEach(() => {
 
 // Controlled respond_turn outputs prove routing boundaries, not provider semantic accuracy.
 describe('single semantic turn through the real Gemini adapter and router', () => {
+  it.each(['feira', 'dentista', 'academia'])('scheduling %s with an automatic notification reaches Gemini and keeps the actual title', async target => {
+    const title = `ir pra ${target}`;
+    const f = fixture(action({ name: 'create_task', args: { title, dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask(`Poderia agendar para amanhã às 19:00 que eu tenho que ${title}, preciso que me notifique`);
+    expect(response.status).toBe(200);
+    expect(response.body.createTask).toMatchObject({ title, dueDate: tomorrow, dueTime: '19:00' });
+    expect(f.http).toHaveBeenCalledTimes(1);
+    expect(response.body.text).not.toContain('Tente agendar');
+  });
+  it('a complete answer to the scheduling question does not need a repeated creation verb', async () => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'Ir a feira', dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask('Ir a feira amanhã às 19:00', [
+      { role: 'user', text: 'Preciso agendar algo' },
+      { role: 'assistant', text: 'O que você gostaria de agendar?' },
+    ]);
+    expect(response.status).toBe(200);
+    expect(response.body.createTask).toMatchObject({ title: 'Ir a feira', dueDate: tomorrow, dueTime: '19:00' });
+    expect(f.http).toHaveBeenCalledTimes(1);
+  });
+  it.each(['Me lembre de', 'Me avise de', 'Me notifique para'])('%s is a scheduling request, not an unsupported second operation', async prefix => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'ir pra feira', dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask(`${prefix} ir pra feira amanhã às 19h`);
+    expect(response.status).toBe(200);
+    expect(response.body.createTask).toMatchObject({ title: 'ir pra feira', dueDate: tomorrow, dueTime: '19:00' });
+  });
+  it.each(['19h', '19:00', 'sete da noite', '19 horas'])('automatic notification supports the current time expression %s', async time => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'ir pra feira', dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask(`Agende ir pra feira amanhã às ${time} e me notifique`);
+    expect(response.status).toBe(200);
+    expect(response.body.createTask).toMatchObject({ title: 'ir pra feira', dueDate: tomorrow, dueTime: '19:00' });
+  });
+  it('asks only the missing time rather than silently creating a task with no requested notification', async () => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'ir pra feira', dueDate: tomorrow, dueTime: null } }));
+    const response = await f.ask('Agende ir pra feira amanhã e me notifique');
+    expect(response.status).toBe(200);
+    expect(response.body).not.toHaveProperty('createTask');
+    expect(response.body.text).toContain('Qual horário');
+    expect(response.body.text).not.toContain('Qual tarefa');
+  });
+  it.each(['sim', 'às 19h'])('clarification history cannot supply missing current task fields: %s', async text => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'Ir a feira', dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask(text, [
+      { role: 'user', text: 'Agende Ir a feira amanhã' },
+      { role: 'assistant', text: 'Qual horário para essa tarefa?' },
+    ]);
+    expect(response.body).not.toHaveProperty('createTask');
+  });
+  it.each([
+    'Agende Academia amanhã às 19h e me avise 30 minutos antes',
+    'Agende Academia amanhã às 19h e me notifique o dia todo',
+    'Agende Academia amanhã às 19h mas não me notifique',
+    'Agende Academia amanhã às 19h sem notificação',
+    'Agende Academia amanhã às 19h e desative as notificações',
+    'Agende Academia amanhã às 19h mas não quero receber notificações',
+  ])('never silently drops a notification restriction: %s', async text => {
+    const f = fixture(action({ name: 'create_task', args: { title: 'Academia', dueDate: tomorrow, dueTime: '19:00' } }));
+    const response = await f.ask(text);
+    expect(response.status).toBe(200);
+    expect(response.body).not.toHaveProperty('createTask');
+    expect(response.body.text).toMatch(/aviso|notifica|lembrete/i);
+    expect(f.http).toHaveBeenCalledTimes(1);
+  });
   it('preserves a focused query clarification instead of asking again for an already supplied period', async () => {
     const f = fixture({ domainIntent: 'AGENDA_QUERY', certain: true, explicitAction: false, reply: null,
       proposals: [{ name: 'respond_conversation', args: { text: 'Você quer consultar esta semana ou a próxima?' } }] });

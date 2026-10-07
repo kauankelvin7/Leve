@@ -47,18 +47,16 @@ describe('Gika semantic domain classification and software boundary',()=>{
   });
   it.each([
     'O Leve faz notificações?',
-    'Me avise amanhã de revisar isso',
     'Quero ser notificado o dia todo',
-    'Poderia agendar para amanhã às 19:00 que eu tenho que ir pra academia, preciso que me notifique',
-  ])('answers notification capability without trusting a provider denial: %s', async text => {
-    const model = { classify: vi.fn().mockRejectedValue(new Error('provider must not be called')), interpret: vi.fn() };
+  ])('notification questions reach semantic classification rather than a keyword bypass: %s', async text => {
+    const model = { classify: vi.fn().mockResolvedValue({ intent: 'GIKA_META', certain: true, reply: 'O Leve envia notificações no horário da atividade, com as notificações ativadas no aparelho. Não há aviso contínuo.' }), interpret: vi.fn() };
     const f = fixture(model);
     const response = await f.ask(text);
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({ intent: 'conversation', domainIntent: 'GIKA_META', reads: [] });
     expect(response.body.text).toMatch(/notifica(?:ção|ções)/i);
     expect(response.body.text).toMatch(/horário/i);
-    expect(model.classify).not.toHaveBeenCalled();
+    expect(model.classify).toHaveBeenCalledTimes(1);
     expect(model.interpret).not.toHaveBeenCalled();
     expect(f.quota).toHaveBeenCalledTimes(1);
   });
