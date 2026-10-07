@@ -2,6 +2,14 @@ version: 1
 project: gika
 source_of_truth: true
 
+today_date_clarity:
+  status: done
+  owner: root
+  entry_checkpoint: dedf0d7
+  plan: .agent/TODAY_DATE_CLARITY_EXECPLAN.md
+  gates: "Lint/boundaries/build/typechecks/diff-check e Playwright focal3 PASS59.2s sem atualizar referências na prova final; fuso, retorno/reload, Axe e reflow."
+  next_action: "Conferir CI/Planner do novo HEAD após push."
+
 trash_series_grouping:
   status: done
   owner: root

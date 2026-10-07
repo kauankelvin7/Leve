@@ -1,3 +1,16 @@
+## Entrega — clareza do dia consultado (07/10/2026)
+
+Entrada dedf0d7. Usuário confirmou seleção de outro dia e aprovou remover botão
+redundante após prévia. Resumo informa Hoje/Amanhã/Dia selecionado; Hoje permanece
+no calendário. Sem alterar navegação, sessionStorage, fuso ou dados. Mobile compacto
+preserva tarefas acima da navbar. Plano TODAY_DATE_CLARITY_EXECPLAN.md.
+Lint/boundaries/typechecks/build/diff-check PASS; Playwright focal3 PASS sem atualizar
+referências na prova final (59.2s), inclui fuso UTCdia8/SPdia7, seleção/retorno/reload,
+Axe, mobile320/390/desktop1024/1366 e texto200%. Três referências intencionais
+revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
+Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
+na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
+
 ## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por

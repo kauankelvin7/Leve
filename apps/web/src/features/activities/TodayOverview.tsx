@@ -23,6 +23,7 @@ export function TodayOverview({
   plannedMinutes,
 }: TodayOverviewProps) {
   const date = Temporal.PlainDate.from(selectedDay);
+  const dayLabel = date.equals(today) ? 'Hoje' : date.equals(Temporal.PlainDate.from(today).add({ days: 1 })) ? 'Amanhã' : 'Dia selecionado';
   const summary = loading
     ? 'Abrindo o dia…'
     : pendingTaskCount
@@ -35,7 +36,7 @@ export function TodayOverview({
 
   return <section className={styles.overview} aria-label="Resumo do dia selecionado">
     <div className={styles.date}><strong>{date.day}</strong><span>{date.toLocaleString('pt-BR', { month: 'long' })}<small>{date.toLocaleString('pt-BR', { weekday: 'long' })}</small></span></div>
-    <div className={styles.summary}><h2>{summary}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}</div>
+    <div className={styles.summary}><p className={styles.dayContext}>{dayLabel}</p><h2>{summary}</h2>{plannedMinutes > 0 ? <p>{plannedMinutes} min planejados.</p> : null}</div>
     <Link className={styles.reviewLink} to="/revisao"><Icon name="clock" /><span>Ver revisão</span></Link>
   </section>;
 }
