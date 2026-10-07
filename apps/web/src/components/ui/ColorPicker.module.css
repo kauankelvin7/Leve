@@ -1,0 +1,16 @@
+.field { display: grid; gap: 7px; min-width: 0; }
+.label { font-weight: 600; }
+.trigger { display: flex; justify-content: flex-start; gap: 12px; align-items: center; width: 100%; text-align: left; background: var(--color-field); color: var(--color-text); }
+.trigger > svg { margin-left: auto; width: 18px; }
+.swatch { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--color-canvas-accent); border: 2px solid color-mix(in srgb, var(--color-text) 22%, transparent); }
+.dialog { width: min(410px, calc(100vw - 32px)); max-height: min(680px, calc(100dvh - 48px)); padding: 0; overflow: auto; border: 1px solid var(--color-border); border-radius: 24px; background: var(--color-solid); color: var(--color-text); box-shadow: var(--shadow-dialog); }
+.dialog::backdrop { background: #101a186b; }
+.header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 22px 14px; background: var(--color-solid); border-bottom: 1px solid var(--color-border); z-index: 1; }
+.header p { margin: 0 0 2px; font-size: .75rem; color: var(--color-text-muted); }
+.header h2 { margin: 0; font-size: 1.2rem; }
+.options { display: grid; gap: 4px; padding: 10px 12px 16px; }
+.options > button { display: flex; justify-content: flex-start; align-items: center; gap: 14px; min-height: 48px; padding: 10px 14px; text-align: left; border: 1px solid transparent; border-radius: 12px; color: var(--color-text); background: transparent; }
+.options > button[aria-pressed=true] { background: var(--color-accent-soft); border-color: var(--color-accent-border); font-weight: 700; }
+.options > button:hover { background: var(--color-accent-hover); }
+.options > button svg { margin-left: auto; width: 18px; }
+@media (forced-colors: active) { .options > button[aria-pressed=true] { border: 2px solid Highlight; } }

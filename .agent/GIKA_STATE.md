@@ -1,4 +1,32 @@
-## Retomada vigente — semântica de agendamento e notificação, 07/10/2026
+## Retomada vigente — avisos sem hora e cores em modal, 07/10/2026
+
+Entrada main `cf865ca`. Pedido do usuário define meia-noite como padrão implícito.
+Domínio resolve o aviso às 00:00 no fuso IANA sem alterar os instantes nulos de
+atividades sem hora. `dayReminderTime` opcional preservado em import, leitura Gika
+e movimentação de calendário. Backfill V2 inclui atividades futuras antigas,
+com mesmos IDs de jobs, revisões, leases e verificações de conta/dispositivo.
+Gika aceita pedido com data e aviso sem hora; capacidades atualizadas no Gemini,
+mesmo modelo/thinking e sem bypass da interpretação. Avisos contínuos/antecipados
+pela conversa continuam pedindo esclarecimento, sem executar parcialmente.
+
+Revisão crítica identificou corrida no logout já presente no CI da entrada:
+live queries são encerradas antes da limpeza Firestore, callbacks tardios ignorados
+e teste aguarda reload, mantendo exigência de zero comandos.
+
+ColorPicker compartilhado em atividades/notas: controle compacto e dialog nativo,
+seleção com nome/check, teclado/foco e scroll. Presets e writers existentes.
+Gates: 830 unitários PASS; 324 integração PASS, mais 2 regressões focais após
+ampliar backfill; 85 unitários focais PASS; 4 Playwright PASS com Auth/Firestore
+reais emulados, upstream Gemini controlado, Axe sem violações, viewport móvel,
+reload da nota e texto 200% em desktop. Mais 8 Playwright críticos e 9 unitários de transporte
+do calendário PASS. Lint/boundaries/build/typechecks PASS.
+Falha inicial do seletor Playwright com getByLabel exact corrigida usando o papel
+combobox; gate completo reexecutado. Nenhuma regressão conhecida nesta entrega.
+Plano: `.agent/ALL_DAY_REMINDERS_EXECPLAN.md`. Próxima prova externa: receber o
+push em aparelho real e avaliar Gemini live, indisponível sem chave neste ambiente.
+O horário é agendado; entrega depende de permissão, scheduler/rede e SO.
+
+## Retomada histórica — semântica de agendamento e notificação, 07/10/2026
 
 Entrada main e3caf7f; branch fix/gika-semantic-notifications. O pedido completo
 passa por Gemini respond_turn, sem interceptação lexical notificationCapability.

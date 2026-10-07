@@ -1,6 +1,24 @@
 # Leve — ponto exato de retomada
 
-## Entrega vigente — identidade das notificações (06/10/2026)
+## Entrega vigente — avisos de dia inteiro e cores compactas (07/10/2026)
+
+Entrada main `cf865ca`. Tarefas com data sem hora e eventos all-day recebem
+aviso automático às 00:00 no fuso da atividade; sem opt-in adicional de lembrete.
+`dayReminderTime` opcional permite personalizar nas opções do formulário,
+sem transformar um dia inteiro em evento com hora. Antecipações partem desse
+aviso; eventos de vários dias avisam no primeiro dia por ocorrência.
+Atividade sem data não cria job; horários já passados não geram aviso retroativo.
+Backfill V2 inclui registros futuros antigos sem duplicar jobs já existentes.
+Gika recebe a capacidade real no prompt Gemini e aceita agendamento com data e
+pedido de aviso sem exigir hora. Não promete notificações contínuas.
+
+Atividade e nota compartilham um seletor compacto com modal nativo, amostra,
+nome e check; Escape, foco, fundo inativo e rolagem interna. Presets e valores
+persistidos preservados. Gates e limites: `.agent/ALL_DAY_REMINDERS_EXECPLAN.md`.
+Próxima verificação externa: conferir recebimento em aparelho com permissão ativa
+e scheduler configurado; Gemini live permanece não avaliado sem chave.
+
+## Histórico — identidade das notificações (06/10/2026)
 
 Base: `0316a5f` na main, com notificações automáticas e mensagens úteis já integradas.
 Novo ajuste: branch `fix/branded-push-notifications`. PNGs derivados do favicon

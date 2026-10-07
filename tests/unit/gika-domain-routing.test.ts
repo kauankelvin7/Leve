@@ -81,7 +81,7 @@ describe('Gika semantic domain classification and software boundary',()=>{
   });
   it('classifies using the single schema with no agenda functions or private context',()=>{
     const payload=geminiPayload({...input,classifyOnly:true});expect(payload.tools[0]!.functionDeclarations.map(call=>call.name)).toEqual(['classify_intent']);expect(payload.systemInstruction.parts[0]!.text).toContain('Não use listas de palavras');expect(payload.systemInstruction.parts[0]!.text).toContain('A ordem das informações não importa');expect(payload.systemInstruction.parts[0]!.text).toContain('eu quero agendar para amanhã às 7 horas da noite é ir à academia');
-    expect(geminiPayload({...input,turnOnly:true}).systemInstruction.parts[0]!.text).toContain('não geram aviso contínuo ao longo do dia');
+    expect(geminiPayload({...input,turnOnly:true}).systemInstruction.parts[0]!.text).toContain('Não há aviso contínuo ao longo do dia');
     expect(geminiPayload({...input,agendaIntent:'AGENDA_QUERY'}).tools[0]!.functionDeclarations.map(call=>call.name)).toEqual(['get_shopping_lists','respond_conversation','get_today','get_day','get_week']);
     for(const value of [{intent:'GENERAL',certain:true,reply:null},{intent:'OUT_OF_SCOPE',certain:true,reply:'tutorial'},{intent:'AGENDA_ACTION',certain:true,reply:null,uid:'other'}])expect(gikaIntentClassificationSchema.safeParse(value).success).toBe(false);
   });

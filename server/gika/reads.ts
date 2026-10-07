@@ -141,8 +141,8 @@ export const firestoreReads: ReadRepository = {
     for (const group of groups) for (const document of group.docs) {
       const data = document.data();
       if (data.deletedAt) continue;
-      const { title, descriptionPlain, categoryId, colorHex, estimatedMinutes, schedule, reminderSpecs } = data;
-      const activity = activityInputSchema.safeParse({ title, descriptionPlain, categoryId, colorHex, estimatedMinutes, schedule, reminderSpecs });
+      const { title, descriptionPlain, categoryId, colorHex, estimatedMinutes, schedule, reminderSpecs, dayReminderTime } = data;
+      const activity = activityInputSchema.safeParse({ title, descriptionPlain, categoryId, colorHex, estimatedMinutes, schedule, reminderSpecs, ...(dayReminderTime ? { dayReminderTime } : {}) });
       const item = readItemSchema.safeParse({ id: document.id, revision: data.revision, title, kind: data.kind, status: data.status, schedule, seriesId: data.seriesId, occurrenceKey: data.occurrenceKey });
       if (!activity.success || !item.success || data.schemaVersion !== 1 || data.deletedAt !== null) { partial = true; continue; }
       items.set(document.id, item.data);

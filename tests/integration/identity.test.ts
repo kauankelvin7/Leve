@@ -464,9 +464,10 @@ describe('comandos de conteúdo', () => {
 
     const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     const created = jobs.docs.map(job => job.data());
-    expect(created).toHaveLength(3);
+    expect(created).toHaveLength(4);
     expect(created).toEqual(expect.arrayContaining([
       expect.objectContaining({ activityId: 'tarefa-com-hora', reminderSpecId: 'at-time', state: 'pending' }),
+      expect.objectContaining({ activityId: 'tarefa-sem-hora', reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, state: 'pending' }),
       expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'at-time', state: 'pending' }),
       expect.objectContaining({ activityId: 'compromisso-com-lembrete', reminderSpecId: 'before-30', state: 'pending' }),
     ]));
@@ -478,6 +479,36 @@ describe('comandos de conteúdo', () => {
       .toBe('Seu compromisso começa em 1 hora e 15 minutos.');
     expect(reminderMessage({ kind: 'task', reminderSpecs: [{ id: 'custom', minutesBefore: 1500 }] }, 'custom'))
       .toBe('Sua tarefa está marcada para daqui a 1 dia e 1 hora.');
+  });
+
+  it('agenda dia inteiro à meia-noite, preserva antecipações e invalida versões antigas', async () => {
+    const user = await createUser('aviso-dia-inteiro@example.test');
+    await seedAccount(user.uid);
+    const date = new Date(Date.now() + 3 * 86400_000).toISOString().slice(0, 10);
+    const end = new Date(Date.now() + 4 * 86400_000).toISOString().slice(0, 10);
+    const input = { ...activityPayload, schedule: { type: 'event', allDay: true, startDate: date, endDateExclusive: end, timeZone: 'America/Sao_Paulo' }, dayReminderTime: '00:00', reminderSpecs: [{ id: 'before-day', minutesBefore: 1440 }] };
+    const command = activityCommand('create', 'dia-inteiro', '94000000-0000-4000-8000-000000000050', 0, input);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    const activity = (await db.doc(`users/${user.uid}/activities/dia-inteiro`).get()).data()!;
+    expect(activity).toMatchObject({ startsAt: null, endsAt: null, dayReminderTime: '00:00' });
+    let jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(jobs.size).toBe(2);
+    expect(jobs.docs.map(job => job.data())).toEqual(expect.arrayContaining([
+      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, activityRevision: 1 }),
+    ]));
+    expect(reminderMessage(activity, 'at-time')).toBe('Você tem um compromisso de dia inteiro para hoje.');
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('update', 'dia-inteiro', '94000000-0000-4000-8000-000000000051', 1, { ...input, dayReminderTime: '08:30' })).expect(200);
+    jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(jobs.docs.map(job => job.data())).toEqual(expect.arrayContaining([
+      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T11:30:00.000Z`, activityRevision: 2 }),
+    ]));
+    // Old-version jobs are rejected by the existing delivery checks, even if due.
+    for (const job of jobs.docs) await job.ref.update({ nextAttemptAt: new Date(Date.now() - 1000).toISOString() });
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('setStatus', 'dia-inteiro', '94000000-0000-4000-8000-000000000052', 2, { status: 'completed' })).expect(200);
+    let sends = 0;
+    await processReminderTick(async () => { sends++; return { successCount: 1, responses: [{ success: true }] }; });
+    expect(sends).toBe(0);
   });
 
   it('recupera atividades agendadas anteriormente sem duplicar avisos', async () => {
@@ -492,13 +523,20 @@ describe('comandos de conteúdo', () => {
       kind: 'task', status: 'pending', revision: 1, deletedAt: null,
     });
 
+    const timelessSchedule = { ...schedule, dueTime: null };
+    await db.doc(`users/${user.uid}/activities/atividade-antiga-sem-hora`).set({
+      ...activityPayload, schedule: timelessSchedule, ...scheduleInstants(timelessSchedule),
+      kind: 'task', status: 'pending', revision: 1, deletedAt: null,
+    });
+    await db.doc('maintenance/defaultReminderBackfill').set({ state: 'complete' });
     const first = await backfillAutomaticReminderJobs();
     const second = await backfillAutomaticReminderJobs();
-    expect(first).toMatchObject({ scanned: 1, created: 1, complete: false });
+    expect(first).toMatchObject({ scanned: 2, created: 2, complete: false });
     expect(second).toMatchObject({ scanned: 0, created: 0, complete: true });
     const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
-    expect(jobs.docs).toHaveLength(1);
-    expect(jobs.docs[0]!.data()).toMatchObject({ reminderSpecId: 'at-time', state: 'pending' });
+    expect(jobs.docs).toHaveLength(2);
+    expect(jobs.docs.every(job => job.data().reminderSpecId === 'at-time' && job.data().state === 'pending')).toBe(true);
+    expect(jobs.docs.find(job => job.data().activityId === 'atividade-antiga-sem-hora')!.data().scheduledAt).toBe(`${dueDate}T03:00:00.000Z`);
   });
 
   it('aplica criação uma vez e detecta reutilização ou revisão divergente', async () => {

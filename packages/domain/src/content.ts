@@ -29,16 +29,32 @@ export const activityInputSchema = z.object({
   estimatedMinutes: z.number().int().min(5).max(1440).nullable().optional(),
   schedule: z.union([taskSchedule, timedSchedule, allDaySchedule]),
   reminderSpecs: z.array(reminderSchema).max(3),
+  dayReminderTime: civilTimeSchema.optional(),
 }).strict().superRefine((value, context) => {
   try {
     const times = scheduleInstants(value.schedule);
     if (times.startsAt && times.endsAt && times.endsAt <= times.startsAt) context.addIssue({ code: 'custom', path: ['schedule'], message: 'O término deve ser posterior ao início.' });
-    if (value.reminderSpecs.length && !times.startsAt && !times.dueAt) context.addIssue({ code: 'custom', path: ['reminderSpecs'], message: 'Escolha um horário para configurar lembretes.' });
+    if (value.reminderSpecs.length && !activityReminderInstant(value)) context.addIssue({ code: 'custom', path: ['reminderSpecs'], message: 'Escolha uma data para configurar lembretes.' });
     if (new Set(value.reminderSpecs.map(reminder => reminder.minutesBefore)).size !== value.reminderSpecs.length) context.addIssue({ code: 'custom', path: ['reminderSpecs'], message: 'Não repita a mesma antecedência.' });
   } catch { context.addIssue({ code: 'custom', path: ['schedule'], message: 'Horário inexistente ou ambíguo neste fuso. Revise o horário ou escolha a ocorrência temporal.' }); }
 });
 
 type Schedule = z.infer<typeof taskSchedule> | z.infer<typeof timedSchedule> | z.infer<typeof allDaySchedule>;
+export const DEFAULT_DAY_REMINDER_TIME = '00:00';
+
+/** A reminder time does not turn an all-day activity into a timed event.
+ * Compatible disambiguation moves through DST gaps and chooses the first
+ * occurrence of repeated local times, including midnight transitions. */
+export function activityReminderInstant(activity: { schedule: Schedule; dayReminderTime?: string }): string | null {
+  const schedule = activity.schedule;
+  const instants = scheduleInstants(schedule);
+  if (instants.dueAt || instants.startsAt) return instants.dueAt ?? instants.startsAt;
+  const date = schedule.type === 'task' ? schedule.dueDate : schedule.startDate;
+  if (!date) return null;
+  return Temporal.PlainDateTime.from(`${date}T${activity.dayReminderTime ?? DEFAULT_DAY_REMINDER_TIME}`)
+    .toZonedDateTime(schedule.timeZone, { disambiguation: 'compatible' })
+    .toInstant().toString({ fractionalSecondDigits: 3 });
+}
 export function scheduleInstants(schedule: Schedule): { startsAt: string | null; endsAt: string | null; dueAt: string | null } {
   function instant(date: string, time: string, disambiguation: 'reject' | 'earlier' | 'later') {
     const plain = Temporal.PlainDateTime.from(`${date}T${time}`);

@@ -98,13 +98,11 @@ describe('single semantic turn through the real Gemini adapter and router', () =
     expect(response.status).toBe(200);
     expect(response.body.createTask).toMatchObject({ title: 'ir pra feira', dueDate: tomorrow, dueTime: '19:00' });
   });
-  it('asks only the missing time rather than silently creating a task with no requested notification', async () => {
+  it('creates a dated task without inventing a time when its automatic daily reminder is requested', async () => {
     const f = fixture(action({ name: 'create_task', args: { title: 'ir pra feira', dueDate: tomorrow, dueTime: null } }));
     const response = await f.ask('Agende ir pra feira amanhã e me notifique');
     expect(response.status).toBe(200);
-    expect(response.body).not.toHaveProperty('createTask');
-    expect(response.body.text).toContain('Qual horário');
-    expect(response.body.text).not.toContain('Qual tarefa');
+    expect(response.body.createTask).toMatchObject({ title: 'ir pra feira', dueDate: tomorrow, dueTime: null });
   });
   it.each(['sim', 'às 19h'])('clarification history cannot supply missing current task fields: %s', async text => {
     const f = fixture(action({ name: 'create_task', args: { title: 'Ir a feira', dueDate: tomorrow, dueTime: '19:00' } }));

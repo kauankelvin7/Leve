@@ -76,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const uid = firebaseAuth?.currentUser?.uid;
     if (uid) await revokeNotificationDevice(uid).catch(() => undefined);
     if (uid) await clearLocalData(uid).catch(() => undefined);
+    clearQueryCache();
     const persistenceCleared = await clearFirestorePersistence().catch(() => false);
     generation.current++; setSession(null); setUser(null); setError(''); setErrorStatus(null);
     if (firebaseAuth) await signOut(firebaseAuth);

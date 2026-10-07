@@ -43,6 +43,7 @@ export function activityInputFromStored(item: StoredActivity): ActivityInput {
     estimatedMinutes: item.estimatedMinutes ?? null,
     schedule: item.schedule,
     reminderSpecs: item.reminderSpecs,
+    ...(item.dayReminderTime ? { dayReminderTime: item.dayReminderTime } : {}),
   };
 }
 

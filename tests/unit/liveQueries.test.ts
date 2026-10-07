@@ -33,3 +33,15 @@ it('encerra carregamento sem resposta e remove conteúdo no encerramento da cont
   expect(harness.snapshot!().items).toHaveLength(1);
   clearQueryCache(); expect(harness.snapshot!().items).toHaveLength(0);
 });
+
+it('ignora callbacks tardios de consultas encerradas sem reenviar dados ou diagnósticos', () => {
+  useLiveQueries('today:logout', () => [1] as never[]);
+  const callbacks = harness.callbacks[0]!;
+  callbacks.next(snapshot('private'));
+  clearQueryCache();
+  callbacks.next(snapshot('late-private'));
+  callbacks.error({ code: 'failed-precondition', message: 'Client has already been terminated.' });
+  expect(harness.snapshot!().items).toHaveLength(0);
+  expect(harness.snapshot!().error).toBe('');
+  expect(harness.reports).not.toHaveBeenCalled();
+});

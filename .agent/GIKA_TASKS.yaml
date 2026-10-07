@@ -2,6 +2,21 @@ version: 1
 project: gika
 source_of_truth: true
 
+all_day_reminders_and_color_modal:
+  status: done
+  owner: root
+  entry_checkpoint: cf865ca
+  plan: .agent/ALL_DAY_REMINDERS_EXECPLAN.md
+  acceptance_criteria:
+    - "Sem hora e com data: aviso automático às 00:00 no fuso; sem data: nenhum job."
+    - "Instantes da atividade permanecem separados do horário de aviso; antecipações preservadas."
+    - "Backfill V2 recupera registros futuros antigos com idempotência e revisão."
+    - "Gika aceita data sem hora e comunica capacidade sem prometer repetição contínua."
+    - "Cores em modal compacto de atividade/nota; nome, check, Escape e foco."
+  gates: "830 unitários/324 integração/85 unitários focais/2 integração focais/4 Playwright focais/8 Playwright críticos PASS; lint/boundaries/typechecks/build PASS."
+  live_evaluation: "NOT_RUN: sem chave Gemini e sem aparelho push; testes em demo-leve."
+  checkpoint: "feat: default all-day reminders to midnight and compact color pickers"
+
 notification_reasoning:
   status: done
   owner: root

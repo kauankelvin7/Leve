@@ -332,3 +332,23 @@ Complemento da revisão: o calendário mantém queries, data selecionada e açõ
 convencionais. `CalendarDaySheet` renderiza seção no desktop e dialog nativo no
 celular; foco, fundo inativo, Escape e restauração de foco pertencem ao browser.
 Datas da semana usam largura mínima com rolagem interna para texto a 200%.
+
+## ADR-GIKA-030 — aviso separado para atividades sem hora
+
+Data: 07/10/2026; accepted conforme pedido explícito do usuário.
+Ausência de `dayReminderTime` significa 00:00 no fuso da atividade. Tarefa sem
+hora com data e evento all-day recebem aviso único; all-day de vários dias usa
+primeiro dia. Sem data, nenhum job. Alterar o aviso não altera startsAt/dueAt,
+nem a semântica do calendário. Antecipações usam o aviso como base. Temporal
+compatible escolhe a primeira ocorrência repetida e avança em gaps DST; meia-noite
+inexistente usa o primeiro instante válido. Jobs passados não são reenviados.
+
+Writer/receipts/revisão/leases/isolamento/consentimento permanecem existentes;
+backfill V2 reexamina registros futuros mantendo IDs para evitar duplicação.
+Gemini conhece a capacidade; policy aceita data sem hora e não reduz inteligência
+com interceptação lexical. Pedido de dia inteiro não significa aviso contínuo.
+Nenhuma configuração de notificações contínuas/antecipadas por IA é inventada.
+
+ColorPicker é somente apresentação compartilhada; native dialog fora do form
+preserva foco/inert/Escape e hidden input transporta os valores anteriores pelas
+mesmas APIs. Sem dependências, novo writer ou alteração dos presets de notas.

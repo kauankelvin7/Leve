@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { collection, limit, query, where } from 'firebase/firestore';
-import type { Activity, Category, Note, ShoppingItem, ShoppingList } from '../../../../../packages/domain/src/content';
+import { DEFAULT_DAY_REMINDER_TIME, type Activity, type Category, type Note, type ShoppingItem, type ShoppingList } from '../../../../../packages/domain/src/content';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
 import { firestore } from '../../platform/firebase';
 import { sendCommand } from '../../platform/api';
@@ -202,6 +202,7 @@ export function Today() {
       estimatedMinutes: Number(fields.get('estimatedMinutes')) || null,
       schedule,
       reminderSpecs,
+      dayReminderTime: String(fields.get('dayReminderTime') || DEFAULT_DAY_REMINDER_TIME),
     };
 
     const recurring = !editing && recurrenceFrequency !== 'none';

@@ -226,12 +226,12 @@ export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSc
   const conditions = groundedTitle(parsed.title, text) ? whole.replace(normalized(parsed.title), '') : whole;
   const notification = /\b(?:notifi\w*|avis\w*|lembre\w*|alert\w*)\b/.test(conditions);
   if (notification && /\b(?:nao\s+(?:(?:quero|preciso|deve|me|que|voce|ser|um|nenhum|receber)\s+)*|sem\s+(?:(?:um|uma|nenhum|nenhuma)\s+)*|(?:deslig\w*|desativ\w*|silenci\w*)\s+(?:(?:o|a|os|as)\s+)*)(?:notifi\w*|avis\w*|lembre\w*|alert\w*)\b/.test(conditions)) {
-    return { clarification: 'Atividades com horário têm aviso automático quando as notificações estão ativadas no aparelho. Ainda não consigo desligar esse aviso por atividade pela conversa. Quer agendar mesmo assim?' };
+    return { clarification: 'Atividades com data têm aviso automático quando as notificações estão ativadas no aparelho. Ainda não consigo desligar esse aviso por atividade pela conversa. Quer agendar mesmo assim?' };
   }
-  if (notification && /\b(?:dia (?:todo|inteiro)|o tempo todo|continuamente|a cada|de hora em hora|durante o dia|ao longo do dia)\b/.test(conditions)) {
+  if (notification && /\b(?:(?:notifi\w*|avis\w*|lembre\w*)\s+(?:o\s+)?dia (?:todo|inteiro)|o tempo todo|continuamente|a cada|de hora em hora|durante o dia|ao longo do dia)\b/.test(conditions)) {
     return { clarification: groundedTimeEvidence(text).value
       ? 'O aviso automático é pontual, no horário da atividade, não contínuo durante o dia. Você quer agendar com esse aviso único?'
-      : 'O aviso automático é pontual, não contínuo durante o dia. Qual horário você prefere para receber a notificação?' };
+      : 'O aviso automático é único, às 00:00 para atividades sem hora. Não envio avisos contínuos ao longo do dia. Quer agendar com esse aviso único?' };
   }
   if (notification && /\b(?:antes|antecedencia|antecipad\w*|depois|apos)\b/.test(conditions)) {
     return { clarification: 'O Leve tem lembretes antecipados, mas ainda não consigo configurá-los pela conversa. Você pode escolhê-los no formulário da atividade. Quer que eu prepare só o agendamento com o aviso automático no horário?' };
@@ -256,7 +256,7 @@ export function validateSemanticCreation(parsed: z.infer<typeof createTaskArgsSc
   }
 
   const time = groundedTimeEvidence(text);
-  if (notification && !time.mentioned) return { clarification: 'Qual horário você prefere para essa atividade? O aviso automático precisa de um horário.' };
+  if (notification && !time.mentioned && !date.value) return { clarification: 'Em qual dia você quer receber o aviso? Sem horário na tarefa, o Leve avisa às 00:00.' };
   if (time.ambiguous) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };
   if ((parsed.dueTime ?? null) !== time.value) {
     if (time.value === null && parsed.dueTime !== null && time.mentioned) return { clarification: 'Qual horário exato você quer usar para essa tarefa?' };

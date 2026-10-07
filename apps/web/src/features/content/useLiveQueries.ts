@@ -36,6 +36,7 @@ export function useLiveQueries(key: string, makeQueries: () => Query[], pageSize
     publish({ loading: !entry.state.items.length, error: '', cached: entry.state.items.length > 0 });
     const timeout = window.setTimeout(() => publish({ loading: false, error: 'A conexão está demorando. Verifique sua internet e tente novamente.' }), LIVE_QUERY_TIMEOUT_MS);
     const stops = targets.map((target, index) => onSnapshot(target, { includeMetadataChanges: true }, snapshot => {
+      if (!alive) return;
       groups[index] = snapshot.docs.map(document => ({ ...document.data(), id: document.id }));
       ready.add(index); failed.delete(index);
       if (snapshot.metadata.fromCache) local.add(index); else local.delete(index);
@@ -43,6 +44,7 @@ export function useLiveQueries(key: string, makeQueries: () => Query[], pageSize
       // Never mix a partially refreshed query group with an older group.
       if (ready.size === targets.length && !failed.size) publish({ items: [...new Map(groups.flat().map(item => [item.id, item])).values()], loading: local.size > 0 && !groups.some(group => group.length), error: local.size ? entry.state.error : '', partial: groups.some(group => group.length === pageSize), cached: local.size > 0 });
     }, failure => {
+      if (!alive) return;
       failed.add(index); window.clearTimeout(timeout);
       publish({ loading: false, error: 'Não conseguimos carregar suas atividades agora. Verifique sua conexão e tente novamente.' });
       // Only a bounded diagnostic reaches the server, never document contents or SDK URLs.

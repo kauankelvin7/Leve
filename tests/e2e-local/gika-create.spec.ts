@@ -75,7 +75,13 @@ test('logout during upstream wait aborts creation before command dispatch', asyn
   page.on('request', request => { if (request.method() === 'POST' && request.url().endsWith('/api/commands')) writes++; });
   await page.route('**/api/gika/respond', route => { finish = () => route.fulfill({ json: descriptor('Tarefa tardia') }).catch(() => undefined); });
   await ask(page, 'Tarefa tardia amanhã'); await expect.poll(() => Boolean(finish)).toBe(true);
-  await page.getByRole('button', { name: 'Fechar Gika' }).click(); await page.getByRole('button', { name: 'Sair', exact: true }).click(); await finish!();
+  await page.getByRole('button', { name: 'Fechar Gika' }).click();
+  // Clearing offline persistence intentionally reloads the document on logout.
+  // Wait for that reload before navigating again; otherwise goto is aborted.
+  const loggedOutReload = page.waitForEvent('load');
+  await page.getByRole('button', { name: 'Sair', exact: true }).click(); await finish!();
+  await loggedOutReload;
+  await expect(page.getByRole('heading', { name: 'Entre na sua agenda', exact: true })).toBeVisible();
   await enter(page); await page.getByRole('button', { name: 'Pergunte à Gika' }).click();
   await expect(page.locator('.gika-message')).toHaveCount(0); expect(writes).toBe(0);
 });

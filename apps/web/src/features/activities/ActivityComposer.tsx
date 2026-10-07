@@ -1,6 +1,6 @@
 import type { FormEventHandler, RefObject } from 'react';
 import { Temporal } from '@js-temporal/polyfill';
-import type { Category } from '../../../../../packages/domain/src/content';
+import { DEFAULT_DAY_REMINDER_TIME, type Category } from '../../../../../packages/domain/src/content';
 import { ActivityColorPicker } from '../../components/ui/ActivityColorPicker';
 import type { StoredActivity } from './TodayActivityRow';
 import type { PlannerDraft } from './calendar/calendarDraftModel';
@@ -196,10 +196,11 @@ export function ActivityComposer({
                     <fieldset>
                       <legend>Notificações</legend>
                       {kind === 'task'
-                        ? <p className="field-hint">Com um horário definido e as notificações ativadas neste aparelho, você recebe um aviso no horário. Lembretes antecipados são opcionais.</p>
+                        ? <p className="field-hint">Com as notificações ativadas, você recebe um aviso no horário da tarefa. Se ela tiver só uma data, usamos o horário de aviso abaixo.</p>
                         : eventAllDay
-                          ? <p className="field-hint">Compromissos de dia inteiro não têm um horário para avisar. Com horário definido e notificações ativadas neste aparelho, o aviso é automático.</p>
+                          ? <p className="field-hint">Você recebe um aviso no primeiro dia, no horário abaixo, com as notificações ativadas neste aparelho. O compromisso continua sendo de dia inteiro.</p>
                           : <p className="field-hint">Com as notificações ativadas neste aparelho, você recebe um aviso no horário do compromisso. Se quiser, escolha lembretes antecipados:</p>}
+                      {(kind === 'task' || eventAllDay) && <label>Horário do aviso para dia inteiro<input type="time" name="dayReminderTime" defaultValue={editing?.dayReminderTime ?? DEFAULT_DAY_REMINDER_TIME} required /><small className="field-hint">Padrão: meia-noite, no início do dia. Se preferir, escolha outro horário. Vale quando a atividade tem data e não tem hora.</small></label>}
                       {[
                         { value: '30', label: '30 minutos antes' },
                         { value: '60', label: '1 hora antes' },

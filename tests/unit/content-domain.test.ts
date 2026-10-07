@@ -1,9 +1,31 @@
 import { describe, expect, it } from 'vitest';
-import { activityInputSchema, moveScheduleToDate, noteInputSchema, pendingShoppingItemDelta, recurrenceDates, recurrenceDatesThrough } from '../../packages/domain/src/content';
+import { activityInputSchema, activityReminderInstant, scheduleInstants, moveScheduleToDate, noteInputSchema, pendingShoppingItemDelta, recurrenceDates, recurrenceDatesThrough } from '../../packages/domain/src/content';
 import { commandEnvelopeSchema, isSeasonalDetailsEnabled, profilePreferencesSchema } from '../../packages/domain/src/identity';
 import { accountArchiveSchema, archiveReferenceErrors } from '../../packages/domain/src/archive';
 
 describe('Domínio de conteúdo persistente', () => {
+  it('avisa atividades sem hora à meia-noite local sem mudar os instantes da agenda', () => {
+    const schedule = { type: 'event' as const, allDay: true as const, startDate: '2026-10-08', endDateExclusive: '2026-10-10', timeZone: 'America/Sao_Paulo' };
+    expect(scheduleInstants(schedule)).toEqual({ startsAt: null, endsAt: null, dueAt: null });
+    expect(activityReminderInstant({ schedule })).toBe('2026-10-08T03:00:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '08:30' })).toBe('2026-10-08T11:30:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, startDate: '2018-11-04', endDateExclusive: '2018-11-05' } })).toBe('2018-11-04T03:00:00.000Z');
+    expect(activityReminderInstant({ schedule: { type: 'task', dueDate: null, dueTime: null, timeZone: 'UTC', disambiguation: 'reject' } })).toBeNull();
+  });
+
+  it('respeita fuso e horário de verão do aviso separado', () => {
+    const schedule = { type: 'task' as const, dueDate: '2026-03-08', dueTime: null, timeZone: 'America/New_York', disambiguation: 'reject' as const };
+    expect(activityReminderInstant({ schedule })).toBe('2026-03-08T05:00:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '02:30' })).toBe('2026-03-08T07:30:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, dueDate: '2026-11-01' }, dayReminderTime: '01:30' })).toBe('2026-11-01T05:30:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, dueTime: '15:00' }, dayReminderTime: '00:00' })).toBe('2026-03-08T19:00:00.000Z');
+  });
+
+  it('aceita antecipações em dia inteiro e valida o horário do aviso', () => {
+    const input = { title: 'Feira', descriptionPlain: '', categoryId: null, schedule: { type: 'event', allDay: true, startDate: '2026-10-08', endDateExclusive: '2026-10-09', timeZone: 'America/Sao_Paulo' }, reminderSpecs: [{ id: 'before-day', minutesBefore: 1440 }], dayReminderTime: '00:00' };
+    expect(activityInputSchema.safeParse(input).success).toBe(true);
+    expect(activityInputSchema.safeParse({ ...input, dayReminderTime: '24:00' }).success).toBe(false);
+  });
   it('materializa recorrência mensal com política de último dia ou pulo', () => {
     expect(recurrenceDates('2026-01-31', { frequency: 'monthly', interval: 1, until: null, count: 4, monthlyPolicy: 'lastDay' })).toEqual(['2026-01-31', '2026-02-28', '2026-03-31', '2026-04-30']);
     expect(recurrenceDates('2026-01-31', { frequency: 'monthly', interval: 1, until: null, count: 3, monthlyPolicy: 'skip' })).toEqual(['2026-01-31', '2026-03-31', '2026-05-31']);

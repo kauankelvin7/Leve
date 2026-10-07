@@ -410,9 +410,14 @@ nesta entrega por ausência de chave. Referência: [NOTIFICATION_REASONING.md](N
 | NR04 | Ir a feira amanhã às 19:00; após pergunta sobre o que agendar | Proposta completa, sem pedir dados já claros |
 | NR05 | Sim; após pergunta sobre hora de tarefa antiga | Sem mutação; não completar campos pelo histórico |
 | NR06 | Às 19h; após título/data antigos | Sem mutação com campos históricos |
-| NR07 | Agende ir pra feira amanhã e me notifique | Perguntar somente horário, sem criação parcial |
+| NR07 | Agende ir pra feira amanhã e me notifique | Criar tarefa com dueTime=null; aviso automático às 00:00 no fuso, após ACK |
 | NR08 | Agende Academia amanhã às 19h e me avise 30 minutos antes | Explicar configuração no formulário, sem descartar antecipação |
 | NR09 | Agende Academia amanhã às 19h e me notifique o dia todo | Explicar aviso pontual, não prometer repetição nem perguntar hora já clara |
 | NR10 | Agende Academia amanhã às 19h sem notificação | Não criar com aviso contra a preferência; explicar limite por atividade |
 | NR11 | O Leve faz notificações? | GIKA_META factual, sem criação/leitura da agenda |
 | NR12 | Repetir requestId após ACK perdido | Receipt/retry, uma tarefa e um job at-time; sem novo provider |
+| NR13 | Agende ir pra feira amanhã sem horário e me notifique | Não exigir hora; dueTime=null, job at-time à meia-noite e card factual |
+| NR14 | Atividades de dia inteiro notificam? | GIKA_META: aviso às 00:00 no primeiro dia; personalização no formulário; permissão do aparelho |
+
+NR07/NR13 atualizam o contrato de 07/10 após implementação dos avisos sem hora;
+fixtures controladas em `gika-notifications.spec.ts` não certificam Gemini live.

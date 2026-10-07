@@ -71,7 +71,8 @@ describe('calendar mutation model', () => {
   });
 
   it('preserves all editable activity fields when creating an update payload', () => {
-    expect(activityInputFromStored(timed())).toEqual({
+    expect(activityInputFromStored({ ...timed(), dayReminderTime: '08:30' })).toEqual({
+      dayReminderTime: '08:30',
       title: 'Consulta',
       descriptionPlain: 'Levar documentos',
       categoryId: 'cat-health',

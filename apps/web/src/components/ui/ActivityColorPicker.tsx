@@ -1,4 +1,7 @@
 import { activityColors } from '../../../../../packages/domain/src/activityColors';
+import { useState } from 'react';
+import { ColorPicker } from './ColorPicker';
 export function ActivityColorPicker({ value }: { value?: string | null }) {
-  return <fieldset className="activity-colors"><legend>Cor da atividade</legend><label><input type="radio" name="colorHex" value="" defaultChecked={!value} />Usar categoria</label><div className="color-options">{activityColors.map(color => <label key={color.hex} style={{ backgroundColor: `${color.hex}35` }}><input type="radio" name="colorHex" value={color.hex} defaultChecked={value === color.hex} /><span className="color-dot" style={{ backgroundColor: color.hex }} />{color.name}</label>)}</div></fieldset>;
+  const [color, setColor] = useState(value ?? '');
+  return <ColorPicker label="Cor da atividade" name="colorHex" value={color} onChange={setColor} options={[{ value: '', label: 'Usar categoria' }, ...activityColors.map(option => ({ value: option.hex, label: option.name, color: option.hex }))]} />;
 }

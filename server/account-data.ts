@@ -88,7 +88,7 @@ export async function importAccount(identity: DecodedIdToken, command: CommandEn
     writes.push({ path: `categories/${categoryIds.get(source.id)}`, value: { ...parsed, normalizedName: parsed.name.toLocaleLowerCase('pt-BR'), archivedAt: null, deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.activities) {
-    const parsed = activityInputSchema.parse({ title: source.title, descriptionPlain: source.descriptionPlain, schedule: source.schedule, reminderSpecs: source.reminderSpecs, categoryId: source.categoryId && categoryIds.get(String(source.categoryId)) || null, colorHex: source.colorHex ?? null, estimatedMinutes: source.estimatedMinutes ?? null });
+    const parsed = activityInputSchema.parse({ title: source.title, descriptionPlain: source.descriptionPlain, schedule: source.schedule, reminderSpecs: source.reminderSpecs, ...(source.dayReminderTime ? { dayReminderTime: source.dayReminderTime } : {}), categoryId: source.categoryId && categoryIds.get(String(source.categoryId)) || null, colorHex: source.colorHex ?? null, estimatedMinutes: source.estimatedMinutes ?? null });
     writes.push({ path: `activities/${activityIds.get(source.id)}`, value: { ...parsed, ...scheduleInstants(parsed.schedule), kind: parsed.schedule.type, status: source.status === 'completed' || source.status === 'canceled' ? source.status : 'pending', completedAt: source.status === 'completed' ? now : null, seriesId: source.seriesId ? seriesIds.get(String(source.seriesId)) ?? null : null, occurrenceKey: source.occurrenceKey ?? null, deletedAt: null, revision: 1, schemaVersion: 1, createdAt: now, updatedAt: now } });
   }
   for (const source of archive.data.timeEntries ?? []) {

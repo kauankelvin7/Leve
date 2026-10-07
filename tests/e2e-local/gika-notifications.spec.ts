@@ -24,7 +24,7 @@ async function controlledInterpretation(page: Page) {
   const adapter = createGeminiAdapter(async () => {
     const args = proposedText === 'Preciso agendar algo'
       ? { domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: 'O que você gostaria de agendar?', proposals: [] }
-      : { domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: null, proposals: [{ name: 'create_task', args: { title: proposedText.startsWith('Ir a feira') ? 'Ir a feira' : 'ir pra feira', dueDate, dueTime: '19:00' } }] };
+      : { domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: null, proposals: [{ name: 'create_task', args: { title: proposedText.startsWith('Ir a feira') ? 'Ir a feira' : 'ir pra feira', dueDate, dueTime: proposedText.includes('sem horário') ? null : '19:00' } }] };
     return Response.json({ candidates: [{ finishReason: 'STOP', content: { parts: [{ functionCall: { name: 'respond_turn', args } }] } }] });
   });
   const app = express();
@@ -58,6 +58,23 @@ async function enter(page: Page, email: string) {
   await skip.waitFor({ state: 'visible', timeout: 3000 }).catch(() => undefined);
   if (await skip.isVisible()) await skip.click();
 }
+
+test('Gika cria tarefa sem hora e informa o aviso à meia-noite', async ({ page }) => {
+  const { dueDate, db, email } = await controlledInterpretation(page);
+  await enter(page, email);
+  await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click();
+  const question = page.getByRole('textbox', { name: 'Pergunte à Gika', exact: true });
+  const ack = page.waitForResponse(response => response.url().endsWith('/api/commands') && response.request().postDataJSON()?.command === 'activity.create');
+  await question.fill('Agende ir pra feira amanhã sem horário e me notifique');
+  await question.press('Enter');
+  const result = page.getByRole('group', { name: 'Tarefa adicionada', exact: true }).last();
+  await expect(result).toContainText('Aviso automático às 00:00');
+  const applied = await ack;
+  expect(applied.status()).toBe(200);
+  const jobs = await db.collection('reminderJobs').where('activityId', '==', applied.request().postDataJSON().entityId).get();
+  expect(jobs.size).toBe(1);
+  expect(jobs.docs.some(job => job.data().scheduledAt === `${dueDate}T03:00:00.000Z`)).toBe(true);
+});
 
 for (const continuation of [false, true]) test(`real semantic pipeline: ${continuation ? 'complete clarification reply' : 'mixed scheduling and notification'}`, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

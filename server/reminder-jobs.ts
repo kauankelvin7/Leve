@@ -1,6 +1,7 @@
 import type { Transaction } from 'firebase-admin/firestore';
 import { hashValue } from './hash.ts';
 import { db } from './platform/firebase.ts';
+import { activityReminderInstant, type ActivityInput } from '../packages/domain/src/content.ts';
 
 type ReminderActivity = {
   kind?: unknown;
@@ -8,10 +9,14 @@ type ReminderActivity = {
   dueAt?: unknown;
   startsAt?: unknown;
   reminderSpecs?: unknown;
+  schedule?: unknown;
+  dayReminderTime?: unknown;
 };
 
 export function reminderJobsForActivity(uid: string, activityId: string, revision: number, activity: ReminderActivity, now: string) {
-  const targetAt = activity.dueAt ?? activity.startsAt;
+  const targetAt = activity.schedule
+    ? activityReminderInstant(activity as Pick<ActivityInput, 'schedule' | 'dayReminderTime'>)
+    : activity.dueAt ?? activity.startsAt;
   if (typeof targetAt !== 'string') return [];
   const configured = Array.isArray(activity.reminderSpecs) ? activity.reminderSpecs as { id: string; minutesBefore: number }[] : [];
   const specs = configured.some(spec => spec.minutesBefore === 0) ? configured : [{ id: 'at-time', minutesBefore: 0 }, ...configured];
@@ -42,6 +47,12 @@ function reminderLeadTime(minutes: number) {
 export function reminderMessage(activity: ReminderActivity, reminderSpecId: string) {
   const specs = Array.isArray(activity.reminderSpecs) ? activity.reminderSpecs as { id: string; minutesBefore: number }[] : [];
   const minutesBefore = specs.find(spec => spec.id === reminderSpecId)?.minutesBefore ?? 0;
+  const schedule = activity.schedule as ActivityInput['schedule'] | undefined;
+  if (schedule && (schedule.type === 'task' ? !schedule.dueTime : schedule.allDay)) {
+    return minutesBefore === 0
+      ? (schedule.type === 'task' ? 'Você tem uma tarefa para hoje.' : 'Você tem um compromisso de dia inteiro para hoje.')
+      : `Lembrete da sua atividade, ${reminderLeadTime(minutesBefore)} antes do aviso do dia.`;
+  }
   if (activity.kind === 'event') {
     return minutesBefore === 0
       ? 'Seu compromisso começa agora.'

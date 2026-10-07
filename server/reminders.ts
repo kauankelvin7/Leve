@@ -134,7 +134,7 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
 }
 
 export async function backfillAutomaticReminderJobs() {
-  const stateRef = db.doc('maintenance/defaultReminderBackfill');
+  const stateRef = db.doc('maintenance/defaultReminderBackfillV2');
   const now = new Date().toISOString();
   const leaseId = randomUUID();
   const claim = await db.runTransaction(async transaction => {
