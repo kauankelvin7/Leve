@@ -61,6 +61,7 @@ export function Today() {
   const [busy, setBusy] = useState(false);
   const [seriesToDelete, setSeriesToDelete] = useState<StoredActivity | null>(null);
   const [seriesDeleteError, setSeriesDeleteError] = useState('');
+  const [hiddenSeries, setHiddenSeries] = useState<Set<string>>(new Set());
   const [messageTone, setMessageTone] = useState<'success' | 'error' | 'info'>('info');
   const [kind, setKind] = useState<'task' | 'event'>(() => plannerDraft ? 'event' : 'task');
   const [eventAllDay, setEventAllDay] = useState(false);
@@ -132,7 +133,7 @@ export function Today() {
 
   const { loading } = activityQuery;
   const activities = (activityQuery.items as StoredActivity[])
-    .filter(item => !item.deletedAt)
+    .filter(item => !item.deletedAt && !(item.seriesId && hiddenSeries.has(item.seriesId)))
     .map(item => ({ ...item, status: optimisticStatus[item.id] ?? item.status }))
     .sort((a, b) => {
       if (a.status === 'completed' && b.status !== 'completed') return 1;
@@ -140,7 +141,15 @@ export function Today() {
       return 0;
     });
 
-  const calendarActivities = (calendarQuery.items as StoredActivity[]).filter(item => !item.deletedAt);
+  const calendarActivities = (calendarQuery.items as StoredActivity[]).filter(item => !item.deletedAt && !(item.seriesId && hiddenSeries.has(item.seriesId)));
+  useEffect(() => {
+    if (busy || activityQuery.loading || calendarQuery.loading) return;
+    const active = [...activityQuery.items, ...calendarQuery.items].filter(item => !item.deletedAt);
+    setHiddenSeries(current => {
+      const next = new Set([...current].filter(id => active.some(item => item.seriesId === id)));
+      return next.size === current.size ? current : next;
+    });
+  }, [busy, activityQuery.items, activityQuery.loading, calendarQuery.items, calendarQuery.loading]);
   function activitiesOn(date: string) {
     return calendarActivities.filter(item => (
       (item.schedule.type === 'task' && item.schedule.dueDate === date) ||
@@ -255,12 +264,15 @@ export function Today() {
   async function trashSeries(activity: StoredActivity) {
     if (busy || !activity.seriesId) return;
     setSeriesDeleteError('');
-    setBusy(true); setMessage(''); setMessageTone('info');
+    const seriesId = activity.seriesId;
+    setHiddenSeries(current => new Set([...current, seriesId]));
+    setSeriesToDelete(null);
+    setBusy(true); setMessage('Excluindo série…'); setMessageTone('info');
     try {
       await sendCommand({ command: 'activity.trashSeries', operationId: crypto.randomUUID(), entityId: activity.id, expectedRevision: activity.revision, payload: {}, clientCreatedAt: new Date().toISOString() });
       setSeriesToDelete(null);
       setMessage('A série inteira foi movida para a lixeira.'); setMessageTone('success');
-    } catch (error) { const detail = error instanceof Error ? error.message : 'Não foi possível remover a série.'; setMessage(detail); setSeriesDeleteError(detail); setMessageTone('error'); }
+    } catch (error) { setHiddenSeries(current => { const next = new Set(current); next.delete(seriesId); return next; }); const detail = error instanceof Error ? error.message : 'Não foi possível remover a série.'; setMessage(detail); setSeriesDeleteError(detail); setMessageTone('error'); }
     finally { setBusy(false); }
   }
 

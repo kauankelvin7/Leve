@@ -118,3 +118,14 @@
     display: none;
   }
 }
+
+.page .list .seriesGroup { display: block; }
+.seriesGroup details { width: 100%; }
+.seriesGroup summary { display: flex; align-items: center; gap: 16px; min-height: 48px; cursor: pointer; list-style: none; }
+.seriesGroup summary::-webkit-details-marker { display: none; }
+.seriesGroup summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; border-radius: 8px; }
+.expandLabel { display: inline-flex; justify-content: flex-end; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: .75rem; }
+.expandLabel svg { width: 18px; flex-shrink: 0; }
+.seriesGroup details[open] .expandLabel svg { rotate: 180deg; }
+.occurrences { padding: 0 0 0 12px; margin: 0; list-style: none; }
+.groupHint { color: var(--color-text-muted); font-size: .78rem; }

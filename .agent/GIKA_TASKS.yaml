@@ -2,6 +2,14 @@ version: 1
 project: gika
 source_of_truth: true
 
+trash_series_grouping:
+  status: done
+  owner: root
+  entry_checkpoint: 3b79601
+  plan: .agent/TRASH_SERIES_GROUPING_EXECPLAN.md
+  gates: "Lint/boundaries/typechecks/build,831unit,327integration e Playwright focal1 PASS; atraso, rollback503 e exclusão real nos dois fluxos."
+  next_action: "Conferir CI e Planner do novo HEAD."
+
 series_delete_dialog:
   status: done
   owner: root

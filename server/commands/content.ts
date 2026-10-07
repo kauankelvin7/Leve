@@ -383,7 +383,9 @@ async function purgeContent(identity: DecodedIdToken, command: CommandEnvelope, 
     return null;
   });
   if (prepared) return { ...prepared, result: 'alreadyApplied' };
-  await db.recursiveDelete(target);
+  // Only shopping lists own nested domain documents; leaf entities need one delete.
+  if (type === 'shoppingList') await db.recursiveDelete(target);
+  else await target.delete();
   const response: CommandResult = { operationId: command.operationId, entityId: command.entityId, revision: (command.expectedRevision ?? 0) + 1, serverTime: now, result: 'applied' };
   await db.runTransaction(async transaction => {
     const [profile, currentReceipt, counts, parentSnapshot] = await transaction.getAll(root, receipt, countsRef, ...(parent ? [parent] : []));

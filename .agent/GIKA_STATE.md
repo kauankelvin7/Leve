@@ -1,3 +1,16 @@
+## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
+
+Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
+ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
+explicitado. Agenda e lixeira retiram visualmente após confirmar, mostram envio,
+confirmam sucesso só no ACK e repõem itens em falha. Excluir tudo mantém cutoff e
+idempotência. purgeContent usa delete em folhas, recursiveDelete em shoppingList.
+Gates: lint/boundaries/typechecks/build,831unit,327integração e Playwright focal1
+PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
+`.agent/TRASH_SERIES_GROUPING_EXECPLAN.md`. CI/Planner da entrada3b79601 success.
+Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
+trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
+
 ## Follow-up vigente — confirmação de exclusão de série, 07/10/2026
 
 Entrada65ecd9c. window.confirm substituído pelo ConfirmDialog compartilhado em
