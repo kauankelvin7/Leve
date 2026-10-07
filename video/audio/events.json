@@ -1,0 +1,47 @@
+{
+  "duration": 72,
+  "bpm": 92,
+  "seed": 20261007,
+  "events": [
+    {
+      "time": 2.067,
+      "name": "note-save"
+    },
+    {
+      "time": 2.5,
+      "name": "connection-down-opening"
+    },
+    {
+      "time": 11.333,
+      "name": "task-complete"
+    },
+    {
+      "time": 24.2,
+      "name": "mobile-tap"
+    },
+    {
+      "time": 30.5,
+      "name": "note-save"
+    },
+    {
+      "time": 38.25,
+      "name": "shopping-check"
+    },
+    {
+      "time": 43.25,
+      "name": "gika-open"
+    },
+    {
+      "time": 46.917,
+      "name": "gika-confirm"
+    },
+    {
+      "time": 53.0,
+      "name": "connection-down"
+    },
+    {
+      "time": 60.75,
+      "name": "connection-back"
+    }
+  ]
+}

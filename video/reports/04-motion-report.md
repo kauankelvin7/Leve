@@ -39,3 +39,14 @@
 **PROBLEMAS:** nenhum bloqueio visual ou técnico identificado na revisão desta fase. A prova de entrega de notificações push no dispositivo continua fora das claims e do escopo comprovado.
 
 **PRÓXIMO PASSO:** avaliação independente do Gate 4. Não iniciar QA da Fase 5 até aprovação visual explícita.
+
+
+## V2 — direção e acabamento
+
+72 s / 4320 frames. Composição existente refinada, sem novo pipeline: abertura 4 s, marca 3 s, Meu dia 9 s, calendário 7 s, mobile 4 s, notas 8 s, compras 7 s, Gika 11 s, offline 12 s, encerramento 7 s.
+
+Câmera passa de aberto a médio/close conforme ação: tarefa e item concluídos, seleção de data, escrita/salvamento, painel Gika e estados offline. Cursor usa bounding boxes reais do manifesto. CameraMove limita o crop ao conteúdo real; easing controlado e máscaras de folha em apenas três transições, com cortes secos nos demais planos. Logo de encerramento por aproximadamente 2 s. Fontes e marca existentes preservadas.
+
+Spikes V2: abertura, mobile e Gika renderizados antes do integral; correção de interpolação com um único keyframe e reenquadramentos de calendário/Gika/nota após inspeção de frames 1080p. Nenhuma mudança na aplicação foi feita. Capturas de estado ganham movimento editorial; não são apresentadas como gravação contínua ou inferência ao vivo.
+
+Master visual: Remotion 4.0.410, PNG source, H.264 CRF17, yuv420p, BT.709, 1080p60. Pós-processamento preserva stream de vídeo, muxa mix original em AAC 48 kHz e gera versão muted/README separadas.

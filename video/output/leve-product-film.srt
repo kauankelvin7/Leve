@@ -1,38 +1,40 @@
 1
-00:00:00,000 --> 00:00:05,000
-Uma agenda pessoal para o seu dia.
+00:00:00,000 --> 00:00:04,000
+Uma ideia. Um espaço para retomar.
 
 2
-00:00:05,000 --> 00:00:10,000
+00:00:04,000 --> 00:00:07,000
 Organizar a vida deveria ser leve.
 
 3
-00:00:10,000 --> 00:00:20,000
-No Meu dia, compromissos e tarefas aparecem juntos.
-Você escolhe uma data e enxerga o que pede atenção.
+00:00:07,000 --> 00:00:16,000
+No Meu dia, você vê o que pede atenção.
+E dá um passo de cada vez.
 
 4
-00:00:20,000 --> 00:00:28,000
-No calendário, a semana se conecta ao restante da sua agenda.
+00:00:16,000 --> 00:00:27,000
+Seus dias ganham forma no calendário.
+E suas notas vão com você.
 
 5
-00:00:28,000 --> 00:00:38,000
-Uma ideia pode virar nota, ficar organizada
-e ser retomada quando fizer sentido.
+00:00:27,000 --> 00:00:35,000
+Ideias também têm lugar.
+Para escrever, guardar e retomar.
 
 6
-00:00:38,000 --> 00:00:45,000
-E até as pequenas compras encontram seu lugar.
+00:00:35,000 --> 00:00:42,000
+Até as pequenas compras encontram seu espaço.
 
 7
-00:00:45,000 --> 00:00:56,000
-Quando você pede, a Gika pode criar uma tarefa simples para sua agenda.
+00:00:42,000 --> 00:00:53,000
+Com a Gika, um pedido pode virar uma tarefa na agenda.
 
 8
-00:00:56,000 --> 00:01:09,000
-Sem conexão, o Leve pode manter acessíveis dados que já foram consultados
-e guardar certas alterações para tentar sincronizar quando a rede voltar.
+00:00:53,000 --> 00:01:05,000
+Sua agenda já aberta, ainda por perto.
+Esta tarefa espera a conexão voltar.
+Conexão de volta. Tarefa na agenda.
 
 9
-00:01:09,000 --> 00:01:16,000
-Leve. Um espaço pessoal para o que você quer lembrar e fazer.
+00:01:05,000 --> 00:01:12,000
+Leve. Mais espaço para viver.

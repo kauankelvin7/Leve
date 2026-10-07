@@ -1,31 +1,27 @@
-# Narração — Leve
+# Narração e legendas editoriais — Leve / V2
 
-**Idioma:** pt-BR · **Tom:** calmo, próximo, claro e confiante · **Ritmo de referência:** ~140 palavras/minuto.
-**Status:** texto pronto para gravação humana; não há TTS/licença aprovados. O vídeo precisa continuar compreensível sem áudio.
+**Idioma:** pt-BR · **Tom:** calmo, próximo e claro · **Duração:** 72 s.
 
-| Tempo | Texto | Observação de performance |
+Não há locução gravada nem TTS. O master contém trilha instrumental e efeitos originais. O texto abaixo é uma alternativa para futura voz humana e a base do SRT editorial separado; as legendas não são transcrição de uma voz existente. Headlines e interface continuam suficientes sem áudio.
+
+| Tempo | Texto opcional | Intenção |
 |---|---|---|
-| 00–05 | Uma agenda pessoal para o seu dia. | Abertura limpa sobre a UI real; tom calmo, sem prometer resultado além das áreas demonstradas. |
-| 05–10 | Organizar a vida deveria ser leve. | Pausa curta depois de “vida”. |
-| 10–20 | No Meu dia, compromissos e tarefas aparecem juntos. Você escolhe uma data e enxerga o que pede atenção. | Natural, sem ritmo de lista de recursos. |
-| 20–28 | No calendário, a semana se conecta ao restante da sua agenda. | Fluido, acompanhando o movimento da interface. |
-| 28–38 | Uma ideia pode virar nota, ficar organizada e ser retomada quando fizer sentido. | Mais próximo; deixar a UI respirar. |
-| 38–45 | E até as pequenas compras encontram seu lugar. | Leve, sem ênfase publicitária. |
-| 45–56 | Quando você pede, a Gika pode criar uma tarefa simples para sua agenda. | Usar somente com resposta upstream Gemini determinística predefinida e comando aplicado pelo fluxo real; não sugerir uma confirmação separada. |
-| 56–69 | Sem conexão, o Leve pode manter acessíveis dados que já foram consultados e guardar certas alterações para tentar sincronizar quando a rede voltar. | Pausado e literal. A formulação “pode”, “já consultados” e “certas alterações” evita promessas absolutas. |
-| 69–76 | Leve. Um espaço pessoal para o que você quer lembrar e fazer. | Encerrar com calor, sem superlativo. |
+| 00–04 | Uma ideia. Um espaço para retomar. | Acompanhar o gesto real sem prometer salvamento offline. |
+| 04–07 | Organizar a vida deveria ser leve. | Frase de marca, com breve respiro. |
+| 07–16 | No Meu dia, você vê o que pede atenção. E dá um passo de cada vez. | Acompanhar a conclusão da tarefa. |
+| 16–27 | Seus dias ganham forma no calendário. E suas notas vão com você. | Uma cue reúne calendário e consulta mobile real; não prometer toda função em todo aparelho. |
+| 27–35 | Ideias também têm lugar. Para escrever, guardar e retomar. | Edição e salvamento online da mesma nota. |
+| 35–42 | Até as pequenas compras encontram seu espaço. | Tom simples, cotidiano. |
+| 42–53 | Com a Gika, um pedido pode virar uma tarefa na agenda. | Resultado real; fixture do upstream documentada. Não sugerir resposta ao vivo. |
+| 53–65 | Sua agenda já aberta, ainda por perto. Esta tarefa espera a conexão voltar. Conexão de volta. Tarefa na agenda. | As três frases correspondem aos três estados reais; sem garantia geral de cache ou sincronização. |
+| 65–72 | Leve. Mais espaço para viver. | Retorno à nota e resolução musical. |
 
-## Texto corrido
+## Entrega e revisão futura
 
-Uma agenda pessoal para o seu dia. Organizar a vida deveria ser leve. No Meu dia, compromissos e tarefas aparecem juntos. Você escolhe uma data e enxerga o que pede atenção. No calendário, a semana se conecta ao restante da sua agenda. Uma ideia pode virar nota, ficar organizada e ser retomada quando fizer sentido. E até as pequenas compras encontram seu lugar. Quando você pede, a Gika pode criar uma tarefa simples para sua agenda. Sem conexão, o Leve pode manter acessíveis dados que já foram consultados e guardar certas alterações para tentar sincronizar quando a rede voltar. Leve. Um espaço pessoal para o que você quer lembrar e fazer.
+`video/output/leve-product-film.srt` contém nove cues editoriais, com tempo final em 72 s. Caso se grave voz humana futuramente, revisar cadência e sincronização pela gravação efetiva. A duração do plano atual não presume uma performance de locução. Não inserir TTS para preencher silêncio.
 
-## Legendas
+## Escopo factual
 
-As legendas finais devem ser geradas a partir da gravação aprovada, com revisão humana de pontuação, segmentação e tempo de leitura. Não congelar um SRT com timing estimado antes de fechar áudio e edição. Se o master não tiver voz, manter a versão muted e decidir se a legenda editorial deve ser entregue separadamente.
+A nota foi salva online antes da queda; permaneceu visível na mesma página, sem reload ou mutação offline. Os dados de Meu dia foram consultados antes; a tarefa específica entra na outbox e é aplicada após reconexão e ACK. O cache pode ser limitado/evicto; outras operações não são demonstradas. O offline padrão do código ainda diverge de documentação do produto.
 
-## Claims a preservar
-
-- Os dados offline foram consultados antes e o comportamento é condicionado pelo cache/sessão disponíveis no aparelho. A edição específica da nota após o reload não foi validada e não aparece no início.
-- A outbox aceita somente determinadas alterações; sincronização é uma tentativa após retorno da rede, não promessa universal.
-- A Gika pode criar uma tarefa simples no escopo capturado; a chamada upstream Gemini usa fixture determinística compatível com o contrato; não sugerir geração ao vivo. Auth, endpoint do app, router e comando são reais. O fluxo real não tem etapa separada de confirmação.
-- A frase “um espaço pessoal” descreve o produto, sem alegações de privacidade/uso de dados não comprovadas.
+A interpretação da Gika é controlada exclusivamente no upstream Gemini. UI, Auth, router, comando e contrato são reais. Nenhuma fala ou legenda afirma geração ao vivo, autonomia irrestrita ou precisão garantida.

@@ -7,7 +7,7 @@ afirmação | evidência (arquivo, função, teste ou captura) | status
 O Leve reúne agenda, calendário, notas e compras em um espaço pessoal. | `apps/web/src/app/App.tsx::App/Shell` route map; `Today`, `Calendar`, `Notes`, `Shopping` components. | VERIFICADA
 O Meu dia mostra tarefas de uma data consultada e deixa a seleção visível. | `features/activities/TodayOverview.tsx`; `DayNavigation.tsx`; `tests/e2e-local/today-date-clarity.spec.ts` checks selected Wednesday/Thursday and return to Hoje. | VERIFICADA
 O Meu dia pode reunir compromissos e tarefas na data selecionada. | `apps/web/src/features/activities/Today.tsx` consulta atividades por `schedule.dueDate` e intervalos de evento; `TodayActivityRow.tsx` renderiza tarefa/evento; `tests/e2e-local/persistent.spec.ts` cria um evento na mesma data da tarefa existente e verifica cada registro em Meu dia durante o fluxo, com a tarefa verificada após reload; não há uma asserção única que confirme os dois simultaneamente após reload. O SRT narra essa capacidade geral; a captura do filme mostra uma tarefa fictícia. | VERIFICADA
-O Meu dia oferece a opção de ouvir o resumo usando a síntese de voz do navegador quando disponível. | `apps/web/src/features/activities/DailyBrief.tsx` checks `speechSynthesis`/`SpeechSynthesisUtterance`, disables the action if unsupported and calls the browser API; visible control in `video/captures/run-1/today.png`. The film itself has no voice track and makes no quality or device-availability claim. | VERIFICADA
+O Meu dia oferece a opção de ouvir o resumo usando a síntese de voz do navegador quando disponível. | `apps/web/src/features/activities/DailyBrief.tsx` checks `speechSynthesis`/`SpeechSynthesisUtterance`, disables the action if unsupported and calls the browser API; visible control in `video/captures/run-1/today.png`. O master V2 tem música e efeitos, sem locução. Não faz claim de qualidade ou disponibilidade da síntese em aparelhos. | VERIFICADA
 O calendário permite navegar por mês, semana e dia. | `features/activities/Calendar.tsx`; `calendar-planner.spec.ts`; routes in `App.tsx`. | VERIFICADA
 Notas podem ser salvas e editadas na conta autenticada. | `features/notes/Notes.tsx::persist`; `tests/e2e-local/persistent.spec.ts::login, ativação e atividade sobrevivem ao reload` edits and reloads a note. | VERIFICADA
 O Leve organiza listas e itens de compras. | `features/shopping/Shopping.tsx`, `ShoppingDetail.tsx`; `persistent.spec.ts` creates list/item, checks item and reloads. | VERIFICADA
@@ -33,3 +33,30 @@ Notificações podem aparecer com o mesmo visual em todo navegador e aparelho. |
 O Leve guarda tudo que a pessoa anotou localmente e tudo sempre estará acessível offline. | Firestore caches queried data and shell; no full-account offline download, caches may be unavailable or evicted, and account must have previously opened data. | NÃO VERIFICADA
 O Leve nunca perde conteúdo da pessoa. | Product slogan in README; no system can guarantee all device/storage/network conditions and no evidence for universal claim. | NÃO VERIFICADA
 O modo `/demo` prova autenticação, persistência e sincronização reais. | `features/demo/Demo.tsx` is a separate mock route without account backend; do not use it as evidence. | NÃO VERIFICADA
+
+
+## V2 — copy e evidência por cena
+
+A V2 continua em `video/product-film`, com produto base acima intacto. A duração passa de 76 para 72 s. Capturas novas: `video/capture/manifests/polish-1.json` e `polish-2.json`; comparação em `polish-diff.json`. Abertura e fecho usam a mesma nota fictícia “Uma ideia para retomar”, com o texto “Rever as ideias do projeto e escolher o próximo passo.”
+
+| Copy / afirmação visual | Evidência e escopo | Status |
+|---|---|---|
+| A nota salva online permanece visível nesta página quando a conexão cai. | `polish-note`: etapas reais de digitação, `note.save` ACK 200 antes de `BrowserContext.setOffline(true)`, `note-saved` e `note-offline`. Não houve reload ou salvamento offline da nota. | VERIFICADA |
+| “Organizar a vida deveria ser leve.” / “Mais espaço para viver.” | Frases editoriais de marca; não prometem desempenho, disponibilidade, integridade ou resultado pessoal mensurável. | EDITORIAL — sem claim funcional |
+| “Seu dia, em perspectiva.” / conclusão da tarefa. | `today-before/after`; checkbox real e `activity.setStatus` ACK 200. 07/10/2026 em `America/Sao_Paulo`. | VERIFICADA |
+| “Veja seus dias tomar forma.” | `calendar-before/day`: calendário **mensal** e seleção de dia/detalhe reais. A nova copy evita chamar a imagem de semana. | VERIFICADA |
+| “O mesmo espaço. No seu ritmo.” / consulta mobile da nota. | `mobile-note-before/open`; Pixel 7, touch e viewport 390×844, screenshots 2x. Leitura/abertura real da mesma nota. Não demonstra todas as operações mobile, sincronização entre aparelhos ou escrita offline. | VERIFICADA |
+| “Ideias também têm lugar.” / edição e nota salva. | Estados `note-type-2`, `note-type-4`, `note-saved`; edição online real. | VERIFICADA |
+| “Até o cotidiano ganha espaço.” / item comprado. | `shopping-before/after/completed`; `shoppingItem.setChecked` ACK 200; conclusão/expansão nativas. | VERIFICADA |
+| “Uma ideia vira próximo passo.” / tarefa criada pela Gika. | Fixture upstream Gemini existente, contrato de `respond_turn/create_task`; Auth, UI, `/api/gika/respond`, router e `activity.create` reais; ACK 200. Exemplo controlado, não evidência de Gemini ao vivo. | VERIFICADA — INTERCEPTADA |
+| “Sua agenda já aberta, ainda por perto.” | Captura offline de Meu dia com conteúdo consultado online antes e sessão inicializada. Descreve este estado, não acesso universal a dados ou primeiro uso offline. | VERIFICADA |
+| “Esta tarefa espera a conexão voltar.” | “Regar as plantas” criada sem rede em comando elegível; UI nativa informa pendência na outbox. Sem afirmar que notas/compras/exclusões tiveram escrita offline nesta filmagem. | VERIFICADA |
+| “Conexão de volta. Tarefa na agenda.” | Reconexão, ACK 200 real e consulta do estado servidor desta tarefa. Não implica tentativa sempre bem-sucedida para toda alteração. | VERIFICADA |
+
+### Transparência e divergências preservadas
+
+O aviso técnico de fixture exibido na V1 foi removido do filme por solicitação explícita do usuário para esta V2. A interceptação continua aqui, nos manifests e nos relatórios. Nenhuma copy, efeito sonoro ou câmera atribui o tempo de resposta ao Gemini ao vivo. Não há chamada upstream ao vivo validada.
+
+A divergência entre `README.md`/`AGENTS.md` e o comportamento atual de offline ativo por padrão permanece. Não foi corrigida no produto nesta entrega. O preview público com service worker comprova o shell offline depois de cache; o fluxo autenticado Vite + Emulator comprova conteúdo consultado/outbox específicos. São evidências separadas. Cache pode ser limitado ou evicto; o vídeo não promete “nunca perde dados”, funcionamento totalmente offline ou sincronização garantida.
+
+A música e os efeitos V2 são composição/síntese originais, sem samples externos ou TTS; origem, licença MIT e reprodução constam em `video/audio/README.md`. Há áudio no master, não no derivado comprimido README. O SRT é editorial, não transcrição de locução gravada.

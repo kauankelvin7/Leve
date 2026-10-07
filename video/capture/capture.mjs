@@ -8,6 +8,7 @@ const args = process.argv.slice(2);
 const value = name => { const index = args.indexOf(name); return index < 0 ? undefined : args[index + 1]; };
 const run = value('--run') ?? 'run-1';
 const selected = value('--scene');
+const polish = args.includes('--polish');
 const date = '2026-10-07';
 const baseURL = 'http://localhost:5174';
 const output = resolve('video/assets/captures', run);
@@ -25,7 +26,7 @@ const titles = {
   noteBody: 'Rever as ideias do projeto e escolher o próximo passo.',
   list: 'Mercado da semana',
 };
-const manifest = { run, app: baseURL, branch: 'video/product-film', repoCommit: '33707a4e72b863f1689113f51e95118a5568bebe', capturedAt: new Date().toISOString(), viewport: '1600x900', deviceScaleFactor: 2, locale: 'pt-BR', timezone: 'America/Sao_Paulo', civilDate: date, data: 'Emulator / leve.local@example.test; fictional', scenes: {}, browserErrors: [] };
+const manifest = { run, app: baseURL, branch: 'video/product-film', repoCommit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(), capturedAt: new Date().toISOString(), viewport: '1600x900', deviceScaleFactor: 2, locale: 'pt-BR', timezone: 'America/Sao_Paulo', civilDate: date, data: 'Emulator / leve.local@example.test; fictional', scenes: {}, browserErrors: [] };
 
 async function login(page) {
   await page.goto(`${baseURL}/entrar`);
@@ -105,7 +106,7 @@ async function bootstrap() {
 }
 
 const storageStates = await bootstrap();
-const allScenes = ['cold-open', 'brand', 'today', 'calendar', 'notes', 'shopping', 'gika', 'offline', 'closing'];
+const allScenes = polish ? ['polish-note', 'polish-today', 'polish-calendar', 'polish-shopping', 'polish-gika', 'polish-offline', 'polish-mobile'] : ['cold-open', 'brand', 'today', 'calendar', 'notes', 'shopping', 'gika', 'offline', 'closing'];
 const scenes = selected ? [selected] : allScenes;
 
 function record(page, scene) {
@@ -120,8 +121,8 @@ function record(page, scene) {
     actions.push({ timestamp: new Date().toISOString(), type: kind, target, boundingBox });
     await invoke();
   }
-  async function shot(name, { locator, fullPage = false } = {}) {
-    if (scene !== 'offline') {
+  async function shot(name, { locator, fullPage = false, expectedOffline = false } = {}) {
+    if (scene !== 'offline' && !expectedOffline) {
       await page.waitForFunction(() => navigator.onLine === true);
       await page.getByText('Sem conexão. Mostrando dados salvos.', { exact: true }).waitFor({ state: 'hidden' });
       await page.getByText('Modo offline', { exact: true }).waitFor({ state: 'hidden' });
@@ -136,15 +137,19 @@ function record(page, scene) {
     const bytes = await readFile(path);
     const info = await stat(path);
     const bodyText = await page.locator('body').innerText();
-    const expectedOfflineFrame = scene === 'offline' && ['offline-banner.png', 'offline-pending.png'].includes(name);
+    const expectedOfflineFrame = expectedOffline || scene === 'offline' && ['offline-banner.png', 'offline-pending.png'].includes(name);
     if (!expectedOfflineFrame && /Sem conexão\. Mostrando dados salvos\.|Modo offline|Conexão restaurada/.test(bodyText)) throw new Error(`Unexpected offline state in ${scene}/${name}`);
     if (/Carregando seu dia\.\.\.|Carregando suas notas|Carregando atividades|Carregando o mês|Carregando os itens/.test(bodyText)) throw new Error(`Loading state in ${scene}/${name}`);
+    const secrets = /AIza[0-9A-Za-z_-]{35}|Bearer\s+[A-Za-z0-9._-]{16,}/.test(bodyText);
+    const nonFictionalEmail = [...bodyText.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].some(match=>!match[0].endsWith('@example.test'));
+    if(secrets || nonFictionalEmail) throw new Error(`Privacy scan failed: ${name}`);
     await writeFile(path.replace(/\.png$/, '.text.txt'), bodyText);
-    return { path: path.replace(`${process.cwd()}/`, ''), sha256: createHash('sha256').update(bytes).digest('hex'), bytes: info.size, dimensions: await page.evaluate(() => `${innerWidth * devicePixelRatio}x${innerHeight * devicePixelRatio}`) };
+    return { path: path.replace(`${process.cwd()}/`, ''), sha256: createHash('sha256').update(bytes).digest('hex'), bytes: info.size, scans: {privacy:'PASS', loading:'PASS', expectedOffline:expectedOfflineFrame, online:await page.evaluate(()=>navigator.onLine)}, dimensions: await page.evaluate(() => `${innerWidth * devicePixelRatio}x${innerHeight * devicePixelRatio}`) };
   }
   async function finish(files) {
     manifest.scenes[scene] = { actions, captures: files };
     manifest.browserErrors.push(...errors.map(error => ({ scene, error })));
+    await writeFile(resolve(manifestOutput, `${run}.json`), JSON.stringify(manifest,null,2));
   }
   return { page, action, shot, finish, errors };
 }
@@ -164,8 +169,62 @@ async function newPage({ offlineCache = false } = {}) {
   return { context, page };
 }
 
+async function ack(page, command, invoke) {
+  const wait = page.waitForResponse(r => r.url().endsWith('/api/commands') && r.request().postDataJSON()?.command === command);
+  await invoke(); const response = await wait;
+  if(response.status() !== 200) throw new Error(`${command}: ${response.status()}`);
+  return { command, status: response.status(), payload: await response.json() };
+}
+async function polishScene(scene) {
+  const mobile = scene === 'polish-mobile';
+  const device = mobile ? {...devices['Pixel 7'], viewport:{width:390,height:844}, deviceScaleFactor:2, locale:'pt-BR', timezoneId:'America/Sao_Paulo'} : desktop;
+  const context = await browser.newContext({...device, storageState:storageStates.onlineState});
+  const page = await context.newPage(); const c = record(page, scene); const files=[]; const acks=[];
+  const shot = async(name, opts={})=> { const file = await c.shot(name, opts); file.label=name.replace('.png',''); file.order=files.length; files.push(file); };
+  await page.goto(`${baseURL}/hoje`); await page.getByText(titles.activity,{exact:true}).first().waitFor();
+  if(scene === 'polish-note' || mobile) {
+    await page.goto(`${baseURL}/notas`); const card=page.locator('article.note').filter({has:page.getByRole('heading',{name:titles.note,exact:true})}); await card.waitFor();
+    if(mobile) {
+      await card.scrollIntoViewIfNeeded(); await shot('mobile-note-before.png');
+      const edit=card.getByRole('button',{name:'Editar',exact:true}); await c.action('click',edit,()=>edit.click());
+      await page.getByRole('heading',{name:'Editar nota',exact:true}).waitFor();
+      await page.getByLabel('Texto',{exact:true}).scrollIntoViewIfNeeded(); await shot('mobile-note-open.png');
+    } else {
+      await shot('note-before.png'); const edit=card.getByRole('button',{name:'Editar',exact:true}); await c.action('click',edit,()=>edit.click()); await page.getByRole('heading',{name:'Editar nota',exact:true}).waitFor();
+      const text=page.getByLabel('Texto',{exact:true}); await text.waitFor(); await text.scrollIntoViewIfNeeded();
+      await c.action('fill',text,()=>text.fill('')); await shot('note-type-0.png');
+      for(const [i,chunk] of ['Rever as ideias',' do projeto',' e escolher',' o próximo passo.'].entries()) {await c.action('type',text,()=>text.pressSequentially(chunk,{delay:15})); await shot(`note-type-${i+1}.png`);}
+      const save=page.getByRole('button',{name:'Concluir edição',exact:true}); await save.scrollIntoViewIfNeeded(); await shot('note-save-ready.png'); acks.push(await ack(page,'note.save',()=>c.action('click',save,()=>save.click())));
+      await card.waitFor(); await page.evaluate(()=>scrollTo(0,0)); await shot('note-saved.png');
+      await c.action('network-offline','BrowserContext.setOffline(true)',()=>context.setOffline(true)); await page.getByText('Modo offline',{exact:true}).waitFor();
+      await shot('note-offline.png',{expectedOffline:true});
+      await context.setOffline(false);
+    }
+  } else if(scene === 'polish-today') {
+    const check=page.getByRole('checkbox',{name:`Concluir ${titles.activity}`,exact:true}); await check.waitFor(); await shot('today-before.png');
+    acks.push(await ack(page,'activity.setStatus',()=>c.action('click',check,()=>check.click())));
+    await page.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).waitFor(); await shot('today-after.png');
+  } else if(scene === 'polish-calendar') {
+    await page.goto(`${baseURL}/calendario`); await page.getByRole('heading',{name:'Calendário',exact:true}).waitFor();
+    await page.getByRole('button',{name:'Mês',exact:true}).click(); const day=page.getByRole('button',{name:/quarta-feira, 7 de outubro de 2026/}); await day.scrollIntoViewIfNeeded(); await shot('calendar-before.png');
+    await c.action('click',day,()=>day.click()); await page.locator('#selected-date').waitFor(); await page.locator('#selected-date').scrollIntoViewIfNeeded(); await shot('calendar-day.png');
+  } else if(scene === 'polish-shopping') {
+    await page.goto(`${baseURL}/compras`); await page.getByText(titles.list,{exact:true}).first().click();
+    const check=page.getByRole('checkbox',{name:'Marcar Café como concluído',exact:true}); await check.waitFor(); await check.scrollIntoViewIfNeeded(); await shot('shopping-before.png');
+    acks.push(await ack(page,'shoppingItem.setChecked',()=>c.action('click',check,()=>check.click())));
+    await page.getByRole('progressbar',{name:'Itens concluídos',exact:true}).waitFor(); await page.waitForFunction(()=>document.querySelector('progress.shopping-progress')?.value===1); await shot('shopping-after.png'); const completed=page.locator('details.completed-shopping summary'); await c.action('click',completed,()=>completed.click()); await page.getByRole('checkbox',{name:'Marcar Café como pendente',exact:true}).waitFor(); await shot('shopping-completed.png');
+  } else if(scene === 'polish-gika') {
+    await shot('gika-context.png'); const open=page.getByRole('button',{name:'Pergunte à Gika',exact:true}); await c.action('click',open,()=>open.click());
+    const input=page.getByRole('textbox',{name:'Pergunte à Gika',exact:true}); await input.waitFor(); await shot('gika-open.png');
+    for(const [i,chunk] of ['Agende ir à feira',' amanhã às 19:00',' e me avise'].entries()) {await c.action('type',input,()=>input.pressSequentially(chunk,{delay:20})); await shot(`gika-type-${i+1}.png`);}
+    acks.push(await ack(page,'activity.create',()=>c.action('envio',input,()=>input.press('Enter')))); await page.getByRole('group',{name:'Tarefa adicionada',exact:true}).waitFor(); await shot('gika-result.png');
+  }
+  await c.finish(files); manifest.scenes[scene].acks=acks; manifest.scenes[scene].device=mobile?'Pixel 7 / 390x844 / touch / scale 2':'Desktop / 1600x900 / scale 2';
+  await context.close();
+}
+
 for (const scene of scenes) {
-  if (scene === 'cold-open') {
+  if (scene.startsWith('polish-') && scene !== 'polish-offline') { await polishScene(scene); } else if (scene === 'cold-open') {
     const { context, page } = await newPage(); const c = record(page, scene);
     await page.getByText(titles.activity, { exact: true }).first().waitFor();
     const opening = await c.shot('opening-today.png');
@@ -228,7 +287,7 @@ for (const scene of scenes) {
     await page.getByRole('group', { name: 'Tarefa adicionada', exact: true }).waitFor();
     const file = await c.shot('gika.png');
     await c.finish([file]); await context.close();
-  } else if (scene === 'offline') {
+  } else if (scene === 'offline' || scene === 'polish-offline') {
     const { context, page } = await newPage({ offlineCache: true }); const c = record(page, scene);
     const notesNav = page.getByRole('link', { name: 'Notas', exact: true });
     await c.action('click', notesNav, () => notesNav.click()); await page.getByRole('heading', { name: titles.note, exact: true }).waitFor();
@@ -247,7 +306,7 @@ for (const scene of scenes) {
     await secondPage.getByText('Modo offline', { exact: true }).waitFor({ state: 'hidden' });
     await c.action('network-offline', 'BrowserContext.setOffline(true)', () => context.setOffline(true));
     await page.getByText('Modo offline', { exact: true }).waitFor();
-    const offline = await c.shot('offline-banner.png');
+    const offline = await c.shot('offline-banner.png', {expectedOffline:true});
     const newActivity = page.getByRole('button', { name: 'Nova atividade' });
     await c.action('click', newActivity, () => newActivity.click());
     const title = page.getByLabel('Título');
@@ -259,7 +318,7 @@ for (const scene of scenes) {
     await page.getByText(/Salvo neste aparelho e aguardando conexão/).waitFor();
     await page.locator('.activity-composer').evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    const pending = await c.shot('offline-pending.png');
+    const pending = await c.shot('offline-pending.png', {expectedOffline:true});
     const replay = page.waitForResponse(r => r.url().endsWith('/api/commands') && r.request().postDataJSON()?.command === 'activity.create', { timeout: 20_000 });
     await c.action('network-online', 'BrowserContext.setOffline(false)', () => context.setOffline(false));
     await page.evaluate(() => window.dispatchEvent(new Event('online')));
@@ -280,7 +339,9 @@ for (const scene of scenes) {
     const syncedInfo = await stat(resolve(output, 'offline-synced.png'));
     const syncedCapture = { path: `video/assets/captures/${run}/offline-synced.png`, sha256: createHash('sha256').update(syncedBytes).digest('hex'), bytes: syncedInfo.size, dimensions: await secondPage.evaluate(() => `${innerWidth * devicePixelRatio}x${innerHeight * devicePixelRatio}`) };
     await writeFile(resolve(output, 'offline-synced.text.txt'), await secondPage.locator('body').innerText());
-    await c.finish([offline, pending, syncedCapture]); await context.close();
+    if(scene === 'polish-offline') { await secondPage.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).waitFor(); if(!await page.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).count()) throw new Error('Completed Today task continuity lost offline'); }
+    [offline,pending,syncedCapture].forEach((file,index)=>{file.order=index;file.label=['offline-banner','offline-pending','offline-synced'][index];}); syncedCapture.scans={privacy:'PASS',loading:'PASS',expectedOffline:false,online:true};
+    await c.finish([offline, pending, syncedCapture]); manifest.scenes[scene].continuity={todayTask:'completed',asserted:'Reabrir Organizar semana de estudos visible in offline main page and online reloaded second page'}; manifest.scenes[scene].acks=[{command:'activity.create',status:replayAck.status(),source:'real outbox replay'}]; await context.close();
   } else if (scene === 'closing') {
     const { context, page } = await newPage(); const c = record(page, scene);
     const nav = page.getByRole('link', { name: 'Notas', exact: true });

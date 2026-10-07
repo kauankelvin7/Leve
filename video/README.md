@@ -1,44 +1,49 @@
-# Filme de produto do Leve
+# Filme de produto do Leve — V2
 
-Master editorial de lançamento, composto com capturas do aplicativo real em ambiente local com Firebase Emulator. Duração: 76 segundos. O vídeo funciona sem áudio: os títulos e explicações essenciais estão na imagem. Não usamos música nem voz sintética. O SRT acompanha o texto de narração preparado para eventual gravação humana e não representa fala gravada no master.
+72 segundos de UI real, motion editorial e trilha instrumental original. A narrativa continua compreensível sem áudio; não há voz gravada ou TTS. O SRT é texto editorial opcional, não transcrição de fala.
 
-[![Assistir ao filme de produto (76 s)](output/poster.png)](output/leve-product-film-readme.mp4)
+[![Assistir à versão compacta, 72 s](output/poster.png)](output/leve-product-film-readme.mp4)
 
 ## Entregáveis
 
-- `output/leve-product-film.mp4` — master H.264, 1920×1080, 60 fps, 76 s, sem faixa de áudio.
-- `output/leve-product-film-muted.mp4` — master sem áudio; idêntico ao arquivo acima.
-- `output/leve-product-film-readme.mp4` — versão H.264 1280×720, inferior a 10 MB.
-- `output/poster.png` — quadro de abertura em 1920×1080.
-- `output/leve-product-film.srt` — texto editorial alinhado à estrutura de 76 s; requer sincronização se uma voz humana for gravada.
+| Arquivo local | Uso |
+|---|---|
+| `output/leve-product-film.mp4` | Master 1920×1080, 60 fps, H.264 CRF17, yuv420p, BT.709, AAC estéreo 48 kHz |
+| `output/leve-product-film-muted.mp4` | Mesmo stream de vídeo, sem áudio |
+| `output/leve-product-film-readme.mp4` | Derivado 1280×720, sem áudio, abaixo de 10 MB; não avaliar qualidade do master por esta cópia |
+| `output/poster.png` | Poster 1080p |
+| `output/leve-product-film.srt` | Nove cues editoriais, 72 s |
 
-Os renders e as capturas são locais e ignorados pelo Git; `video/README.md`, roteiros, código de captura e relatórios são versionáveis.
+O master V2 também é versionado para download direto: cerca de 12 MB, preservando CRF17/1080p60 e áudio. [Baixar master com áudio](output/leve-product-film.mp4). Stems, capturas e versão muted são locais e ignorados pelo Git. Código, relatórios, manifestos, poster, SRT e derivado compacto são versionados. V1 preservada localmente em `output/v1/` e nos relatórios com sufixo `-v1`.
 
-## Reproduzir
+## Reproduzir a pipeline existente
 
-Requisitos: Node 24, npm 11, Chromium em `/usr/bin/chromium`, FFmpeg, Firebase Emulator e dependências instaladas no repositório.
+Requisitos: Node 24, npm 11, Chromium `/usr/bin/chromium`, FFmpeg, Python e Firebase Emulator. Dependências de captura já pertencem ao repositório; composição isolada em `remotion/`. Instale dependências de áudio com `python3 -m pip install -r video/audio/requirements.txt`.
 
-1. Inicie o fluxo local do Leve com `npm run dev` na raiz, Auth/Firestore Emulator e a fixture upstream Gemini documentada em `capture/gemini-upstream-fixture.mjs`.
-2. Gere as capturas fictícias: `node video/capture/capture.mjs --run run-1` e `--run run-2`.
-3. Compare os estados: `python3 video/capture/compare-runs.py`.
-4. Instale as dependências isoladas de composição uma vez com `npm ci --prefix video/remotion`.
-5. Renderize e pós-processe: `npm run --prefix video/remotion render`, depois `npm run --prefix video/remotion postprocess`.
-6. Gere a cópia compacta/poster usando os comandos FFmpeg mantidos no relatório da Fase 6.
-7. Rode `video/scripts/verify`.
+1. Inicie o app local e Auth/Firestore Emulator com a fixture upstream existente em `capture/gemini-upstream-fixture.mjs`, conforme relatório de captura.
+2. Gere V1 se ausente (a marca original é reaproveitada): `node video/capture/capture.mjs --run run-1`.
+3. Gere V2: `node video/capture/capture.mjs --polish --run polish-1`; repita com `polish-2`.
+4. Compare: `python3 video/capture/compare-runs.py polish-1 polish-2`.
+5. Instale composição: `npm ci --prefix video/remotion`.
+6. Sintetize música/stems/mix: `python3 video/audio/compose.py`.
+7. Renderize: `npm run --prefix video/remotion render`.
+8. Muxe áudio e gere derivados sem reencodar o vídeo master: `npm run --prefix video/remotion postprocess`.
+9. Valide: `python3 video/scripts/verify`; faça decode integral e revisão visual conforme `reports/06-qa.md`.
 
-As capturas autenticadas usam dados sintéticos no Emulator, não dados de produção. As cenas online não reutilizam IndexedDB; somente as cenas offline recebem o cache preparado. A resposta Gika usa uma fixture determinística compatível com o contrato upstream, enquanto UI, autenticação, router, comando e persistência local são reais. A interceptação é revelada dentro do filme e descrita em `reports/03-capture-report.md`.
+## Honestidade da demonstração
 
-## Escopo offline
+Capturas usam conta e dados sintéticos no Emulator. Abertura: nota salva online antes da queda de conexão, permanecendo na página aberta; nenhuma edição/reload de nota offline. Trecho posterior: dados consultados, uma tarefa elegível na outbox e aplicação após ACK de reconexão. Sem promessa de disponibilidade universal ou sincronização de todas as operações.
 
-O vídeo mostra estados efetivamente validados: dados consultados antes continuam visíveis após a desconexão; uma criação de tarefa elegível aguarda a rede; após ACK do servidor e nova consulta, a tarefa aparece na agenda. Isso não demonstra que o app inteiro funciona offline, que todo o histórico fica disponível ou que toda alteração sincroniza. A divergência encontrada entre a documentação versionada e o padrão atual da outbox está registrada em `reports/03-capture-report.md`.
+Gika: só a chamada upstream Gemini é interceptada com envelope/function-call compatível. UI, autenticação, endpoint do app, router e comando são reais. Não é resposta gerada ao vivo; a interceptação fica documentada no relatório/ledger, sem linguagem técnica sobreposta ao filme conforme direção V2.
 
-## QA e evidências
+A divergência entre documentação do produto e comportamento default de cache/outbox permanece registrada. Produto não foi alterado para a filmagem.
 
-- `reports/FINAL_REPORT.md` — decisões, limitações e hashes finais.
-- `reports/06-qa.md` — auditoria independente e veredito.
-- `reports/claims-ledger.md` — evidências e status das afirmações.
-- `output/frame-contact-sheet.jpg` e `output/keyframes/` — inspeção visual da sequência.
+## Relatórios e licenças
 
-## Licenças
+- `reports/07-polish-analysis.md`: análise anterior à edição.
+- `reports/07-polish-report.md`: diferenças V1/V2 e entrega.
+- `reports/06-qa.md`: QA da V2; V1 em `06-qa-v1.md`.
+- `reports/claims-ledger.md`: afirmações e evidências.
+- `ASSETS.md`, `audio/README.md`, `licenses/`: origem da música original MIT e fontes OFL.
 
-O render usa Remotion 4.0.410 conforme os termos vigentes verificados durante esta tarefa. A licença Free publicada pelo Remotion limita-se a indivíduos, equipes/organizações de até três pessoas, organizações sem fins lucrativos ou avaliação. A elegibilidade de Leve não foi presumida; confira os termos e o tamanho da equipe antes de distribuição comercial. O master local é uma versão candidata para revisão.
+Remotion 4.0.410 mantém os termos próprios da ferramenta; elegibilidade comercial conforme tamanho de equipe deve ser conferida pelo responsável pela distribuição. Avaliação objetiva de áudio inclui arranjo, sincronismo e níveis medidos, não audição subjetiva humana, indisponível neste ambiente.

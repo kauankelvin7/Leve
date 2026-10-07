@@ -88,3 +88,20 @@ python3 video/capture/compare-runs.py
 ```
 
 O runner reinicia somente a conta seed do Firebase Emulator; requer o `npm run dev` local com Emulator no ar. A fixture Gemini deve ser pré-carregada no processo do servidor como documentado em `video/capture/gemini-upstream-fixture.mjs`; ela intercepta só o upstream Gemini exato e permite que Auth/router/comando continuem reais. Arquivos binários ficam ignorados; scripts, fixtures, manifests e este relatório são versionáveis. Nenhuma etapa de motion/Remotion foi iniciada nesta entrega.
+
+
+## V2 — capturas adicionais, 2026-10-07
+
+O harness existente ganhou `--polish`, preservando V1. Desktop 1600×900/2x; mobile Pixel 7 390×844/2x, touch, pt-BR, America/Sao_Paulo e data civil fixa. Os manifests `polish-1.json`, `polish-2.json` e `polish-diff.json` registram estados, hashes, ações e ACKs.
+
+Abertura agora elegível: o editor mostra digitação real, a nota é salva **online**, ACK 200; só depois a rede é cortada e a mesma nota permanece visível na página aberta. Não houve escrita de nota offline nem reload offline nessa abertura. Não se compôs indicador especial.
+
+Meu dia conclui a tarefa seedada; calendário seleciona um dia real; compras marca Café e abre a seção nativa de concluídos; mobile consulta e abre a mesma nota sem alterá-la. Offline foi recapturado para preservar a tarefa concluída, criar somente “Regar as plantas” na outbox e comprovar ACK de replay/reconsulta após reconexão.
+
+Gika mantém exatamente a fixture upstream contratual existente e UI/Auth/router/comando reais. A linguagem técnica foi retirada do filme conforme instrução da iteração V2; a interceptação permanece neste relatório e no ledger. Não se afirma resposta ao vivo nem duração real de inferência.
+
+Permanece a divergência: documentação do produto descreve ativação manual em trechos, enquanto implementação atual ativa cache/outbox por padrão com opt-out. O filme não afirma disponibilidade universal, download integral de conta ou sincronização de todas as operações. O texto amplo do banner nativo é UI real, não evidência de garantia universal; o roteiro limita o contexto aos dados consultados e à tarefa elegível demonstrada.
+
+Resultado final V2: duas execuções completas, 7 cenas e 27 PNGs por execução. Comparação PASS 27/27; 20 imagens pixel-idênticas; maior porcentagem de pixels com diferença >8: 0,0931%; maior MAE por canal: 0,0474/255. Os 13 erros de console `ERR_INTERNET_DISCONNECTED` por execução estão restritos aos cortes de rede; nenhum pageerror. Nota, conclusão de tarefa, check de compra, Gika e replay da tarefa offline receberam ACK 200. Continuidade offline: “Organizar semana de estudos” permanece concluída; “Regar as plantas” é a tarefa nova pendente.
+
+Manifest polish-1 SHA-256: `e953cd36c6fd6c38136e1762d646dc80e804d235e87871bdf073e38d22571514`. Manifest polish-2: `84d736a63ebb1f0e6fe725996a900d7ee2a0ce2307df2105970c365e8f9c5adb`.

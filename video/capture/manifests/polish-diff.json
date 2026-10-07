@@ -1,0 +1,279 @@
+{
+  "runs": [
+    "polish-1",
+    "polish-2"
+  ],
+  "captures": [
+    {
+      "scene": "polish-note",
+      "file": "note-before.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-type-0.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 99.5291,
+      "pixels_over_8_pct": 0.0931,
+      "mean_absolute_channel_difference": 0.0227,
+      "max_channel_difference": 33,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-type-1.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-type-2.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-type-3.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-type-4.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-save-ready.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-saved.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-note",
+      "file": "note-offline.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-today",
+      "file": "today-before.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-today",
+      "file": "today-after.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-calendar",
+      "file": "calendar-before.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 98.4892,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0474,
+      "max_channel_difference": 5,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-calendar",
+      "file": "calendar-day.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-shopping",
+      "file": "shopping-before.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-shopping",
+      "file": "shopping-after.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-shopping",
+      "file": "shopping-completed.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-context.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-open.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 99.7688,
+      "pixels_over_8_pct": 0.0001,
+      "mean_absolute_channel_difference": 0.0025,
+      "max_channel_difference": 9,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-type-1.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 99.7244,
+      "pixels_over_8_pct": 0.003,
+      "mean_absolute_channel_difference": 0.0041,
+      "max_channel_difference": 13,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-type-2.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-type-3.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-gika",
+      "file": "gika-result.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 99.9815,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0001,
+      "max_channel_difference": 5,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-offline",
+      "file": "offline-banner.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 99.9829,
+      "pixels_over_8_pct": 0.0049,
+      "mean_absolute_channel_difference": 0.0019,
+      "max_channel_difference": 134,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-offline",
+      "file": "offline-pending.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-offline",
+      "file": "offline-synced.png",
+      "dimensions": "3200x1800",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-mobile",
+      "file": "mobile-note-before.png",
+      "dimensions": "780x1688",
+      "identical_pixels_pct": 100.0,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0,
+      "max_channel_difference": 0,
+      "within_tolerance": true
+    },
+    {
+      "scene": "polish-mobile",
+      "file": "mobile-note-open.png",
+      "dimensions": "780x1688",
+      "identical_pixels_pct": 99.9544,
+      "pixels_over_8_pct": 0.0,
+      "mean_absolute_channel_difference": 0.0004,
+      "max_channel_difference": 1,
+      "within_tolerance": true
+    }
+  ],
+  "all_within_tolerance": true
+}

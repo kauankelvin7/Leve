@@ -43,5 +43,6 @@ for scene, record in left["scenes"].items():
         raise SystemExit(f"Capture count mismatch in {scene}")
     for a, b in zip(captures_left, captures_right):
         compare(scene, a, b)
-compare("calendar-mobile", left["mobile"], right["mobile"])
+if "mobile" in left and "mobile" in right:
+    compare("calendar-mobile", left["mobile"], right["mobile"])
 print(json.dumps({"runs": [left_name, right_name], "captures": results, "all_within_tolerance": all(item["within_tolerance"] for item in results)}, indent=2))

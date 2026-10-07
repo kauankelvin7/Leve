@@ -12,6 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 errors: list[str] = []
+timeline = (ROOT / 'remotion/src/timeline.ts').read_text()
+duration = int(re.search(r'FILM_DURATION\s*=\s*(\d+)', timeline).group(1))
+require_duration_range = 65 <= duration <= 80
 
 
 def require(condition: bool, message: str) -> None:
@@ -35,33 +38,46 @@ srt = OUT / "leve-product-film.srt"
 for artifact in (master, muted, readme, poster, srt):
     require(artifact.is_file() and artifact.stat().st_size > 0, f"missing or empty artifact: {artifact.relative_to(ROOT)}")
 
+require(require_duration_range, 'film must remain within the approved 65–80 second range')
 if master.exists() and muted.exists():
     sha_master = hashlib.sha256(master.read_bytes()).hexdigest()
-    sha_muted = hashlib.sha256(muted.read_bytes()).hexdigest()
-    require(sha_master == sha_muted, "master and muted files must be identical (both have no audio)")
     info = probe(master)
     videos = [s for s in info["streams"] if s.get("codec_type") == "video"]
     audios = [s for s in info["streams"] if s.get("codec_type") == "audio"]
     require(len(videos) == 1, "master must contain exactly one video stream")
-    require(len(audios) == 0, "master must have no audio stream")
+    require(len(audios) == 1, "V2 master must contain an audio mix")
+    if audios:
+        require(audios[0].get('codec_name') == 'aac' and audios[0].get('sample_rate') == '48000' and audios[0].get('channels') == 2, 'master audio must be AAC, 48 kHz, stereo')
+    muted_info = probe(muted)
+    require(not [s for s in muted_info['streams'] if s.get('codec_type') == 'audio'], 'muted version must contain no audio')
+    def video_hash(path):
+        return subprocess.check_output(['ffmpeg','-v','error','-i',str(path),'-map','0:v:0','-c:v','copy','-f','hash','-hash','sha256','-'], text=True).strip()
+    require(video_hash(master) == video_hash(muted), 'master and muted must carry the same encoded video stream')
     if videos:
         v = videos[0]
         require((v.get("width"), v.get("height")) == (1920, 1080), "master must be 1920x1080")
         require(v.get("codec_name") == "h264", "master codec must be H.264")
         require(v.get("pix_fmt") == "yuv420p", "master pixel format must be yuv420p")
         require(v.get("r_frame_rate") == "60/1", "master frame rate must be 60 fps")
-        require(v.get("nb_frames") == "4560", "master must contain 4560 frames")
+        require(v.get("nb_frames") == str(duration * 60), "master frame count must match the composition")
         require(v.get("color_primaries") == "bt709" and v.get("color_transfer") == "bt709" and v.get("color_space") == "bt709", "master must be tagged BT.709")
-    require(abs(float(info["format"]["duration"]) - 76.0) < 0.001, "master duration must be exactly 76 seconds")
+    require(abs(float(info["format"]["duration"]) - duration) < 0.05, "master duration must match the composition")
+    meter_path = OUT / 'master-loudness.json'
+    require(meter_path.is_file(), 'measure the decoded final master audio')
+    if meter_path.exists():
+        meter = json.loads(meter_path.read_text())
+        require(meter.get('sha256') == sha_master, 'loudness measurement must belong to this master')
+        require(-17 <= float(meter['input_i']) <= -15, 'integrated loudness must be approximately -16 LUFS')
+        require(float(meter['input_tp']) <= -1.5, 'true peak must be <= -1.5 dBTP')
 
 if readme.exists():
-    require(readme.stat().st_size <= 10 * 1024 * 1024, "README MP4 must be at most 10 MB")
+    require(readme.stat().st_size <= 10_000_000, "README MP4 must be at most 10 MB")
     info = probe(readme)
     videos = [s for s in info["streams"] if s.get("codec_type") == "video"]
     require(len(videos) == 1 and not [s for s in info["streams"] if s.get("codec_type") == "audio"], "README MP4 must contain video only")
     if videos:
         require((videos[0].get("width"), videos[0].get("height")) == (1280, 720), "README MP4 must be 1280x720")
-        require(abs(float(info["format"]["duration"]) - 76.0) < 0.05, "README MP4 duration must be 76 seconds")
+        require(abs(float(info["format"]["duration"]) - duration) < 0.05, "README MP4 duration must match the composition")
 
 if poster.exists():
     info = probe(poster)
@@ -85,7 +101,7 @@ if srt.exists():
                 end = ((values[4] * 60 + values[5]) * 60 + values[6]) * 1000 + values[7]
                 require(start >= end_ms and end > start, f"overlapping or empty SRT cue {index}")
                 end_ms = end
-    require(end_ms == 76_000, "SRT must end at 76 seconds")
+    require(end_ms == duration * 1000, "SRT must end with the composition")
     require("ao vivo" not in content.lower(), "SRT must not imply live Gemini generation")
 
 if errors:
@@ -93,6 +109,6 @@ if errors:
         print(f"FAIL: {error}", file=sys.stderr)
     sys.exit(1)
 
-print("PASS: required deliverables, MP4 streams/metadata, poster dimensions, SRT timing, and README size")
+print("PASS: required deliverables, matching video streams, master AAC/loudness, poster dimensions, SRT timing, and README size")
 print(f"Master SHA-256: {hashlib.sha256(master.read_bytes()).hexdigest()}")
 print(f"README MP4 size: {readme.stat().st_size} bytes")
