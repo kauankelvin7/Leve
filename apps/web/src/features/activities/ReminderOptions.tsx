@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ActivityInput } from '../../../../../packages/domain/src/content';
+import styles from './ReminderOptions.module.css';
 
 const presets = [{ value: 5, label: '5 minutos antes' }, { value: 10, label: '10 minutos antes' }, { value: 15, label: '15 minutos antes' }, { value: 30, label: '30 minutos antes' }, { value: 60, label: '1 hora antes' }, { value: 120, label: '2 horas antes' }, { value: 1440, label: '1 dia antes' }, { value: 2880, label: '2 dias antes' }, { value: 10080, label: '1 semana antes' }];
 const units = [{ value: 1, label: 'minutos', maximum: 43200 }, { value: 60, label: 'horas', maximum: 720 }, { value: 1440, label: 'dias', maximum: 30 }, { value: 10080, label: 'semanas', maximum: 4 }];
@@ -10,9 +11,9 @@ export function ReminderOptions({ initial = [] }: { initial?: ActivityInput['rem
   const update = (id: string, patch: Partial<Entry>) => setEntries(values => values.map(value => value.id === id ? { ...value, ...patch } : value));
   const minutes = (entry: Entry) => entry.choice === 'custom' ? entry.amount * entry.unit : Number(entry.choice);
   const duplicate = entries.some((entry, index) => entries.slice(0, index).some(other => minutes(other) === minutes(entry)));
-  return <div>
+  return <div className={styles.options}>
     <p className="field-hint">O aviso automático já está incluído. Se quiser, adicione até três avisos antes dele.</p>
-    {entries.map((entry, index) => <div key={entry.id} className="reminder-option">
+    {entries.map((entry, index) => <div key={entry.id} className={styles.entry}>
       <input type="hidden" name="reminders" value={minutes(entry)} />
       <div className="date-fields"><label>Aviso antecipado {index + 1}<select value={entry.choice} onChange={event => update(entry.id, { choice: event.target.value })}>{presets.map(preset => <option key={preset.value} value={preset.value}>{preset.label}</option>)}<option value="custom">Personalizar…</option></select></label><button type="button" aria-label={`Remover aviso ${index + 1}`} onClick={() => setEntries(values => values.filter(value => value.id !== entry.id))}>Remover</button></div>
       {entry.choice === 'custom' && <div className="date-fields"><label>Antecedência {index + 1}<input type="number" min="1" max={units.find(unit => unit.value === entry.unit)!.maximum} required value={entry.amount} onChange={event => update(entry.id, { amount: Number(event.target.value) })} /></label><label>Unidade do aviso {index + 1}<select value={entry.unit} onChange={event => update(entry.id, { unit: Number(event.target.value), amount: 1 })}>{units.map(unit => <option value={unit.value} key={unit.value}>{unit.label}</option>)}</select></label></div>}

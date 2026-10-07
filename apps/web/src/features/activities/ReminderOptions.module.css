@@ -1,0 +1,5 @@
+.options { display: grid; gap: 16px; min-width: 0; }
+.options > p { margin: 0; }
+.options > button { justify-self: start; max-width: 100%; }
+.entry { display: grid; gap: 12px; min-width: 0; }
+.entry > :global(.date-fields) { align-items: end; }

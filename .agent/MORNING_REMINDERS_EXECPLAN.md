@@ -56,3 +56,15 @@ Concluído, revisado; pronto para integração autorizada na main.
   com hora preservadas cobertos nos unitários; antecipações na integração.
 - git diff --check PASS. Gemini live e push em aparelho real NOT_RUN.
 CI do novo commit acompanha publicação; não declarar deploy/recebimento reais.
+
+
+## Follow-up — espaçamento dos avisos
+
+Pedido do usuário com imagem49767, após finalizar regra das 9h. Entradaae87665.
+ReminderOptions ganha módulo CSS próprio: grade com gap16 entre introdução,
+avisos e adicionar; gap12 dentro de cada aviso; seletor e remover alinhados
+na base em desktop. Sem CSS genérico para todos os botões ou novo writer.
+Lint/boundaries/ambos TS/build PASS. Playwright recurrence-options.spec.ts PASS1,
+viewport390, até três avisos e personalização, ACK real, sem overflow e Axe.
+Nenhum teste novo criado para o ajuste de espaçamento. Diff-check PASS.
+CI/Planner da entradaae87665 ainda em andamento ao iniciar follow-up.

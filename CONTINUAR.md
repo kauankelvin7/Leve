@@ -11,7 +11,9 @@ Backfill V4 realinha futuros pendentes; sent/finais não reabrem. Sender recuper
 job antigo adquirido antes da migração e reagenda se novo horário ainda futuro,
 mesmo após janela antiga expirar, preservando tokens já entregues. Sem retroativos.
 Plano `.agent/MORNING_REMINDERS_EXECPLAN.md`; decisão ADR032 e relatório
-`docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`. Gates finais no plano.
+`docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`. Gates finais no plano. Follow-up de espaçamento dos botões de avisos:
+gap16 entre grupos/adicionar e gap12 interno, módulo CSS local; lint/build
+e Playwright de recorrência PASS. Entradaae87665, sem alterar regra das 9h.
 
 
 ## Histórico — horário fixo, repetição e avisos ampliados (07/10/2026)

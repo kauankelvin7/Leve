@@ -1,3 +1,11 @@
+## Follow-up vigente — espaçamento dos avisos, 07/10/2026
+
+Entradaae87665. Ajuste isolado ReminderOptions.module.css: gap16 entre grupos e
+adicionar, gap12 dentro do aviso, remover alinhado ao seletor no desktop.
+Lint/boundaries/typechecks/build e Playwright recurrence-options.spec.ts PASS1
+(com três avisos, ACK real, foco/Escape, Axe e viewport390 sem overflow).
+Sem domínio/API alterados. Evidência no plano MORNING_REMINDERS_EXECPLAN.md.
+
 ## Retomada vigente — avisos pela manhã, 07/10/2026
 
 Entrada main46a18a8. Usuário autorizou adotar recomendação de 9h após revisão de

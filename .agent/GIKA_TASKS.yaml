@@ -2,6 +2,13 @@ version: 1
 project: gika
 source_of_truth: true
 
+reminder_button_spacing:
+  status: done
+  owner: root
+  entry_checkpoint: ae87665
+  plan: .agent/MORNING_REMINDERS_EXECPLAN.md
+  gates: "Lint/boundaries/typechecks/build e Playwright recurrence-options PASS1; diff-check PASS."
+
 morning_automatic_reminders:
   status: done
   owner: root
