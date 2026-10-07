@@ -91,7 +91,10 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
       db.doc(`users/${reserved.uid}`).get(),
       db.doc(`memberships/${reserved.uid}`).get(),
     ]);
-    if (!activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || membership.data()?.state !== 'active' || activity.data()?.revision !== reserved.activityRevision || activity.data()?.status !== 'pending' || activity.data()?.deletedAt || reserved.deliveryWindowEnd < now) {
+    const record = activity.data();
+    const legacyDayOverride = record?.dayReminderTime && record.dayReminderTime !== '00:00' && record.schedule && (record.schedule.type === 'task' ? !record.schedule.dueTime : record.schedule.allDay);
+    const staleDayJob = legacyDayOverride && reminderJobsForActivity(reserved.uid, reserved.activityId, reserved.activityRevision, record, '0000-01-01T00:00:00.000Z').find(job => job.id === snapshot.id)?.value.scheduledAt !== reserved.scheduledAt;
+    if (staleDayJob || !activity.exists || !profile.exists || profile.data()?.accountState !== 'active' || membership.data()?.state !== 'active' || activity.data()?.revision !== reserved.activityRevision || activity.data()?.status !== 'pending' || activity.data()?.deletedAt || reserved.deliveryWindowEnd < now) {
       if (await updateLeasedJob(snapshot.ref, leaseId, { state: reserved.deliveryWindowEnd < now ? 'expired' : 'obsolete', leaseId: null, leaseUntil: null, updatedAt: now })) skipped++;
       continue;
     }
@@ -134,7 +137,7 @@ export async function processReminderTick(sender: ReminderSender = sendReminder)
 }
 
 export async function backfillAutomaticReminderJobs() {
-  const stateRef = db.doc('maintenance/defaultReminderBackfillV2');
+  const stateRef = db.doc('maintenance/defaultReminderBackfillV3');
   const now = new Date().toISOString();
   const leaseId = randomUUID();
   const claim = await db.runTransaction(async transaction => {
@@ -154,10 +157,8 @@ export async function backfillAutomaticReminderJobs() {
     const data = document.data();
     const parts = document.ref.path.split('/');
     if (parts.length !== 4 || parts[0] !== 'users' || parts[2] !== 'activities' || memberships.get(parts[1]!) !== 'active' || data.status !== 'pending' || data.deletedAt) return [];
-    if (Array.isArray(data.reminderSpecs) && data.reminderSpecs.some((spec: { minutesBefore?: number }) => spec.minutesBefore === 0)) return [];
-    const jobs = reminderJobsForActivity(parts[1]!, document.id, Number(data.revision ?? 1), { ...data, reminderSpecs: [] }, now);
-    const automatic = jobs.find(job => job.value.reminderSpecId === 'at-time');
-    return automatic ? [{ document, activityId: document.id, activityPath: document.ref.path, uid: parts[1]!, revision: Number(data.revision ?? 1), job: automatic }] : [];
+    const jobs = reminderJobsForActivity(parts[1]!, document.id, Number(data.revision ?? 1), data, now);
+    return jobs.map(job => ({ document, activityId: document.id, activityPath: document.ref.path, uid: parts[1]!, revision: Number(data.revision ?? 1), job }));
   });
   const written = await db.runTransaction(async transaction => {
     const state = await transaction.get(stateRef);
@@ -169,7 +170,12 @@ export async function backfillAutomaticReminderJobs() {
     let created = 0;
     candidates.forEach((candidate, index) => {
       const activity = activitySnapshots[page.docs.findIndex(document => document.ref.path === candidate.activityPath)]?.data();
-      if (!activity || activity.revision !== candidate.revision || activity.status !== 'pending' || activity.deletedAt || jobSnapshots[index]?.exists) return;
+      if (!activity || activity.revision !== candidate.revision || activity.status !== 'pending' || activity.deletedAt ) return;
+      const existing = jobSnapshots[index]?.data();
+      if (existing) {
+        if (existing.state === 'pending' && existing.scheduledAt !== candidate.job.value.scheduledAt) transaction.update(db.doc(`reminderJobs/${candidate.job.id}`), { scheduledAt: candidate.job.value.scheduledAt, nextAttemptAt: candidate.job.value.nextAttemptAt, deliveryWindowEnd: candidate.job.value.deliveryWindowEnd, updatedAt: now });
+        return;
+      }
       transaction.create(db.doc(`reminderJobs/${candidate.job.id}`), candidate.job.value);
       created++;
     });
@@ -197,7 +203,7 @@ export async function materializeRecurringActivities() {
       const [current, profile, membership, counts] = await transaction.getAll(snapshot.ref, root, db.doc(`memberships/${uid}`), root.collection('internal').doc('counts'));
       if (!current?.exists || current.data()?.state !== 'active' || membership?.data()?.state !== 'active' || current.data()?.materializedCount !== data.materializedCount) return;
       if (!dates.length) {
-        if (!candidates.length) transaction.update(snapshot.ref, { state: 'completed', updatedAt: new Date().toISOString() });
+        transaction.update(snapshot.ref, { ...(candidates.length ? { materializedThrough: horizon } : { state: 'completed' }), updatedAt: new Date().toISOString() });
         return;
       }
       if ((counts?.data()?.activities ?? 0) + (counts?.data()?.reserved_activities ?? 0) + dates.length > 5000) { transaction.update(snapshot.ref, { state: 'paused-limit', updatedAt: new Date().toISOString() }); return; }

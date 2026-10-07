@@ -103,8 +103,8 @@ async function createTimedEvent(page: Page, title: string, startTime: string, en
   await page.getByLabel('Horário final', { exact: true }).fill(endTime);
   if (weekly) {
     await page.locator('.optional-fields > summary').click();
-    await page.getByLabel('Frequência').selectOption('weekly');
-    await page.getByLabel(/Até/).fill('2026-10-08');
+    await page.getByRole('button', { name: /Repetir atividade/ }).click(); await page.getByRole('dialog', { name: 'Repetir atividade', exact: true }).getByRole('button', { name: 'Todas as semanas', exact: true }).click(); await page.getByRole('combobox', { name: 'Termina', exact: true }).selectOption('date');
+    await page.getByLabel('Data final', { exact: true }).fill('2026-10-08');
   }
   await page.locator('.activity-composer').getByRole('button', { name: 'Adicionar atividade', exact: true }).click();
   await expect(page.getByText(title, { exact: true }).first()).toBeVisible();

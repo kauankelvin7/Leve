@@ -2,6 +2,21 @@ version: 1
 project: gika
 source_of_truth: true
 
+fixed_day_reminders_and_recurrence_options:
+  status: done
+  owner: root
+  entry_checkpoint: 4ab5d2e
+  plan: .agent/RECURRENCE_OPTIONS_EXECPLAN.md
+  evidence: docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md
+  acceptance_criteria:
+    - "00:00 fixo no sistema para data sem hora; sem campo de horário ou anúncio espontâneo."
+    - "Legado aceito mas ignorado no cálculo; jobs futuros pendentes migrados sem duplicação."
+    - "Repetição anual e personalizada com intervalo e término; política bissexta preservada."
+    - "Até três avisos antecipados com presets e quantidade/unidade até 30 dias."
+    - "APIs, outbox, revisão, recibos e inteligência Gemini preservados."
+  gates: "831 unitários/326 integração/27 integração focal/12 Playwright focal/8 críticos PASS; lint/boundaries/typechecks/build/diff-check PASS."
+  live_evaluation: "NOT_RUN: sem chave Gemini e sem aparelho push; testes em demo-leve."
+
 all_day_reminders_and_color_modal:
   status: done
   owner: root

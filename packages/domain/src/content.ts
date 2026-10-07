@@ -29,6 +29,7 @@ export const activityInputSchema = z.object({
   estimatedMinutes: z.number().int().min(5).max(1440).nullable().optional(),
   schedule: z.union([taskSchedule, timedSchedule, allDaySchedule]),
   reminderSpecs: z.array(reminderSchema).max(3),
+  // Legacy field accepted for old clients/archives; the system ignores overrides.
   dayReminderTime: civilTimeSchema.optional(),
 }).strict().superRefine((value, context) => {
   try {
@@ -51,7 +52,7 @@ export function activityReminderInstant(activity: { schedule: Schedule; dayRemin
   if (instants.dueAt || instants.startsAt) return instants.dueAt ?? instants.startsAt;
   const date = schedule.type === 'task' ? schedule.dueDate : schedule.startDate;
   if (!date) return null;
-  return Temporal.PlainDateTime.from(`${date}T${activity.dayReminderTime ?? DEFAULT_DAY_REMINDER_TIME}`)
+  return Temporal.PlainDateTime.from(`${date}T${DEFAULT_DAY_REMINDER_TIME}`)
     .toZonedDateTime(schedule.timeZone, { disambiguation: 'compatible' })
     .toInstant().toString({ fractionalSecondDigits: 3 });
 }
@@ -121,7 +122,7 @@ export const timeEntryImportSchema = z.object({
 });
 
 export const recurrenceRuleSchema = z.object({
-  frequency: z.enum(['daily', 'weekly', 'monthly']), interval: z.number().int().min(1).max(30),
+  frequency: z.enum(['daily', 'weekly', 'monthly', 'yearly']), interval: z.number().int().min(1).max(30),
   until: civilDateSchema.nullable(), count: z.number().int().min(2).max(366).nullable(),
   monthlyPolicy: z.enum(['lastDay', 'skip']),
 }).strict().refine(value => !(value.until && value.count), 'Escolha uma data final ou uma quantidade, não ambas.');
@@ -139,10 +140,11 @@ export function recurrenceDates(start: string, rule: RecurrenceRule, maximum = 1
     if (rule.frequency === 'daily') candidate = first.add({ days: step * rule.interval });
     else if (rule.frequency === 'weekly') candidate = first.add({ weeks: step * rule.interval });
     else {
-      const month = first.with({ day: 1 }).add({ months: step * rule.interval });
+      const month = first.with({ day: 1 }).add(rule.frequency === 'yearly' ? { years: step * rule.interval } : { months: step * rule.interval });
       if (first.day > month.daysInMonth && rule.monthlyPolicy === 'skip') { step++; continue; }
       candidate = month.with({ day: Math.min(first.day, month.daysInMonth) });
     }
+    if (candidate.year > 9999) break;
     const value = candidate.toString();
     if (rule.until && value > rule.until) break;
     result.push(value); step++;

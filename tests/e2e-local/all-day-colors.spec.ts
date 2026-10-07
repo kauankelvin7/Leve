@@ -23,7 +23,8 @@ test('dia inteiro usa meia-noite e as cores de atividade e nota ficam em modais 
   await page.getByLabel('Início', { exact: true }).fill(date);
   await page.getByLabel('Último dia', { exact: true }).fill(date);
   await page.locator('.activity-composer .optional-fields > summary').click();
-  await expect(page.getByLabel('Horário do aviso para dia inteiro')).toHaveValue('00:00');
+  await expect(page.locator('[name=dayReminderTime]')).toHaveCount(0);
+  await expect(page.getByText(/Padrão: meia-noite/)).toHaveCount(0);
   const trigger = page.getByRole('button', { name: /Cor da atividade/ });
   await trigger.click();
   let dialog = page.getByRole('dialog', { name: 'Cor da atividade', exact: true });
@@ -41,7 +42,7 @@ test('dia inteiro usa meia-noite e as cores de atividade e nota ficam em modais 
   await page.getByRole('button', { name: 'Adicionar atividade' }).click();
   const response = await saved;
   expect(response.status()).toBe(200);
-  expect(response.request().postDataJSON().payload).toMatchObject({ dayReminderTime: '00:00', colorHex: '#8872B2', schedule: { allDay: true } });
+  expect(response.request().postDataJSON().payload).toMatchObject({ colorHex: '#8872B2', schedule: { allDay: true } });
 
   await page.getByRole('link', { name: 'Notas', exact: true }).click();
   await page.locator('.note-composer .optional-fields > summary').click();

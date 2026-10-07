@@ -59,7 +59,7 @@ async function enter(page: Page, email: string) {
   if (await skip.isVisible()) await skip.click();
 }
 
-test('Gika cria tarefa sem hora e informa o aviso à meia-noite', async ({ page }) => {
+test('Gika cria tarefa sem hora e informa o aviso no dia sem expor configuração', async ({ page }) => {
   const { dueDate, db, email } = await controlledInterpretation(page);
   await enter(page, email);
   await page.getByRole('button', { name: 'Pergunte à Gika', exact: true }).click();
@@ -68,7 +68,7 @@ test('Gika cria tarefa sem hora e informa o aviso à meia-noite', async ({ page 
   await question.fill('Agende ir pra feira amanhã sem horário e me notifique');
   await question.press('Enter');
   const result = page.getByRole('group', { name: 'Tarefa adicionada', exact: true }).last();
-  await expect(result).toContainText('Aviso automático às 00:00');
+  await expect(result).toContainText('Aviso automático no dia da atividade');
   const applied = await ack;
   expect(applied.status()).toBe(200);
   const jobs = await db.collection('reminderJobs').where('activityId', '==', applied.request().postDataJSON().entityId).get();

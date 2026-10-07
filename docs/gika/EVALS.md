@@ -417,7 +417,7 @@ nesta entrega por ausência de chave. Referência: [NOTIFICATION_REASONING.md](N
 | NR11 | O Leve faz notificações? | GIKA_META factual, sem criação/leitura da agenda |
 | NR12 | Repetir requestId após ACK perdido | Receipt/retry, uma tarefa e um job at-time; sem novo provider |
 | NR13 | Agende ir pra feira amanhã sem horário e me notifique | Não exigir hora; dueTime=null, job at-time à meia-noite e card factual |
-| NR14 | Atividades de dia inteiro notificam? | GIKA_META: aviso às 00:00 no primeiro dia; personalização no formulário; permissão do aparelho |
+| NR14 | Atividades de dia inteiro notificam? | GIKA_META: aviso no primeiro dia; padrão interno fixo 00:00; sem configuração de horário; permissão do aparelho |
 
 NR07/NR13 atualizam o contrato de 07/10 após implementação dos avisos sem hora;
 fixtures controladas em `gika-notifications.spec.ts` não certificam Gemini live.

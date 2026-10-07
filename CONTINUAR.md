@@ -1,14 +1,24 @@
 # Leve — ponto exato de retomada
 
-## Entrega vigente — avisos de dia inteiro e cores compactas (07/10/2026)
+## Entrega vigente — horário fixo, repetição e avisos ampliados (07/10/2026)
+
+Entrada `4ab5d2e`. Repetição em modal: diária/semanal/mensal/anual/personalizada,
+intervalo e término por data/quantidade. Até três avisos antecipados, com novos
+presets e quantidade/unidade até 30 dias. Padrão interno 00:00 fixo, sem controle
+na tela. Plano `.agent/RECURRENCE_OPTIONS_EXECPLAN.md`, decisão ADR031,
+pesquisa/evidência `docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`.
+Gates finais no plano; recebimento push real/Gemini live ainda não avaliados.
+
+## Histórico — avisos de dia inteiro e cores compactas (07/10/2026)
 
 Entrada main `cf865ca`. Tarefas com data sem hora e eventos all-day recebem
 aviso automático às 00:00 no fuso da atividade; sem opt-in adicional de lembrete.
-`dayReminderTime` opcional permite personalizar nas opções do formulário,
-sem transformar um dia inteiro em evento com hora. Antecipações partem desse
+`dayReminderTime` é legado de leitura/importação; não muda o horário interno.
+O formulário não exibe meia-noite nem permite alterar esse padrão. Antecipações partem desse
 aviso; eventos de vários dias avisam no primeiro dia por ocorrência.
 Atividade sem data não cria job; horários já passados não geram aviso retroativo.
-Backfill V2 inclui registros futuros antigos sem duplicar jobs já existentes.
+Backfill V3 inclui registros futuros e realinha jobs pendentes antigos ao padrão,
+preservando IDs e tokens já entregues; não duplica avisos.
 Gika recebe a capacidade real no prompt Gemini e aceita agendamento com data e
 pedido de aviso sem exigir hora. Não promete notificações contínuas.
 

@@ -7,7 +7,7 @@ import { app } from '../../server/app';
 import { scheduleInstants } from '../../packages/domain/src/content';
 import { auth, db } from '../../server/platform/firebase';
 import { hashCanonicalValue, hashValue } from '../../server/hash';
-import { backfillAutomaticReminderJobs, processReminderTick } from '../../server/reminders';
+import { backfillAutomaticReminderJobs, materializeRecurringActivities, processReminderTick } from '../../server/reminders';
 import { reminderMessage } from '../../server/reminder-jobs';
 
 const projectId = 'demo-leve';
@@ -501,7 +501,7 @@ describe('comandos de conteúdo', () => {
     await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(activityCommand('update', 'dia-inteiro', '94000000-0000-4000-8000-000000000051', 1, { ...input, dayReminderTime: '08:30' })).expect(200);
     jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
     expect(jobs.docs.map(job => job.data())).toEqual(expect.arrayContaining([
-      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T11:30:00.000Z`, activityRevision: 2 }),
+      expect.objectContaining({ reminderSpecId: 'at-time', scheduledAt: `${date}T03:00:00.000Z`, activityRevision: 2 }),
     ]));
     // Old-version jobs are rejected by the existing delivery checks, even if due.
     for (const job of jobs.docs) await job.ref.update({ nextAttemptAt: new Date(Date.now() - 1000).toISOString() });
@@ -537,6 +537,51 @@ describe('comandos de conteúdo', () => {
     expect(jobs.docs).toHaveLength(2);
     expect(jobs.docs.every(job => job.data().reminderSpecId === 'at-time' && job.data().state === 'pending')).toBe(true);
     expect(jobs.docs.find(job => job.data().activityId === 'atividade-antiga-sem-hora')!.data().scheduledAt).toBe(`${dueDate}T03:00:00.000Z`);
+  });
+
+  it('materializa série anual com avisos ampliados e avança a janela sem duplicar ocorrências', async () => {
+    const user = await createUser('recorrencia-anual@example.test');
+    await seedAccount(user.uid);
+    const date = new Date(Date.now() + 10 * 86400_000).toISOString().slice(0, 10);
+    const recurring = contentCommand('activity.createSeries', 'serie-anual', crypto.randomUUID(), 0, {
+      activity: { ...activityPayload, schedule: { ...activityPayload.schedule, dueDate: date, dueTime: null }, reminderSpecs: [{ id: 'before-10', minutesBefore: 10 }, { id: 'before-week', minutesBefore: 10080 }, { id: 'custom', minutesBefore: 4320 }] },
+      recurrence: { frequency: 'yearly', interval: 1, until: null, count: 5, monthlyPolicy: 'lastDay' },
+    });
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(recurring).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(recurring).expect(200);
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(1);
+    expect((await db.collection('reminderJobs').where('uid', '==', user.uid).get()).size).toBe(4);
+    await materializeRecurringActivities();
+    const series = (await db.doc(`users/${user.uid}/series/serie-anual`).get()).data()!;
+    expect(series.materializedCount).toBe(1);
+    expect(series.materializedThrough).toBe(new Date(Date.now() + 45 * 86400_000).toISOString().slice(0, 10));
+    await materializeRecurringActivities();
+    expect((await db.collection(`users/${user.uid}/activities`).get()).size).toBe(1);
+    expect((await db.collection('reminderJobs').where('uid', '==', user.uid).get()).size).toBe(4);
+  });
+
+  it('backfill realinha avisos antigos personalizados ao padrão do sistema', async () => {
+    const user = await createUser('aviso-legado-personalizado@example.test');
+    await seedAccount(user.uid);
+    const date = new Date(Date.now() + 5 * 86400_000).toISOString().slice(0, 10);
+    const command = activityCommand('create', 'legado-dia', crypto.randomUUID(), 0, { ...activityPayload, schedule: { ...activityPayload.schedule, dueDate: date, dueTime: null }, dayReminderTime: '08:30', reminderSpecs: [{ id: 'before-30', minutesBefore: 30 }] });
+    await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send(command).expect(200);
+    const jobs = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    for (const job of jobs.docs) await job.ref.update({ scheduledAt: `${date}T11:30:00.000Z`, nextAttemptAt: `${date}T11:30:00.000Z` });
+    await db.doc('maintenance/defaultReminderBackfillV2').set({ state: 'complete' });
+    await backfillAutomaticReminderJobs();
+    const corrected = await db.collection('reminderJobs').where('uid', '==', user.uid).get();
+    expect(corrected.size).toBe(2);
+    expect(corrected.docs.map(job => job.data().scheduledAt).sort()).toEqual([`${new Date(Date.parse(date + 'T03:00:00.000Z') - 30 * 60000).toISOString()}`, `${date}T03:00:00.000Z`].sort());
+    // A legacy job already claimed before migration must not send at the old hour.
+    const obsolete = corrected.docs[0]!;
+    const now = Date.now();
+    await obsolete.ref.update({ scheduledAt: new Date(now - 1000).toISOString(), nextAttemptAt: new Date(now - 1000).toISOString(), deliveryWindowEnd: new Date(now + 600_000).toISOString() });
+    await db.doc('notificationTokens/legacy-active').set({ uid: user.uid, deviceId: 'test-device', token: 'fictional-token', state: 'active' });
+    let sends = 0;
+    await processReminderTick(async () => { sends++; return { successCount: 1, responses: [{ success: true }] }; });
+    expect(sends).toBe(0);
+    expect((await obsolete.ref.get()).data()?.state).toBe('obsolete');
   });
 
   it('aplica criação uma vez e detecta reutilização ou revisão divergente', async () => {

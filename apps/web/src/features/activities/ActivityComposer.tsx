@@ -1,6 +1,8 @@
+import { RecurrenceOptions } from './RecurrenceOptions';
+import { ReminderOptions } from './ReminderOptions';
 import type { FormEventHandler, RefObject } from 'react';
 import { Temporal } from '@js-temporal/polyfill';
-import { DEFAULT_DAY_REMINDER_TIME, type Category } from '../../../../../packages/domain/src/content';
+import { type Category } from '../../../../../packages/domain/src/content';
 import { ActivityColorPicker } from '../../components/ui/ActivityColorPicker';
 import type { StoredActivity } from './TodayActivityRow';
 import type { PlannerDraft } from './calendar/calendarDraftModel';
@@ -196,66 +198,14 @@ export function ActivityComposer({
                     <fieldset>
                       <legend>Notificações</legend>
                       {kind === 'task'
-                        ? <p className="field-hint">Com as notificações ativadas, você recebe um aviso no horário da tarefa. Se ela tiver só uma data, usamos o horário de aviso abaixo.</p>
+                        ? <p className="field-hint">Com as notificações ativadas, você recebe um aviso no horário da tarefa. Se ela tiver só uma data, o aviso chega no dia da atividade.</p>
                         : eventAllDay
-                          ? <p className="field-hint">Você recebe um aviso no primeiro dia, no horário abaixo, com as notificações ativadas neste aparelho. O compromisso continua sendo de dia inteiro.</p>
+                          ? <p className="field-hint">Você recebe um aviso no primeiro dia, com as notificações ativadas neste aparelho. O compromisso continua sendo de dia inteiro.</p>
                           : <p className="field-hint">Com as notificações ativadas neste aparelho, você recebe um aviso no horário do compromisso. Se quiser, escolha lembretes antecipados:</p>}
-                      {(kind === 'task' || eventAllDay) && <label>Horário do aviso para dia inteiro<input type="time" name="dayReminderTime" defaultValue={editing?.dayReminderTime ?? DEFAULT_DAY_REMINDER_TIME} required /><small className="field-hint">Padrão: meia-noite, no início do dia. Se preferir, escolha outro horário. Vale quando a atividade tem data e não tem hora.</small></label>}
-                      {[
-                        { value: '30', label: '30 minutos antes' },
-                        { value: '60', label: '1 hora antes' },
-                        { value: '1440', label: '1 dia antes' },
-                      ].map(r => (
-                        <label key={r.value} className="check-label">
-                          <input
-                            type="checkbox"
-                            name="reminders"
-                            value={r.value}
-                            defaultChecked={editing?.reminderSpecs.some(s => s.minutesBefore === Number(r.value))}
-                          />
-                          {r.label}
-                        </label>
-                      ))}
+                      <ReminderOptions initial={editing?.reminderSpecs} />
                     </fieldset>
 
-                    {!editing ? (
-                      <fieldset>
-                        <legend>Repetição</legend>
-                        <label>
-                          Frequência
-                          <select value={recurrenceFrequency} onChange={e => setRecurrenceFrequency(e.target.value)}>
-                            <option value="none">Não repetir</option>
-                            <option value="daily">Diária</option>
-                            <option value="weekly">Semanal</option>
-                            <option value="monthly">Mensal</option>
-                          </select>
-                        </label>
-                        {recurrenceFrequency !== 'none' && (
-                          <>
-                            <div className="date-fields">
-                              <label>
-                                Repetir a cada
-                                <input name="recurrenceInterval" type="number" min="1" max="30" defaultValue="1" />
-                              </label>
-                              <label>
-                                Até <small>(opcional)</small>
-                                <input name="recurrenceUntil" type="date" min={selectedDay} />
-                              </label>
-                            </div>
-                            {recurrenceFrequency === 'monthly' && (
-                              <label>
-                                Quando o dia não existir
-                                <select name="monthlyPolicy" defaultValue="lastDay">
-                                  <option value="lastDay">Usar o último dia do mês</option>
-                                  <option value="skip">Pular aquele mês</option>
-                                </select>
-                              </label>
-                            )}
-                            <small className="field-hint">Até 180 ocorrências.</small>
-                          </>
-                        )}
-                      </fieldset>
-                    ) : null}
+                    {!editing && <RecurrenceOptions frequency={recurrenceFrequency} onChange={setRecurrenceFrequency} selectedDay={selectedDay} />}
                   </div>
                 </details>
 

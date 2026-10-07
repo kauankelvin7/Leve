@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { collection, limit, query, where } from 'firebase/firestore';
-import { DEFAULT_DAY_REMINDER_TIME, type Activity, type Category, type Note, type ShoppingItem, type ShoppingList } from '../../../../../packages/domain/src/content';
+import { type Activity, type Category, type Note, type ShoppingItem, type ShoppingList } from '../../../../../packages/domain/src/content';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
 import { firestore } from '../../platform/firebase';
 import { sendCommand } from '../../platform/api';
@@ -202,14 +202,14 @@ export function Today() {
       estimatedMinutes: Number(fields.get('estimatedMinutes')) || null,
       schedule,
       reminderSpecs,
-      dayReminderTime: String(fields.get('dayReminderTime') || DEFAULT_DAY_REMINDER_TIME),
     };
 
     const recurring = !editing && recurrenceFrequency !== 'none';
     const future = Boolean(editing?.seriesId) && editScope === 'future';
+    const frequency = recurrenceFrequency === 'custom' ? String(fields.get('recurrenceUnit')) : recurrenceFrequency;
     const monthlyPolicy = fields.get('monthlyPolicy') === 'skip' ? 'skip' : 'lastDay';
     const payload = recurring
-      ? { activity, recurrence: { frequency: recurrenceFrequency, interval: Number(fields.get('recurrenceInterval')) || 1, until: String(fields.get('recurrenceUntil')) || null, count: null, monthlyPolicy } }
+      ? { activity, recurrence: { frequency, interval: Number(fields.get('recurrenceInterval')) || 1, until: String(fields.get('recurrenceUntil') ?? '') || null, count: Number(fields.get('recurrenceCount')) || null, monthlyPolicy } }
       : future ? { activity, newSeriesId: futureSeriesId.current }
       : activity;
 

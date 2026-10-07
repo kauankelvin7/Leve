@@ -8,7 +8,7 @@ describe('Domínio de conteúdo persistente', () => {
     const schedule = { type: 'event' as const, allDay: true as const, startDate: '2026-10-08', endDateExclusive: '2026-10-10', timeZone: 'America/Sao_Paulo' };
     expect(scheduleInstants(schedule)).toEqual({ startsAt: null, endsAt: null, dueAt: null });
     expect(activityReminderInstant({ schedule })).toBe('2026-10-08T03:00:00.000Z');
-    expect(activityReminderInstant({ schedule, dayReminderTime: '08:30' })).toBe('2026-10-08T11:30:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '08:30' })).toBe('2026-10-08T03:00:00.000Z');
     expect(activityReminderInstant({ schedule: { ...schedule, startDate: '2018-11-04', endDateExclusive: '2018-11-05' } })).toBe('2018-11-04T03:00:00.000Z');
     expect(activityReminderInstant({ schedule: { type: 'task', dueDate: null, dueTime: null, timeZone: 'UTC', disambiguation: 'reject' } })).toBeNull();
   });
@@ -16,8 +16,8 @@ describe('Domínio de conteúdo persistente', () => {
   it('respeita fuso e horário de verão do aviso separado', () => {
     const schedule = { type: 'task' as const, dueDate: '2026-03-08', dueTime: null, timeZone: 'America/New_York', disambiguation: 'reject' as const };
     expect(activityReminderInstant({ schedule })).toBe('2026-03-08T05:00:00.000Z');
-    expect(activityReminderInstant({ schedule, dayReminderTime: '02:30' })).toBe('2026-03-08T07:30:00.000Z');
-    expect(activityReminderInstant({ schedule: { ...schedule, dueDate: '2026-11-01' }, dayReminderTime: '01:30' })).toBe('2026-11-01T05:30:00.000Z');
+    expect(activityReminderInstant({ schedule, dayReminderTime: '02:30' })).toBe('2026-03-08T05:00:00.000Z');
+    expect(activityReminderInstant({ schedule: { ...schedule, dueDate: '2026-11-01' }, dayReminderTime: '01:30' })).toBe('2026-11-01T04:00:00.000Z');
     expect(activityReminderInstant({ schedule: { ...schedule, dueTime: '15:00' }, dayReminderTime: '00:00' })).toBe('2026-03-08T19:00:00.000Z');
   });
 
@@ -29,6 +29,16 @@ describe('Domínio de conteúdo persistente', () => {
   it('materializa recorrência mensal com política de último dia ou pulo', () => {
     expect(recurrenceDates('2026-01-31', { frequency: 'monthly', interval: 1, until: null, count: 4, monthlyPolicy: 'lastDay' })).toEqual(['2026-01-31', '2026-02-28', '2026-03-31', '2026-04-30']);
     expect(recurrenceDates('2026-01-31', { frequency: 'monthly', interval: 1, until: null, count: 3, monthlyPolicy: 'skip' })).toEqual(['2026-01-31', '2026-03-31', '2026-05-31']);
+  });
+
+  it('repete anualmente a partir da data original e preserva anos bissextos e retomada', () => {
+    const rule = { frequency: 'yearly' as const, interval: 1, until: null, count: 5, monthlyPolicy: 'lastDay' as const };
+    expect(recurrenceDates('2028-02-29', rule)).toEqual(['2028-02-29', '2029-02-28', '2030-02-28', '2031-02-28', '2032-02-29']);
+    expect(recurrenceDates('2028-02-29', { ...rule, count: 3, monthlyPolicy: 'skip' })).toEqual(['2028-02-29', '2032-02-29', '2036-02-29']);
+    expect(recurrenceDates('2026-10-08', { ...rule, interval: 2 }, 2, 2)).toEqual(['2030-10-08', '2032-10-08']);
+    expect(recurrenceDatesThrough('2026-10-08', rule, '2026-11-22')).toEqual(['2026-10-08']);
+    expect(recurrenceDates('2026-10-08', { ...rule, count: null, until: '2027-10-08' })).toEqual(['2026-10-08', '2027-10-08']);
+    expect(recurrenceDates('9998-10-08', rule)).toEqual(['9998-10-08', '9999-10-08']);
   });
 
   it('move eventos mantendo a duração civil e o fuso', () => {

@@ -352,3 +352,25 @@ Nenhuma configuração de notificações contínuas/antecipadas por IA é invent
 ColorPicker é somente apresentação compartilhada; native dialog fora do form
 preserva foco/inert/Escape e hidden input transporta os valores anteriores pelas
 mesmas APIs. Sem dependências, novo writer ou alteração dos presets de notas.
+
+
+## ADR-GIKA-031 — horário implícito fixo e opções convencionais ampliadas
+
+Data: 07/10/2026; accepted por pedido explícito do usuário. Complementa ADR030:
+00:00 é fixo para atividades com data sem hora, no fuso IANA da atividade. Não
+exibir configuração ou anunciar meia-noite espontaneamente no formulário/Gika.
+`dayReminderTime` permanece validado somente para compatibilidade de arquivos e
+clientes antigos, mas é ignorado ao calcular avisos. Backfill V3 realinha jobs
+futuros pendentes; preserva IDs, revisões, histórico de entrega e não reenvia
+jobs passados. Scheduler rejeita jobs legados divergentes antes do envio.
+
+RecurrenceRule ganha yearly; último dia/pulo também governa 29/02. Personalizar
+usa frequência existente + intervalo, sem novo writer. Fim por data ou quantidade;
+até 180 ocorrências, janela de materialização de 45 dias. Séries sem ocorrência
+na janela avançam a marca de janela verificada sem aumentar materializedCount,
+evita monopolizar o lote de 10 séries do scheduler. Avisos antecipados: até três,
+máximo 30 dias, mesmos reminderSpecs/APIs; não amplia execução pela Gika.
+
+Referências oficiais e diferença entre Google e Leve em
+`docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`. Nenhum recebimento push real
+ou Gemini live declarado.

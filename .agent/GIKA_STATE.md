@@ -1,4 +1,27 @@
-## Retomada vigente — avisos sem hora e cores em modal, 07/10/2026
+## Retomada vigente — horário fixo e opções ampliadas, 07/10/2026
+
+Entrada main `4ab5d2e`, CI37597837836 aprovado. Padrão 00:00 no fuso da atividade
+sem hora agora fixo: sem campo de horário ou menção espontânea no formulário/Gika.
+Legado dayReminderTime validado em leitura/importação mas ignorado ao calcular
+jobs. Backfill V3 realinha futuros pendentes sem reset de entregas; sender rejeita
+jobs legados divergentes. Sem data nenhum job; sem avisos retroativos.
+
+Modal compartilhado OptionPicker conserva apresentação/foco das cores de
+atividade/nota e adiciona repetição none/daily/weekly/monthly/yearly/custom.
+Intervalo, término por data/quantidade, política de último dia/pulo e 29/02
+preservam data original. Avisos antecipados: até três, presets ampliados e
+quantidade/unidade até 30 dias. Sem biblioteca nova ou writer paralelo.
+Scheduler avança janela verificada nas séries sem ocorrência na janela, sem
+consumir ocorrências, para não monopolizar lote. APIs/outbox/revisões preservadas.
+
+Plano: `.agent/RECURRENCE_OPTIONS_EXECPLAN.md`; decisão ADR031; referências
+Google e diferenças do Leve: `docs/frontend/RECURRENCE_AND_NOTIFICATIONS.md`.
+Gates: 831 unitários, 326 integração e 27 integração focal, 12 Playwright focal
+e 8 críticos PASS; lint/boundaries/typechecks/build/diff-check PASS. Primeiro
+seletor Termina falhou, corrigido por papel acessível e reexecutado completo.
+Validação final registrada no plano. Sem Gemini live/recebimento push real.
+
+## Retomada histórica — avisos sem hora e cores em modal, 07/10/2026
 
 Entrada main `cf865ca`; entrega integrada em `f3a31fc`.
 Follow-up: foco de edição de notas movido de timer para useLayoutEffect após a
