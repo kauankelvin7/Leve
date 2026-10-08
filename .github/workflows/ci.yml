@@ -24,6 +24,8 @@ jobs:
           npm --version
           java -version
       - run: npm ci --include=dev
+      - name: Documentation integrity
+        run: npm run docs:check
       - name: Production dependency security audit
         run: npm audit --omit=dev --audit-level=moderate
       - run: npm run lint
