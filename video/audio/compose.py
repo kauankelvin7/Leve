@@ -51,9 +51,9 @@ for delay,gain in [(.113,.11),(.227,.07),(.389,.04)]:
     k=int(delay*SR);music[k:]+=music[:-k,::-1]*gain
 # Envelope makes intro sparse and offline visibly quieter; editorial timing is configurable here.
 t=np.arange(N)/SR
-env=np.interp(t,[0,.35,4,7,16,42,51,53,55,59,60.75,65,69,72],[0,.4,.48,.68,.83,.87,.95,.65,.4,.44,.68,.9,.72,0])
+env=np.interp(t,[0,.35,4,7,14,21,25,40,49,52,54,58,59.6,64,68,70,72],[0,.4,.48,.68,.83,.86,.84,.9,.95,.72,.46,.48,.68,.75,.9,.72,0])
 music*=env[:,None]
-EVENTS=[(2.067,'note-save'),(2.50,'connection-down-opening'),(11.333,'task-complete'),(24.20,'mobile-tap'),(30.50,'note-save'),(38.25,'shopping-check'),(43.25,'gika-open'),(46.917,'gika-confirm'),(53.0,'connection-down'),(60.75,'connection-back')]
+EVENTS=[(2.067,'note-save'),(2.50,'connection-down-opening'),(7.73,'task-complete'),(22.35,'mobile-tap'),(28.63,'note-save'),(35.93,'shopping-check'),(41.23,'gika-open'),(45.10,'gika-confirm'),(52.0,'connection-down'),(59.60,'connection-back')]
 for st,name in EVENTS:
     dur=.23 if 'tap' in name or 'save' in name else .55
     tt=np.arange(int(dur*SR))/SR
@@ -66,7 +66,7 @@ for st,name in EVENTS:
     x*=np.minimum(tt/.006,1)*np.minimum((dur-tt)/.03,1)
     add(ui,x,st,.42 if 'opening' in name else 1,-.12 if 'down' in name else .12)
 # Two very quiet paper passes, synchronized to large changes only.
-for st in [4,42]:
+for st in [21,64]:
     tt=np.arange(int(.48*SR))/SR
     noise=sosfilt(butter(2,[350,1700],btype='band',fs=SR,output='sos'),rng.normal(size=len(tt)))
     add(transitions,noise*np.sin(np.pi*tt/.48)**2,st,.005,-.25)

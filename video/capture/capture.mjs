@@ -9,7 +9,7 @@ const value = name => { const index = args.indexOf(name); return index < 0 ? und
 const run = value('--run') ?? 'run-1';
 const selected = value('--scene');
 const polish = args.includes('--polish');
-const date = '2026-10-07';
+const date = '2026-10-08';
 const baseURL = 'http://localhost:5174';
 const output = resolve('video/assets/captures', run);
 const phoneOutput = resolve(output, 'mobile');
@@ -26,6 +26,9 @@ const titles = {
   noteBody: 'Rever as ideias do projeto e escolher o próximo passo.',
   list: 'Mercado da semana',
 };
+async function freezeFilmDate(page) {
+  await page.clock.install({ time: new Date('2026-10-08T20:00:00.000Z') });
+}
 const manifest = { run, app: baseURL, branch: 'video/product-film', repoCommit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(), capturedAt: new Date().toISOString(), viewport: '1600x900', deviceScaleFactor: 2, locale: 'pt-BR', timezone: 'America/Sao_Paulo', civilDate: date, data: 'Emulator / leve.local@example.test; fictional', scenes: {}, browserErrors: [] };
 
 async function login(page) {
@@ -51,6 +54,7 @@ async function login(page) {
 async function bootstrap() {
   const context = await browser.newContext(desktop);
   const page = await context.newPage();
+  await freezeFilmDate(page);
   await login(page);
   if (!await page.getByText(titles.activity, { exact: true }).count()) {
     await page.getByRole('button', { name: 'Nova atividade' }).click();
@@ -157,6 +161,7 @@ function record(page, scene) {
 async function newPage({ offlineCache = false } = {}) {
   const context = await browser.newContext({ ...desktop, storageState: offlineCache ? storageStates.offlineState : storageStates.onlineState });
   const page = await context.newPage();
+  await freezeFilmDate(page);
   await page.goto(`${baseURL}/hoje`);
   await page.getByRole('heading', { name: 'Meu dia' }).waitFor();
   await page.getByText(titles.activity, { exact: true }).first().waitFor();
@@ -179,7 +184,7 @@ async function polishScene(scene) {
   const mobile = scene === 'polish-mobile';
   const device = mobile ? {...devices['Pixel 7'], viewport:{width:390,height:844}, deviceScaleFactor:2, locale:'pt-BR', timezoneId:'America/Sao_Paulo'} : desktop;
   const context = await browser.newContext({...device, storageState:storageStates.onlineState});
-  const page = await context.newPage(); const c = record(page, scene); const files=[]; const acks=[];
+  const page = await context.newPage(); await freezeFilmDate(page); const c = record(page, scene); const files=[]; const acks=[];
   const shot = async(name, opts={})=> { const file = await c.shot(name, opts); file.label=name.replace('.png',''); file.order=files.length; files.push(file); };
   await page.goto(`${baseURL}/hoje`); await page.getByText(titles.activity,{exact:true}).first().waitFor();
   if(scene === 'polish-note' || mobile) {
@@ -206,7 +211,7 @@ async function polishScene(scene) {
     await page.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).waitFor(); await shot('today-after.png');
   } else if(scene === 'polish-calendar') {
     await page.goto(`${baseURL}/calendario`); await page.getByRole('heading',{name:'Calendário',exact:true}).waitFor();
-    await page.getByRole('button',{name:'Mês',exact:true}).click(); const day=page.getByRole('button',{name:/quarta-feira, 7 de outubro de 2026/}); await day.scrollIntoViewIfNeeded(); await shot('calendar-before.png');
+    await page.getByRole('button',{name:'Mês',exact:true}).click(); const day=page.getByRole('button',{name:/quinta-feira, 8 de outubro de 2026/}); await day.scrollIntoViewIfNeeded(); await shot('calendar-before.png');
     await c.action('click',day,()=>day.click()); await page.locator('#selected-date').waitFor(); await page.locator('#selected-date').scrollIntoViewIfNeeded(); await shot('calendar-day.png');
   } else if(scene === 'polish-shopping') {
     await page.goto(`${baseURL}/compras`); await page.getByText(titles.list,{exact:true}).first().click();
@@ -252,7 +257,7 @@ for (const scene of scenes) {
     const file = await c.shot('calendar.png');
     await c.finish([file]); await context.close();
     const phoneContext = await browser.newContext({ ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, locale: 'pt-BR', timezoneId: 'America/Sao_Paulo', storageState: storageStates.onlineState });
-    const phone = await phoneContext.newPage(); await phone.goto(`${baseURL}/calendario`); await phone.getByRole('heading', { name: 'Calendário' }).waitFor(); await phone.getByRole('button', { name: 'Semana', exact: true }).waitFor(); await phone.getByText(titles.activity, { exact: true }).first().waitFor(); await phone.getByText('Carregando atividades…', { exact: true }).waitFor({ state: 'hidden' }); await phone.waitForFunction(() => navigator.onLine === true); await phone.getByText('Sem conexão. Mostrando dados salvos.', { exact: true }).waitFor({ state: 'hidden' }); await phone.getByText('Modo offline', { exact: true }).waitFor({ state: 'hidden' }); await phone.getByText('Conexão restaurada', { exact: true }).waitFor({ state: 'hidden' }); await phone.evaluate(() => document.fonts.ready); await phone.mouse.move(0, 0); await phone.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))); await phone.screenshot({ path: resolve(phoneOutput, 'calendar-mobile.png') });
+    const phone = await phoneContext.newPage(); await freezeFilmDate(phone); await phone.goto(`${baseURL}/calendario`); await phone.getByRole('heading', { name: 'Calendário' }).waitFor(); await phone.getByRole('button', { name: 'Semana', exact: true }).waitFor(); await phone.getByText(titles.activity, { exact: true }).first().waitFor(); await phone.getByText('Carregando atividades…', { exact: true }).waitFor({ state: 'hidden' }); await phone.waitForFunction(() => navigator.onLine === true); await phone.getByText('Sem conexão. Mostrando dados salvos.', { exact: true }).waitFor({ state: 'hidden' }); await phone.getByText('Modo offline', { exact: true }).waitFor({ state: 'hidden' }); await phone.getByText('Conexão restaurada', { exact: true }).waitFor({ state: 'hidden' }); await phone.evaluate(() => document.fonts.ready); await phone.mouse.move(0, 0); await phone.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))); await phone.screenshot({ path: resolve(phoneOutput, 'calendar-mobile.png') });
     const png = await readFile(resolve(phoneOutput, 'calendar-mobile.png'));
     const mobileText = await phone.locator('body').innerText();
     if (/Sem conexão\. Mostrando dados salvos\.|Modo offline|Conexão restaurada|Carregando atividades/.test(mobileText)) throw new Error('Offline/loading state in mobile calendar capture');
@@ -298,6 +303,7 @@ for (const scene of scenes) {
     await page.getByText('Sem conexão. Mostrando dados salvos.', { exact: true }).waitFor({ state: 'hidden' });
     await page.getByText('Modo offline', { exact: true }).waitFor({ state: 'hidden' });
     const secondPage = await context.newPage();
+    await freezeFilmDate(secondPage);
     await secondPage.goto(`${baseURL}/hoje`);
     await secondPage.getByRole('heading', { name: 'Meu dia' }).waitFor();
     await secondPage.getByText(titles.activity, { exact: true }).first().waitFor();
@@ -340,7 +346,7 @@ for (const scene of scenes) {
     const syncedCapture = { path: `video/assets/captures/${run}/offline-synced.png`, sha256: createHash('sha256').update(syncedBytes).digest('hex'), bytes: syncedInfo.size, dimensions: await secondPage.evaluate(() => `${innerWidth * devicePixelRatio}x${innerHeight * devicePixelRatio}`) };
     await writeFile(resolve(output, 'offline-synced.text.txt'), await secondPage.locator('body').innerText());
     if(scene === 'polish-offline') { await secondPage.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).waitFor(); if(!await page.getByRole('checkbox',{name:`Reabrir ${titles.activity}`,exact:true}).count()) throw new Error('Completed Today task continuity lost offline'); }
-    [offline,pending,syncedCapture].forEach((file,index)=>{file.order=index;file.label=['offline-banner','offline-pending','offline-synced'][index];}); syncedCapture.scans={privacy:'PASS',loading:'PASS',expectedOffline:false,online:true};
+    [offline,pending,syncedCapture].forEach((file,index)=>{file.order=index;file.label=['offline-banner','offline-pending-composer','offline-synced'][index];}); syncedCapture.scans={privacy:'PASS',loading:'PASS',expectedOffline:false,online:true};
     await c.finish([offline, pending, syncedCapture]); manifest.scenes[scene].continuity={todayTask:'completed',asserted:'Reabrir Organizar semana de estudos visible in offline main page and online reloaded second page'}; manifest.scenes[scene].acks=[{command:'activity.create',status:replayAck.status(),source:'real outbox replay'}]; await context.close();
   } else if (scene === 'closing') {
     const { context, page } = await newPage(); const c = record(page, scene);

@@ -1,49 +1,55 @@
-# Filme de produto do Leve — V2
+# Filme de produto do Leve — V3
 
-72 segundos de UI real, motion editorial e trilha instrumental original. A narrativa continua compreensível sem áudio; não há voz gravada ou TTS. O SRT é texto editorial opcional, não transcrição de fala.
-
-[![Assistir à versão compacta, 72 s](output/poster.png)](output/leve-product-film-readme.mp4)
+72 s de produto real, composição editorial e áudio original. A versão master é a referência de qualidade; o arquivo README é um derivado comprimido para visualização rápida.
 
 ## Entregáveis
 
-| Arquivo local | Uso |
+| Arquivo | Uso |
 |---|---|
 | `output/leve-product-film.mp4` | Master 1920×1080, 60 fps, H.264 CRF17, yuv420p, BT.709, AAC estéreo 48 kHz |
 | `output/leve-product-film-muted.mp4` | Mesmo stream de vídeo, sem áudio |
-| `output/leve-product-film-readme.mp4` | Derivado 1280×720, sem áudio, abaixo de 10 MB; não avaliar qualidade do master por esta cópia |
-| `output/poster.png` | Poster 1080p |
-| `output/leve-product-film.srt` | Nove cues editoriais, 72 s |
+| `output/leve-product-film-readme.mp4` | Derivado 1280×720 sem áudio, ≤10 MB; não usar para avaliar nitidez do master |
+| `output/poster.png` | Poster 1080p da nova abertura |
+| `output/leve-product-film.srt` | Dez cues editoriais, 72 s; não é transcrição de voz |
 
-O master V2 também é versionado para download direto: cerca de 12 MB, preservando CRF17/1080p60 e áudio. [Baixar master com áudio](output/leve-product-film.mp4). Stems, capturas e versão muted são locais e ignorados pelo Git. Código, relatórios, manifestos, poster, SRT e derivado compacto são versionados. V1 preservada localmente em `output/v1/` e nos relatórios com sufixo `-v1`.
+## Reproduzir a captura e a montagem
 
-## Reproduzir a pipeline existente
+Requisitos existentes: Node 24, npm 11, Chromium, Firebase Emulator, FFmpeg, Python, NumPy e SciPy. Não há dependência nova na aplicação.
 
-Requisitos: Node 24, npm 11, Chromium `/usr/bin/chromium`, FFmpeg, Python e Firebase Emulator. Dependências de captura já pertencem ao repositório; composição isolada em `remotion/`. Instale dependências de áudio com `python3 -m pip install -r video/audio/requirements.txt`.
+1. Inicie o app local com os emuladores; o preload intercepta somente o endpoint Gemini exato e a chave local é efêmera:
 
-1. Inicie o app local e Auth/Firestore Emulator com a fixture upstream existente em `capture/gemini-upstream-fixture.mjs`, conforme relatório de captura.
-2. Gere V1 se ausente (a marca original é reaproveitada): `node video/capture/capture.mjs --run run-1`.
-3. Gere V2: `node video/capture/capture.mjs --polish --run polish-1`; repita com `polish-2`.
-4. Compare: `python3 video/capture/compare-runs.py polish-1 polish-2`.
-5. Instale composição: `npm ci --prefix video/remotion`.
-6. Sintetize música/stems/mix: `python3 video/audio/compose.py`.
-7. Renderize: `npm run --prefix video/remotion render`.
-8. Muxe áudio e gere derivados sem reencodar o vídeo master: `npm run --prefix video/remotion postprocess`.
-9. Valide: `python3 video/scripts/verify`; faça decode integral e revisão visual conforme `reports/06-qa.md`.
+   ```sh
+   env NODE_OPTIONS='--import=./video/capture/gemini-upstream-fixture.mjs' \
+     GEMINI_API_KEY='local-fixture-only' LEVE_EPHEMERAL=true npm run dev
+   ```
 
-## Honestidade da demonstração
+2. Em outro terminal, gere as capturas reais com data, timezone e viewport fixos; repita para confirmar determinismo:
 
-Capturas usam conta e dados sintéticos no Emulator. Abertura: nota salva online antes da queda de conexão, permanecendo na página aberta; nenhuma edição/reload de nota offline. Trecho posterior: dados consultados, uma tarefa elegível na outbox e aplicação após ACK de reconexão. Sem promessa de disponibilidade universal ou sincronização de todas as operações.
+   ```sh
+   node video/capture/capture.mjs --polish --run v3-capture-3
+   node video/capture/capture.mjs --polish --run v3-capture-4
+   python3 video/capture/compare-runs.py v3-capture-3 v3-capture-4
+   ```
 
-Gika: só a chamada upstream Gemini é interceptada com envelope/function-call compatível. UI, autenticação, endpoint do app, router e comando são reais. Não é resposta gerada ao vivo; a interceptação fica documentada no relatório/ledger, sem linguagem técnica sobreposta ao filme conforme direção V2.
+   A captura usa conta fictícia no Emulator. Gika: apenas o upstream é interceptado; o contrato, UI, Auth, router e comando permanecem reais. O filme não sugere resposta Gemini ao vivo. O relógio Playwright é fixado para a data civil; o manifest preserva avisos de conexão offline esperados e o pequeno descompasso com o relógio real do Emulator.
 
-A divergência entre documentação do produto e comportamento default de cache/outbox permanece registrada. Produto não foi alterado para a filmagem.
+3. Gere a composição de áudio e renderize:
 
-## Relatórios e licenças
+   ```sh
+   python3 video/audio/compose.py
+   npm ci --prefix video/remotion
+   npm run --prefix video/remotion render
+   npm run --prefix video/remotion postprocess
+   python3 video/scripts/verify
+   ```
 
-- `reports/07-polish-analysis.md`: análise anterior à edição.
-- `reports/07-polish-report.md`: diferenças V1/V2 e entrega.
-- `reports/06-qa.md`: QA da V2; V1 em `06-qa-v1.md`.
-- `reports/claims-ledger.md`: afirmações e evidências.
-- `ASSETS.md`, `audio/README.md`, `licenses/`: origem da música original MIT e fontes OFL.
+O master preserva o V2 no histórico Git; V3 substitui os caminhos de entrega corrente. Capturas de origem V3 e o manifest determinístico usado no filme ficam em `assets/captures/v3-capture-3/` e `capture/manifests/v3-capture-3.json`. Não foi alterado código funcional do Leve para filmar.
 
-Remotion 4.0.410 mantém os termos próprios da ferramenta; elegibilidade comercial conforme tamanho de equipe deve ser conferida pelo responsável pela distribuição. Avaliação objetiva de áudio inclui arranjo, sincronismo e níveis medidos, não audição subjetiva humana, indisponível neste ambiente.
+## Limites que o filme preserva
+
+- Offline: dados consultados previamente, uma criação elegível na outbox e o estado após ACK/reconsulta; não é promessa de funcionamento completo, cache permanente ou sincronização universal.
+- Gika: resposta controlada compatível com contrato real; não dizer que Gemini respondeu ao vivo.
+- A divergência entre documentação offline e comportamento atual continua no claims ledger.
+- Música e efeitos sintetizados/originais, MIT, sem samples externos/TTS; fontes Nunito e DM Sans OFL. Medições objetivas não equivalem à audição subjetiva humana, que permanece recomendada.
+
+Relatórios: `reports/08-creative-audit.md`, `reports/08-creative-polish-report.md`, `reports/09-qa-v3.md`, `reports/claims-ledger.md`, `ASSETS.md`, `audio/MIX_REPORT-v3.md`.

@@ -87,7 +87,7 @@ if poster.exists():
 if srt.exists():
     content = srt.read_text(encoding="utf-8")
     blocks = [b.strip() for b in re.split(r"\n\s*\n", content.strip()) if b.strip()]
-    require(len(blocks) == 9, "SRT must contain 9 editorial narration cues")
+    require(len(blocks) == 10, "SRT must contain 10 editorial narration cues")
     end_ms = 0
     for index, block in enumerate(blocks, 1):
         lines = block.splitlines()

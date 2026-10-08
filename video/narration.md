@@ -1,27 +1,24 @@
-# Narração e legendas editoriais — Leve / V2
+# Narração e legendas editoriais — Leve / V3
 
-**Idioma:** pt-BR · **Tom:** calmo, próximo e claro · **Duração:** 72 s.
+**Idioma:** pt-BR · **Tom:** gentil, direto, útil · **Duração:** 72 s.
 
-Não há locução gravada nem TTS. O master contém trilha instrumental e efeitos originais. O texto abaixo é uma alternativa para futura voz humana e a base do SRT editorial separado; as legendas não são transcrição de uma voz existente. Headlines e interface continuam suficientes sem áudio.
+Não há voz gravada nem TTS. A trilha original e os poucos efeitos sonoros acompanham o filme; o texto abaixo é uma opção para eventual locução humana e base editorial do SRT.
 
-| Tempo | Texto opcional | Intenção |
+| Tempo | Texto opcional | Intenção / cuidado |
 |---|---|---|
-| 00–04 | Uma ideia. Um espaço para retomar. | Acompanhar o gesto real sem prometer salvamento offline. |
-| 04–07 | Organizar a vida deveria ser leve. | Frase de marca, com breve respiro. |
-| 07–16 | No Meu dia, você vê o que pede atenção. E dá um passo de cada vez. | Acompanhar a conclusão da tarefa. |
-| 16–27 | Seus dias ganham forma no calendário. E suas notas vão com você. | Uma cue reúne calendário e consulta mobile real; não prometer toda função em todo aparelho. |
-| 27–35 | Ideias também têm lugar. Para escrever, guardar e retomar. | Edição e salvamento online da mesma nota. |
-| 35–42 | Até as pequenas compras encontram seu espaço. | Tom simples, cotidiano. |
-| 42–53 | Com a Gika, um pedido pode virar uma tarefa na agenda. | Resultado real; fixture do upstream documentada. Não sugerir resposta ao vivo. |
-| 53–65 | Sua agenda já aberta, ainda por perto. Esta tarefa espera a conexão voltar. Conexão de volta. Tarefa na agenda. | As três frases correspondem aos três estados reais; sem garantia geral de cache ou sincronização. |
-| 65–72 | Leve. Mais espaço para viver. | Retorno à nota e resolução musical. |
+| 00–05 | Uma ideia. Um espaço para retomar. | Abre no gesto real, sem prometer salvamento offline. |
+| 05–14 | No Meu dia, você vê o que pede atenção. E dá um passo de cada vez. | A tarefa é concluída na interface. |
+| 14–21 | Seus dias ganham forma no calendário. | A tela mensal mostra seleção e detalhe. |
+| 21–25 | A mesma ideia, mais perto. | Mesma nota aberta em viewport Pixel 7; sem alegar paridade completa. |
+| 25–33 | Ideias também têm lugar. Para escrever, guardar e retomar. | Edição online da mesma nota. |
+| 33–40 | Até as pequenas compras encontram seu espaço. | Checkbox e progresso reais. |
+| 40–52 | Com a Gika, um pedido pode virar uma tarefa na agenda. | Resultado real no app, upstream interceptado. Nunca dizer que foi Gemini ao vivo. |
+| 52–60 | Esta tarefa espera a conexão voltar. | Tarefa específica na outbox; não universalizar. |
+| 60–64 | Conexão de volta. Tarefa na agenda. | Estado desta tarefa confirmado. |
+| 64–72 | Leve. Mais espaço para viver. | Retorno à mesma nota. |
 
-## Entrega e revisão futura
+## Captura, claims e revisão
 
-`video/output/leve-product-film.srt` contém nove cues editoriais, com tempo final em 72 s. Caso se grave voz humana futuramente, revisar cadência e sincronização pela gravação efetiva. A duração do plano atual não presume uma performance de locução. Não inserir TTS para preencher silêncio.
+O roteiro é inteligível mudo pela UI e pelos poucos títulos. `output/leve-product-film.srt` tem nove cues, até 72 s. Se houver locução no futuro, regravar e refazer cadência/ducking com voz humana licenciada; não preencher silêncio com TTS mediano.
 
-## Escopo factual
-
-A nota foi salva online antes da queda; permaneceu visível na mesma página, sem reload ou mutação offline. Os dados de Meu dia foram consultados antes; a tarefa específica entra na outbox e é aplicada após reconexão e ACK. O cache pode ser limitado/evicto; outras operações não são demonstradas. O offline padrão do código ainda diverge de documentação do produto.
-
-A interpretação da Gika é controlada exclusivamente no upstream Gemini. UI, Auth, router, comando e contrato são reais. Nenhuma fala ou legenda afirma geração ao vivo, autonomia irrestrita ou precisão garantida.
+A data V3 é 8 de outubro de 2026, fuso `America/Sao_Paulo`; “ir à feira amanhã” na Gika resulta em 9 de outubro. O calendário e as capturas têm seed e tempo fixos. Divergência de documentação offline, limites de cache/outbox e fixture Gemini estão documentados no ledger/manifests.

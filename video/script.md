@@ -1,26 +1,23 @@
-# Roteiro — Leve / V2
+# Roteiro — Leve / V3
 
-**Duração:** 72 s · **Idioma:** pt-BR · **Uso:** copy editorial e montagem.
+**Duração:** 72 s · **Idioma:** pt-BR · **Uso:** copy editorial e montagem. O filme não depende de áudio para ser compreendido.
 
-| Tempo | Cena | Texto em tela | Montagem |
+| Tempo | Cena | Texto | Decisão de edição |
 |---|---|---|---|
-| 00–04 | Gancho | Sem headline; interface real. | Nota sendo escrita imediatamente, salva online e depois visível com faixa offline nativa. Sem reload ou salvamento offline. |
-| 04–07 | Marca | **Organizar a vida deveria ser leve.** | Reveal rápido do logo real depois da frase. |
-| 07–16 | Meu dia | **Seu dia, em perspectiva.** | Aberto, foco no checkbox, conclusão real e recuo. |
-| 16–23 | Calendário | **Veja seus dias tomar forma.** | Mês, seleção real do dia e pan até o detalhe. |
-| 23–27 | Mobile | **O mesmo espaço. No seu ritmo.** | Abrir a mesma nota na UI mobile capturada com touch/viewport reais; moldura neutra. |
-| 27–35 | Notas | **Ideias também têm lugar.** | Close lateral do editor e cartão salvo online. |
-| 35–42 | Compras | **Até o cotidiano ganha espaço.** | Marcar Café; feedback e itens concluídos reais. |
-| 42–53 | Gika | **Uma ideia vira próximo passo.** | App contextualizado, pedido, resultado “Tarefa adicionada”, plano aberto. |
-| 53–56,5 | Offline / cache | **Sua agenda já aberta, ainda por perto.** | Mostrar conteúdo já consultado e estado offline nativo. |
-| 56,5–60,75 | Offline / tarefa | **Esta tarefa espera a conexão voltar.** | Mostrar “Regar as plantas” aguardando rede na outbox real. |
-| 60,75–65 | Reconexão | **Conexão de volta. Tarefa na agenda.** | ACK real e consulta da tarefa aplicada. |
-| 65–72 | Fecho | **Mais espaço para viver.** | Mesma nota da abertura, recuo e logo por aproximadamente 2 s. |
+| 00–05 | Cold open / nota | Sem headline até a ação; **Organizar a vida deveria ser leve.** entra com a câmera abrindo. | Nota real, salva online antes da queda. Sem cartela de marca. |
+| 05–14 | Meu Dia | Sem headline. | Full-frame, checkbox real, resposta e recuo. |
+| 14–21 | Calendário | Sem headline. | Seleção do dia conduz o corte para mobile. |
+| 21–25 | Mobile | **A mesma ideia, mais perto.** | Captura real Pixel 7 consultando a mesma nota. |
+| 25–33 | Notas | Sem headline. | Close editorial no título/corpo da nota. |
+| 33–40 | Compras | Sem headline. | Abrir, marcar Café e revelar progresso real. |
+| 40–52 | Gika | Sem headline técnico; a conversa é a copy. | Pedido → resposta → tarefa real no Leve. Fixture upstream documentada, sem sugerir geração ao vivo. |
+| 52–64 | Offline | Sem headline documental. | Faixa real, título da tarefa e mensagem nativa de pendência em recortes separados; reconectar, receber ACK e abrir plano. |
+| 64–72 | Fecho | **Mais espaço para viver.** | A mesma nota retorna; o logo está na UI real, sem tela isolada. |
 
-## Regras de interpretação
+## Verdade da demonstração
 
-A Gika usa fixture compatível com o contrato real somente no upstream Gemini. Auth, UI, endpoint do app, router e comando são reais. Não chamar essa resposta de ao vivo; não inventar revisão/confirmação separada. O aviso técnico de V1 sai do filme por solicitação explícita de polish, mas a interceptação permanece no ledger e nos relatórios.
+Abertura: nota salva online, fica visível na mesma página após corte de conexão. Não demonstra reload, edição ou salvamento offline da nota. Offline: conteúdo consultado antes, uma atividade elegível na outbox local e o resultado após reconexão/ACK. Não generalizar para todo dado ou comando.
 
-A abertura mostra persistência online seguida de permanência visual da nota durante a queda de rede, sem reload. A cena offline posterior demonstra dados previamente consultados e uma criação de tarefa elegível. Não afirmar que todo histórico fica disponível, que todo comando funciona offline ou que a sincronização é garantida.
+Gika: somente a chamada upstream Gemini é interceptada com o contrato `respond_turn/create_task`. A UI, autenticação, endpoint do app, router e comando permanecem reais; o `activity.create` é aplicado no Emulator. Não alegar resposta ao vivo, latência real ou precisão universal.
 
-Headlines e UI tornam o filme compreensível mudo. A trilha original instrumental e os efeitos são complementares. `narration.md` e o SRT são textos editoriais opcionais; não existe locução gravada ou TTS neste master. O README comprimido não é referência de qualidade do master.
+Sem TTS ou voz artificial. O SRT editorial é uma alternativa opcional de locução futura, não transcrição de fala. Música e poucos efeitos são originais e documentados.

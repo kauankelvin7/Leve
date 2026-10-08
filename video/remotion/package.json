@@ -5,8 +5,8 @@
   "scripts": {
     "studio": "remotion studio src/index.tsx",
     "render:test": "remotion render src/index.tsx LeveProductFilm ../output/motion-test.mp4 --frames=0-299 --codec=h264 --crf=18 --pixel-format=yuv420p --browser-executable=/usr/bin/chromium",
-    "render": "remotion render src/index.tsx LeveProductFilm ../output/v2-visual-render.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --color-space=bt709 --image-format=png --muted --concurrency=4 --browser-executable=/usr/bin/chromium",
-    "postprocess": "python3 ../scripts/finalize-v2.py"
+    "render": "remotion render src/index.tsx LeveProductFilm ../output/v3-visual-render.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --color-space=bt709 --image-format=png --muted --concurrency=4 --browser-executable=/usr/bin/chromium",
+    "postprocess": "python3 ../scripts/finalize-v3.py"
   },
   "dependencies": {
     "@remotion/cli": "4.0.410",
