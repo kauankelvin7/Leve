@@ -4,6 +4,12 @@ Este diretório reúne decisões, procedimentos de operação, evidências resum
 
 ## Navegação
 
+- [Arquitetura e fluxos do sistema](architecture/README.md)
+- [Guias de desenvolvimento](guides/README.md)
+- [Referência técnica e scripts](reference/README.md)
+- [Operação e validação](operations/README.md)
+- [Segurança](security/README.md)
+
 - [Execução e histórico](EXECUCAO.md)
 - [Plano técnico de evolução UI/UX — notas, calendário e experiências sazonais](PLANO-EXPERIENCIA-CALENDARIO-NOTAS-SAZONAL.md)
 - [Setup de agentes, Codex e Superpowers](AGENT-SETUP.md)

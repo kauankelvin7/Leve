@@ -36,7 +36,8 @@
     "glass:shots:before": "node scripts/glass/run.mjs before",
     "glass:shots:after": "node scripts/glass/run.mjs after",
     "glass:verify": "node scripts/glass/run.mjs verify",
-    "glass:selftest": "node scripts/glass/run.mjs selftest"
+    "glass:selftest": "node scripts/glass/run.mjs selftest",
+    "docs:check": "node scripts/docs-check.mjs"
   },
   "dependencies": {
     "@dicebear/avataaars": "9.4.3",
