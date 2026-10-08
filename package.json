@@ -48,11 +48,11 @@
     "@rive-app/canvas": "2.44.0",
     "express": "5.2.1",
     "firebase": "12.19.0",
-    "firebase-admin": "13.10.0",
+    "firebase-admin": "14.5.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "react-router-dom": "7.18.3",
-    "three": "^0.186.0",
+    "react-router-dom": "7.18.4",
+    "three": "^0.186.1",
     "zod": "4.6.2"
   },
   "devDependencies": {
@@ -71,11 +71,11 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^6.1.1",
     "firebase-tools": "15.32.1",
-    "supertest": "7.2.2",
+    "supertest": "7.3.1",
     "tsx": "4.23.13",
     "typescript": "7.0.2",
     "vite": "8.3.3",
-    "vitest": "5.0.0"
+    "vitest": "5.0.3"
   },
   "overrides": {
     "source-map-js": "1.2.2",
