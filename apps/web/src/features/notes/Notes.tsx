@@ -45,6 +45,7 @@ export function Notes() {
   const editorRef = useRef<HTMLDivElement>(null);
   const pending = useRef<CommandEnvelope | null>(null);
   const saving = useRef(false);
+  const closeAfterAutosave = useRef(false);
   const entityId = useRef<string>(crypto.randomUUID());
   const revision = useRef(0);
   const localTimer = useRef<number | null>(null);
@@ -103,13 +104,22 @@ export function Notes() {
       revision.current = result.revision; pending.current = null;
       const unchanged = JSON.stringify(payloadFromForm()) === serialized;
       if (unchanged) await removeDraft(user.uid, draftName);
-      setMessage(close ? 'Nota salva.' : 'Salva automaticamente.');
-      if (close) resetComposer();
+      const shouldClose = close || closeAfterAutosave.current;
+      closeAfterAutosave.current = false;
+      setMessage(shouldClose ? 'Nota salva.' : 'Salva automaticamente.');
+      if (shouldClose) resetComposer();
       else if (!unchanged) scheduleAutosave();
     } catch (failure) {
       if (failure instanceof ApiError && failure.code === 'REVISION_CONFLICT') setConflict((failure.details as { current?: StoredNote } | undefined)?.current ?? editing);
       setMessage(failure instanceof Error ? failure.message : 'Não foi possível salvar. Seu texto foi preservado.');
-    } finally { saving.current = false; setBusy(false); }
+    } finally {
+      saving.current = false; setBusy(false);
+      // An explicit save made during an autosave must not be discarded.
+      if (closeAfterAutosave.current && !close) {
+        closeAfterAutosave.current = false;
+        void persist(true);
+      }
+    }
   }
 
   function scheduleAutosave() {
@@ -146,7 +156,16 @@ export function Notes() {
     await persist(true, true);
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); await persist(true); }
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    // Prevent a delayed draft/autosave from racing the explicit save.
+    for (const timer of [localTimer, localMaximumTimer, remoteTimer]) {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+      timer.current = null;
+    }
+    if (saving.current) { closeAfterAutosave.current = true; return; }
+    await persist(true);
+  }
   async function trash(note: StoredNote) {
     setBusy(true); setMessage('');
     try {
