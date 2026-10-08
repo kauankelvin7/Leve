@@ -1,0 +1,842 @@
+{
+  "run": "polish-1",
+  "app": "http://localhost:5174",
+  "branch": "video/product-film",
+  "repoCommit": "e60717960455a37903e356f9e78ce09475a900c9",
+  "capturedAt": "2026-10-07T21:30:25.519Z",
+  "viewport": "1600x900",
+  "deviceScaleFactor": 2,
+  "locale": "pt-BR",
+  "timezone": "America/Sao_Paulo",
+  "civilDate": "2026-10-07",
+  "data": "Emulator / leve.local@example.test; fictional",
+  "scenes": {
+    "polish-note": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:37.889Z",
+          "type": "click",
+          "target": "Editar",
+          "boundingBox": {
+            "x": 327.578125,
+            "y": 638.953125,
+            "width": 58,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:37.981Z",
+          "type": "fill",
+          "target": "Texto",
+          "boundingBox": {
+            "x": 331.578125,
+            "y": 354.546875,
+            "width": 692,
+            "height": 190
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:38.197Z",
+          "type": "type",
+          "target": "Texto",
+          "boundingBox": {
+            "x": 331.578125,
+            "y": 354.546875,
+            "width": 692,
+            "height": 190
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:38.663Z",
+          "type": "type",
+          "target": "Texto",
+          "boundingBox": {
+            "x": 331.578125,
+            "y": 354.546875,
+            "width": 692,
+            "height": 190
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:39.069Z",
+          "type": "type",
+          "target": "Texto",
+          "boundingBox": {
+            "x": 331.578125,
+            "y": 354.546875,
+            "width": 692,
+            "height": 190
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:39.460Z",
+          "type": "type",
+          "target": "Texto",
+          "boundingBox": {
+            "x": 331.578125,
+            "y": 354.546875,
+            "width": 692,
+            "height": 190
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:40.173Z",
+          "type": "click",
+          "target": "Concluir edição",
+          "boundingBox": {
+            "x": 790.578125,
+            "y": 630.734375,
+            "width": 134,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:40.513Z",
+          "type": "network-offline",
+          "target": "BrowserContext.setOffline(true)",
+          "boundingBox": null
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/note-before.png",
+          "sha256": "285de49bc6514f9e4c71f16bb7ebdd721b33b354a38dd1beb5af1e4777f82d9b",
+          "bytes": 345772,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-before",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-type-0.png",
+          "sha256": "4e47a6ec788b476e411fdb3a42ff4fb5824eea10dec92ec019fd34d784a063fa",
+          "bytes": 141223,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-type-0",
+          "order": 1
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-type-1.png",
+          "sha256": "1c5ef8cd0b4d0b599beb8854dca3489262e79a8d8a1503cbad2e1570f6c41b41",
+          "bytes": 156140,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-type-1",
+          "order": 2
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-type-2.png",
+          "sha256": "631a867dbe63c4af32e4242eb81a5008fa1c3b16f4de0ba5f160e12877789ce0",
+          "bytes": 157666,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-type-2",
+          "order": 3
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-type-3.png",
+          "sha256": "4491070b454417f091c162f1d8a4fdc4117f88654fb3c1828bb41d107fd73263",
+          "bytes": 158593,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-type-3",
+          "order": 4
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-type-4.png",
+          "sha256": "ba4a61145982c8852e1827fdda913bbfd97865f44f639267090fae63da513b4a",
+          "bytes": 159910,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-type-4",
+          "order": 5
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-save-ready.png",
+          "sha256": "1515cfece167b005edf0dd8f89995373844eeaebc2c59da8c24594fa8675e7e7",
+          "bytes": 158617,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-save-ready",
+          "order": 6
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-saved.png",
+          "sha256": "285de49bc6514f9e4c71f16bb7ebdd721b33b354a38dd1beb5af1e4777f82d9b",
+          "bytes": 345772,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "note-saved",
+          "order": 7
+        },
+        {
+          "path": "video/assets/captures/polish-1/note-offline.png",
+          "sha256": "b61bbd7afccdd9c5d61ae1da0a1c1f43185088e5494c420468d9fe0dd9c81eb8",
+          "bytes": 364631,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": true,
+            "online": false
+          },
+          "dimensions": "3200x1800",
+          "label": "note-offline",
+          "order": 8
+        }
+      ],
+      "acks": [
+        {
+          "command": "note.save",
+          "status": 200,
+          "payload": {
+            "operationId": "9e391824-7a91-4845-b603-9046bdbc08e0",
+            "entityId": "00a19137-2898-4bdc-b3fc-3ecf016c400b",
+            "revision": 2,
+            "serverTime": "2026-10-07T21:30:40.207Z",
+            "result": "applied"
+          }
+        }
+      ],
+      "device": "Desktop / 1600x900 / scale 2"
+    },
+    "polish-today": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:42.891Z",
+          "type": "click",
+          "target": "Concluir Organizar semana de estudos",
+          "boundingBox": {
+            "x": 323.578125,
+            "y": 674.5,
+            "width": 22,
+            "height": 22
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/today-before.png",
+          "sha256": "c2073e4db369652434a57a1cef0f38c05f9ca66230307c189dc08e5a56328832",
+          "bytes": 260762,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "today-before",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/today-after.png",
+          "sha256": "6af339618b17c3db285f79377083f079c44f861d5b90e6e6b3eae1145e3d124a",
+          "bytes": 261704,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "today-after",
+          "order": 1
+        }
+      ],
+      "acks": [
+        {
+          "command": "activity.setStatus",
+          "status": 200,
+          "payload": {
+            "operationId": "f11ac280-cd9b-42de-82f7-8d666e35f568",
+            "entityId": "20c3fc8a-743d-4a2e-8a8d-4946d5e4576f",
+            "revision": 2,
+            "serverTime": "2026-10-07T21:30:42.974Z",
+            "result": "applied"
+          }
+        }
+      ],
+      "device": "Desktop / 1600x900 / scale 2"
+    },
+    "polish-calendar": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:46.089Z",
+          "type": "click",
+          "target": "quarta-feira, 7 de outubro de 2026, 1 atividades carregadas. Toque para ver o dia e adicionar uma atividade.",
+          "boundingBox": {
+            "x": 671.0625,
+            "y": 712.53125,
+            "width": 172.75,
+            "height": 112
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/calendar-before.png",
+          "sha256": "e95ecad02816e60091b9de6d0e2924bb111f0d026aae9e73af16181d57faf0fd",
+          "bytes": 180092,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "calendar-before",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/calendar-day.png",
+          "sha256": "416b7a38fef4be5f1b9a42774426aa9795ac409b363a5709d5b3164cf238e608",
+          "bytes": 150237,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "calendar-day",
+          "order": 1
+        }
+      ],
+      "acks": [],
+      "device": "Desktop / 1600x900 / scale 2"
+    },
+    "polish-shopping": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:49.318Z",
+          "type": "click",
+          "target": "Marcar Café como concluído",
+          "boundingBox": {
+            "x": 454.1875,
+            "y": 676.953125,
+            "width": 22,
+            "height": 22
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:49.624Z",
+          "type": "click",
+          "target": "Concluídos\n1",
+          "boundingBox": {
+            "x": 440.1875,
+            "y": 690.359375,
+            "width": 982,
+            "height": 52
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/shopping-before.png",
+          "sha256": "ff83faa8e078c5039035d5e306b42fa4bc5393944b7cadbf426dbbfaaed8e4b4",
+          "bytes": 155163,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "shopping-before",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/shopping-after.png",
+          "sha256": "a6d3225ea577081a59816cd967a735c06d2e11d749da41ac59fa5d931eeb4eba",
+          "bytes": 150358,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "shopping-after",
+          "order": 1
+        },
+        {
+          "path": "video/assets/captures/polish-1/shopping-completed.png",
+          "sha256": "4376b1ceaae9a0cace67bc52bfc10051de69297c0de881f1f131d14a8020c5b0",
+          "bytes": 151529,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "shopping-completed",
+          "order": 2
+        }
+      ],
+      "acks": [
+        {
+          "command": "shoppingItem.setChecked",
+          "status": 200,
+          "payload": {
+            "operationId": "d1e96c4e-19c3-4aab-8f42-1e8910e46aa4",
+            "entityId": "807ee816-1f7e-4e47-90b5-a54a78a2a484",
+            "revision": 2,
+            "serverTime": "2026-10-07T21:30:49.351Z",
+            "result": "applied"
+          }
+        }
+      ],
+      "device": "Desktop / 1600x900 / scale 2"
+    },
+    "polish-gika": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:51.867Z",
+          "type": "click",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 351.78125,
+            "width": 198,
+            "height": 50
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:53.417Z",
+          "type": "type",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 726.390625,
+            "width": 318,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:54.853Z",
+          "type": "type",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 726.390625,
+            "width": 318,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:55.895Z",
+          "type": "type",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 726.390625,
+            "width": 318,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:56.525Z",
+          "type": "envio",
+          "target": "Pergunte à Gika",
+          "boundingBox": {
+            "x": 1140,
+            "y": 702.390625,
+            "width": 318,
+            "height": 68
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/gika-context.png",
+          "sha256": "316b8ded0fa9c0182ac97c6b721c165451b2df63f7b58d1801af842a8aca7fe3",
+          "bytes": 261349,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-context",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/gika-open.png",
+          "sha256": "432bd6ba68836538dbab09888dce73ecf4162331525599b30327c2a032869624",
+          "bytes": 373722,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-open",
+          "order": 1
+        },
+        {
+          "path": "video/assets/captures/polish-1/gika-type-1.png",
+          "sha256": "f357f0499ac9727e58aee4450a26c468f1099e997456ad4c420eb4a9b7560744",
+          "bytes": 373813,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-type-1",
+          "order": 2
+        },
+        {
+          "path": "video/assets/captures/polish-1/gika-type-2.png",
+          "sha256": "16553ac9cba87c513ac12cc7783e69ccc4111e8fbe0cf6940e62fe7fcc125fe8",
+          "bytes": 377059,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-type-2",
+          "order": 3
+        },
+        {
+          "path": "video/assets/captures/polish-1/gika-type-3.png",
+          "sha256": "2184631f8b80ee639531076f14ba0081f8d3a8b61bd72da38d021e30995162ba",
+          "bytes": 379892,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-type-3",
+          "order": 4
+        },
+        {
+          "path": "video/assets/captures/polish-1/gika-result.png",
+          "sha256": "0b065b1c9bff91519db30faa847f0c5598effe25a4ac217fd9d56c91ea46ad9a",
+          "bytes": 340393,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "3200x1800",
+          "label": "gika-result",
+          "order": 5
+        }
+      ],
+      "acks": [
+        {
+          "command": "activity.create",
+          "status": 200,
+          "payload": {
+            "operationId": "68499956-6e30-429a-a3af-64e2609a57b2",
+            "entityId": "68499956-6e30-429a-a3af-64e2609a57b2",
+            "revision": 1,
+            "serverTime": "2026-10-07T21:30:56.664Z",
+            "result": "applied"
+          }
+        }
+      ],
+      "device": "Desktop / 1600x900 / scale 2"
+    },
+    "polish-offline": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:30:58.989Z",
+          "type": "click",
+          "target": "Notas",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 247.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:59.124Z",
+          "type": "click",
+          "target": "Compras",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 299.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:30:59.279Z",
+          "type": "click",
+          "target": "Meu dia",
+          "boundingBox": {
+            "x": 48.1875,
+            "y": 143.78125,
+            "width": 198,
+            "height": 48
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:31:01.396Z",
+          "type": "network-offline",
+          "target": "BrowserContext.setOffline(true)",
+          "boundingBox": null
+        },
+        {
+          "timestamp": "2026-10-07T21:31:02.094Z",
+          "type": "click",
+          "target": "Nova atividade",
+          "boundingBox": {
+            "x": 1406.8125,
+            "y": 184.203125,
+            "width": 158,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:31:02.251Z",
+          "type": "fill",
+          "target": "Ex.: estudar capítulo 3",
+          "boundingBox": {
+            "x": 330.578125,
+            "y": 790.0714111328125,
+            "width": 694,
+            "height": 46.46875
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:31:02.271Z",
+          "type": "fill",
+          "target": "",
+          "boundingBox": {
+            "x": 330.578125,
+            "y": 882.64794921875,
+            "width": 694,
+            "height": 48.46875
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:31:02.293Z",
+          "type": "click",
+          "target": "Adicionar atividade",
+          "boundingBox": {
+            "x": 762.578125,
+            "y": 1079.7777099609375,
+            "width": 162,
+            "height": 44
+          }
+        },
+        {
+          "timestamp": "2026-10-07T21:31:02.905Z",
+          "type": "network-online",
+          "target": "BrowserContext.setOffline(false)",
+          "boundingBox": null
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/offline-banner.png",
+          "sha256": "7a0808a43bb4b1e03a4040de2c1454417efe67601d52679f66b6b54f057afa59",
+          "bytes": 262089,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": true,
+            "online": false
+          },
+          "dimensions": "3200x1800",
+          "order": 0,
+          "label": "offline-banner"
+        },
+        {
+          "path": "video/assets/captures/polish-1/offline-pending.png",
+          "sha256": "a6a819ca555f08fd945f9f7d5d5994f91fd694ecbb9c43ebba1797d25439dd52",
+          "bytes": 227852,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": true,
+            "online": false
+          },
+          "dimensions": "3200x1800",
+          "order": 1,
+          "label": "offline-pending"
+        },
+        {
+          "path": "video/assets/captures/polish-1/offline-synced.png",
+          "sha256": "1897b654170624cd5fdd2ac1a67bd16d9156177ad5869120e413c3963dc43dc5",
+          "bytes": 268042,
+          "dimensions": "3200x1800",
+          "order": 2,
+          "label": "offline-synced",
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          }
+        }
+      ],
+      "acks": [
+        {
+          "command": "activity.create",
+          "status": 200,
+          "source": "real outbox replay"
+        }
+      ],
+      "continuity": {
+        "todayTask": "completed",
+        "asserted": "Reabrir Organizar semana de estudos present offline and after online server reload"
+      }
+    },
+    "polish-mobile": {
+      "actions": [
+        {
+          "timestamp": "2026-10-07T21:31:07.442Z",
+          "type": "click",
+          "target": "Editar",
+          "boundingBox": {
+            "x": 44,
+            "y": 633.609375,
+            "width": 58,
+            "height": 44
+          }
+        }
+      ],
+      "captures": [
+        {
+          "path": "video/assets/captures/polish-1/mobile-note-before.png",
+          "sha256": "49784cc90d0f15deb0ba7f9c2139cee90781e9c33a38803d63832f25e3f35b71",
+          "bytes": 276794,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "780x1688",
+          "label": "mobile-note-before",
+          "order": 0
+        },
+        {
+          "path": "video/assets/captures/polish-1/mobile-note-open.png",
+          "sha256": "4c144c95fd48a77226598e03bd5c204bf94b340ba17cdc26cbea1752bdd4e874",
+          "bytes": 239510,
+          "scans": {
+            "privacy": "PASS",
+            "loading": "PASS",
+            "expectedOffline": false,
+            "online": true
+          },
+          "dimensions": "780x1688",
+          "label": "mobile-note-open",
+          "order": 1
+        }
+      ],
+      "acks": [],
+      "device": "Pixel 7 / 390x844 / touch / scale 2"
+    }
+  },
+  "browserErrors": [
+    {
+      "scene": "polish-note",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-note",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-note",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-note",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-note",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "scene": "polish-offline",
+      "error": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    }
+  ]
+}
