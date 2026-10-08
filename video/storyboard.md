@@ -1,34 +1,35 @@
-# Storyboard — Leve / V3
+# Storyboard — Leve / V2
 
 **Duração:** 72 s · **Branch:** `video/product-film` · **Mensagem:** Organizar a vida deveria ser leve.
 
-V3 mantém o arco aprovado e substitui a apresentação em módulos por uma linha visual: a mesma nota abre e fecha o filme. A interface é a fotografia do filme; manchetes aparecem só quando mudam a leitura. Capturas V1/V2 e respectivos relatórios permanecem na história Git e em `reports/`. Nenhuma alteração no produto foi feita para a filmagem.
+Esta revisão continua a narrativa aprovada. A V1 de 76 s permanece no histórico Git e em `video/output/v1/`; sua revisão está em `video/reports/06-qa-v1.md`. A análise anterior às mudanças está em `07-polish-analysis.md`. Não houve alteração do produto para filmagem. O filme funciona sem áudio: a interface e as headlines contêm a informação necessária.
 
-| Tempo | Cena / ação real | Direção visual | Evidência / limite | Classificação |
+| Tempo | Cena e ação real | Direção / texto em tela | Evidência e limite | Classificação |
 |---|---|---|---|---|
-| 0–5 | A mesma nota é escrita, salva online e permanece aberta quando a conexão cai. | Cold open em close, sem logo/cartela; a câmera abre para a frase de marca e o contexto real do Leve. | `polish-note`; `note.save` ACK 200 antes de `setOffline(true)`. Sem reload nem escrita de nota offline. | REAL + DETERMINÍSTICA |
-| 5–14 | Meu Dia; concluir “Organizar semana de estudos”. | Full-frame; push-in curto no checkbox, clique e feedback real, pull-back para situar a agenda. Sem headline. | `today-before/after`, `activity.setStatus` ACK 200, quinta-feira 08/10/2026 em America/Sao_Paulo. | REAL + DETERMINÍSTICA |
-| 14–21 | Selecionar o dia no calendário mensal e consultar seu detalhe. | A seleção conduz o corte seguinte; close reduzido ao dia antes de abrir o plano. | `calendar-before/day`, seleção real; não nomear mês como visão semanal. | REAL + DETERMINÍSTICA |
-| 21–25 | Abrir a mesma nota num Pixel 7 real. | Match cut para captura móvel vertical, grande e central; cartão de papel abstrato dá separação sem simular hardware. Copy: **A mesma ideia, mais perto.** | Pixel 7 / touch / viewport 390×844 CSS, screenshots 780×1688; consulta real. Não demonstra paridade total ou sincronização entre aparelhos. | REAL + DETERMINÍSTICA / composição editorial |
-| 25–33 | Retomar e editar a nota real. | Close editorial ocupa o quadro; a câmera segue título/corpo e só recua na saída. | `note-type-2/4/saved`; edição online real, sem selo de estado inventado. | REAL + DETERMINÍSTICA |
-| 33–40 | Marcar Café e ver a lista respondendo. | Plano aberto curto → close no checkbox/progresso real → retorno ao contexto. | `shopping-before/after/completed`; `shoppingItem.setChecked` ACK 200. | REAL + DETERMINÍSTICA |
-| 40–52 | Pedir à Gika uma tarefa; ver o resultado aplicado no Leve. | Conversa contextualizada, aproximação ao pedido e à confirmação, recuo ao workspace. Sem chamada técnica sobreposta. | Fixture somente no upstream Gemini exato, em contrato `respond_turn/create_task`; Auth/UI/router/command e `activity.create` reais. Pedido sintético para 09/10/2026. Não sugerir resposta ao vivo. | INTERCEPTADA / fluxo real do produto |
-| 52–64 | Agenda previamente consultada; criação de tarefa elegível pendente; reconexão e consulta do estado aplicado. | A trilha abre espaço. Corte para recorte real do nome da tarefa e, separadamente, da mensagem nativa de pendência, evitando o controle de data do navegador. Depois abre para reconexão. | `offline-banner/pending/synced`; estado outbox real e ACK/reconsulta servidor. Não demonstra edição de nota offline, disponibilidade universal nem sincronização garantida. | REAL + DETERMINÍSTICA |
-| 64–72 | Retornar à nota e encerrar. | Match cut para a nota inicial; plano alarga, “Mais espaço para viver.” aparece no espaço livre, logo continua dentro da UI real. Sem cartela parada. | Mesma nota fictícia e conteúdo salvo online; não associada à mutação offline. | REAL + DETERMINÍSTICA |
+| 0–4 | Digitar a nota “Uma ideia para retomar”; concluir edição online; cortar a rede com a nota consultada ainda visível. | Close funcional imediato. Texto cresce em etapas reais; aos 2,07 s aparece o estado salvo; aos 2,50 s a faixa offline nativa. Sem indicador editorial. | `polish-note`, `note-type-0..4`, `note-saved`, `note-offline`; `note.save` ACK 200 **antes** da queda. Sem reload, edição ou salvamento da nota offline. | REAL + DETERMINÍSTICA |
+| 4–7 | Respiro de marca. | **Organizar a vida deveria ser leve.** Reveal breve do logo original; sem longa espera no logo. | Frase de marca, não garantia funcional. | REAL + DETERMINÍSTICA / composição editorial |
+| 7–16 | Meu dia; concluir “Organizar semana de estudos”. | **Seu dia, em perspectiva.** Aberto → aproximação ao checkbox → feedback real → aberto. Cursor deriva do bounding box capturado. | `today-before/after`; `activity.setStatus` ACK 200; data civil fixa, quarta-feira 07/10/2026. | REAL + DETERMINÍSTICA |
+| 16–23 | Calendário mensal; selecionar o dia e consultar seu detalhe. | **Veja seus dias tomar forma.** Pan e reenquadramento para a informação selecionada. | `calendar-before/day`; não descrever a imagem mensal como visão semanal. | REAL + DETERMINÍSTICA |
+| 23–27 | No celular, abrir a mesma nota. | **O mesmo espaço. No seu ritmo.** Moldura CSS neutra; ação curta seguida de leitura. | `mobile-note-before/open`; descriptor Pixel 7, touch, viewport 390×844, captura 780×1688. Consulta real; sem mutação mobile ou promessa de paridade total. | REAL + DETERMINÍSTICA |
+| 27–35 | Retomar a nota, editar e mostrar o estado salvo real. | **Ideias também têm lugar.** Composição lateral, close no editor e no cartão salvo. | Estados reais da edição online. Mesma nota/texto da abertura; sem selo fictício de persistência. | REAL + DETERMINÍSTICA |
+| 35–42 | Abrir compras, marcar Café e revelar itens concluídos. | **Até o cotidiano ganha espaço.** Câmera acompanha checkbox e resultado nativo. | `shopping-before/after/completed`; `shoppingItem.setChecked` ACK 200. | REAL + DETERMINÍSTICA |
+| 42–53 | Abrir Gika, digitar pedido e mostrar “Tarefa adicionada”. | **Uma ideia vira próximo passo.** Contexto → aproximação ao pedido/resultado → recuo. Sem disclosure técnico dentro do filme, conforme pedido de polish. | Fixture somente no upstream Gemini exato; Auth, UI, `/api/gika/respond`, router, contrato, `activity.create` e ACK reais. Não alegar geração ao vivo ou criar confirmação inexistente. | INTERCEPTADA / fluxo do produto real |
+| 53–56,5 | Meu dia previamente consultado, rede indisponível. | **Sua agenda já aberta, ainda por perto.** Ritmo mais calmo; cache e faixa nativos. | Sessão inicializada online e dados já consultados no aparelho; disponibilidade depende do cache. | REAL + DETERMINÍSTICA |
+| 56,5–60,75 | Criar “Regar as plantas” sem rede; mostrar a pendência real. | **Esta tarefa espera a conexão voltar.** Pan para o estado relevante. | Comando elegível na outbox; não demonstrar edição de nota ou todas as operações offline. | REAL + DETERMINÍSTICA |
+| 60,75–65 | Reconectar; aguardar ACK real e consultar tarefa aplicada. | **Conexão de volta. Tarefa na agenda.** Plano abre após a resolução. | ACK 200 e consulta do estado servidor; resultado desta tarefa, sem garantia universal de sincronização. | REAL + DETERMINÍSTICA |
+| 65–72 | Voltar à nota inicial e encerrar com a marca. | **Mais espaço para viver.** Close da mesma nota salva online; recuo; logo final por aproximadamente 2 s. | Não associar a nota à alteração offline. Sem CTA comercial ou URL não verificada. | REAL + DETERMINÍSTICA |
 
-## Gramática visual
+## Captura e montagem
 
-- Variar quadro aberto (Meu Dia/contexto), plano médio (calendário/Gika), close funcional (nota/checkbox/pendência) e quadro vertical real (mobile).
-- Movimento só acompanha ação, foco ou contexto: push, pull-back, pan curto e match cuts. Corte seco domina; paper reveal fica nas passagens móveis/compras/fecho e fade no intervalo de confiança.
-- A marca não recebe mais um plano isolado. Tipografia segue Nunito/DM Sans e a paleta real do projeto; “Vidro & Papel” aparece como camada/superfície editorial, sem mesa 3D, neon ou parallax decorativo.
-- Interface, feedback, estados, texto de erro/outbox e controles são capturados da aplicação. Remotion enquadra/compoõe; não cria feature ou estado.
+- Reutilizar a pipeline existente e os arquivos fonte de Remotion. Capturas V1 preservadas; novas ações constam nos manifests `polish-1.json`, `polish-2.json` e comparação determinística. A fonte de câmera é a UI real, nunca uma reconstrução de controles.
+- Desktop 1600×900 CSS / 2x; mobile 390×844 CSS / 2x; pt-BR; `America/Sao_Paulo`; data, seed, fontes e conta fictícia controlados. Nenhum dado de produção, console, cookie ou secret aparece.
+- Planos abertos, médios e closes respondem a clique, digitação ou mudança de informação. Cortes secos predominam; reveals por folha e fade ficam em passagens específicas. Não adicionar efeitos ornamentais.
+- Áudio instrumental e efeitos sintetizados originais, sem samples externos ou TTS, documentados em `video/audio/`. Master com áudio; derivado README e cópia muted separados. A narração humana continua opcional, não gravada.
 
-## Captura e determinismo
+## Limites mantidos
 
-Desktop 1600×900 CSS / 2x, Pixel 7 390×844 / 2x, `pt-BR`, `America/Sao_Paulo`, seed fictícia e relógio Playwright fixado em 08/10/2026. Manifests `v3-capture-3/4.json`; comparador 27 imagens e mobile dentro da tolerância. A data civil foi avançada de V2 (07/10, quarta) a V3 (08/10, quinta) para refletir a data de execução e evitar tarefa fora do “Meu dia”.
+O shell público offline com service worker e a captura autenticada em Vite + Firebase Emulator são provas separadas. O cold open V2 foi recuperado porque a nota **salva online** permanece visível durante a queda, sem reload. Não recupera a hipótese anterior de editar/salvar a nota offline. Cache pode ser limitado ou evicto. Outbox aceita determinados comandos; não é sincronização garantida de tudo.
 
-## Som e claims
+`README.md` e `AGENTS.md` do produto ainda divergem do código quanto à ativação padrão do offline. Essa divergência continua registrada no ledger; o vídeo não altera nem promete uma preferência diferente.
 
-Trilha e micro-eventos originais, reproduzíveis com seed, 92 BPM, stems documentados/licença MIT; sem amostras externas, TTS ou voz. O instrumental reduz durante o offline e retorna depois do ACK. Mix 48 kHz estéreo alvo −16 LUFS, true peak ≤ −1,5 dBTP. A limitação de audição subjetiva deste ambiente é declarada no QA, nunca simulada.
-
-Claims e divergência entre documentação e comportamento offline permanecem no `reports/claims-ledger.md`. Não afirmar “nunca perde”, offline total, sincronização universal, Gemini ao vivo ou push garantido em qualquer aparelho.
+A interceptação da Gika permanece documentada nos manifests, relatórios e ledger. A remoção de linguagem técnica do vídeo foi solicitada nesta iteração; não é autorização para sugerir Gemini ao vivo. Push em aparelho físico, garantias universais de dados/privacidade e primeiro uso offline não fazem parte do filme.

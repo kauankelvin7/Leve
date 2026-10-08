@@ -11,5 +11,5 @@ globalThis.fetch = async (input, init) => {
   if (process.env.LEVE_CAPTURE_FIXTURE_LOG) {
     await appendFile(process.env.LEVE_CAPTURE_FIXTURE_LOG, `${JSON.stringify({ timestamp: new Date().toISOString(), endpoint: 'Gemini generateContent', method: 'POST', fixture: 'respond_turn/create_task', schema: 'Gemini candidates[0].content.parts[0].functionCall' })}\n`);
   }
-  return Response.json({ candidates: [{ finishReason: 'STOP', content: { parts: [{ functionCall: { name: 'respond_turn', args: { domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: null, proposals: [{ name: 'create_task', args: { title: 'Ir à feira', dueDate: '2026-10-09', dueTime: '19:00' } }] } } }] } }] });
+  return Response.json({ candidates: [{ finishReason: 'STOP', content: { parts: [{ functionCall: { name: 'respond_turn', args: { domainIntent: 'AGENDA_ACTION', certain: true, explicitAction: true, reply: null, proposals: [{ name: 'create_task', args: { title: 'Ir à feira', dueDate: '2026-10-08', dueTime: '19:00' } }] } } }] } }] });
 };

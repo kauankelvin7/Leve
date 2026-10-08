@@ -13,14 +13,8 @@ export type Box = {
   width: number;
   height: number;
 };
-export type CameraRect = { x: number; y: number; width: number; height: number };
 const ease = Easing.bezier(.22, .68, .2, 1);
 const tween = (f: number, keys: CameraKey[], field: 'x' | 'y' | 'zoom') => keys.length === 1 ? keys[0][field] : interpolate(f, keys.map(k => k.frame), keys.map(k => k[field]), {
-  extrapolateLeft: 'clamp',
-  extrapolateRight: 'clamp',
-  easing: ease
-});
-const rectTween = (f: number, keys: Array<{ frame: number; rect: CameraRect }>, field: keyof CameraRect) => keys.length === 1 ? keys[0].rect[field] : interpolate(f, keys.map(k => k.frame), keys.map(k => k.rect[field]), {
   extrapolateLeft: 'clamp',
   extrapolateRight: 'clamp',
   easing: ease
@@ -46,8 +40,6 @@ export const CameraMove: React.FC<{
     exit: number;
   };
   radius?: number;
-  frame?: boolean;
-  rectKeys?: Array<{ frame: number; rect: CameraRect }>;
 }> = ({
   src,
   keys,
@@ -62,34 +54,26 @@ export const CameraMove: React.FC<{
     height: 865
   },
   cursor,
-  radius = 24,
-  frame = true,
-  rectKeys
+  radius = 24
 }) => {
   const f = useCurrentFrame();
-  const measuredRect: CameraRect = rectKeys ? {
-    x: rectTween(f, rectKeys, 'x'),
-    y: rectTween(f, rectKeys, 'y'),
-    width: rectTween(f, rectKeys, 'width'),
-    height: rectTween(f, rectKeys, 'height')
-  } : rect;
   const zoom = tween(f, keys, 'zoom');
   const cx = tween(f, keys, 'x');
   const cy = tween(f, keys, 'y');
-  const scale = Math.max(measuredRect.width / viewport.width * zoom, measuredRect.width / viewport.width, measuredRect.height / viewport.height);
-  const left = Math.max(measuredRect.width - viewport.width * scale, Math.min(0, measuredRect.width / 2 - cx * scale));
-  const top = Math.max(measuredRect.height - viewport.height * scale, Math.min(0, measuredRect.height / 2 - cy * scale));
+  const scale = Math.max(rect.width / viewport.width * zoom, rect.width / viewport.width, rect.height / viewport.height);
+  const left = Math.max(rect.width - viewport.width * scale, Math.min(0, rect.width / 2 - cx * scale));
+  const top = Math.max(rect.height - viewport.height * scale, Math.min(0, rect.height / 2 - cy * scale));
   return <div style={{
     position: 'absolute',
-    left: measuredRect.x,
-    top: measuredRect.y,
-    width: measuredRect.width,
-    height: measuredRect.height,
+    left: rect.x,
+    top: rect.y,
+    width: rect.width,
+    height: rect.height,
     overflow: 'hidden',
-    borderRadius: frame ? radius : 0,
+    borderRadius: radius,
     background: palette.paper,
-    boxShadow: frame ? palette.shadow : 'none',
-    border: frame ? `1px solid ${palette.line}` : 'none'
+    boxShadow: palette.shadow,
+    border: `1px solid ${palette.line}`
   }}>
    <Img src={staticFile(src)} style={{
       position: 'absolute',

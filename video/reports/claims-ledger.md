@@ -60,19 +60,3 @@ O aviso técnico de fixture exibido na V1 foi removido do filme por solicitaçã
 A divergência entre `README.md`/`AGENTS.md` e o comportamento atual de offline ativo por padrão permanece. Não foi corrigida no produto nesta entrega. O preview público com service worker comprova o shell offline depois de cache; o fluxo autenticado Vite + Emulator comprova conteúdo consultado/outbox específicos. São evidências separadas. Cache pode ser limitado ou evicto; o vídeo não promete “nunca perde dados”, funcionamento totalmente offline ou sincronização garantida.
 
 A música e os efeitos V2 são composição/síntese originais, sem samples externos ou TTS; origem, licença MIT e reprodução constam em `video/audio/README.md`. Há áudio no master, não no derivado comprimido README. O SRT é editorial, não transcrição de locução gravada.
-
-## V3 — evidência e claims atualizadas
-
-Capturas usadas no master: `video/capture/manifests/v3-capture-3.json`, data fixa 08/10/2026 (`America/Sao_Paulo`), Chromium desktop 1600×900/2x e Pixel 7 390×844/2x. Uma segunda execução independente (`v3-capture-4`) passou pelo comparador dentro da tolerância; os screenshots-fonte versionados são os de `assets/captures/v3-capture-3/`. Os estados exibidos permanecem no mesmo escopo das claims V2.
-
-| Copy / estado V3 | Evidência atualizada | Status |
-|---|---|---|
-| “A mesma ideia, mais perto.” | Mesma nota fictícia aberta no Pixel 7 real; nota e editor nativos capturados com touch/viewport real. Não prova sincronização garantida ou paridade de escrita. | EDITORIAL / estado real |
-| Tarefa concluída em Meu Dia. | `polish-today` conclui “Organizar semana de estudos” via `activity.setStatus` real; data civil 08/10/2026, quinta-feira. | VERIFICADA |
-| Seleção do dia no calendário. | `polish-calendar` seleciona 8 de outubro e consulta `#selected-date`; visão mensal real. | VERIFICADA |
-| Compra concluída. | `polish-shopping` marca Café; `shoppingItem.setChecked` ACK 200, seção de concluídos nativa. | VERIFICADA |
-| Gika agenda “ir à feira amanhã às 19:00”. | Fixture somente no upstream Gemini retorna `respond_turn/create_task` válido para 09/10/2026; API Gika, router, regra, `activity.create` e ACK 200 reais no Emulator. Nenhuma chamada Gemini ao vivo. | VERIFICADA — INTERCEPTADA |
-| “Regar as plantas” aguarda conexão. | `polish-offline`: sessão/dados consultados antes; comando elegível criado sem rede; UI nativa diz “Salvo neste aparelho e aguardando conexão.”. O nome e o aviso são enquadrados em momentos separados, sem centralizar o campo de data. | VERIFICADA neste fluxo |
-| Atividade aplicada após reconexão. | `polish-offline`: replay da outbox `activity.create` ACK 200 e segundo contexto recarregado consulta a tarefa no servidor. | VERIFICADA neste fluxo |
-
-O cold open continua mostrando a nota **salva online** antes de `BrowserContext.setOffline(true)`; sem reload ou mutação offline. V3 não amplia as alegações offline. A divergência README/AGENTS versus comportamento segue registrada. Gika permanece fixture determinística/interceptada; nenhuma fala, camada ou efeito sugere geração Gemini ao vivo.

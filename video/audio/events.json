@@ -12,35 +12,35 @@
       "name": "connection-down-opening"
     },
     {
-      "time": 7.73,
+      "time": 11.333,
       "name": "task-complete"
     },
     {
-      "time": 22.35,
+      "time": 24.2,
       "name": "mobile-tap"
     },
     {
-      "time": 28.63,
+      "time": 30.5,
       "name": "note-save"
     },
     {
-      "time": 35.93,
+      "time": 38.25,
       "name": "shopping-check"
     },
     {
-      "time": 41.23,
+      "time": 43.25,
       "name": "gika-open"
     },
     {
-      "time": 45.1,
+      "time": 46.917,
       "name": "gika-confirm"
     },
     {
-      "time": 52.0,
+      "time": 53.0,
       "name": "connection-down"
     },
     {
-      "time": 59.6,
+      "time": 60.75,
       "name": "connection-back"
     }
   ]
