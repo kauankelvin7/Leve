@@ -4,7 +4,8 @@ import { isolatedTestAccount } from '../helpers/gikaBatch';
 
 async function login(page: Page) {
   const email = await isolatedTestAccount('mobile-design');
-  await page.clock.install({ time: new Date('2026-10-05T12:00:00Z') });
+  // Keep client command timestamps within the server's 72-hour anti-replay window.
+  await page.clock.install({ time: new Date() });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/entrar');
   await page.getByLabel('E-mail').fill(email);
