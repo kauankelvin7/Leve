@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, extname, isAbsolute, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -24,7 +24,6 @@ function stripCode(text) {
 
 function slugify(heading) {
   return heading
-    .replace(/<[^>]*>/g, '')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/[*_~`]/g, '')
     .trim()
@@ -107,16 +106,21 @@ function checkFile(file, issues) {
     }
     if (!resolved) continue;
     const { target, fragment } = resolved;
-    if (!existsSync(target)) {
-      issues.push(`${source}:${lineAt(text, link.offset)}: destino ausente: ${link.raw}`);
-      continue;
-    }
-    if (statSync(target).isDirectory()) {
-      if (fragment) issues.push(`${source}:${lineAt(text, link.offset)}: diretório não tem âncora Markdown: ${link.raw}`);
+    let contents;
+    try {
+      contents = readFileSync(target, 'utf8');
+    } catch (error) {
+      if (error?.code === 'EISDIR') {
+        if (fragment) issues.push(`${source}:${lineAt(text, link.offset)}: diretório não tem âncora Markdown: ${link.raw}`);
+      } else if (error?.code === 'ENOENT') {
+        issues.push(`${source}:${lineAt(text, link.offset)}: destino ausente: ${link.raw}`);
+      } else {
+        issues.push(`${source}:${lineAt(text, link.offset)}: destino indisponível: ${link.raw}`);
+      }
       continue;
     }
     if (fragment && extname(target).toLowerCase() === '.md') {
-      const anchors = anchorsFor(readFileSync(target, 'utf8'));
+      const anchors = anchorsFor(contents);
       if (!anchors.has(fragment)) issues.push(`${source}:${lineAt(text, link.offset)}: âncora ausente em ${normalize(target)}: #${fragment}`);
     }
   }
