@@ -13,8 +13,8 @@ O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) foi integrado por squas
 | #43 | express 5.3.0 | Integrado |
 | #47 | actions/upload-artifact 7.0.2 | Integrado |
 | #48 | actions/setup-node 7.1.0 | Integrado |
-| [#50](https://github.com/kauankelvin7/Leve/pull/50) | CodeQL init + analyze 4.38.3, versão idêntica | PR de atualização coordenada; conferir gates antes do merge |
-| #45 e #46 | CodeQL 4.38.3, ações atualizadas separadamente | Substituídos pelo PR #50; não mesclar isoladamente |
+| [#50](https://github.com/kauankelvin7/Leve/pull/50) | CodeQL init + analyze 4.38.3, versão idêntica | Integrado, CI e CodeQL aprovados |
+| #45 e #46 | CodeQL 4.38.3, ações atualizadas separadamente | Encerrados, substituídos pelo PR #50 |
 | #41 | @dicebear/core 10.7.0 | Encerrado: avataaars 9.4.3 exige core ^9; o CI falhou em npm ci |
 | #44 | @firebase/rules-unit-testing 6.0.0 | Encerrado: exige firebase ^13, projeto usa 12.19.0; o CI falhou em npm ci |
 
