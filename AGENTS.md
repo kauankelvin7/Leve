@@ -94,13 +94,6 @@ Se houver divergencia, a ordem de prioridade e: pedido mais recente do usuario, 
 - Corrija a causa raiz no modulo dono do comportamento, evitando atalhos que aumentem a complexidade.
 - Dependencias novas exigem revisao de licenca, manutencao, bundle, privacidade e necessidade real antes de entrar no `package.json`.
 
-## Preferencia de resposta
-
-- Antes de responder ao conteudo principal de qualquer pedido, informe o agente/modelo mais apropriado e o nivel de inteligencia/raciocinio recomendado para a tarefa.
-- Use o formato: `Agente recomendado: <modelo/agente>; forca: <baixo|medio|alto|maximo>.`
-- Ajuste a recomendacao a cada requisicao. Tarefas simples podem usar um agente rapido com forca baixa; implementacoes moderadas pedem forca media; arquitetura, seguranca, dados e depuracao complexa pedem forca alta; investigacoes amplas ou decisoes criticas podem pedir o melhor agente disponivel com forca maxima.
-- Essa recomendacao deve aparecer antes de iniciar a tarefa, inclusive antes de planos, comandos ou explicacoes longas.
-
 
 ---
 
