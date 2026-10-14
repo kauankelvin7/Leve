@@ -6,6 +6,11 @@ depois iniciaram uma nova rodada de checks no PR #49. A tabela registra o estado
 observado antes dessa rodada; confira o HEAD e os checks atuais no GitHub antes
 de integrar qualquer PR.
 
+Na consulta final ao HEAD documental `786a366`, Vercel e CodeQL estavam aprovados;
+CI, Planner E2E e Seasonal E2E ainda estavam em execução. O HEAD posterior pode
+ter resultados diferentes; valide a rodada associada ao commit mais recente antes
+de decidir o merge.
+
 ## Pull requests abertos
 
 | PR | Mudança | Checks observados | Decisão |

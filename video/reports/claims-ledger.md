@@ -1,10 +1,11 @@
 # Claims ledger — Leve Product Film
 
-Base: HEAD `33707a4e72b863f1689113f51e95118a5568bebe`. A claim marked `VERIFICADA` is supported by implementation and/or named tests for the scope written in the claim; it does not by itself prove a production deployment, live external service, or device-specific presentation. Claims marked `NÃO VERIFICADA` are barred from the film until evidence changes.
+Base: HEAD `33707a4e72b863f1689113f51e95118a5568bebe`, snapshot de 07/10/2026. Uma claim marcada `VERIFICADA` é sustentada pela implementação e/ou pelos testes nomeados naquela base e no escopo indicado; isso não prova deployment de produção, serviço externo ao vivo ou comportamento em todo aparelho. Claims marcadas `NÃO VERIFICADA` não devem ser usadas no filme sem novas evidências. Este ledger não descreve necessariamente a branch atual. Para o estado presente, consulte `docs/goals/GOAL-01/` e o HEAD do PR #49.
 
 Este ledger registra o que foi verificado para o filme em outubro de 2026. A
-claim de offline ativo por padrão descreve aquele checkout; o PR #49 prepara
-opt-in por UID/aparelho, mas ainda não foi integrado a `main`.
+claim de offline ativo por padrão descreve somente o checkout da base acima. O
+GOAL #01 implementa opt-in por UID/aparelho no PR #49; enquanto o PR estiver
+aberto, essa implementação ainda não faz parte de `main`.
 
 afirmação | evidência (arquivo, função, teste ou captura) | status
 ---|---|---
@@ -18,7 +19,7 @@ O Leve organiza listas e itens de compras. | `features/shopping/Shopping.tsx`, `
 Alterações submetidas sem rede podem entrar numa fila local e tentar sincronizar quando a conexão volta. | `platform/api.ts::sendCommand/flushOutbox`; `platform/outbox.ts::queueCommand`; `persistent.spec.ts::duas abas sincronizam...`; `calendar-planner.spec.ts::alteração offline bloqueia...`. Scope is queueable commands, enabled offline storage and an existing signed-in account. | VERIFICADA
 Uma sessão já conhecida e dados Firestore consultados podem permanecer acessíveis em cache neste aparelho. | `features/identity/AuthProvider.tsx::refresh`; `platform/firebase.ts::createFirestore`; `features/content/useLiveQueries.ts` fromCache handling; Playwright `persistent.spec.ts::duas abas sincronizam...` reloaded and inspected Meu dia, Nota, Compras offline after prior online query. User must initialize/use the account online; cache can be evicted or limited. | VERIFICADA
 O shell público `/entrar` recarrega offline depois de o service worker instalar e guardar os bundles. | `apps/web/public/sw.js` install/navigation handlers; `apps/web/vite.config.ts::offlinePrecachePlugin`; execução Playwright `corepack npm run glass:e2e -- public.spec.ts`, cenário `production service worker precaches modules for an offline reload` (preview de produção local; resposta 200 e formulário visível sem rede). Não implica primeiro uso offline ou uma sessão privada autenticada de produção. | VERIFICADA
-Offline fica ativo por padrão no build atual, com opt-out nas Preferências. | `platform/outbox.ts::offlineEnabled`; `platform/firebase.ts::createFirestore`; `features/settings/Settings.tsx::changeOffline`; teste Playwright `persistent.spec.ts::duas abas sincronizam...` confirmou que `leve.offlineEnabled` permanece ausente e a criação entra na outbox sem rede; `README.md`/`AGENTS.md` ainda contradizem o comportamento no código. | VERIFICADA
+No build do snapshot de 07/10/2026, offline ficava ativo por padrão, com opt-out nas Preferências. | Código e teste Playwright no commit base `33707a4e72b863f1689113f51e95118a5568bebe`: `platform/outbox.ts::offlineEnabled`, `platform/firebase.ts::createFirestore`, `Settings.tsx::changeOffline` e `persistent.spec.ts::duas abas sincronizam...`. Comportamento histórico, superado pelo GOAL #01. | VERIFICADA NO SNAPSHOT
 Gika é uma assistente focada em agenda e organização que recebe pedidos e produz propostas estruturadas. | `server/gika/gemini.ts::geminiPayload`; `packages/domain/src/gika.ts` schemas; `server/gika/router.ts::createGikaRouter`; `tests/integration/gika-semantic.test.ts`, `tests/e2e-local/gika-notifications.spec.ts` with controlled Gemini response. | VERIFICADA
 Gika usa Gemini 3.5 Flash Lite como adapter upstream quando configurado. | `server/gika/gemini.ts::GEMINI_MODEL/createGeminiAdapter/transport`; API key is read server-side from `GEMINI_API_KEY`. No live upstream call or availability proof. | VERIFICADA
 Gika respondeu ao pedido mostrado no vídeo usando Gemini ao vivo. | Local E2E injects controlled upstream response (`tests/e2e-local/gika-notifications.spec.ts::controlledInterpretation`); live Gemini not called or checked. | NÃO VERIFICADA
@@ -61,6 +62,6 @@ A V2 continua em `video/product-film`, com produto base acima intacto. A duraç�
 
 O aviso técnico de fixture exibido na V1 foi removido do filme por solicitação explícita do usuário para esta V2. A interceptação continua aqui, nos manifests e nos relatórios. Nenhuma copy, efeito sonoro ou câmera atribui o tempo de resposta ao Gemini ao vivo. Não há chamada upstream ao vivo validada.
 
-A divergência entre `README.md`/`AGENTS.md` e o comportamento atual de offline ativo por padrão permanece. Não foi corrigida no produto nesta entrega. O preview público com service worker comprova o shell offline depois de cache; o fluxo autenticado Vite + Emulator comprova conteúdo consultado/outbox específicos. São evidências separadas. Cache pode ser limitado ou evicto; o vídeo não promete “nunca perde dados”, funcionamento totalmente offline ou sincronização garantida.
+A divergência entre documentação e runtime registrada na base de 07/10 foi corrigida no GOAL #01, cuja implementação está no PR #49 ainda aberto. O preview público com service worker comprova o shell offline depois de cache; o fluxo autenticado Vite + Emulator comprova conteúdo consultado e comandos específicos da outbox. São evidências separadas. Cache pode ser limitado ou evicto; o vídeo não promete “nunca perde dados”, funcionamento totalmente offline ou sincronização garantida.
 
 A música e os efeitos V2 são composição/síntese originais, sem samples externos ou TTS; origem, licença MIT e reprodução constam em `video/audio/README.md`. Há áudio no master, não no derivado comprimido README. O SRT é editorial, não transcrição de locução gravada.

@@ -45,7 +45,7 @@ Validação executada pelo orquestrador: `corepack npm run build` passou. `corep
 
 ## Persistência, offline, service worker e outbox
 
-O código atual difere da documentação de produto ainda versionada. `AGENTS.md`, `README.md` (“Desativado por padrão”) e o trecho histórico vigente em `CONTINUAR.md` descrevem offline opt-in; o comportamento atual de `apps/web/src/platform/outbox.ts::offlineEnabled` é habilitado por padrão e só desabilita com `localStorage['leve.offlineEnabled'] === 'false'`. `Settings.tsx::changeOffline` conserva um opt-out por aparelho. Tratar isso como divergência documental real, não como prova de que UX está coerente.
+Na base auditada em 07/10/2026, `AGENTS.md`, `README.md` (“Desativado por padrão”) e o trecho de continuidade descreviam offline opt-in, mas `apps/web/src/platform/outbox.ts::offlineEnabled` habilitava a fila por padrão e só a desabilitava com `localStorage['leve.offlineEnabled'] === 'false'`. `Settings.tsx::changeOffline` conservava um opt-out por aparelho. Essa era uma divergência real naquele checkout; o GOAL #01 implementa a política opt-in na branch do PR #49. Consulte `docs/goals/GOAL-01/` para a implementação atual e o estado de integração.
 
 - Shell: `apps/web/public/sw.js` precacheia `/`, tema, manifest, ícones e — no build de produção — os bundles produzidos por `apps/web/vite.config.ts::offlinePrecachePlugin`. Fallback de navegação desconectada retorna a página raiz já cacheada. Assets same-origin são colocados em cache após fetch; `/api/**` não é interceptado pelo worker. Worker é registrado em `apps/web/src/main.tsx` somente na build de produção.
 - Dados: `apps/web/src/platform/firebase.ts::createFirestore` ativa cache persistente Firestore/IndexedDB quando offlineEnabled; as telas assinam queries Firestore em `features/content/useLiveQueries.ts` e `useUserCollection.ts`. Isso só sustenta conteúdo que o aparelho já consultou e manteve em cache. Não equivale a baixar automaticamente todo o histórico da conta nem garante conteúdo nunca aberto. A API de comandos continua online; fallback de gravação usa outbox, não um servidor acessível offline.
@@ -102,7 +102,7 @@ VALIDADO:
 - Nenhum serviço/conta de produção/segredo acessado; nenhum código do Leve alterado.
 
 PROBLEMAS:
-- README, AGENTS e texto de continuidade ainda dizem opt-in, mas outbox/firebase/settings implementam offline ativo por padrão com opção para desligar.
+- Na base de 07/10, README, AGENTS e continuidade diziam opt-in, enquanto outbox/firebase/settings implementavam offline ativo por padrão com opção para desligar. O GOAL #01 corrigiu a política na branch do PR #49.
 - O fluxo autenticado sem rede foi testado em dev + Firebase Emulator; o fluxo de worker foi testado no preview de produção de forma separada, sem perfil privado. Não se deve combinar as duas provas como se fosse um único teste de sessão autenticada de produção.
 - Gemini real e push real em aparelho não verificados; não podem ser alegados como capturados ao vivo.
 - Claims “não vendemos dados” e “conteúdo não vai ao Gemini” sem evidência suficiente.

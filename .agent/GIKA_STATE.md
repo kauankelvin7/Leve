@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 22014)
+Total output lines: 674
+
 ## Trabalho atual — GOAL #01 confiabilidade e privacidade offline (14/10/2026)
 
 Branch `goal/01-confiabilidade-privacidade`, base `c7a3de4`. O GOAL corrige o
@@ -34,7 +37,7 @@ revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
 Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
 na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
 
-## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
+## Registro de 07/10 — lixeira agrupada e exclusão imediata
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
 ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
@@ -47,7 +50,7 @@ PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
 Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
 trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
 
-## Follow-up vigente — confirmação de exclusão de série, 07/10/2026
+## Registro de 07/10 — confirmação de exclusão de série
 
 Entrada65ecd9c. window.confirm substituído pelo ConfirmDialog compartilhado em
 Meu dia. Título da rotina e efeito incluindo passado/lixeira30dias explicitados;
@@ -60,7 +63,7 @@ Gates: lint/boundaries/typechecks/build/diff-check e Playwright focal2 PASS,
 snapshots originais; cancelamento zero comandos e exclusão ACK200 reais.
 Evidência no plano `.agent/SERIES_DELETE_DIALOG_EXECPLAN.md`.
 
-## Follow-up vigente — espaçamento dos avisos, 07/10/2026
+## Registro de 07/10 — espaçamento dos avisos
 
 Entradaae87665. Ajuste isolado ReminderOptions.module.css: gap16 entre grupos e
 adicionar, gap12 dentro do aviso, remover alinhado ao seletor no desktop.
@@ -68,7 +71,7 @@ Lint/boundaries/typechecks/build e Playwright recurrence-options.spec.ts PASS1
 (com três avisos, ACK real, foco/Escape, Axe e viewport390 sem overflow).
 Sem domínio/API alterados. Evidência no plano MORNING_REMINDERS_EXECPLAN.md.
 
-## Retomada vigente — avisos pela manhã, 07/10/2026
+## Registro de 07/10 — avisos pela manhã
 
 Entrada main46a18a8. Usuário autorizou adotar recomendação de 9h após revisão de
 UX. DEFAULT_DAY_REMINDER_TIME=09:00; fuso IANA da atividade, dueTime/startsAt
@@ -333,42 +336,7 @@ Produção necessita SCHEDULER_HMAC_SECRET existente compartilhado/server-only, 
 - Auth/Firestore locais disponíveis antes dos testes. `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 FIRESTORE_EMULATOR_HOST=localhost:8080 npm run test:integration:inside`:166 PASS/6 arquivos/exit0, incluindo Rules/Auth/commands/receipts/idempotência/create/complete/update/reschedule/Undo/policy M5-T1. Apenas contas e dados fictícios.
 - `NODE_OPTIONS=--dns-result-order=ipv4first npm run check`: exit1 exclusivamente contraste histórico no shell (3,59..4,17:1 vs4,5:1);12 E2E PASS/1 FAIL, build/dois TS/334 unit PASS. Resolução IPv4 apenas no processo remoto, sem mudança de produto/harness.
 - `LEVE_LOCAL_URL=http://localhost:5174 npm run test:e2e:local -- tests/e2e-local/gika.spec.ts tests/e2e-local/gika-create.spec.ts tests/e2e-local/gika-complete.spec.ts tests/e2e-local/gika-update.spec.ts tests/e2e-local/gika-reschedule.spec.ts tests/e2e-local/gika-readonly.spec.ts tests/e2e-local/avatar-security.spec.ts`:52 PASS/1 timeout em13,2min. Repetição original isolada de gika-update `--grep 'later conventional edit conflicts'`:1 PASS/exit0 (7,3s de teste). Todas53 únicas observadas PASS, não declarar primeira suíte verde.
-- Evidência sanitizada do timeout: criação HTTP200 em10038,079ms; edição convencional HTTP200 em9804,088ms; respond fixture HTTP200 em9978,162ms; comando Gika HTTP409 em17,752ms. Asserção começou monotonic602744,872 e terminou612755,722;409 iniciou612680,311. Transporte consumiu quase todo deadline10000ms, sem aviso renderizado dentro da espera; conflito real preservado. Código/harness byte-idênticos ao hardening aprovado8300c2b e teste idêntico à entradaa922594; classe de intermitência temporal já comprovada contra02fe03e em M4_T2_EVIDENCE.md. Repetição sem ajustes PASS; nenhuma regressão funcional nova demonstrada, sem atribuir causa de rede mais específica nem alterar deadlines.
-- Logs locais sanitizados em /tmp/leve-post-hardening-{audit,lint,typecheck,build,unit,integration,check,e2e,conflict-retry}.log; medidas acima preservadas neste registro. Browser de /entrar verificou tela interativa sem erros. Screenshots gerados pelos gates restaurados/removidos, sem alterações visuais versionadas.
-- Processo local sem GEMINI_API_KEY; nenhuma chamada Gemini live, credencial persistida/logada, deploy/push/main merge ou tarefa M5-T2. Apenas este arquivo e GIKA_TASKS.yaml mudam no checkpoint documental posterior ao fast-forward.
-
-## Contratos preservados
-
-Gika → Model Adapter → Tool Router → Validation → Policy → commandBridge/sendCommand → contentCommand existente. Modelo nunca acessa persistência nem escolhe UID/IDs. RequestId software por intenção/UID, receipt atômico/replay com snapshot privado; nova intenção igual continua permitida. UI só confirma ack validado. Undo software por UID/operation/entity/revision1/createdAt original→activity.trash convencional/revision2/soft-delete30dias; sem Gemini/purge/force-delete. ADR012/013 preservadas, nenhuma decisão arquitetural nova no smoke M3.
-
-Complete_task: selector strict textual sem ID/UID do modelo, consulta de um dia default hoje civil ou explícito até366dias, resolução exata conservadora de todos estados/kinds, partial/ambígua impede mutação. activity.setStatus/expectedRevision/receipt existente, snapshot original/retry/alreadyApplied com ack real; no-op não persiste receipt. Conflito preserva edição e exige novo pedido. Sem reopen/undo genérico/timeEntry.stop; ADR014.
-
-Update_task: apenas title como patch; data/horário/status/reminders/recorrência intactos. Completed/canceled editáveis conforme fluxo convencional. Receipt mínimo conserva descriptor antigo+patch, replay atômico após nome mudar, ID software por intenção/UID. No-op sem command; conflito sem refresh, exige novo pedido. ADR015.
-
-Reschedule_task: selector de um dia default hoje ou explícito <=366dias, cap50/partial, igualdade trim/case sem fuzzy. Destino parser existente amanhã/+2/weekday incluindo hoje/absoluta; que vem/próxima/dia10 sem mês/ano pede esclarecimento. Horário explicitamente pedido ou preservado, timezone/disambiguation reais fora do modelo. No-op sem command/revision/receipt. Preview em memória não restaura reload; botão determinístico/auth/ack real, sem novo Gemini. gikaReschedule exclusivo apenas patch temporal em activity.update, moveScheduleToDate/ActivityInput dentro da transação convencional; receipt mínimo recupera alvo depois de mudar dia. Conflito sem refresh. T2 title-only preservado; sem Undo novo.
-
-## Limites e pendências
-
-- Hardening integrado em feat/gika-integration por fast-forward8300c2b: 13 vulnerabilidades de produção antigas corrigidas.14 restantes do audit completo são exclusivamente toolingdev preexistente, relatório antes/depois/advisories/cadeias/risco/motivo de adiamento explícitos. Ranges SDK~grpc1.9 e consumidoresuuid^9 foram ultrapassados conscientemente sob overrides exatos: testes comprovam APIs usadas/transportes emulados, não certificação de TLS/serviço Google live nem compatibilidade universal com usos futuros. Reavaliar overrides quando upstream corrigir ranges.
-
-- M5-T1 amplo50/1: Undo lost ack aguardou transporte além do deadline10000ms existente. Original PASS na entrada156fe77 e atual; sonda10200ms após commit em ambas reproduz expiração e depois replay applied/alreadyApplied sem segundo efeito. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, sem causa infra adicional inferida. Novos módulos não são invocados nesse caso simulado, UI/command/harness idênticos à entrada. Check final shell12/1 contraste3,66..4,17:1 e audit13 baseline; sem fix/timeouts alterados. Startup Auth recusado e preview IPv6 vs harnessIPv4 registrados como tentativas ambientais, repetidos após prontidão/resolução somente processo; sonda temporária TS6133 removida antes do check final.
-- M5-T1 só classifica: policies específicas continuam barreiras, decisões não são grants nem ack. Recorrência sem escopo esclarece; alto impacto/multi/bulk/destrutivo nega execução. Auditoria encontrou limitações históricas dos handlers de série (cap500/truncamento/receipt/auth), documentadas sem habilitar ou corrigir esse escopo. Preview reschedule em memória não é PendingAction server-side T2.
-
-- Gates globais não integralmente verdes. M4-T3 completa67/15:11 casos históricos (dois tiveram deadline de creation antes de chegar à falha antiga), mais4 casos de deadline (rename lost/conflict, sync e manual). Todos classificados contra d233971 via APIs/UI isolados, originais e quatro sondas10200ms vs10000ms nas duas versões. Atual8/2 final (dois mesmos casos históricos calendar/navigation); todas51 Gika únicas observadas PASS. ENV_TRANSIENT_TRANSPORT_LATENCY_EXCEEDS_PREEXISTING_HARNESS_DEADLINE, não regressão reschedule; causa infra mais específica não inferida. Check12/1 contraste demo3,59..4,17:1; audit13(9moderate/4high) e26 arquivos baseline byte-idênticos. Sem refactor/auditfix/timeouts originais alterados. m4-t3-gates/transport-baseline/baseline-files.json e M4_T3_EVIDENCE.md.
-
-- Timer PREEXISTING_UI_TRANSFORM_MEASUREMENT_RACE comprovadofc30bf9/T3 (gap-2,234px), passou nos38 Gika desta execução; passagem não corrige a pendência. Offline/dock M1 foi regressão corrigida M2-S0, distinta do timer atual; não chamar essa regressão de baseline.
-- NETWORK / ENV_PROXY_NOT_ENABLED histórico: limitação Codex Remote; chamada externa exigiu proxy/egress herdado e NODE_USE_ENV_PROXY=1 exclusivamente no processo de smoke. Nenhum workaround no produto/TLS desabilitado.
-- Smokes live provam create_task e complete/update/reschedule timed+untimed; erros/ambiguidades extensos seguem evals determinísticos, não provas live adicionais. No M4 live, dueDate/dueTime/campos externos schedule foram assertados; timezone/disambiguation/instantes apoiam-se nas150 integrações. Harness futuro fortalecido sem repetir live, limitação explícita na evidência. Sem teste em aparelho físico/certificado de release.
-- Conversa/card/undo não restaurados após reload; sem persistência nova de chat. Cancelar depois de dispatch não é rollback. Não apagar receipts; T1 sem vínculo não backfilled. Gika online/queuefalse, agenda convencional offline/outbox intacta.
-- 05-capacidade-e-revisao.md ausente, Superpowers indisponível/processo manual equivalente. Warning chunks>500kB e MetadataLookupWarning403 emulador preexistentes/não impeditivos.
-
-## Checkpoint M5-T2
-
-Commit atômico M5-T2: `9e130c52a2cd211881576f08ff93d9d932d43564` na feat/gika-integration, entrada9c2c6fb. Implementação/testes/ADR018/evals/evidências e STATE/TASKS done juntos; worktree limpo confirmado após commit. Checkpoint documental seguinte registra este SHA sem mudança funcional. Parar para revisão; M5-T3 todo/não iniciado.
-
-## Checkpoint hardening (histórico)
-
-Entrada feat/a922594 e hardening/8300c2b limpas/exatas; ancestralidade confirmada. Fast-forward aprovado executado; feat HEAD `8300c2b48408ba12664573ee92c1402b5aafd82f` confirmado antes do registro documental. Commits DiceBear73e750c e Googlee8c07be preservados sem squash. Checkpoint posterior contém somente GIKA_STATE.md/GIKA_TASKS.yaml com integração/gates; SHA final e worktree limpo devem ser confirmados após esse commit. M5-T2 todo, parar para revisão; main/visual/chore intactas.
+- Evidência sanitizada do timeout: criação HTTP200 em10038,079ms; edição convencional HTTP200 em9804,088ms; respond fixture…2014 tokens truncated…o; main/visual/chore intactas.
 
 ## Histórico
 
