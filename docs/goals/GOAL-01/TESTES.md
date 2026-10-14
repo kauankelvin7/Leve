@@ -10,7 +10,7 @@
 
 | Gate | Resultado observado |
 |---|---|
-| `npm run docs:check` | PASS — 174 arquivos Markdown |
+| `npm run docs:check` | PASS — 175 arquivos Markdown |
 | `npm run lint` | PASS — ESLint e limites arquiteturais, 55 fontes TypeScript |
 | `npm run typecheck` | PASS — cliente e servidor |
 | `npm run build` | PASS — 364 módulos; aviso já conhecido de bundle acima de 500 kB |
@@ -35,6 +35,10 @@ Para os focais, substituir o último argumento por:
 ```sh
 npm run test:e2e:local -- goal01-outbox.spec.ts goal01-privacy.spec.ts
 ```
+
+### Verificação remota do código
+
+No HEAD de código `34098ca1a8d619dba8b1ac57bca09127f9a11981`, os workflows CI, CodeQL, Planner E2E e Seasonal E2E, além do check Vercel, terminaram com sucesso. A atualização documental desta revisão cria um novo HEAD; confira no PR #49 os resultados associados ao commit mais recente antes de integrar.
 
 ## Regressões importantes
 

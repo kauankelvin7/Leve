@@ -2,9 +2,9 @@
 
 ## Procedimento
 
-Na revisão read-only inicial, feita antes da instrução para não delegar, foram encontradas quatro lacunas concretas: reassociação concorrente do mesmo token FCM; `account.import`/registro de notificação sem exigência de e-mail verificado; conteúdo de comando expirado sem caminho acessível de recuperação; sessão de atividade legada ausente da contagem de limpeza. As correções foram implementadas e ganharam testes.
+A revisão inicial do código identificou quatro lacunas: reassociação concorrente do mesmo token FCM; `account.import` e registro de notificação sem exigência de e-mail verificado; conteúdo inacessível após expiração de comando; e sessão de atividade legada ausente da contagem de limpeza. As correções e os testes de regressão correspondentes estão nesta branch.
 
-Como não foram autorizados novos agentes, a passada final sobre o diff completo ficou a cargo do agente principal. Foram relidos privacidade e migração, isolamento por UID, troca de conta, transações, leases, recibos, notificações, autorização, quota Gika, HMAC/replay, logs e compatibilidade de dados. O revisor inicial não fez uma segunda leitura depois das correções. Portanto, ainda falta aprovação independente pós-correção.
+A revisão interna pós-correção percorreu persistência e migração, isolamento por UID, troca de conta, transações, leases, recibos, notificações, autorização, quota Gika, HMAC/replay, logs e compatibilidade. Ela não substitui a aprovação independente de outro mantenedor, que ainda está pendente.
 
 ## Achados e fechamento
 
@@ -24,10 +24,9 @@ Como não foram autorizados novos agentes, a passada final sobre o diff completo
 - Novos estados server-only: `usageBuckets/{uid}_gika_recovery`, `maintenance/internalTickReplay` e `notificationTokenOwners/{sha256(token)}`. Rules testadas continuam negando leitura/gravação do cliente nas coleções internas.
 - `clearFirestorePersistence` pode falhar enquanto outra aba/instância usa o cache. A falha não marca a migração concluída nem descarta outbox/drafts; UI orienta fechar outras abas e tentar novamente.
 
-## Resultado da revisão local
+## Resultado da revisão interna
 
-Não foi encontrado bloqueador P0/P1 comprovado restante no diff local, e os
-gates relevantes passaram. Isso não encerra a revisão exigida: outro mantenedor
+Na revisão interna do diff publicado no HEAD de código `34098ca`, não foi encontrado bloqueador P0/P1 comprovado restante. Os gates desse HEAD passaram. Isso não encerra a revisão exigida: outro mantenedor
 precisa conferir o HEAD final do PR. WAF, controle volumétrico na borda, secrets,
 IAM e disponibilidade de Firestore/Gemini reais dependem de ambiente externo e
 continuam fora desta validação.

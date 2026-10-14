@@ -2,31 +2,33 @@
 
 ## Estado atual — GOAL #01 e pull requests (14/10/2026)
 
-O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`.
-No HEAD de implementação consultado antes desta atualização documental, CI,
-CodeQL, Planner E2E, Seasonal E2E e Vercel estavam aprovados. As mudanças de
-documentação enviadas depois iniciaram uma nova rodada de checks; confira o
-estado do HEAD atual no PR antes de qualquer merge. Ainda falta aprovação de
-outro mantenedor após as correções. Nenhuma implantação foi solicitada.
+O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`, mergeable e no HEAD `34098ca1a8d619dba8b1ac57bca09127f9a11981`. Nesse commit, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram. A validação documental local passou para 175 arquivos Markdown; o audit de produção encontrou zero vulnerabilidades. A revisão automática do GitHub está apenas como `COMMENTED`; não há aprovação de outro mantenedor após as correções. O PR continua sem merge.
 
-A situação dos demais PRs e branches está em
-[`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md`](docs/goals/GOAL-01/REVISAO_REPOSITORIO.md).
-Os PRs #48, #47, #43, #42 e #40 passaram os checks consultados, mas qualquer
-integração em `main` pode iniciar um deployment da Vercel. Não foram integrados.
-Os PRs #46 e #45 falham em CodeQL; #44 e #41 falham durante `npm ci`.
+## PRs e branches
 
-Próximos passos:
+- #40, #42, #43, #47 e #48 têm CI/CodeQL e Vercel aprovados; #48 também passou Planner e Seasonal E2E. São candidatos a revisão de código, não autorização para merge.
+- #41 falha em `npm ci`: `@dicebear/core@10.7.0` conflita com `@dicebear/avataaars@9.4.3`, que exige `^9.0.0`.
+- #44 falha em `npm ci`: `@firebase/rules-unit-testing@6.0.0` exige `firebase@^13`, mas o projeto usa `firebase@12.19.0`.
+- #45 e #46 falham em CodeQL porque atualizam `init` e `analyze` separadamente; o workflow exige a mesma versão das duas actions. Corrigir em uma atualização coordenada antes de integrar.
+- As branches de design, documentação e shell responsivo contêm arquivos exclusivos e estão muito atrás de `main`; revisar/rebasear antes de considerar integração. `video/product-film` tem história divergente e conteúdo de vídeo exclusivo. A remoção foi bloqueada pela revisão automática; não usar outra via.
+- Não foi identificada branch segura para excluir: as demais correspondem a PRs abertos ou a trabalho exclusivo.
 
-1. Pedir a outro mantenedor uma revisão do HEAD atual do PR #49 e corrigir achados.
-2. Investigar as falhas dos PRs #46, #45, #44 e #41 antes de reavaliá-los.
-3. Para os PRs com checks aprovados, confirmar a revisão e a autorização necessária
-   antes de integrar, pois o merge pode iniciar deployment de produção.
-4. Manter branches com trabalho exclusivo. A exclusão de `video/product-film`
-   foi barrada pela revisão automática por conter commits divergentes; não tentar
-   apagá-la por outro caminho.
+Não houve merge nem alteração de produção, credenciais ou infraestrutura. Um merge em `main` pode disparar deployment; checks verdes não autorizam esse efeito.
 
-O checkout local de `main` tem alterações do usuário ainda não commitadas. Elas
-foram preservadas e não fazem parte do PR #49.
+## Próximos passos
+
+1. Obter revisão independente de outro mantenedor sobre o HEAD atualizado do PR #49; tratar os achados antes do merge.
+2. Reunir #45 e #46 em uma atualização única de CodeQL e reexecutar o workflow.
+3. Resolver os conflitos de peer dependency em #41 e #44; manter os PRs fora de integração até CI completo.
+4. Revisar os diffs de #40, #42, #43, #47 e #48. Fazer merge apenas após essa revisão e autorização para o deployment associado.
+5. Revisar as branches com trabalho exclusivo contra a `main` atual e decidir quais serão rebaseadas, transformadas em PR ou preservadas.
+6. Antes de qualquer release do GOAL #01, cumprir as validações externas registradas em `docs/goals/GOAL-01/RELATORIO_FINAL.md`.
+
+## Checkouts locais nesta revisão
+
+O checkout `Leve` em `main` contém alterações locais do usuário sem commit. `Leve-goal01` está em `c7a3de4` com os arquivos do GOAL como alterações locais. Ambos foram preservados; o estado remoto do PR #49 foi usado como fonte da revisão.
+
+As seções seguintes são registros datados de entregas anteriores. O estado vigente e as ações pendentes estão nesta seção.
 
 ## Entrega — clareza do dia consultado (07/10/2026)
 
@@ -38,10 +40,9 @@ Lint/boundaries/typechecks/build/diff-check PASS; Playwright focal3 PASS sem atu
 referências na prova final (59.2s), inclui fuso UTCdia8/SPdia7, seleção/retorno/reload,
 Axe, mobile320/390/desktop1024/1366 e texto200%. Três referências intencionais
 revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
-Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
-na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
+Naquele checkpoint, faltava conferir CI/Planner do HEAD seguinte; o run dedf0d7 havia falhado na etapa responsive, enquanto Planner passou. Este registro não descreve o estado atual.
 
-## Follow-up — lixeira agrupada e exclusão imediata (07/10/2026)
+## Registro — lixeira agrupada e exclusão imediata (07/10/2026)
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
 ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
@@ -51,10 +52,9 @@ idempotência. purgeContent usa delete em folhas, recursiveDelete em shoppingLis
 Gates: lint/boundaries/typechecks/build,831unit,327integração e Playwright focal1
 PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
 `.agent/TRASH_SERIES_GROUPING_EXECPLAN.md`. CI/Planner da entrada3b79601 success.
-Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
-trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
+Naquele checkpoint, faltava conferir os checks do HEAD seguinte. O limite preexistente de trashSeries500 foi mantido; não houve restauração coletiva de série nesta entrega.
 
-## Follow-up — modal de exclusão de série (07/10/2026)
+## Registro — modal de exclusão de série (07/10/2026)
 
 Entrada65ecd9c. Excluir série usa modal do Leve em vez de window.confirm:
 explica inclusão de ocorrências passadas e lixeira30dias; cancelar/Escape,
@@ -308,9 +308,9 @@ O workflow do Planner agora observa também os poucos arquivos sazonais que pode
 - nenhuma mudança de billing ou infraestrutura;
 - Páscoa reutiliza o computus local já existente.
 
-## Próximo passo quando autorizado
+## Registro da pausa da Fase 7 sazonal (17/09/2026)
 
-A etapa planejada seguinte continua sendo a **Fase 7 — auditoria final do plano**, mas ela está deliberadamente parada. Não iniciar auditoria final, novo bloco funcional ou expansão de feriados sem novo pedido explícito do usuário.
+Naquele checkpoint, a auditoria final do plano sazonal aguardava autorização. O registro foi superado pelas entregas posteriores, incluindo a revisão do GOAL #01. Consulte o estado atual no início deste arquivo.
 
 
 ## Gika — checkpoint em 30/09/2026
@@ -428,8 +428,7 @@ Provas: lint/limites de arquitetura, typechecks/build PASS; Playwright final
 três larguras (66 composições), Axe, texto a 200%, movimento reduzido, cores
 forçadas e retorno após a sessão. Revisão independente sem impedimentos.
 Capturas Chromium 153 do lockfile e gate incluído no CI. Fontes: `DESIGN.md` e
-`docs/frontend/AGENDA_LOADING_REPORT.md`. Próximo passo: checks do PR e integração
-da mudança validada à `main`.
+`docs/frontend/AGENDA_LOADING_REPORT.md`. Na data desse relatório, faltavam os checks do PR e decidir a integração à `main`. Este registro não descreve o estado atual.
 
 Revisão do gate de abertura: data fixa em 05/10/2026 para excluir variação sazonal
 das referências. Um pixel divergente no primeiro CI foi localizado no contorno de

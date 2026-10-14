@@ -129,8 +129,8 @@ Cada comando declara a revisão que espera encontrar. Se não bater, o servidor 
 **Offline como opt-in, não como padrão.**
 Cache local significa dados pessoais gravados no aparelho. A escolha é do usuário, feita de forma explícita e reversível.
 
-**Tudo em plano gratuito.**
-Vercel Hobby, Firebase Spark e Worker gratuito. Restrição assumida desde o início, e ela moldou decisões reais — paginação na limpeza, leases no scheduler e cuidado com leituras no Firestore.
+**Custos dependem da configuração do provedor.**
+As escolhas iniciais priorizaram planos sem custo. Preços, limites, franquias e condições variam conforme o plano, a região e o consumo; confirme as condições atuais de Vercel, Firebase e demais provedores antes de ativar serviços ou publicar. O repositório não certifica custo zero.
 
 ---
 

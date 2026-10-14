@@ -23,7 +23,7 @@ de uma decisão de merge compatível com o controle de produção deste reposit�
 
 Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o operador responsável deve verificar e registrar:
 
-1. **Borda:** a Vercel oferece regras WAF e bloqueios de IP no plano Hobby; rate limiting tem franquia e pode gerar cobrança após o limite. Verifique plano e uso antes de ativar. Teste regras restritas em Preview, começando em modo de registro, e confira resposta 429, janela, limites por rota e exceções do scheduler. A quota Firestore por UID não absorve flood antes da função. Detalhes e fontes em [`EDGE-PROTECTION.md`](../../security/EDGE-PROTECTION.md).
+1. **Borda:** as páginas oficiais consultadas em 14/10/2026 indicam até três regras customizadas e três bloqueios de IP por projeto Hobby. A limitação WAF por taxa tem uma regra Hobby por projeto, janela fixa de 10 s a 10 min e 1.000.000 de requisições permitidas incluídas; a tabela publica US$ 0,50 por milhão de requisições permitidas. Confirme plano, região, franquia e consumo no painel antes de ativar. Os limites propostos são pontos de partida, não configuração existente. A quota Firestore por UID não absorve flood antes da função. Detalhes e fontes em [EDGE-PROTECTION.md](../../security/EDGE-PROTECTION.md).
 2. **Scheduler e segredo:** manter `SCHEDULER_HMAC_SECRET` apenas no cofre configurado da plataforma; confirmar frequência menor que a janela de replay, timestamp em milissegundos/segundos e envio de uma assinatura única por execução. Não reutilizar manualmente requisição já aceita.
 3. **Firebase produção:** conferir Rules, acesso Admin SDK restrito à service identity necessária, negação de clientes a `usageBuckets`, `notificationTokens`, `notificationTokenOwners`, `commandReceipts` e `maintenance`; validar backup/monitoramento de falhas de transação.
 4. **Observabilidade:** alertar para 401/409 de replay, 429 de quota, 503 de storage/estado inválido e falhas de limpeza local sem incluir token, conteúdo, payload ou assinatura nos logs.
@@ -31,9 +31,6 @@ Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o 
 
 ## Revisão e publicação
 
-Uma revisão read-only inicial identificou achados que foram corrigidos. O agente
-principal releu o diff depois das correções, mas essa leitura não substitui a
-revisão independente exigida. Como o usuário pediu execução sem delegar agentes,
-essa aprovação por outro mantenedor continua pendente.
+A revisão inicial de código identificou achados que foram corrigidos. A revisão interna pós-correção não substitui a aprovação independente de outro mantenedor, que continua pendente.
 
-Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`. Os checks do HEAD de implementação consultado em 14/10 estavam aprovados; os commits documentais posteriores iniciaram nova rodada. Confirme o status do HEAD atual e conclua a revisão independente antes de decidir o merge. Não houve merge nem implantação.
+Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`. No HEAD de código `34098ca1a8d619dba8b1ac57bca09127f9a11981`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram; `docs:check` cobriu 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades. Esta atualização cria um novo HEAD, cujos checks devem ser confirmados no PR antes de decidir o merge. Não houve merge nem implantação.
