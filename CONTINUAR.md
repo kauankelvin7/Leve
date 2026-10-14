@@ -2,7 +2,7 @@
 
 ## Estado atual — GOAL #01 e pull requests (14/10/2026)
 
-O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`, mergeable e no HEAD `34098ca1a8d619dba8b1ac57bca09127f9a11981`. Nesse commit, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram. A validação documental local passou para 175 arquivos Markdown; o audit de produção encontrou zero vulnerabilidades. A revisão automática do GitHub está apenas como `COMMENTED`; não há aprovação de outro mantenedor após as correções. O PR continua sem merge.
+O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main` e mergeable. O código do GOAL foi revisado no commit `34098ca1a8d619dba8b1ac57bca09127f9a11981`; a branch recebeu depois uma atualização apenas documental. No HEAD documental `b5f92f998728f930369be7fd21f6955bfbcb0a50`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram; `docs:check` validou 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades. Confira no PR o SHA e os checks do HEAD atual antes de integrar. A única revisão registrada pelo GitHub é automática e está como `COMMENTED`; falta aprovação de outro mantenedor. O PR permanece sem merge.
 
 ## PRs e branches
 

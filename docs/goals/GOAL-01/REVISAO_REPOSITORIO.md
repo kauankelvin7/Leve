@@ -2,7 +2,7 @@
 
 ## Escopo e fonte
 
-Consulta ao GitHub em 14/10/2026. `main` está em `c7a3de4d2c75e1be3b8f0439adeef6578805f14f`; o PR #49 aponta para esse commit e publica o GOAL em `34098ca1a8d619dba8b1ac57bca09127f9a11981`. A validação no HEAD #49 passou em CI, CodeQL, Planner E2E, Seasonal E2E e Vercel. O `docs:check` local passou para 175 arquivos Markdown, e `npm audit --omit=dev --audit-level=moderate` encontrou zero vulnerabilidades.
+Consulta ao GitHub em 14/10/2026. `main` está em `c7a3de4d2c75e1be3b8f0439adeef6578805f14f`; o código do GOAL foi revisado no commit `34098ca1a8d619dba8b1ac57bca09127f9a11981`. A branch recebeu depois uma atualização documental. No HEAD documental `b5f92f998728f930369be7fd21f6955bfbcb0a50`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram. O `docs:check` validou 175 arquivos Markdown, e `npm audit --omit=dev --audit-level=moderate` encontrou zero vulnerabilidades. Consulte o PR para confirmar o SHA e os checks do HEAD atual antes de integrar.
 
 O PR #49 está aberto e mergeable. Não há aprovação de mantenedor: a única revisão registrada é automática e está em `COMMENTED`. Nenhum merge foi feito.
 
