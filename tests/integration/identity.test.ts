@@ -144,6 +144,7 @@ describe('API autenticada', () => {
       db.doc(`users/${user.uid}/imports/${importId}`).set({ state: 'prepared', digest: 'digest', cursor: 0 }),
       db.doc(`users/${user.uid}/internal/counts`).set({ activeImportId: importId, reserved_activities: 10 }),
       db.doc(`usageBuckets/${user.uid}_gika`).set({ gikaRequestTimesMs: [Date.now()] }),
+      db.doc(`usageBuckets/${user.uid}_gika_recovery`).set({ requestTimesMs: [Date.now()], dayKey: new Date().toISOString().slice(0, 10), dayCount: 1 }),
       db.doc('serviceControls/global').update({ activeImports: 1 }),
     ]);
     const deletion = contentCommand('account.delete', user.uid, '93000000-0000-4000-8000-000000000002', 1, { confirmation: 'EXCLUIR' });
@@ -152,6 +153,7 @@ describe('API autenticada', () => {
     expect((await db.doc(`accountDeletionJobs/${user.uid}`).get()).data()?.state).toBe('completed');
     expect((await db.doc(`users/${user.uid}`).get()).exists).toBe(false);
     expect((await db.doc(`usageBuckets/${user.uid}_gika`).get()).exists).toBe(false);
+    expect((await db.doc(`usageBuckets/${user.uid}_gika_recovery`).get()).exists).toBe(false);
   });
   it('mantém health público e rejeita sessão sem token ou com token inválido', async () => {
     const health = await request(app).get('/api/health').expect(200);
@@ -216,6 +218,61 @@ describe('API autenticada', () => {
     const suspended = await createUser('suspensa@example.test');
     await seedAccount(suspended.uid, 'suspended');
     expect((await request(app).post('/api/commands').set('authorization', `Bearer ${suspended.token}`).send({ ...payload, entityId: suspended.uid, operationId: '10000000-0000-4000-8000-000000000002' })).status).toBe(403);
+  });
+
+  it('serializa o mesmo token de notificação entre contas concorrentes', async () => {
+    const [a, b] = await Promise.all([createUser('push-a@example.test'), createUser('push-b@example.test')]);
+    await Promise.all([seedAccount(a.uid), seedAccount(b.uid)]);
+    const token = 'fcm-token-de-teste-compartilhado-1234567890';
+    const register = (user: typeof a, deviceId: string) => request(app).post('/api/commands')
+      .set('authorization', `Bearer ${user.token}`)
+      .send({ command: 'notificationDevice.register', operationId: crypto.randomUUID(), entityId: deviceId, payload: { token, platform: 'web', label: 'Navegador' } });
+
+    const responses = await Promise.all([register(a, 'device-a'), register(b, 'device-b')]);
+    expect(responses.map(response => response.status)).toEqual([200, 200]);
+    const activeTokens = await db.collection('notificationTokens').where('token', '==', token).where('state', '==', 'active').get();
+    expect(activeTokens.size).toBe(1);
+    const owner = activeTokens.docs[0]!.data();
+    expect(owner).toMatchObject({ uid: expect.stringMatching(new RegExp(`^(${a.uid}|${b.uid})$`)), state: 'active' });
+    const activeDevices = await db.collection('notificationDevices').where('state', '==', 'active').get();
+    expect(activeDevices.docs.filter(device => device.data().tokenHash === hashValue(token))).toHaveLength(1);
+    expect((await db.doc(`notificationTokenOwners/${hashValue(token)}`).get()).data()).toMatchObject({ uid: owner.uid, deviceId: owner.deviceId });
+    const winningUser = owner.uid === a.uid ? a : b;
+    const losingUser = owner.uid === a.uid ? b : a;
+    expect((await db.doc(`users/${winningUser.uid}/internal/counts`).get()).data()?.notificationDevices).toBe(1);
+    expect((await db.doc(`users/${losingUser.uid}/internal/counts`).get()).data()?.notificationDevices ?? 0).toBe(0);
+  });
+
+  it('exige e-mail verificado e modo normal para registrar notificações; permite revogação', async () => {
+    const unverified = await createUser('push-unverified@example.test', false);
+    await seedAccount(unverified.uid);
+    const registration = { command: 'notificationDevice.register', operationId: crypto.randomUUID(), entityId: 'device-u', payload: { token: 'fcm-token-de-teste-nao-verificado-123456', platform: 'web', label: 'Navegador' } };
+    expect((await request(app).post('/api/commands').set('authorization', `Bearer ${unverified.token}`).send(registration)).status).toBe(403);
+    const importCommand = { command: 'account.import', operationId: crypto.randomUUID(), entityId: crypto.randomUUID(), payload: {} };
+    expect((await request(app).post('/api/commands').set('authorization', `Bearer ${unverified.token}`).send(importCommand)).status).toBe(403);
+
+    const verified = await createUser('push-restricted@example.test');
+    await seedAccount(verified.uid);
+    await db.doc(`notificationDevices/${verified.uid}_device-r`).set({ uid: verified.uid, deviceId: 'device-r', tokenHash: hashValue('fcm-token-de-teste-revogacao-123456'), state: 'active', revision: 1 });
+    await db.doc(`users/${verified.uid}/internal/counts`).set({ notificationDevices: 1 }, { merge: true });
+    await db.doc('serviceControls/global').update({ mode: 'restricted' });
+    const blocked = await request(app).post('/api/commands').set('authorization', `Bearer ${verified.token}`).send({ ...registration, operationId: crypto.randomUUID(), entityId: 'device-r' });
+    expect(blocked.status).toBe(503);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${unverified.token}`).send({ command: 'notificationDevice.revoke', operationId: crypto.randomUUID(), entityId: 'device-u', payload: {} }).expect(200);
+    await request(app).post('/api/commands').set('authorization', `Bearer ${verified.token}`).send({ command: 'notificationDevice.revoke', operationId: crypto.randomUUID(), entityId: 'device-r', payload: {} }).expect(200);
+  });
+
+  it('aplica aos registros de notificação a cota distribuída comum de mutações', async () => {
+    const user = await createUser('push-quota@example.test'); await seedAccount(user.uid);
+    const now = new Date().toISOString();
+    await db.doc(`usageBuckets/${user.uid}_${now.slice(0, 16)}`).set({ count: 60 });
+    const result = await request(app).post('/api/commands').set('authorization', `Bearer ${user.token}`).send({
+      command: 'notificationDevice.register', operationId: crypto.randomUUID(), entityId: 'device-quota',
+      payload: { token: 'fcm-token-de-teste-limite-1234567890', platform: 'web', label: 'Navegador' },
+    });
+    expect(result.status).toBe(429); expect(result.body.code).toBe('LIMIT_EXCEEDED');
+    expect((await db.doc(`notificationDevices/${user.uid}_device-quota`).get()).exists).toBe(false);
+    expect((await db.collection('notificationTokens').where('uid', '==', user.uid).get()).empty).toBe(true);
   });
 });
 

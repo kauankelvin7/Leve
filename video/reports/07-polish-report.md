@@ -1,5 +1,8 @@
 # Polish V2 — filme de produto do Leve
 
+Registro da revisão visual feita para a captura de 07/10/2026, antes do GOAL
+#01. As observações sobre cache e outbox abaixo descrevem aquela base.
+
 ## Diferenças de direção
 
 | Aspecto | V1 | V2 |
@@ -41,7 +44,9 @@ Novo cold open demonstra apenas nota salva online permanecendo na página já ab
 
 Gika usa fixture só no upstream Gemini, compatível com contrato real. UI/Auth/router/comando persistem reais. Remoção do disclosure técnico em tela segue a instrução V2; interceptação permanece documentada no ledger/relatório. Não atribuímos geração ao vivo nem latência real ao modelo.
 
-Permanece divergência entre documentação do produto e default atual de cache/outbox; nenhuma mudança de produto para resolver isso nesta tarefa. Nenhum claim NÃO VERIFICADA foi promovido ao roteiro.
+Na base da captura, documentação e default de cache/outbox divergiam; nenhuma
+mudança do produto fez parte da tarefa do filme. O GOAL #01 corrigiu a política
+na branch do PR #49. Nenhum claim NÃO VERIFICADA foi promovido ao roteiro.
 
 ## Entrega e QA
 

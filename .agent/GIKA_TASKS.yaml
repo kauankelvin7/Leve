@@ -591,17 +591,27 @@ presentation_polish:
   publication: authorized_after_remote_checks
   next_action: "Consultar PR desta branch e checks do HEAD; integrar após CI/Planner/Seasonal e confirmar deployment. Etapas visuais concluídas; avaliação do provider real permanece no escopo histórico."
 offline_default_pwa:
-  status: done
+  status: superseded
   owner: root
-  scope: "apps/web service worker, offline storage and authenticated shell status"
+  scope: "Historical state: offline storage default and cold-start PWA shell; current privacy policy is tracked by GOAL-01."
   acceptance_criteria:
-    - "Offline storage and queued mutations are active by default, with explicit opt-out preserved."
+    - "Superseded: private offline storage now requires explicit per-UID/per-device opt-in."
     - "A production build precaches generated JavaScript and CSS for a cold offline launch."
     - "The authenticated agenda clearly communicates offline and restored states."
     - "Offline reload Playwright coverage and build/typecheck pass."
   evidence:
-    - "scripts/glass/public.spec.ts: production service worker precache and offline reload"
-    - "tests/e2e-local/persistent.spec.ts: default offline queue, two-tab sync, and task/note/shopping snapshots after reload"
-    - "/tmp/leve-offline-mode.png: authenticated shell visual state"
-  gates: "typecheck/build, lint/boundaries, 826 unit, local persistent Playwright and Glass production PASS"
-  checkpoint: "offline-default-pwa"
+    - "docs/goals/GOAL-01/IMPLEMENTACAO.md"
+    - "docs/goals/GOAL-01/TESTES.md"
+  gates: "Current GOAL-01: 891 unit, 338 integration, 8 critical E2E, 12 focused E2E; lint/typecheck/build/docs/audit production PASS."
+  checkpoint: "goal/01-confiabilidade-privacidade"
+
+goal01_reliability_privacy:
+  status: in_progress
+  owner: root
+  entry_checkpoint: c7a3de4d2c75e1be3b8f0439adeef6578805f14f
+  branch: goal/01-confiabilidade-privacidade
+  scope: "Opt-in offline privado, integridade da outbox, autorização/rate limits Gika, replay do tick e reassociação segura de token FCM."
+  plan: docs/goals/GOAL-01/EXECPLAN.md
+  evidence: docs/goals/GOAL-01/RELATORIO_FINAL.md
+  gates: "corepack npm ci, docs, lint, typecheck, build, 891 unit, 338 integration, 8 critical E2E, 12 GOAL-01 E2E, production audit PASS."
+  next_action: "Pedir revisão independente do HEAD atual do PR #49; consultar docs/goals/GOAL-01/REVISAO_REPOSITORIO.md para PRs e branches. Investigar falhas de #41/#44/#45/#46. Não integrar em main sem revisar o efeito de deployment e obter autorização correspondente. Manter video/product-film até decisão sobre os commits V3/revert."

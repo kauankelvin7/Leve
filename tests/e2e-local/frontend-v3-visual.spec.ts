@@ -161,7 +161,7 @@ test('layouts canônicos do frontend em desktop, mobile e temas claro/escuro', a
   await captureElement(shoppingFeedback, 'shopping-feedback-service-error.png');
   await page.unroute('**/api/commands');
 
-  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
+  await page.evaluate(() => { const uid = localStorage.getItem('leve.offlineAccount'); if (!uid) throw new Error('Expected authenticated account'); localStorage.setItem(`leve.offlineEnabled.${uid}`, 'true'); });
   await page.context().setOffline(true);
   await page.getByLabel('Adicionar item', { exact: true }).fill('Item preservado sem conexão');
   await page.getByRole('button', { name: 'Adicionar item', exact: true }).click();

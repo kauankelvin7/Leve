@@ -67,9 +67,9 @@ describe('Firestore security rules', () => {
     await expect(deleteDoc(existing)).rejects.toThrow();
   });
 
-  it('denies client reads and edits of the server-only Gika quota', async () => {
+  it.each(['usageBuckets/user-a_gika', 'usageBuckets/user-a_gika_recovery', 'maintenance/internalTickReplay'])('denies client reads and edits of server-only operational state %s', async path => {
     const database = rules.authenticatedContext('user-a', { email_verified: true }).firestore();
-    const quota = doc(database, 'usageBuckets/user-a_gika');
+    const quota = doc(database, path);
     await expect(getDoc(quota)).rejects.toThrow();
     await expect(setDoc(quota, { gikaRequestTimesMs: [] })).rejects.toThrow();
     await expect(updateDoc(quota, { gikaRequestTimesMs: [Date.now()] })).rejects.toThrow();

@@ -1,9 +1,24 @@
 # Gika — Decision Log
 
-## ADR-GIKA-029 — Offline do sistema por padrão
+## ADR-GIKA-033 — quota distribuída para recuperação e replay HMAC de tick
+
+Data: 14/10/2026. A recuperação de recibos de mutação não chama o modelo, mas
+continua a ler Firestore e exige limite distribuído por UID: 12/10 s, 60/min,
+600/dia. Estado inválido ou indisponibilidade de Firestore falha fechado e não
+contém prompt/recibo. Tick interno preserva HMAC-SHA256 e janela temporal e
+reserva o digest verificado em documento estável/limitado antes de executar
+jobs; repetição dentro da janela responde conflito. Isso evita dependência de
+Map por processo e replay sem introduzir serviço pago/infraestrutura externa.
+Rate limit por IP continua sendo requisito de borda, não afirmado como ativo.
+Evidência local: `docs/goals/GOAL-01/TESTES.md`.
+
+## ADR-GIKA-029 — Offline do sistema por padrão (superseded em 14/10/2026)
 
 - Data: 2026-10-07
-- Status: accepted
+- Status: superseded pelo GOAL #01; preservado como decisão histórica.
+- Atualização: o PR #49 exige opt-in por UID/aparelho e está aberto, sem merge.
+  Até a integração, a decisão abaixo descreve o comportamento anterior; consulte
+  `docs/goals/GOAL-01/RELATORIO_FINAL.md` para o estado da nova política.
 - Contexto: o service worker só armazenava a página inicial e dependia de uma
   visita anterior para capturar módulos. Em uma primeira abertura sem rede, o
   navegador tinha HTML, mas não JavaScript/CSS suficiente para montar o PWA.

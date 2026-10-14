@@ -1,4 +1,9 @@
-# Vulnerabilidades restantes no tooling de desenvolvimento
+# Vulnerabilidades observadas no tooling de desenvolvimento — snapshot de 01/10/2026
+
+Este inventário descreve o lockfile e os advisories verificados no checkpoint
+`e8c07be`. As versões e contagens abaixo não foram revalidadas contra a branch
+atual; use `npm audit` para decidir sobre atualizações. O audit de produção do
+GOAL #01 foi executado separadamente e encontrou zero vulnerabilidades.
 
 Audit completo28→14 (high11→6/moderate17→8); audit de produção13→0. Todas as14 entradas restantes já constavam no audit de a922594, mesmas versões/ranges/advisories e nodes devOnly comprovados em development-advisories.json. Não foram ocultadas e CI não foi alterado.
 

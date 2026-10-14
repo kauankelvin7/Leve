@@ -1,5 +1,11 @@
 # Filme de produto do Leve — V2
 
+Este filme e os relatórios abaixo registram o estado do produto em outubro de
+2026, antes do GOAL #01. Naquele checkout, o offline era ativado por padrão; a
+branch do PR #49 prepara a mudança para opt-in por UID/aparelho, mas ainda não
+foi integrada a `main`. Para o estado atual da correção, consulte
+[`docs/goals/GOAL-01/RELATORIO_FINAL.md`](../docs/goals/GOAL-01/RELATORIO_FINAL.md).
+
 72 segundos de UI real, motion editorial e trilha instrumental original. A narrativa continua compreensível sem áudio; não há voz gravada ou TTS. O SRT é texto editorial opcional, não transcrição de fala.
 
 [![Assistir à versão compacta, 72 s](output/poster.png)](output/leve-product-film-readme.mp4)

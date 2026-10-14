@@ -13,7 +13,7 @@ function fixture(model: ModelAdapter) {
   const repository = {authorize:vi.fn().mockResolvedValue(context),read:vi.fn().mockImplementation(async (_uid,range)=>({...range,partial:false,cached:false,items:[]})),recoverMutation:vi.fn().mockResolvedValue(null)};
   const quota=vi.fn(); const app=express();
   app.use((_req,res,next)=>{res.locals.identity={uid:'synthetic-user'};next();});
-  app.use('/gika',createGikaRouter(model,repository,quota));
+  app.use('/gika',createGikaRouter(model,repository,quota,async()=>{}));
   app.use((error:AppError,_req:express.Request,res:express.Response,_next:express.NextFunction)=>res.status(error.status??422).json({code:error.code}));
   return {repository,quota,ask:(text:string,conversation?:ModelInput['conversation'])=>request(app).post('/gika/respond').send({requestId:crypto.randomUUID(),text,...(conversation?{conversation}:{})})};
 }

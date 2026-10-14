@@ -82,9 +82,9 @@ Somado a isso, é um sistema de uso pessoal: os dados são isolados por conta, e
 
 ### Uso offline
 
-Desativado por padrão, por ser um dado sensível guardado no aparelho. Ative em **Preferências → Aparelho → Uso offline** enquanto estiver conectado e abra as áreas que quiser consultar depois. A partir daí, a sessão e os dados já carregados funcionam sem internet; novas alterações entram na outbox e sincronizam na reconexão.
+Desativado por padrão, por ser um dado sensível guardado no aparelho. A escolha vale para esta conta neste aparelho. Ative em **Perfil e preferências → Uso offline** enquanto estiver conectado e abra as áreas que quiser consultar depois. A partir daí, a sessão e os dados já carregados ficam salvos neste aparelho; novas alterações elegíveis entram na outbox e sincronizam na reconexão. Ao sair, trocar de conta ou remover esses dados, o Leve avisa se houver alterações ou rascunhos que ainda não foram enviados.
 
-O primeiro acesso e a ativação do modo offline precisam acontecer online.
+O primeiro acesso e a ativação do modo offline precisam acontecer online. Com o modo desligado, rascunhos novos ficam apenas nesta aba até ela ser fechada; rascunhos e alterações de versões anteriores continuam disponíveis para recuperação.
 
 ---
 
@@ -129,8 +129,8 @@ Cada comando declara a revisão que espera encontrar. Se não bater, o servidor 
 **Offline como opt-in, não como padrão.**
 Cache local significa dados pessoais gravados no aparelho. A escolha é do usuário, feita de forma explícita e reversível.
 
-**Tudo em plano gratuito.**
-Vercel Hobby, Firebase Spark e Worker gratuito. Restrição assumida desde o início, e ela moldou decisões reais — paginação na limpeza, leases no scheduler e cuidado com leituras no Firestore.
+**Custos dependem da configuração do provedor.**
+As escolhas iniciais priorizaram planos sem custo. Preços, limites, franquias e condições variam conforme o plano, a região e o consumo; confirme as condições atuais de Vercel, Firebase e demais provedores antes de ativar serviços ou publicar. O repositório não certifica custo zero.
 
 ---
 

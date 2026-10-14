@@ -18,7 +18,7 @@ A árvore é corroborada por [hooks de leitura](../../apps/web/src/features/cont
 
 ## Dados de serviço
 
-Existem também documentos fora da raiz do usuário para associação e operação: `memberships/{uid}`, `commandReceipts/{uid}_{operationId}`, `serviceControls/global`, buckets de uso, jobs de lembrete, registros de token/dispositivo e recibos de manutenção. Eles são usados por handlers do servidor; não são uma API de leitura irrestrita para o cliente.
+Existem também documentos fora da raiz do usuário para associação e operação: `memberships/{uid}`, `commandReceipts/{uid}_{operationId}`, `serviceControls/global`, buckets de uso, jobs de lembrete, registros de token/dispositivo e recibos de manutenção. `notificationTokenOwners/{sha256(token)}` vincula um hash a um único UID/aparelho para serializar reassociação concorrente; não contém o token FCM raw. `maintenance/internalTickReplay` retém claims HMAC temporários para impedir replay do tick. Eles são usados por handlers do servidor; não são uma API de leitura irrestrita para o cliente.
 
 Os caminhos e os campos podem variar por comando. Veja [Firebase Rules](../../firestore.rules), [commands/content.ts](../../server/commands/content.ts), [identity.ts](../../server/commands/identity.ts) e [reminders.ts](../../server/reminders.ts).
 

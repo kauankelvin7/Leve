@@ -3,6 +3,11 @@
 **Data:** 2026-10-07 (America/Sao_Paulo)
 **Escopo:** filme de produto Leve, branch isolada; relatório de estado anterior à implementação do vídeo.
 
+Este snapshot é de 07/10/2026. As observações sobre cache e outbox descrevem
+aquele checkout. O PR #49 prepara opt-in por UID/aparelho, mas ainda está aberto;
+consulte a documentação do GOAL #01 e o HEAD de `main` antes de usar este arquivo
+como descrição do comportamento atual.
+
 ## Handoff — ORQUESTRADOR / Fase 0
 
 **STATUS:** DONE
@@ -25,13 +30,13 @@
 ## Riscos operacionais conhecidos
 
 1. O npm global difere da versão declarada, mas o caminho suportado por Corepack foi confirmado: `corepack npm --version` = `11.19.1`; build e testes foram rodados por esse caminho. Não atualizar manifesto/lockfile raiz.
-2. `README.md` afirma que o uso offline está desativado por padrão, enquanto o código atual `apps/web/src/platform/outbox.ts` habilita por padrão salvo opt-out explícito. Tratar README como fonte histórica/inconsistente e confirmar comportamento em implementação/testes antes de qualquer claim; o backend/app não será alterado para produzir o filme.
+2. No snapshot da base `33707a4`, o README afirmava que o uso offline estava desativado por padrão, enquanto `apps/web/src/platform/outbox.ts` o habilitava salvo opt-out explícito. Essa divergência foi registrada naquele checkout e tratada pelo GOAL #01; não descreve a branch atual do GOAL.
 3. O README também aponta produção como referência, mas nenhuma captura deste trabalho pode usar produção. Usar exclusivamente app local, emuladores e contas/dados fictícios.
 4. A árvore remota atual inclui hardening de segurança recente; os relatórios subsequentes baseiam-se no conteúdo de `33707a4`, não no antigo checkout `a7ced99`.
 5. A skill de onboarding foi lida por se tratar do ambiente Codex. Não exige alteração da configuração ambiental: browser, runtime e FFmpeg já estão instalados. Não foi salvo draft de setup; publicação ambiental não faz parte do pedido.
 
-**PROBLEMAS:** documentação offline divergente do runtime. O pin de npm foi resolvido usando Corepack; a divergência documental permanece registrada para o produto.
-**RECOMENDAÇÃO:** Fase 1 concluída; usar apenas claims rastreados em código/testes e manter os limites de escopo offline/Gika registrados.
+**PROBLEMAS OBSERVADOS NO SNAPSHOT:** documentação offline divergente do runtime. O pin de npm foi resolvido usando Corepack; a divergência foi encaminhada ao GOAL #01.
+**RECOMENDAÇÃO DA FASE 1:** usar apenas claims rastreados em código/testes e manter os limites de escopo offline/Gika registrados. Para a política vigente, consultar `docs/goals/GOAL-01/` e o HEAD atual do PR #49.
 
 ## Validação executada durante Fase 1
 

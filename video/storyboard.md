@@ -2,6 +2,10 @@
 
 **Duração:** 72 s · **Branch:** `video/product-film` · **Mensagem:** Organizar a vida deveria ser leve.
 
+Este roteiro descreve o produto filmado em 07/10/2026. A menção abaixo ao
+offline ativo por padrão é histórica: o PR #49 prepara opt-in por UID/aparelho,
+mas ainda não foi integrado a `main`.
+
 Esta revisão continua a narrativa aprovada. A V1 de 76 s permanece no histórico Git e em `video/output/v1/`; sua revisão está em `video/reports/06-qa-v1.md`. A análise anterior às mudanças está em `07-polish-analysis.md`. Não houve alteração do produto para filmagem. O filme funciona sem áudio: a interface e as headlines contêm a informação necessária.
 
 | Tempo | Cena e ação real | Direção / texto em tela | Evidência e limite | Classificação |
@@ -30,6 +34,8 @@ Esta revisão continua a narrativa aprovada. A V1 de 76 s permanece no históric
 
 O shell público offline com service worker e a captura autenticada em Vite + Firebase Emulator são provas separadas. O cold open V2 foi recuperado porque a nota **salva online** permanece visível durante a queda, sem reload. Não recupera a hipótese anterior de editar/salvar a nota offline. Cache pode ser limitado ou evicto. Outbox aceita determinados comandos; não é sincronização garantida de tudo.
 
-`README.md` e `AGENTS.md` do produto ainda divergem do código quanto à ativação padrão do offline. Essa divergência continua registrada no ledger; o vídeo não altera nem promete uma preferência diferente.
+À época da filmagem, `README.md` e `AGENTS.md` divergiam do código sobre a
+ativação padrão do offline. O achado está registrado no ledger histórico; o
+vídeo não altera nem promete uma preferência diferente.
 
 A interceptação da Gika permanece documentada nos manifests, relatórios e ledger. A remoção de linguagem técnica do vídeo foi solicitada nesta iteração; não é autorização para sugerir Gemini ao vivo. Push em aparelho físico, garantias universais de dados/privacidade e primeiro uso offline não fazem parte do filme.

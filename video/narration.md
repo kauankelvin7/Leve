@@ -2,6 +2,10 @@
 
 **Idioma:** pt-BR · **Tom:** calmo, próximo e claro · **Duração:** 72 s.
 
+Roteiro da filmagem de 07/10/2026. As referências ao offline descrevem o
+comportamento da época; o PR #49 prepara opt-in por UID/aparelho e ainda não
+foi integrado a `main`.
+
 Não há locução gravada nem TTS. O master contém trilha instrumental e efeitos originais. O texto abaixo é uma alternativa para futura voz humana e a base do SRT editorial separado; as legendas não são transcrição de uma voz existente. Headlines e interface continuam suficientes sem áudio.
 
 | Tempo | Texto opcional | Intenção |

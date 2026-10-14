@@ -1,3 +1,29 @@
+## Trabalho atual — GOAL #01 confiabilidade e privacidade offline (14/10/2026)
+
+Branch `goal/01-confiabilidade-privacidade`, base `c7a3de4`. O GOAL corrige o
+registro anterior “offline por padrão”: persistência privada exige opt-in por
+UID/aparelho. README, arquitetura, UI e testes agora descrevem o mesmo padrão.
+Drafts/outbox legados são preservados até recuperação ou descarte confirmado.
+
+Também foram implementados: leases/fencing IndexedDB, ACK/receipt validado,
+recuperação legível da outbox, quota distribuída para recuperação Gika, replay
+HMAC do tick e propriedade atômica de tokens FCM. Testes finais nesta branch:
+891 unitários, 338 integração, 8 E2E críticos e 12 E2E focais PASS; lint,
+typecheck, build, docs e audit de produção PASS. Evidências em
+`docs/goals/GOAL-01/`.
+
+Nenhuma configuração de produção ou secret foi alterada. A revisão independente
+read-only examinou o código `34098ca` e os documentos no HEAD `544fd6d`. Não
+confirmou P0/P1, mas encontrou dois P2: remoção da outbox concorrendo com flush
+ativo e retenção de row legado de sessão após migração sem opt-in novo. O primeiro
+impede recomendar merge até correção e teste determinístico. O segundo não é lido
+com offline desligado e é removido nos caminhos explícitos bem-sucedidos, mas a
+migração inicial ainda o mantém no aparelho. CI, CodeQL, Planner E2E, Seasonal
+E2E e Vercel passaram no HEAD 544. A atualização documental atual iniciará novos
+checks; confira o HEAD mais recente antes de decidir integração. O PR segue aberto,
+sem aprovação formal de mantenedor, merge ou implantação. Consulte
+`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md` para o inventário e próximos passos.
+
 ## Entrega — clareza do dia consultado (07/10/2026)
 
 Entrada dedf0d7. Usuário confirmou seleção de outro dia e aprovou remover botão
@@ -11,7 +37,7 @@ revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
 Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
 na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
 
-## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
+## Registro de 07/10 — lixeira agrupada e exclusão imediata
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
 ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
@@ -24,7 +50,7 @@ PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
 Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
 trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
 
-## Follow-up vigente — confirmação de exclusão de série, 07/10/2026
+## Registro de 07/10 — confirmação de exclusão de série
 
 Entrada65ecd9c. window.confirm substituído pelo ConfirmDialog compartilhado em
 Meu dia. Título da rotina e efeito incluindo passado/lixeira30dias explicitados;
@@ -37,7 +63,7 @@ Gates: lint/boundaries/typechecks/build/diff-check e Playwright focal2 PASS,
 snapshots originais; cancelamento zero comandos e exclusão ACK200 reais.
 Evidência no plano `.agent/SERIES_DELETE_DIALOG_EXECPLAN.md`.
 
-## Follow-up vigente — espaçamento dos avisos, 07/10/2026
+## Registro de 07/10 — espaçamento dos avisos
 
 Entradaae87665. Ajuste isolado ReminderOptions.module.css: gap16 entre grupos e
 adicionar, gap12 dentro do aviso, remover alinhado ao seletor no desktop.
@@ -45,7 +71,7 @@ Lint/boundaries/typechecks/build e Playwright recurrence-options.spec.ts PASS1
 (com três avisos, ACK real, foco/Escape, Axe e viewport390 sem overflow).
 Sem domínio/API alterados. Evidência no plano MORNING_REMINDERS_EXECPLAN.md.
 
-## Retomada vigente — avisos pela manhã, 07/10/2026
+## Registro de 07/10 — avisos pela manhã
 
 Entrada main46a18a8. Usuário autorizou adotar recomendação de 9h após revisão de
 UX. DEFAULT_DAY_REMINDER_TIME=09:00; fuso IANA da atividade, dueTime/startsAt
@@ -628,7 +654,10 @@ Preview exato `afd3132`: https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a
 terminou success, mas continua SSO302; API interceptada401Vercel. Preview5fe backend idêntico
 também SSO302, pedido externo de liberação pendente. Único blocker: avaliação Gemini real
 impossível com acessos atuais. Não marcar Gika pronta nem integrar main antes desse teste.
-## Retomada vigente — offline por padrão e lançamento PWA a frio, 07/10/2026
+## Retomada histórica — offline por padrão e lançamento PWA a frio, 07/10/2026
+
+Este registro descreve o comportamento observado em 07/10. A política offline
+foi revisada pelo GOAL #01 na branch do PR #49, ainda não integrada a `main`.
 
 O modo offline passa a ser uma capacidade do sistema: `offlineEnabled()` retorna
 ativo quando não existe opt-out explícito, e a agenda mantém a sessão, dados já

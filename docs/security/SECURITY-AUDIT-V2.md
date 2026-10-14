@@ -3,6 +3,10 @@
 Base revisada: `b0e7bae753ec93374a3ebe3ec2b1a5ac07298046`  
 Escopo: API Express/Vercel, Firebase Auth/Admin e Firestore, comandos, Gika, import/export, exclusão de conta, notificações, scheduler, PWA compilado, logs, segredos e dependências. Ambiente local e emuladores; nenhum dado, conta ou serviço de produção foi tocado.
 
+Este é um retrato daquele checkpoint. Para as mudanças verificadas depois, veja
+o [relatório do GOAL #01](../goals/GOAL-01/RELATORIO_FINAL.md). O PR #49 está
+aberto e ainda não altera o estado de `main`.
+
 ## Threat model
 
 | Superfície | Ator e risco considerado | Controles encontrados |

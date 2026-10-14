@@ -1,5 +1,36 @@
 # Leve — ponto exato de retomada
 
+## Estado atual — GOAL #01 e pull requests (14/10/2026)
+
+O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main` e o GitHub informa `mergeable=true`. A revisão independente read-only examinou o código `34098ca1a8d619dba8b1ac57bca09127f9a11981` e a documentação no HEAD `544fd6df9407620803f5d43c8660e7c17b03d015`. Ela não confirmou P0/P1, mas encontrou dois achados P2: remover uma pendência pode não impedir um flush já iniciado de enviá-la; e o upgrade deixa um registro legado de sessão no IndexedDB quando offline está desligado. O primeiro achado impede recomendar merge até haver correção e regressão. CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram no HEAD 544; esta atualização documental criará um novo HEAD e exigirá nova conferência dos checks. A única revisão do GitHub continua automática (`COMMENTED`); falta aprovação de mantenedor. O PR permanece sem merge.
+
+## PRs e branches
+
+- #40, #42, #43, #47 e #48 têm CI/CodeQL e Vercel aprovados; #48 também passou Planner e Seasonal E2E. São candidatos a revisão de código, não autorização para merge.
+- #41 falha em `npm ci`: `@dicebear/core@10.7.0` conflita com `@dicebear/avataaars@9.4.3`, que exige `^9.0.0`.
+- #44 falha em `npm ci`: `@firebase/rules-unit-testing@6.0.0` exige `firebase@^13`, mas o projeto usa `firebase@12.19.0`.
+- #45 e #46 falham em CodeQL porque atualizam `init` e `analyze` separadamente; o workflow exige a mesma versão das duas actions. Corrigir em uma atualização coordenada antes de integrar.
+- As branches de design, documentação e shell responsivo contêm arquivos exclusivos e estão muito atrás de `main`; revisar/rebasear antes de considerar integração. `video/product-film` tem história divergente e conteúdo de vídeo exclusivo. A remoção foi bloqueada pela revisão automática; não usar outra via.
+- Não foi identificada branch segura para excluir: as demais correspondem a PRs abertos ou a trabalho exclusivo.
+
+Não houve merge nem alteração de produção, credenciais ou infraestrutura. Um merge em `main` pode disparar deployment; checks verdes não autorizam esse efeito.
+
+## Próximos passos
+
+1. Corrigir a corrida entre flush e remoção confirmada da outbox; adicionar regressão determinística de duas abas.
+2. Decidir e implementar a limpeza do cache de sessão legado na migração sem remover drafts ou comandos pendentes; registrar o comportamento no teste e na UI.
+3. Publicar as correções no PR #49, repetir os gates afetados e conferir os checks do novo HEAD.
+4. Obter aprovação formal de outro mantenedor antes de qualquer decisão de merge.
+5. Reunir #45 e #46 em uma atualização única de CodeQL e reexecutar o workflow.
+6. Resolver os conflitos de peer dependency em #41 e #44; revisar os diffs de #40, #42, #43, #47 e #48 antes de integração.
+7. Revisar as branches com trabalho exclusivo e, antes de qualquer release do GOAL #01, cumprir as validações externas em `docs/goals/GOAL-01/RELATORIO_FINAL.md`.
+
+## Checkouts locais nesta revisão
+
+O checkout `Leve` em `main` contém alterações locais do usuário sem commit. `Leve-goal01` está em `c7a3de4` com os arquivos do GOAL como alterações locais. Ambos foram preservados; o estado remoto do PR #49 foi usado como fonte da revisão.
+
+As seções seguintes são registros datados de entregas anteriores. O estado vigente e as ações pendentes estão nesta seção.
+
 ## Entrega — clareza do dia consultado (07/10/2026)
 
 Entrada dedf0d7. Usuário confirmou seleção de outro dia e aprovou remover botão
@@ -10,10 +41,9 @@ Lint/boundaries/typechecks/build/diff-check PASS; Playwright focal3 PASS sem atu
 referências na prova final (59.2s), inclui fuso UTCdia8/SPdia7, seleção/retorno/reload,
 Axe, mobile320/390/desktop1024/1366 e texto200%. Três referências intencionais
 revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
-Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
-na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
+Naquele checkpoint, faltava conferir CI/Planner do HEAD seguinte; o run dedf0d7 havia falhado na etapa responsive, enquanto Planner passou. Este registro não descreve o estado atual.
 
-## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
+## Registro — lixeira agrupada e exclusão imediata (07/10/2026)
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
 ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
@@ -23,10 +53,9 @@ idempotência. purgeContent usa delete em folhas, recursiveDelete em shoppingLis
 Gates: lint/boundaries/typechecks/build,831unit,327integração e Playwright focal1
 PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
 `.agent/TRASH_SERIES_GROUPING_EXECPLAN.md`. CI/Planner da entrada3b79601 success.
-Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
-trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
+Naquele checkpoint, faltava conferir os checks do HEAD seguinte. O limite preexistente de trashSeries500 foi mantido; não houve restauração coletiva de série nesta entrega.
 
-## Follow-up vigente — modal de exclusão de série (07/10/2026)
+## Registro — modal de exclusão de série (07/10/2026)
 
 Entrada65ecd9c. Excluir série usa modal do Leve em vez de window.confirm:
 explica inclusão de ocorrências passadas e lixeira30dias; cancelar/Escape,
@@ -107,7 +136,7 @@ seguir os checks CI/Planner/Seasonal do PR antes de integrar.
 
 **Checkpoint desta entrega:** `refine(ui): improve agenda hierarchy, sidebar and footer`
 
-## Retomada vigente — hierarquia, navegação, componentes e Gika
+## Registro — hierarquia, navegação, componentes e Gika
 
 O usuário autorizou executar todas as etapas estéticas, revisar/testar e integrar
 na main. Meu dia prioriza tarefas e compacta cabeçalho, resumo e semana; mês e
@@ -280,9 +309,9 @@ O workflow do Planner agora observa também os poucos arquivos sazonais que pode
 - nenhuma mudança de billing ou infraestrutura;
 - Páscoa reutiliza o computus local já existente.
 
-## Próximo passo quando autorizado
+## Registro da pausa da Fase 7 sazonal (17/09/2026)
 
-A etapa planejada seguinte continua sendo a **Fase 7 — auditoria final do plano**, mas ela está deliberadamente parada. Não iniciar auditoria final, novo bloco funcional ou expansão de feriados sem novo pedido explícito do usuário.
+Naquele checkpoint, a auditoria final do plano sazonal aguardava autorização. O registro foi superado pelas entregas posteriores, incluindo a revisão do GOAL #01. Consulte o estado atual no início deste arquivo.
 
 
 ## Gika — checkpoint em 30/09/2026
@@ -400,8 +429,7 @@ Provas: lint/limites de arquitetura, typechecks/build PASS; Playwright final
 três larguras (66 composições), Axe, texto a 200%, movimento reduzido, cores
 forçadas e retorno após a sessão. Revisão independente sem impedimentos.
 Capturas Chromium 153 do lockfile e gate incluído no CI. Fontes: `DESIGN.md` e
-`docs/frontend/AGENDA_LOADING_REPORT.md`. Próximo passo: checks do PR e integração
-da mudança validada à `main`.
+`docs/frontend/AGENDA_LOADING_REPORT.md`. Na data desse relatório, faltavam os checks do PR e decidir a integração à `main`. Este registro não descreve o estado atual.
 
 Revisão do gate de abertura: data fixa em 05/10/2026 para excluir variação sazonal
 das referências. Um pixel divergente no primeiro CI foi localizado no contorno de

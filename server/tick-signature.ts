@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 export const TICK_PATH = '/api/internal/tick';
+export const TICK_VALIDITY_MS = 300_000;
 
 export function tickSignature(secret: string, timestamp: string) {
   return createHmac('sha256', secret).update(`${timestamp}.POST.${TICK_PATH}`).digest('hex');

@@ -1,7 +1,8 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import { applyActionCode, browserLocalPersistence, browserPopupRedirectResolver, connectAuthEmulator, getAuth, initializeAuth } from 'firebase/auth';
 import { clearIndexedDbPersistence, connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, terminate } from 'firebase/firestore';
-import { offlineEnabled } from './outbox';
+import { offlineEnabled, offlineMigrationRequired, completeOfflineMigration, markCleanupFailure, clearCleanupWarning, cacheCleanupRequired } from './offlinePreference';
+import { clearLegacySessionCache } from './outbox';
 
 const useEmulators = import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === 'true';
 const config = useEmulators ? {
@@ -19,10 +20,14 @@ const reusedApp = getApps().length > 0;
 const app = configured ? (reusedApp ? getApp() : initializeApp(config)) : null;
 export const firebaseApp = app;
 export const firebaseAuth = app ? (reusedApp ? getAuth(app) : initializeAuth(app, { persistence: browserLocalPersistence, popupRedirectResolver: browserPopupRedirectResolver })) : null;
+const OFFLINE_ACTIVATION_ATTEMPT = 'leve.offlineActivationAttempt';
+let offlinePersistenceActive = false;
 function createFirestore(instance: FirebaseApp) {
-  if (!offlineEnabled()) return getFirestore(instance);
+  if (!offlineEnabled() || offlineMigrationRequired() || cacheCleanupRequired()) return getFirestore(instance);
   try {
-    return initializeFirestore(instance, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+    const database = initializeFirestore(instance, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+    offlinePersistenceActive = true;
+    return database;
   } catch {
     // Some browsers (private mode or a restricted WebView) do not expose a
     // usable IndexedDB. The agenda must still open online in that case.
@@ -30,6 +35,7 @@ function createFirestore(instance: FirebaseApp) {
   }
 }
 export const firestore = app ? (reusedApp ? getFirestore(app) : createFirestore(app)) : null;
+if (offlinePersistenceActive) { try { sessionStorage.removeItem(OFFLINE_ACTIVATION_ATTEMPT); } catch { /* Storage may be unavailable in a restricted browser. */ } }
 export const emulatorMode = useEmulators;
 const emulatorConnections = globalThis as typeof globalThis & { __leveFirebaseEmulatorsConnected?: boolean };
 if (useEmulators && firebaseAuth && firestore && !emulatorConnections.__leveFirebaseEmulatorsConnected) {
@@ -39,13 +45,57 @@ if (useEmulators && firebaseAuth && firestore && !emulatorConnections.__leveFire
   emulatorConnections.__leveFirebaseEmulatorsConnected = true;
 }
 
-/** Firestore persistence is account data too. Clear it before an account switch;
- * the caller reloads so the terminated singleton is recreated for the next user. */
+/** Before any Firestore query, remove the legacy cache even when no preference
+ * or UID marker exists: older clients persisted by default in that case. */
+async function migrateFirestorePrivacy() {
+  if (!firestore || (!offlineMigrationRequired() && !cacheCleanupRequired())) return;
+  try { await clearIndexedDbPersistence(firestore); await clearLegacySessionCache(); completeOfflineMigration(); clearCleanupWarning(); }
+  catch (failure) { markCleanupFailure(); throw failure; }
+}
+export const firestorePrivacyReady = migrateFirestorePrivacy();
+export async function ensureFirestorePrivacy() {
+  try { await firestorePrivacyReady; } catch { /* Closing another tab permits a retry without a new login. */ }
+  await migrateFirestorePrivacy();
+}
+
+/** A returning user may have opted in before logout. The first Firestore
+ * instance was created before Firebase restored that user's identity, so
+ * restart once after recording the UID; the next page load can safely enable
+ * persistence from that account's preference. A one-reload guard handles
+ * browsers where persistent IndexedDB is unavailable. */
+export async function activateOfflinePersistenceForAccount(uid: string) {
+  if (!firestore || !offlineEnabled(uid) || offlinePersistenceActive) return false;
+  try {
+    // On upgraded installs the migration has to finish before a reload can
+    // initialize persistent Firestore; otherwise this one-shot restart would
+    // consume its guard while still using the memory-only instance.
+    await ensureFirestorePrivacy();
+    if (sessionStorage.getItem(OFFLINE_ACTIVATION_ATTEMPT) === uid) {
+      sessionStorage.removeItem(OFFLINE_ACTIVATION_ATTEMPT);
+      return false;
+    }
+    sessionStorage.setItem(OFFLINE_ACTIVATION_ATTEMPT, uid);
+    await terminate(firestore);
+    window.location.reload();
+    return true;
+  } catch {
+    try { sessionStorage.removeItem(OFFLINE_ACTIVATION_ATTEMPT); } catch { /* Storage may be unavailable in a restricted browser. */ }
+    return false;
+  }
+}
+// Keep the failure handled until AuthProvider consumes it.
+void firestorePrivacyReady.catch(() => undefined);
+
+/** Do not swallow cleanup errors or report success while private data remains. */
 export async function clearFirestorePersistence() {
-  if (!firestore || !offlineEnabled()) return false;
-  await terminate(firestore).catch(() => undefined);
-  await clearIndexedDbPersistence(firestore).catch(() => undefined);
-  return true;
+  if (!firestore) return false;
+  try {
+    await terminate(firestore);
+    await clearIndexedDbPersistence(firestore);
+    await clearLegacySessionCache();
+    completeOfflineMigration(); clearCleanupWarning();
+    return true;
+  } catch (failure) { markCleanupFailure(); throw failure; }
 }
 
 export async function completeLocalEmailVerification(email: string) {

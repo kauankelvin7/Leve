@@ -1,5 +1,9 @@
 # Fase 3 — captura
 
+As observações sobre cache e outbox abaixo se referem à captura de 07/10/2026,
+antes do GOAL #01. A branch do PR #49 prepara opt-in por UID/aparelho e continua
+aberta; isso ainda não alterou `main`.
+
 **Resultado do reteste: PASS — Gate 3 reaberto e aprovado.** A primeira aprovação foi invalidada quando Motion encontrou a faixa offline persistente nas imagens/sidecars de Meu dia e marca. A causa foi o harness reutilizar `storageState({ indexedDB: true })` em cenas online: as consultas podiam exibir o primeiro snapshot do cache sem esperar o snapshot do servidor. O harness agora separa estados: cenas online usam auth/localStorage sem IndexedDB; apenas a cena offline recebe o IndexedDB previamente populado. Cada imagem online aguarda `navigator.onLine === true`, conteúdo esperado carregado, faixa de dados em cache oculta e ausência das faixas offline/restaurada. O smoke de todas as cenas e duas sequências completas passaram depois da correção. Nenhuma alteração foi feita no produto.
 
 ## Spike e escolha das técnicas
@@ -47,7 +51,7 @@ A cena de abertura limpa foi mantida porque o cold open offline só seria aceit�
 
 As imagens demonstram apenas consultas prévias disponíveis durante o corte de rede e uma criação de tarefa coberta pela outbox, seguida de ACK e nova consulta. Não afirmam que o app inteiro funciona offline, que todo histórico é baixado, que o primeiro uso funciona sem internet ou que dados locais nunca podem ser removidos. O preview público com SW é prova independente do shell; não foi usado para fingir uma sessão autenticada.
 
-Permanece a divergência registrada na análise: alguns documentos versionados ainda descrevem offline como opt-in, enquanto a política atual da outbox é ativa por padrão, com opção local para desligar. Essa dívida documental não foi convertida em mensagem promocional e não alterou a captura.
+Na captura de 07/10, a documentação versionada e a política da outbox divergiam: a documentação descrevia opt-in, enquanto o runtime ativava por padrão e oferecia opção local para desligar. O GOAL #01 corrigiu essa divergência na branch do PR #49. O filme preserva os estados registrados naquela data e não apresenta o padrão antigo como comportamento vigente.
 
 ## Dupla execução, diff e scans
 
@@ -100,7 +104,7 @@ Meu dia conclui a tarefa seedada; calendário seleciona um dia real; compras mar
 
 Gika mantém exatamente a fixture upstream contratual existente e UI/Auth/router/comando reais. A linguagem técnica foi retirada do filme conforme instrução da iteração V2; a interceptação permanece neste relatório e no ledger. Não se afirma resposta ao vivo nem duração real de inferência.
 
-Permanece a divergência: documentação do produto descreve ativação manual em trechos, enquanto implementação atual ativa cache/outbox por padrão com opt-out. O filme não afirma disponibilidade universal, download integral de conta ou sincronização de todas as operações. O texto amplo do banner nativo é UI real, não evidência de garantia universal; o roteiro limita o contexto aos dados consultados e à tarefa elegível demonstrada.
+Na base filmada em 07/10, documentação do produto e runtime divergiam quanto à ativação do cache/outbox; o runtime habilitava por padrão com opt-out. O GOAL #01 atualiza a política para opt-in na branch do PR #49. O filme não afirma disponibilidade universal, download integral de conta ou sincronização de todas as operações. O texto amplo do banner nativo é UI real, não evidência de garantia universal; o roteiro limita o contexto aos dados consultados e à tarefa elegível demonstrada.
 
 Resultado final V2: duas execuções completas, 7 cenas e 27 PNGs por execução. Comparação PASS 27/27; 20 imagens pixel-idênticas; maior porcentagem de pixels com diferença >8: 0,0931%; maior MAE por canal: 0,0474/255. Os 13 erros de console `ERR_INTERNET_DISCONNECTED` por execução estão restritos aos cortes de rede; nenhum pageerror. Nota, conclusão de tarefa, check de compra, Gika e replay da tarefa offline receberam ACK 200. Continuidade offline: “Organizar semana de estudos” permanece concluída; “Regar as plantas” é a tarefa nova pendente.
 

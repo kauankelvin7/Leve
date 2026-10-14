@@ -22,16 +22,24 @@ import { readRange } from './policy.ts';
 import { normalizeCurrentAction, isCreationRequest, resolveCreationIntent, validateCreation, validateSemanticCreation, validateToolCalls } from './createPolicy.ts';
 import { firestoreReads, type ReadRepository } from './reads.ts';
 import { readSummary } from './readSummary.ts';
-import { consumeGikaQuota, consumeGikaRecoveryQuota, createGikaRecoveryQuota } from './quota.ts';
+import { consumeGikaQuota, consumeGikaRecoveryQuota } from './quota.ts';
 import { gikaDiagnostic, type GikaStage } from './diagnostics.ts';
 import { semanticTurnSchema, validateSemanticMutation, type SemanticTurn } from './semanticTurn.ts';
 import { createShoppingListDescriptorSchema, shoppingListsResultSchema } from '../../packages/domain/src/gikaShopping.ts';
 // Two bounded 10s provider phases plus 5s for authorization/reads; client deadline is 30s.
 const OPERATION_DEADLINE_MS = 25_000;
 const fallback = 'Não consegui falar com a Gika agora. Sua agenda continua disponível.';
-export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota, consumeRecoveryQuota?: typeof consumeGikaRecoveryQuota) {
+export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), repository: ReadRepository = firestoreReads, consumeQuota: typeof consumeGikaQuota = consumeGikaQuota, consumeRecoveryQuota: (uid: string) => void | Promise<void> = consumeGikaRecoveryQuota) {
   const router = Router();
-  const recoveryQuota = consumeRecoveryQuota ?? createGikaRecoveryQuota();
+  const recoveryQuota = async (uid: string) => {
+    try { await consumeRecoveryQuota(uid); }
+    catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(error instanceof GikaFault && error.code === 'GIKA_QUOTA' ? 429 : 503,
+        error instanceof GikaFault && error.code === 'GIKA_QUOTA' ? 'GIKA_QUOTA' : 'GIKA_UNAVAILABLE',
+        error instanceof GikaFault && error.code === 'GIKA_QUOTA' ? 'O limite de consultas foi atingido por agora. Sua agenda continua disponível.' : fallback);
+    }
+  };
   const parseTurn = express.json({ limit: GIKA_MAX_REQUEST_BYTES, strict: true });
   // A choice appends an <=8KiB opaque token to the original bounded request. Keep
   // the interpretation cap unchanged while allowing that transport overhead here.
@@ -47,7 +55,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/recover-confirmation', async (request, response) => {
     const input = gikaRequestSchema.parse(request.body), identity = response.locals.identity;
     await repository.authorize(identity, 'receipt');
-    recoveryQuota(identity.uid);
+    await recoveryQuota(identity.uid);
     const recovered = await repository.recoverMutation(identity.uid, input);
     await repository.authorize(identity, 'receipt');
     if (recovered?.kind === 'recurrence') { response.json({ recurrenceConfirmation: recovered.confirmation }); return; }
@@ -57,7 +65,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/recover-batch', async(request,response)=>{
     const input=gikaRequestSchema.parse(request.body),identity=response.locals.identity;
     await repository.authorize(identity,'receipt');
-    recoveryQuota(identity.uid);
+    await recoveryQuota(identity.uid);
     const recovered=await repository.recoverBatch?.(identity.uid,input);
     await repository.authorize(identity,'receipt');
     if(!recovered)throw new AppError(409,'OPERATION_MISMATCH','Não encontrei alterações deste pedido. Faça o pedido novamente.');
@@ -67,7 +75,7 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
   router.post('/choose-recurrence', async (request, response) => {
     const input = selectionSchema.parse(request.body), identity = response.locals.identity;
     await repository.authorize(identity, 'receipt');
-    recoveryQuota(identity.uid);
+    await recoveryQuota(identity.uid);
     const committed = await repository.recoverMutation(identity.uid, { requestId: input.requestId, text: input.text });
     if (committed) {
       await repository.authorize(identity, 'receipt');
@@ -96,7 +104,8 @@ export function createGikaRouter(model: ModelAdapter = createGeminiAdapter(), re
         const identity = response.locals.identity;
         await repository.authorize(identity, 'receipt');
         if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
-        recoveryQuota(identity.uid);
+        await recoveryQuota(identity.uid);
+        if (signal.aborted) throw new GikaFault('GIKA_TIMEOUT');
         stage = 'recover_batch';
         const recoveredBatch = await repository.recoverBatch?.(identity.uid,input);
         if(recoveredBatch){await repository.authorize(identity,'receipt');return gikaInterpretationSchema.parse({text:'Confira as alterações deste pedido.',simulated:false,reads:[],batchConfirmation:recoveredBatch.confirmation});}

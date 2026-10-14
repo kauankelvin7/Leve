@@ -32,7 +32,7 @@ O QA também revisou contact sheet, 14 keyframes, amostragem do vídeo, SRT, led
 ## Fidelidade e limites documentados
 
 - **Gika — INTERCEPTADA:** UI, autenticação, endpoint do app, router, schema/contrato, comando e persistência no Emulator são reais. Só a requisição ao upstream Gemini usa fixture determinística compatível com o contrato. O próprio vídeo revela a demonstração controlada e não afirma geração ao vivo.
-- **Offline — comprovado no escopo capturado:** mostra conteúdo já consultado após queda de rede, uma tarefa elegível aguardando conexão e a tarefa aparecendo após ACK e nova consulta. Não afirma que todo o produto funciona offline, que todo conteúdo é guardado ou que todas as mudanças sincronizam. A divergência entre documentação versionada e política atual da outbox permanece registrada em `03-capture-report.md`.
+- **Offline — comprovado no escopo capturado:** mostra conteúdo já consultado após queda de rede, uma tarefa elegível aguardando conexão e a tarefa aparecendo após ACK e nova consulta. Não afirma que todo o produto funciona offline, que todo conteúdo é guardado ou que todas as mudanças sincronizam. A divergência observada na base de 07/10 está registrada em `03-capture-report.md` e foi corrigida pelo GOAL #01 no PR #49.
 - **Cold open:** abertura limpa aprovada; sem queda de rede encenada.
 - **Conteúdo:** conta e registros fictícios em ambiente local/emulador. Nenhum comportamento do produto foi alterado para a filmagem; todo o trabalho desta tarefa está em `video/`.
 - **Áudio:** sem música ou TTS. O resumo falado visível na UI está limitado no ledger à síntese de voz do navegador quando suportada.

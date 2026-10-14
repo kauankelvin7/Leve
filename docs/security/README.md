@@ -10,4 +10,12 @@ Esta pasta preserva relatórios, planos e artefatos de auditorias específicas. 
 | AUDITS / EVIDENCE | [SECURITY-AUDIT](SECURITY-AUDIT.md), [REPORT](REPORT.md), [INVENTORY](INVENTORY.md), [Google](GOOGLE_EVIDENCE.md), [DiceBear](DICEBEAR_EVIDENCE.md), [remaining](DEVELOPMENT_REMAINING.md) e arquivos `.json`/`.txt` | Auditorias e evidências datadas; conferir escopo antes de reutilizar conclusões. |
 | HISTORICAL | [Plano de hardening](HARDENING_EXECPLAN.md) e relatórios vinculados | Plano e resultado de etapas anteriores, sem autoridade para indicar mudança aplicada nesta base. |
 
+## Revisão mais recente
+
+O [GOAL #01](../goals/GOAL-01/RELATORIO_FINAL.md) registra a correção do opt-in
+offline, da outbox e dos controles de tick/Gika/notificações. O PR #49 continua
+aberto; essas alterações ainda não fazem parte de `main`. A auditoria de
+06/10/2026 e o inventário de tooling abaixo são snapshots de seus próprios
+checkpoints, não uma leitura automática do estado atual.
+
 Não há um threat model independente nesta árvore. As políticas e a arquitetura acima registram controles e limites nos seus escopos; este índice não cria avaliação nova. Para comunicar vulnerabilidade, siga a política raiz. Não inclua credenciais, dados pessoais, prompts ou payloads privados em relato público.
