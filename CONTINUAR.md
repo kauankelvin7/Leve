@@ -41,7 +41,7 @@ revisadas, geometria/tolerâncias preservadas. Novo teste incluído no CI.
 Próximo passo: conferir CI/Planner do novo HEAD após push. CI anterior dedf0d7 falhou
 na etapa responsive, Planner passou; motivo detalhado indisponível no log-failed.
 
-## Follow-up vigente — lixeira agrupada e exclusão imediata (07/10/2026)
+## Follow-up — lixeira agrupada e exclusão imediata (07/10/2026)
 
 Entrada main3b79601. Lixeira agrupa por seriesId, expande datas e ações por
 ocorrência. Restaurar ocorrência não reinicia série. Até50 por consulta, limite
@@ -54,7 +54,7 @@ PASS, incluindo atraso/503/rollback nos dois fluxos e reload real. Plano
 Próximo passo: conferir checks do novo HEAD após push. Limite preexistente de
 trashSeries500 mantido; sem restauração coletiva de série nesta entrega.
 
-## Follow-up vigente — modal de exclusão de série (07/10/2026)
+## Follow-up — modal de exclusão de série (07/10/2026)
 
 Entrada65ecd9c. Excluir série usa modal do Leve em vez de window.confirm:
 explica inclusão de ocorrências passadas e lixeira30dias; cancelar/Escape,
@@ -135,7 +135,7 @@ seguir os checks CI/Planner/Seasonal do PR antes de integrar.
 
 **Checkpoint desta entrega:** `refine(ui): improve agenda hierarchy, sidebar and footer`
 
-## Retomada vigente — hierarquia, navegação, componentes e Gika
+## Registro — hierarquia, navegação, componentes e Gika
 
 O usuário autorizou executar todas as etapas estéticas, revisar/testar e integrar
 na main. Meu dia prioriza tarefas e compacta cabeçalho, resumo e semana; mês e

@@ -651,7 +651,10 @@ Preview exato `afd3132`: https://leve-agenda-vercel-g2l08ku5t-kauans-projects-6a
 terminou success, mas continua SSO302; API interceptada401Vercel. Preview5fe backend idêntico
 também SSO302, pedido externo de liberação pendente. Único blocker: avaliação Gemini real
 impossível com acessos atuais. Não marcar Gika pronta nem integrar main antes desse teste.
-## Retomada vigente — offline por padrão e lançamento PWA a frio, 07/10/2026
+## Retomada histórica — offline por padrão e lançamento PWA a frio, 07/10/2026
+
+Este registro descreve o comportamento observado em 07/10. A política offline
+foi revisada pelo GOAL #01 na branch do PR #49, ainda não integrada a `main`.
 
 O modo offline passa a ser uma capacidade do sistema: `offlineEnabled()` retorna
 ativo quando não existe opt-out explícito, e a agenda mantém a sessão, dados já

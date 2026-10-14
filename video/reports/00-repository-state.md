@@ -3,6 +3,11 @@
 **Data:** 2026-10-07 (America/Sao_Paulo)
 **Escopo:** filme de produto Leve, branch isolada; relatório de estado anterior à implementação do vídeo.
 
+Este snapshot é de 07/10/2026. As observações sobre cache e outbox descrevem
+aquele checkout. O PR #49 prepara opt-in por UID/aparelho, mas ainda está aberto;
+consulte a documentação do GOAL #01 e o HEAD de `main` antes de usar este arquivo
+como descrição do comportamento atual.
+
 ## Handoff — ORQUESTRADOR / Fase 0
 
 **STATUS:** DONE

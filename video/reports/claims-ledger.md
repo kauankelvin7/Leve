@@ -2,6 +2,10 @@
 
 Base: HEAD `33707a4e72b863f1689113f51e95118a5568bebe`. A claim marked `VERIFICADA` is supported by implementation and/or named tests for the scope written in the claim; it does not by itself prove a production deployment, live external service, or device-specific presentation. Claims marked `NÃO VERIFICADA` are barred from the film until evidence changes.
 
+Este ledger registra o que foi verificado para o filme em outubro de 2026. A
+claim de offline ativo por padrão descreve aquele checkout; o PR #49 prepara
+opt-in por UID/aparelho, mas ainda não foi integrado a `main`.
+
 afirmação | evidência (arquivo, função, teste ou captura) | status
 ---|---|---
 O Leve reúne agenda, calendário, notas e compras em um espaço pessoal. | `apps/web/src/app/App.tsx::App/Shell` route map; `Today`, `Calendar`, `Notes`, `Shopping` components. | VERIFICADA

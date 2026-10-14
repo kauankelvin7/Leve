@@ -1,5 +1,9 @@
 # Fase 3 — captura
 
+As observações sobre cache e outbox abaixo se referem à captura de 07/10/2026,
+antes do GOAL #01. A branch do PR #49 prepara opt-in por UID/aparelho e continua
+aberta; isso ainda não alterou `main`.
+
 **Resultado do reteste: PASS — Gate 3 reaberto e aprovado.** A primeira aprovação foi invalidada quando Motion encontrou a faixa offline persistente nas imagens/sidecars de Meu dia e marca. A causa foi o harness reutilizar `storageState({ indexedDB: true })` em cenas online: as consultas podiam exibir o primeiro snapshot do cache sem esperar o snapshot do servidor. O harness agora separa estados: cenas online usam auth/localStorage sem IndexedDB; apenas a cena offline recebe o IndexedDB previamente populado. Cada imagem online aguarda `navigator.onLine === true`, conteúdo esperado carregado, faixa de dados em cache oculta e ausência das faixas offline/restaurada. O smoke de todas as cenas e duas sequências completas passaram depois da correção. Nenhuma alteração foi feita no produto.
 
 ## Spike e escolha das técnicas

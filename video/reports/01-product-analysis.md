@@ -2,6 +2,11 @@
 
 Base auditada: `video/product-film`, commit `33707a4e72b863f1689113f51e95118a5568bebe` (HEAD fornecido pelo orquestrador). Esta análise é de leitura do produto e dos testes existentes; nenhum arquivo do produto foi alterado. O walkthrough Playwright foi executado em preview de produção local e com Firebase Emulator e seus resultados estão registrados abaixo.
 
+Esta análise é um retrato do checkout de 07/10/2026. As menções a offline ativo
+por padrão são achados daquele momento. O PR #49 propõe opt-in por UID/aparelho,
+mas ainda não foi integrado; consulte o HEAD de `main` antes de descrever o
+comportamento atual.
+
 ## Mapa de rotas e acesso
 
 `apps/web/src/app/App.tsx` é o registro de rotas. `/entrar`, `/registrar`, `/recuperar`, `/privacidade`, `/termos` e `/demo/*` são públicas. As rotas de produto ficam sob `Protected` e `Shell`: `/hoje`, `/calendario`, `/notas`, `/notas/:id`, `/compras`, `/compras/:id`, `/atividade/:id`, `/revisao`, `/buscar`, `/configuracoes` e `/lixeira`. `Protected` exige sessão Firebase, e-mail verificado, membership ativa e perfil com estado `active`; portanto, capturas autenticadas devem usar somente a conta seed fictícia do emulador.
