@@ -4,17 +4,16 @@
 
 O GOAL #01 foi integrado à `main` por squash no PR [#49](https://github.com/kauankelvin7/Leve/pull/49), commit `1b51202`. A integração inclui a correção da corrida entre descarte e envio da outbox, a limpeza da sessão legada, o endurecimento das transações IndexedDB e as demais proteções de privacidade e segurança documentadas em `docs/goals/GOAL-01/`. No HEAD do PR, CI, CodeQL, Planner E2E e Seasonal E2E passaram. Os testes locais registrados foram 895 unitários, 338 de integração e 20 E2E; esses números não substituem validações futuras de release.
 
-Os PRs Dependabot #40 (React Hooks ESLint), #42 (Zod), #43 (Express), #47 (upload-artifact) e #48 (setup-node) foram integrados por squash na `main`. A atualização de CodeQL foi consolidada em [#50](https://github.com/kauankelvin7/Leve/pull/50), mantendo `init` e `analyze` na mesma versão; verificar o estado dos checks antes do merge. Os PRs #41 e #44 foram encerrados devido a incompatibilidades de peer dependencies comprovadas por `npm ci`. As migrações de DiceBear core/avataaars e Firebase/rules-unit-testing precisam de avaliação coordenada antes de nova proposta.
+Os PRs Dependabot #40 (React Hooks ESLint), #42 (Zod), #43 (Express), #47 (upload-artifact) e #48 (setup-node) foram integrados por squash na `main`. A atualização coordenada de CodeQL (`init` e `analyze` v4.38.3) foi integrada pelo PR [#50](https://github.com/kauankelvin7/Leve/pull/50), commit `216b09b`, após CI e CodeQL aprovados. Os PRs isolados #45 e #46 foram encerrados como substituídos. Os PRs #41 e #44 foram encerrados devido a incompatibilidades de peer dependencies comprovadas por `npm ci`. As migrações de DiceBear core/avataaars e Firebase/rules-unit-testing precisam de avaliação coordenada antes de nova proposta.
 
 As branches `design/gika-character-foundation`, `feat/responsive-shell-v2` e `docs/technical-documentation-v2` contêm arquivos exclusivos; comparar com a implementação atual antes de aproveitar qualquer alteração. `video/product-film` tem histórico divergente. Não mesclar branches antigas diretamente na `main` nem excluí-las sem confirmar que conteúdo útil foi preservado.
 
 ## Próximos passos
 
-1. Verificar o CI da `main` após as cinco atualizações de dependências e o resultado final do PR #50.
-2. Confirmar que o CodeQL conjunto foi aprovado; encerrar os PRs separados #45 e #46 apenas quando substituídos com sucesso.
-3. Fazer revisão de conteúdo das quatro branches antigas antes de decidir por recuperação seletiva ou exclusão.
-4. Cumprir as verificações externas pré-release e o smoke test não produtivo descritos em `docs/goals/GOAL-01/RELATORIO_FINAL.md`.
-5. Determinar o próximo GOAL pelo código e roadmap vigentes, sem reiniciar etapas concluídas.
+1. Conferir o CI da `main` após a consolidação dos PRs de dependências e CodeQL.
+2. Fazer revisão de conteúdo das quatro branches antigas antes de decidir por recuperação seletiva ou exclusão.
+3. Cumprir as verificações externas pré-release e o smoke test não produtivo descritos em `docs/goals/GOAL-01/RELATORIO_FINAL.md`.
+4. Determinar o próximo GOAL pelo código e roadmap vigentes, sem reiniciar etapas concluídas.
 
 As seções seguintes são registros datados de entregas anteriores.
 
