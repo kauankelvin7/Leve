@@ -26,4 +26,4 @@ Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o 
 
 A revisão read-only inicial identificou achados que foram corrigidos. A revisão final documenta que não há bloqueadores P0/P1 conhecidos nos testes locais. Como o usuário instruiu não delegar outros agentes, não houve segunda assinatura independente pós-correção; isso está detalhado em `REVISAO.md`.
 
-Branch dedicada: `goal/01-confiabilidade-privacidade`. Estado de publicação e URL do PR serão acrescentados após o push e abertura do Pull Request. O PR deverá permanecer aberto, sem merge automático. Não afirmar implantação como parte desta entrega.
+Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). Pull Request aberto para `main`: [#49](https://github.com/kauankelvin7/Leve/pull/49), HEAD `3989d4483d341d61d7250eda85abc07dedc15b30`. Permanece aberto, sem merge automático. Não houve implantação.

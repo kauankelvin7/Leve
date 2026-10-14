@@ -602,7 +602,7 @@ offline_default_pwa:
   evidence:
     - "docs/goals/GOAL-01/IMPLEMENTACAO.md"
     - "docs/goals/GOAL-01/TESTES.md"
-  gates: "Current GOAL-01: 888 unit, 337 integration, 8 critical E2E, 11 focused E2E; lint/typecheck/build/docs/audit production PASS."
+  gates: "Current GOAL-01: 891 unit, 338 integration, 8 critical E2E, 12 focused E2E; lint/typecheck/build/docs/audit production PASS."
   checkpoint: "goal/01-confiabilidade-privacidade"
 
 goal01_reliability_privacy:
@@ -613,5 +613,5 @@ goal01_reliability_privacy:
   scope: "Opt-in offline privado, integridade da outbox, autorização/rate limits Gika, replay do tick e reassociação segura de token FCM."
   plan: docs/goals/GOAL-01/EXECPLAN.md
   evidence: docs/goals/GOAL-01/RELATORIO_FINAL.md
-  gates: "npm ci, docs, lint, typecheck, build, 888 unit, 337 integration, 8 critical E2E, 11 GOAL-01 E2E, production audit PASS."
-  next_action: "Revisar diff final, criar commit, publicar branch e abrir PR sem merge; implantação não autorizada."
+  gates: "corepack npm ci, docs, lint, typecheck, build, 891 unit, 338 integration, 8 critical E2E, 12 GOAL-01 E2E, production audit PASS."
+  next_action: "Aguardar revisão do PR #49; manter sem merge e sem implantação."

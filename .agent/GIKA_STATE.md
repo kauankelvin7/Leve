@@ -8,14 +8,15 @@ Drafts/outbox legados são preservados até recuperação ou descarte confirmado
 Também foram implementados: leases/fencing IndexedDB, ACK/receipt validado,
 recuperação legível da outbox, quota distribuída para recuperação Gika, replay
 HMAC do tick e propriedade atômica de tokens FCM. Testes finais nesta branch:
-888 unitários, 337 integração, 8 E2E críticos e 11 E2E focais PASS; lint,
+891 unitários, 338 integração, 8 E2E críticos e 12 E2E focais PASS; lint,
 typecheck, build, docs e audit de produção PASS. Evidências em
 `docs/goals/GOAL-01/`.
 
 Nenhuma configuração de produção/secret foi alterada. Revisão read-only inicial
 encontrou achados concretos já corrigidos; não houve segunda revisão por pares
-após correções porque o usuário instruiu não delegar. Próximo passo: completar
-revisão do diff, commit, push e abrir PR sem merge. Não implantar.
+após correções porque o usuário instruiu não delegar. Diff revisto; commit local
+7f54bf8 e commit publicado `3989d4483d341d61d7250eda85abc07dedc15b30` têm a mesma
+árvore. PR #49 está aberto para `main`, aguardando revisão; não implantar.
 
 ## Entrega — clareza do dia consultado (07/10/2026)
 
