@@ -1,8 +1,10 @@
 # Revisão de PRs e branches — 14/10/2026
 
-Esta revisão consultou o GitHub em 14/10/2026 e comparou as branches com `main`
-em `c7a3de4`. Os estados abaixo são uma fotografia daquela data; antes de
-integrar qualquer PR, confira o HEAD e os checks atuais no GitHub.
+Esta revisão consultou o GitHub em 14/10/2026, no HEAD de implementação `268f086`,
+e comparou as branches com `main` em `c7a3de4`. Os commits documentais publicados
+depois iniciaram uma nova rodada de checks no PR #49. A tabela registra o estado
+observado antes dessa rodada; confira o HEAD e os checks atuais no GitHub antes
+de integrar qualquer PR.
 
 ## Pull requests abertos
 

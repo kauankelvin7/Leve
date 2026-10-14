@@ -3,9 +3,11 @@
 ## Estado atual — GOAL #01 e pull requests (14/10/2026)
 
 O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`.
-No HEAD consultado nesta revisão, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel
-estavam aprovados. Ainda não há aprovação de outro mantenedor após as correções;
-por isso o GOAL não está pronto para merge. Nenhuma implantação foi solicitada.
+No HEAD de implementação consultado antes desta atualização documental, CI,
+CodeQL, Planner E2E, Seasonal E2E e Vercel estavam aprovados. As mudanças de
+documentação enviadas depois iniciaram uma nova rodada de checks; confira o
+estado do HEAD atual no PR antes de qualquer merge. Ainda falta aprovação de
+outro mantenedor após as correções. Nenhuma implantação foi solicitada.
 
 A situação dos demais PRs e branches está em
 [`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md`](docs/goals/GOAL-01/REVISAO_REPOSITORIO.md).

@@ -36,4 +36,4 @@ principal releu o diff depois das correções, mas essa leitura não substitui a
 revisão independente exigida. Como o usuário pediu execução sem delegar agentes,
 essa aprovação por outro mantenedor continua pendente.
 
-Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`; os checks consultados estavam aprovados em 14/10/2026. Antes do merge, confirme os checks do HEAD atual e conclua a revisão independente. Não houve merge nem implantação.
+Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`. Os checks do HEAD de implementação consultado em 14/10 estavam aprovados; os commits documentais posteriores iniciaram nova rodada. Confirme o status do HEAD atual e conclua a revisão independente antes de decidir o merge. Não houve merge nem implantação.

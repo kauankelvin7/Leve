@@ -15,9 +15,11 @@ typecheck, build, docs e audit de produção PASS. Evidências em
 Nenhuma configuração de produção ou secret foi alterada. A revisão inicial
 encontrou achados concretos, já corrigidos e cobertos por testes. O diff final
 foi relido pelo agente principal; ainda falta uma revisão de outro mantenedor.
-No HEAD consultado em 14/10, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel
-estavam aprovados. O PR #49 segue aberto para `main`, sem merge ou implantação.
-Consulte `docs/goals/GOAL-01/REVISAO_REPOSITORIO.md` antes de decidir o próximo passo.
+No HEAD de implementação consultado em 14/10, CI, CodeQL, Planner E2E, Seasonal
+E2E e Vercel estavam aprovados. As atualizações documentais seguintes iniciaram
+uma nova rodada de checks no PR #49; confira o HEAD atual antes de qualquer merge.
+O PR segue aberto para `main`, sem merge ou implantação. Consulte
+`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md` para o inventário e os próximos passos.
 
 ## Entrega — clareza do dia consultado (07/10/2026)
 
