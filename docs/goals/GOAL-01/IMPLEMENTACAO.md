@@ -14,6 +14,7 @@
 - Banco local versão 5 adiciona leases por UID. A aquisição é transacional, renovação preserva dono/token, expiração permite sucessor, e fencing impede o antigo líder de confirmar ou remover depois da perda. Web Locks continua sendo usado quando disponível.
 - `operationId` idêntico só aceita payload canonicamente idêntico e mantém idade/conteúdo originais; reuso divergente é rejeitado. Migração v4 remove store antiga sem ressuscitar comandos já enviados.
 - Flush valida UID após espera por token, guarda de liderança antes e depois da chamada, formato/escopo/revisão do recibo e só então remove a linha. Conteúdo antigo consulta recibo; ausência exige revisão.
+- Revisão independente posterior encontrou uma corrida não coberta: uma pendência removida manualmente por outra aba pode continuar no snapshot do flush e ser enviada. A confirmação da tela não é garantida enquanto essa correção não for implementada.
 - A tela de recuperação lista apenas campos de conteúdo allowlisted e converte o documento de nota em texto simples. Não mostra UUIDs, credenciais, assinaturas ou campos arbitrários; remoção individual requer leitura, checkbox e confirmação.
 
 ## Segurança operacional

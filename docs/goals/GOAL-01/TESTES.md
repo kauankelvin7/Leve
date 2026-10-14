@@ -40,6 +40,10 @@ npm run test:e2e:local -- goal01-outbox.spec.ts goal01-privacy.spec.ts
 
 No HEAD de código `34098ca1a8d619dba8b1ac57bca09127f9a11981`, os workflows CI, CodeQL, Planner E2E e Seasonal E2E, além do check Vercel, terminaram com sucesso. A atualização documental desta revisão cria um novo HEAD; confira no PR #49 os resultados associados ao commit mais recente antes de integrar.
 
+## Revisão independente posterior
+
+No código `34098ca` e documentação do HEAD `544fd6d`, a revisão read-only executou dois harnesses determinísticos em memória. O primeiro reproduziu POST de uma operação depois da remoção confirmada em outra aba; o segundo confirmou que a migração marca conclusão com offline desativado enquanto mantém o row legado de sessão no IndexedDB. Não houve alteração de código nessa revisão, e ainda não existem regressões no repositório para esses dois cenários. A sessão legada não é lida com offline desligado e é removida por logout/opt-out/remoção explícita bem-sucedidos.
+
 ## Regressões importantes
 
 - Offline desligado sem preferência; preferência global legada não habilita conta nova; drafts persistidos e outbox legada continuam recuperáveis.

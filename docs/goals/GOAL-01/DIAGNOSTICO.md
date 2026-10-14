@@ -19,12 +19,13 @@
 - Não há evidência inicial de que Rules, formatos de comando ou schemas precisem de alteração; isso será reavaliado no diff final.
 - A validação independente read-only reproduziu a corrida de reassociação de token de notificação entre UIDs, o bypass de e-mail verificado em `account.import`/registro de notificação e o bloqueio de leitura de conteúdo após expiração de comando. As correções e regressões desses achados foram incluídas nesta branch.
 - A cota de recuperação Gika era um `Map` em memória por processo, apesar da documentação da auditoria indicar armazenamento distribuído; instâncias/restarts não compartilhavam o limite.
+- A revisão independente posterior confirmou duas lacunas P2: remoção da outbox concorrendo com flush em outra aba, e row legado de `session-cache` permanecendo após a migração com offline desativado.
 
 ## Riscos potenciais a verificar
 
-- Corridas de liderança em navegador sem Web Locks, aba suspensa, perda de lease e troca de UID enquanto token/recibo estão pendentes.
+- A corrida de liderança em navegador sem Web Locks foi tratada com lease e fencing; a revisão confirmou que a remoção manual ainda pode concorrer com um flush ativo, e a correção/regressão continua pendente.
 - ACK malformado ou resposta ambígua após o servidor aceitar uma escrita, que poderia perder ou duplicar operação.
-- Cache privado antigo em instalações que não possuem a chave global de preferência atual.
+- Além do cache Firestore, o upgrade pode reter o row legado de sessão em instalações sem marcador de consentimento por UID.
 - Estado de membership revogado observado por listener enquanto a rede falha, capaz de reaproveitar sessão em cache.
 - Logs ou respostas de erro que incluam dados privados sob exceção de transporte/provedor.
 - Payloads, timeout e estado de quota do tick/Gika em condições de falha parcial.
@@ -41,7 +42,7 @@
 
 - O comportamento de contas novas é opt-out explícito: a ausência de `leve.offlineEnabled.<uid>` não ativa Firestore cache nem fila offline.
 - A preferência global antiga não concede consentimento novo. Rascunhos, comandos, sessões de atividade e dados de outra conta permanecem disponíveis durante a migração; o usuário pode sincronizar, recuperar ou remover seu conteúdo após confirmação.
-- Cache persistente legado do Firestore é limpo antes de habilitar consultas privadas. Falha mantém a migração pendente, mostra aviso e permite nova tentativa; a outbox e drafts são stores separadas e não entram nessa limpeza.
+- Cache persistente legado do Firestore é limpo antes de habilitar consultas privadas. Falha mantém a migração pendente, mostra aviso e permite nova tentativa. A revisão posterior confirmou que `session-cache` legado não é removido nessa migração; drafts e outbox seguem preservados por intenção, e nenhuma limpeza deles está autorizada sem escolha explícita.
 - O fallback de liderança usa lease transacional IndexedDB com token de fencing; a suite focal verifica duas abas simultâneas, expiração e confirmação de perda de liderança.
 - O token FCM agora tem um único documento de proprietário hash-keyed, com reassociação na mesma transação do token/dispositivo e contagem; o token raw segue apenas na coleção de tokens server-only.
 - O guard distribuído de recuperação Gika aplica 12/10 s, 60/min e 600/dia por UID. Tick reserva digest HMAC verificado em `maintenance/internalTickReplay` antes de executar jobs.

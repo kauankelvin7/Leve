@@ -12,14 +12,17 @@ HMAC do tick e propriedade atômica de tokens FCM. Testes finais nesta branch:
 typecheck, build, docs e audit de produção PASS. Evidências em
 `docs/goals/GOAL-01/`.
 
-Nenhuma configuração de produção ou secret foi alterada. A revisão inicial
-encontrou achados concretos, já corrigidos e cobertos por testes. O diff final
-foi relido pelo agente principal; ainda falta uma revisão de outro mantenedor.
-No HEAD de implementação consultado em 14/10, CI, CodeQL, Planner E2E, Seasonal
-E2E e Vercel estavam aprovados. As atualizações documentais seguintes iniciaram
-uma nova rodada de checks no PR #49; confira o HEAD atual antes de qualquer merge.
-O PR segue aberto para `main`, sem merge ou implantação. Consulte
-`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md` para o inventário e os próximos passos.
+Nenhuma configuração de produção ou secret foi alterada. A revisão independente
+read-only examinou o código `34098ca` e os documentos no HEAD `544fd6d`. Não
+confirmou P0/P1, mas encontrou dois P2: remoção da outbox concorrendo com flush
+ativo e retenção de row legado de sessão após migração sem opt-in novo. O primeiro
+impede recomendar merge até correção e teste determinístico. O segundo não é lido
+com offline desligado e é removido nos caminhos explícitos bem-sucedidos, mas a
+migração inicial ainda o mantém no aparelho. CI, CodeQL, Planner E2E, Seasonal
+E2E e Vercel passaram no HEAD 544. A atualização documental atual iniciará novos
+checks; confira o HEAD mais recente antes de decidir integração. O PR segue aberto,
+sem aprovação formal de mantenedor, merge ou implantação. Consulte
+`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md` para o inventário e próximos passos.
 
 ## Entrega — clareza do dia consultado (07/10/2026)
 

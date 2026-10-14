@@ -7,8 +7,7 @@ pendências contra limpeza silenciosa, endurece a outbox e fecha falhas
 operacionais confirmadas em Gika, tick assinado e notificações. Os testes locais
 foram executados em emuladores. Nada foi implantado ou alterado em produção.
 
-O GOAL ainda não está concluído: o PR precisa de revisão de outro mantenedor e
-de uma decisão de merge compatível com o controle de produção deste repositório.
+O GOAL ainda não está concluído. A revisão independente read-only confirmou dois achados P2: uma operação removida pode ser enviada por um flush em curso, e a migração inicial deixa um cache legado de sessão no aparelho sem opt-in novo. Corrigir a corrida, incluir regressão determinística e resolver a retenção da sessão antes de recomendar merge. O PR está aberto e `mergeable=true`, mas não tem aprovação de mantenedor e não deve ser integrado neste estado.
 
 ## Evidência
 
@@ -31,6 +30,6 @@ Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o 
 
 ## Revisão e publicação
 
-A revisão inicial de código identificou achados que foram corrigidos. A revisão interna pós-correção não substitui a aprovação independente de outro mantenedor, que continua pendente.
+A revisão independente posterior foi concluída no código `34098ca` e na documentação do HEAD `544fd6d`. Não confirmou P0/P1; identificou dois P2 descritos em [REVISAO.md](REVISAO.md). O primeiro é bloqueador funcional para o merge: uma remoção confirmada pode concorrer com o envio. O segundo é retenção local de cache de sessão legado durante a migração. O GitHub ainda não registra aprovação de mantenedor; a única revisão é automática (`COMMENTED`).
 
-Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`. No HEAD de código `34098ca1a8d619dba8b1ac57bca09127f9a11981`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram; `docs:check` cobriu 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades. Esta atualização cria um novo HEAD, cujos checks devem ser confirmados no PR antes de decidir o merge. Não houve merge nem implantação.
+Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main` e informa `mergeable=true`. No HEAD documental `544fd6df9407620803f5d43c8660e7c17b03d015`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram; `docs:check` cobriu 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades. Os achados independentes ainda precisam de correção e regressão; depois desta atualização, confira os checks do novo HEAD. Não houve merge nem implantação.

@@ -37,7 +37,7 @@ Base `main` em `c7a3de4`. O branch `goal/01-confiabilidade-privacidade` usa work
 
 - Integração, implementação e documentação: agente principal desta sessão (GPT-6 Luna, conforme instrução do usuário).
 - A revisão read-only inicial, feita antes da instrução para não delegar, encontrou achados que foram corrigidos.
-- O agente principal fez uma passada final sobre o diff; isso não substitui a revisão independente pós-correção, que continua pendente. O escopo e os limites estão em `REVISAO.md`.
+- A revisão independente read-only foi concluída no código `34098ca` e nos documentos do HEAD `544fd6d`; encontrou dois P2, sem confirmar P0/P1. Corrigir a corrida flush/remoção, adicionar regressão e resolver a retenção legada de sessão antes de considerar o GOAL pronto. A aprovação formal de mantenedor ainda está pendente. Evidências e limites estão em `REVISAO.md`.
 
 ## Gates
 
@@ -53,4 +53,4 @@ Registrar resultados e SHAs em `TESTES.md`, parecer em `REVISAO.md`, diff/justif
 
 ## Estado de retomada
 
-Branch criada em `c7a3de4`. O baseline, a implementação e os gates locais foram concluídos. `corepack npm ci`, docs, lint, typecheck, build, 891 unitários, 338 integrações, 8 E2E críticos, 12 E2E GOAL-01 e audit de produção passaram. JDK Temurin 21.0.12.1 foi baixado para `/tmp/leve-goal01-jdk21`. O CDN não entregou o Chromium Playwright v1243; os E2Es foram executados com o Chromium Headless Shell 131 disponível no ambiente. No HEAD de implementação consultado em 14/10, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel estavam aprovados. Os commits documentais posteriores iniciaram nova rodada de checks; confirme o HEAD atual no PR #49. Ainda falta revisão independente pós-correção. Não houve merge nem implantação.
+Branch criada em `c7a3de4`. O baseline, a implementação e os gates locais foram concluídos. `corepack npm ci`, docs, lint, typecheck, build, 891 unitários, 338 integrações, 8 E2E críticos, 12 E2E GOAL-01 e audit de produção passaram. JDK Temurin 21.0.12.1 foi baixado para `/tmp/leve-goal01-jdk21`. O CDN não entregou o Chromium Playwright v1243; os E2Es foram executados com o Chromium Headless Shell 131 disponível no ambiente. No HEAD documental `544fd6df9407620803f5d43c8660e7c17b03d015`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram. A revisão independente confirmou dois P2; a árvore ainda não contém as correções nem o teste da corrida de cancelamento. Esta atualização documental iniciará nova rodada de checks. Confirme o novo HEAD no PR #49; não houve merge nem implantação.

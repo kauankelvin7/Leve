@@ -2,15 +2,15 @@
 
 ## Escopo e fonte
 
-Consulta ao GitHub em 14/10/2026. `main` está em `c7a3de4d2c75e1be3b8f0439adeef6578805f14f`; o código do GOAL foi revisado no commit `34098ca1a8d619dba8b1ac57bca09127f9a11981`. A branch recebeu depois uma atualização documental. No HEAD documental `b5f92f998728f930369be7fd21f6955bfbcb0a50`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram. O `docs:check` validou 175 arquivos Markdown, e `npm audit --omit=dev --audit-level=moderate` encontrou zero vulnerabilidades. Consulte o PR para confirmar o SHA e os checks do HEAD atual antes de integrar.
+Consulta ao GitHub em 14/10/2026. `main` está em `c7a3de4d2c75e1be3b8f0439adeef6578805f14f`; o código do GOAL foi revisado no commit `34098ca1a8d619dba8b1ac57bca09127f9a11981` e os documentos no HEAD `544fd6df9407620803f5d43c8660e7c17b03d015`. CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram no HEAD 544; `docs:check` validou 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades.
 
-O PR #49 está aberto e mergeable. Não há aprovação de mantenedor: a única revisão registrada é automática e está em `COMMENTED`. Nenhum merge foi feito.
+O PR #49 está aberto e mergeable, mas a revisão independente encontrou dois P2: a remoção de uma pendência pode concorrer com um flush já iniciado, e a migração mantém um row legado de sessão sem opt-in novo. Não há aprovação de mantenedor; a única revisão registrada é automática (`COMMENTED`). Nenhum merge foi feito.
 
 ## Pull requests abertos
 
 | PR | Mudança | Estado dos checks | Decisão |
 |---|---|---|---|
-| [#49](https://github.com/kauankelvin7/Leve/pull/49) | GOAL #01 | CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram | Aguardar revisão independente pós-correção. |
+| [#49](https://github.com/kauankelvin7/Leve/pull/49) | GOAL #01 | CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram no HEAD 544 | Não integrar: corrigir corrida de cancelamento e cobrir em teste; resolver retenção legada de sessão; obter aprovação de mantenedor. |
 | [#48](https://github.com/kauankelvin7/Leve/pull/48) | `actions/setup-node` 7.0.0 → 7.1.0 | CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram | Revisar o diff; só integrar com autorização para o efeito em `main`. |
 | [#47](https://github.com/kauankelvin7/Leve/pull/47) | `actions/upload-artifact` 7.0.1 → 7.0.2 | CI, CodeQL e Vercel passaram | Revisar o diff; só integrar com autorização para o efeito em `main`. |
 | [#46](https://github.com/kauankelvin7/Leve/pull/46) | CodeQL `analyze` 4.38.2 → 4.38.3 | CI e Vercel passaram; CodeQL falhou | Não integrar sozinho: o workflow usa `init@4.38.2` e `analyze@4.38.3`. Atualizar ambas na mesma mudança. |
@@ -30,7 +30,7 @@ O inventário do GitHub contém 15 branches:
 | Branch | Comparação com `main` / conteúdo exclusivo | Decisão |
 |---|---|---|
 | `main` | HEAD `c7a3de4` | Preservar. |
-| `goal/01-confiabilidade-privacidade` | HEAD `34098ca`, PR #49 | Preservar até revisão independente e decisão do PR. |
+| `goal/01-confiabilidade-privacidade` | HEAD documental `544fd6d`, PR #49; código em `34098ca` | Preservar até corrigir os achados independentes e concluir a revisão formal do PR. |
 | Nove `dependabot/*` | Cada branch corresponde a um PR aberto (#40–#48). | Preservar enquanto os PRs estiverem abertos. |
 | `design/gika-character-foundation` | 6 commits à frente e 121 atrás; seis documentos de personagem exclusivos. | Preservar; revisar/rebasear antes de propor integração. |
 | `docs/technical-documentation-v2` | 10 commits à frente e 70 atrás; alterações extensas em documentação e instruções do repositório. | Preservar; revisar a migração documental e rebasear antes de integrar. |
@@ -45,9 +45,10 @@ No ambiente desta revisão, o checkout `Leve` em `main` tem alterações locais 
 
 ## Próximos passos
 
-1. Solicitar revisão independente de outro mantenedor sobre o HEAD mais recente do PR #49; corrigir qualquer achado antes de decidir o merge.
-2. Atualizar `init` e `analyze` do CodeQL em conjunto e repetir o workflow.
-3. Resolver as incompatibilidades de peer dependency dos PRs #41 e #44, depois repetir `npm ci` e os gates completos.
-4. Revisar os diffs dos candidatos #40, #42, #43, #47 e #48. Confirmar autorização para qualquer deployment associado antes de integrar em `main`.
-5. Analisar as três branches de trabalho exclusivo contra a `main` atual e decidir se serão rebaseadas, transformadas em PR ou preservadas.
-6. Antes de qualquer release do GOAL #01, executar as verificações externas e o smoke test não produtivo descritos em [RELATORIO_FINAL.md](RELATORIO_FINAL.md). Nenhuma configuração externa foi alterada nesta revisão.
+1. Corrigir a concorrência entre flush e remoção confirmada da outbox; adicionar regressão determinística de duas abas.
+2. Decidir e implementar a limpeza do cache de sessão legado na migração sem remover drafts ou comandos pendentes; registrar o comportamento no teste e na UI.
+3. Publicar as correções no PR #49, repetir os gates afetados e conferir os checks do novo HEAD.
+4. Obter aprovação formal de outro mantenedor antes de qualquer decisão de merge.
+5. Atualizar `init` e `analyze` do CodeQL em conjunto e repetir o workflow; resolver as incompatibilidades de peer dependency em #41 e #44.
+6. Revisar os diffs dos candidatos #40, #42, #43, #47 e #48 e as branches com trabalho exclusivo, sem integrar sem revisão e autorização para o deployment associado.
+7. Antes de qualquer release do GOAL #01, cumprir as verificações externas e o smoke test não produtivo em [RELATORIO_FINAL.md](RELATORIO_FINAL.md). Nenhuma configuração externa foi alterada nesta revisão.

@@ -4,7 +4,7 @@
 
 A revisão inicial do código identificou quatro lacunas: reassociação concorrente do mesmo token FCM; `account.import` e registro de notificação sem exigência de e-mail verificado; conteúdo inacessível após expiração de comando; e sessão de atividade legada ausente da contagem de limpeza. As correções e os testes de regressão correspondentes estão nesta branch.
 
-A revisão interna pós-correção percorreu persistência e migração, isolamento por UID, troca de conta, transações, leases, recibos, notificações, autorização, quota Gika, HMAC/replay, logs e compatibilidade. Ela não substitui a aprovação independente de outro mantenedor, que ainda está pendente.
+A revisão interna pós-correção percorreu persistência e migração, isolamento por UID, troca de conta, transações, leases, recibos, notificações, autorização, quota Gika, HMAC/replay, logs e compatibilidade. Uma revisão independente read-only foi concluída em 14/10/2026 sobre o código `34098ca` e a documentação no HEAD `544fd6d`. Não houve aprovação formal de mantenedor no GitHub; a única revisão registrada continua automática (`COMMENTED`).
 
 ## Achados e fechamento
 
@@ -17,6 +17,9 @@ A revisão interna pós-correção percorreu persistência e migração, isolame
 | Firestore local cache podia ser iniciado por ausência de chave e chave global legada. | Divergência reproduzida entre código, README e arquitetura. | Opt-in `leve.offlineEnabled.<uid>`, migração pré-query, aviso e retry; E2E prova preferência desligada e conteúdo local preservado. | Resolvido e testado |
 | Lease fallback e transação podiam declarar sucesso antes do commit e liderança antiga continuar após expiração. | Fallback anterior dependia de localStorage e transação resolves em request success. | Lease IDB com fencing e promises ligadas ao fim da transação; E2E determinístico nas duas abas e abort real. | Resolvido e testado |
 
+| Remoção confirmada durante sincronização em outra aba podia ainda enviar a operação. | Flush mantém snapshot em memória; `OutboxStatus.tsx` remove sem coordenação com a liderança, e `OutboxRecovery.tsx` promete que a pendência não será enviada. Um harness determinístico confirmou POST de B após sua remoção enquanto A aguardava ACK. | Ainda sem correção/regressão. Serializar revisão/remoção com a liderança e impedir confirmação de descarte enquanto a sincronização estiver em curso. | Aberto — impede recomendar merge |
+| Cache de sessão legado permanecia após migração sem opt-in novo. | A migração limpa Firestore e marca conclusão; o row em `leve-local-v1/session-cache` não é removido quando o login permanece ativo. Harness confirmou row presente e leitura bloqueada com offline desativado. | Logout, remoção explícita e opt-out explícito limpam a sessão; a migração inicial ainda não. Decidir política e apagar a sessão legada sem tocar drafts/outbox, ou documentar claramente a retenção residual. | Aberto — P2 de privacidade |
+
 ## Compatibilidade e dados
 
 - Não foi alterado envelope público, schema de entidade, identidade do usuário ou algoritmo de revisão. O upgrade do IndexedDB é aditivo para lease; store legada `outbox` é removida após a migração v4 existente, com teste para não ressuscitar entradas enviadas.
@@ -24,9 +27,6 @@ A revisão interna pós-correção percorreu persistência e migração, isolame
 - Novos estados server-only: `usageBuckets/{uid}_gika_recovery`, `maintenance/internalTickReplay` e `notificationTokenOwners/{sha256(token)}`. Rules testadas continuam negando leitura/gravação do cliente nas coleções internas.
 - `clearFirestorePersistence` pode falhar enquanto outra aba/instância usa o cache. A falha não marca a migração concluída nem descarta outbox/drafts; UI orienta fechar outras abas e tentar novamente.
 
-## Resultado da revisão interna
+## Resultado da revisão
 
-Na revisão interna do diff publicado no HEAD de código `34098ca`, não foi encontrado bloqueador P0/P1 comprovado restante. Os gates desse HEAD passaram. Isso não encerra a revisão exigida: outro mantenedor
-precisa conferir o HEAD final do PR. WAF, controle volumétrico na borda, secrets,
-IAM e disponibilidade de Firestore/Gemini reais dependem de ambiente externo e
-continuam fora desta validação.
+A revisão independente não confirmou P0/P1, mas reproduziu os dois achados P2 acima. A corrida de remoção contradiz o texto de confirmação e pode executar no servidor uma operação que o usuário acreditava ter descartado; o teste atual não cobre esse interleaving. O resíduo da sessão legada não é lido quando offline está desativado e não atravessa UIDs, mas permanece armazenado no aparelho após a migração inicial. O PR está mergeable e os checks do HEAD 544 passaram, porém não está pronto para merge até corrigir e testar a corrida. Ainda falta aprovação formal de mantenedor. Rate limiting por IP, secrets, IAM, serviços e smoke test real não foram validados por dependerem de ambiente externo.
