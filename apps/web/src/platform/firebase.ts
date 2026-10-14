@@ -2,6 +2,7 @@ import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import { applyActionCode, browserLocalPersistence, browserPopupRedirectResolver, connectAuthEmulator, getAuth, initializeAuth } from 'firebase/auth';
 import { clearIndexedDbPersistence, connectFirestoreEmulator, getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, terminate } from 'firebase/firestore';
 import { offlineEnabled, offlineMigrationRequired, completeOfflineMigration, markCleanupFailure, clearCleanupWarning, cacheCleanupRequired } from './offlinePreference';
+import { clearLegacySessionCache } from './outbox';
 
 const useEmulators = import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === 'true';
 const config = useEmulators ? {
@@ -48,7 +49,7 @@ if (useEmulators && firebaseAuth && firestore && !emulatorConnections.__leveFire
  * or UID marker exists: older clients persisted by default in that case. */
 async function migrateFirestorePrivacy() {
   if (!firestore || (!offlineMigrationRequired() && !cacheCleanupRequired())) return;
-  try { await clearIndexedDbPersistence(firestore); completeOfflineMigration(); clearCleanupWarning(); }
+  try { await clearIndexedDbPersistence(firestore); await clearLegacySessionCache(); completeOfflineMigration(); clearCleanupWarning(); }
   catch (failure) { markCleanupFailure(); throw failure; }
 }
 export const firestorePrivacyReady = migrateFirestorePrivacy();
@@ -91,6 +92,7 @@ export async function clearFirestorePersistence() {
   try {
     await terminate(firestore);
     await clearIndexedDbPersistence(firestore);
+    await clearLegacySessionCache();
     completeOfflineMigration(); clearCleanupWarning();
     return true;
   } catch (failure) { markCleanupFailure(); throw failure; }

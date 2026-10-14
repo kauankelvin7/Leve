@@ -38,4 +38,32 @@ describe('GOAL-01 durable local transaction', () => {
     await expect(openLocalDatabase()).rejects.toThrow('blocked by another open Leve tab');
     expect(close).toHaveBeenCalledOnce();
   });
+  it('closes database connection immediately upon onversionchange event', async () => {
+    const close = vi.fn();
+    const db = { close, onversionchange: null as null | (() => void) };
+    vi.stubGlobal('indexedDB', { open: () => {
+      const request = { result: db, onsuccess: null as null | (() => void) };
+      queueMicrotask(() => request.onsuccess?.());
+      return request;
+    } });
+    const opened = await openLocalDatabase();
+    expect(opened).toBe(db);
+    expect(db.onversionchange).toBeTypeOf('function');
+    db.onversionchange!();
+    expect(close).toHaveBeenCalledOnce();
+  });
+  it('closes database and rejects when database.transaction throws synchronously', async () => {
+    const close = vi.fn();
+    const db = {
+      transaction: () => { throw new Error('NotFoundError: store does not exist'); },
+      close,
+    };
+    vi.stubGlobal('indexedDB', { open: () => {
+      const request = { result: db, onsuccess: null as null | (() => void) };
+      queueMicrotask(() => request.onsuccess?.());
+      return request;
+    } });
+    await expect(localTransaction('non-existent', 'readonly', () => {})).rejects.toThrow('NotFoundError');
+    expect(close).toHaveBeenCalledOnce();
+  });
 });

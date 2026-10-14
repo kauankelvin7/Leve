@@ -4,10 +4,27 @@ import type { CommandEnvelope } from '../../packages/domain/src/identity';
 const state = vi.hoisted(() => ({
   auth: { currentUser: null as null | { uid: string; getIdToken: (refresh: boolean) => Promise<string> } },
   pending: vi.fn(), remove: vi.fn(), queue: vi.fn(), guard: vi.fn(),
+  idb: new Map<string, unknown>(),
 }));
 vi.mock('../../apps/web/src/platform/firebase', () => ({ firebaseAuth: state.auth }));
+vi.mock('../../apps/web/src/platform/localData', () => ({
+  OUTBOX_STORE: 'outbox-v2',
+  localTransaction: async (_name: string, _mode: string, run: (store: unknown, resolve: (val: unknown) => void, reject: (err: unknown) => void) => void) => {
+    return new Promise(resolve => {
+      const store = {
+        get: (key: string) => ({
+          result: state.idb.get(key),
+          set onsuccess(cb: () => void) { cb(); },
+          set onerror(_cb: () => void) {},
+        }),
+      };
+      run(store, resolve, () => {});
+    });
+  },
+}));
 vi.mock('../../apps/web/src/platform/outbox', () => ({
-  offlineEnabled: () => true, pendingCommands: state.pending, removeCommand: state.remove, queueCommand: state.queue,
+  offlineEnabled: () => true, pendingCommands: state.pending, removeCommand: state.remove,
+  deleteOutboxEntry: state.remove, queueCommand: state.queue,
   withOutboxLeadership: (_uid: string, task: (guard: () => Promise<void>) => unknown) => task(state.guard),
 }));
 import { flushOutbox, sendCommand } from '../../apps/web/src/platform/api';
@@ -20,7 +37,10 @@ const entry = (createdAt = new Date().toISOString()) => ({ key: `a:${command.ope
 beforeEach(() => {
   vi.clearAllMocks();
   state.auth.currentUser = { uid: 'a', getIdToken: vi.fn().mockResolvedValue('test-token') };
-  state.pending.mockResolvedValue([entry()]);
+  const initialEntry = entry();
+  state.pending.mockResolvedValue([initialEntry]);
+  state.idb.clear();
+  state.idb.set(initialEntry.key, initialEntry);
   state.remove.mockResolvedValue(undefined); state.guard.mockResolvedValue(undefined);
   vi.stubGlobal('window', { dispatchEvent: vi.fn() });
   vi.stubGlobal('CustomEvent', class { constructor(public type: string, public options: unknown) {} });
@@ -106,5 +126,13 @@ describe('GOAL-01 outbox identity and recovery', () => {
     state.pending.mockResolvedValue([entry(), next]);
     vi.mocked(fetch).mockResolvedValue(Response.json({ code: 'REVISION_CONFLICT', message: 'Conflict' }, { status: 409 }));
     await flushOutbox('a'); expect(state.remove).not.toHaveBeenCalled(); expect(fetch).toHaveBeenCalledTimes(1);
+  });
+  it('skips a command that was removed from outbox storage before its turn in the flush loop', async () => {
+    const removedEntry = entry();
+    state.pending.mockResolvedValue([removedEntry]);
+    state.idb.delete(removedEntry.key);
+    await flushOutbox('a');
+    expect(fetch).not.toHaveBeenCalled();
+    expect(state.remove).not.toHaveBeenCalled();
   });
 });

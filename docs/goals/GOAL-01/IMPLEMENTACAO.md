@@ -14,8 +14,9 @@
 - Banco local versão 5 adiciona leases por UID. A aquisição é transacional, renovação preserva dono/token, expiração permite sucessor, e fencing impede o antigo líder de confirmar ou remover depois da perda. Web Locks continua sendo usado quando disponível.
 - `operationId` idêntico só aceita payload canonicamente idêntico e mantém idade/conteúdo originais; reuso divergente é rejeitado. Migração v4 remove store antiga sem ressuscitar comandos já enviados.
 - Flush valida UID após espera por token, guarda de liderança antes e depois da chamada, formato/escopo/revisão do recibo e só então remove a linha. Conteúdo antigo consulta recibo; ausência exige revisão.
-- Revisão independente posterior encontrou uma corrida não coberta: uma pendência removida manualmente por outra aba pode continuar no snapshot do flush e ser enviada. A confirmação da tela não é garantida enquanto essa correção não for implementada.
+- A corrida de descarte identificada na revisão independente foi eliminada: `removeCommand` adquire liderança da outbox antes de remover, impedindo remoção desordenada durante o envio com feedback explicativo para o usuário; internamente, o loop de `flushOutbox` revalida no IndexedDB se o comando ainda está na fila antes de emitir a chamada de rede, descartando itens já removidos por outra aba e executando a remoção pós-envio via `deleteOutboxEntry` sob a guarda do líder ativo.
 - A tela de recuperação lista apenas campos de conteúdo allowlisted e converte o documento de nota em texto simples. Não mostra UUIDs, credenciais, assinaturas ou campos arbitrários; remoção individual requer leitura, checkbox e confirmação.
+- O resíduo de sessão legada sem consentimento é limpo por `clearLegacySessionCache()` durante a migração inicial de privacidade e em limpezas de persistência, sem afetar rascunhos ou outbox.
 
 ## Segurança operacional
 

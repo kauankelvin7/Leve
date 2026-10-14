@@ -15,15 +15,19 @@ function portOpen(port) {
 function findJavaHome() {
   if (process.env.JAVA_HOME && existsSync(join(process.env.JAVA_HOME, 'bin', 'java.exe'))) return process.env.JAVA_HOME;
   if (process.platform !== 'win32' || !process.env.ProgramFiles) return undefined;
-  const vendorDirectory = join(process.env.ProgramFiles, 'Microsoft');
-  if (!existsSync(vendorDirectory)) return undefined;
-  const installations = readdirSync(vendorDirectory, { withFileTypes: true })
-    .filter(entry => entry.isDirectory() && entry.name.startsWith('jdk-'))
-    .map(entry => join(vendorDirectory, entry.name))
-    .filter(directory => existsSync(join(directory, 'bin', 'java.exe')))
-    .sort()
-    .reverse();
-  return installations[0];
+  const vendors = ['Java', 'Microsoft', 'Eclipse Adoptium', 'Semeru'];
+  for (const vendor of vendors) {
+    const vendorDirectory = join(process.env.ProgramFiles, vendor);
+    if (!existsSync(vendorDirectory)) continue;
+    const installations = readdirSync(vendorDirectory, { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && (entry.name.startsWith('jdk') || entry.name.startsWith('jdk-')))
+      .map(entry => join(vendorDirectory, entry.name))
+      .filter(directory => existsSync(join(directory, 'bin', 'java.exe')))
+      .sort()
+      .reverse();
+    if (installations[0]) return installations[0];
+  }
+  return undefined;
 }
 
 const javaHome = findJavaHome();

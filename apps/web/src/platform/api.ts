@@ -1,6 +1,7 @@
 import type { CommandEnvelope, CommandResult } from '../../../../packages/domain/src/identity';
 import { firebaseAuth } from './firebase';
-import { offlineEnabled, pendingCommands, queueCommand, removeCommand, withOutboxLeadership } from './outbox';
+import { deleteOutboxEntry, offlineEnabled, pendingCommands, queueCommand, withOutboxLeadership, type PendingCommand } from './outbox';
+import { localTransaction, OUTBOX_STORE } from './localData';
 import { OutboxLeadershipLostError, type LeadershipGuard } from './outboxLeadership';
 import { requiresOutboxReconciliation } from './outboxPolicy';
 import { apiErrorMessage } from '../app/statusPage';
@@ -97,6 +98,15 @@ export async function flushOutbox(uid: string) {
       if (firebaseAuth?.currentUser?.uid !== uid) break;
       if (entry.command.dependsOn?.some(operationId => waiting.has(operationId))) continue;
       try {
+        const stillQueued = await localTransaction<PendingCommand | undefined>(OUTBOX_STORE, 'readonly', (store, resolve, reject) => {
+          const request = store.get(entry.key);
+          request.onsuccess = () => resolve(request.result as PendingCommand | undefined);
+          request.onerror = () => reject(request.error);
+        });
+        if (!stillQueued) {
+          waiting.delete(entry.operationId);
+          continue;
+        }
         if (requiresOutboxReconciliation(entry.createdAt, Date.now(), entry.command.clientCreatedAt)) {
           const receipt = await apiRequest<{ result: CommandResult | null }>(`/commands/${entry.operationId}`, {}, uid, guard);
           if (!receipt.result) {
@@ -106,7 +116,7 @@ export async function flushOutbox(uid: string) {
           assertReceipt(receipt.result, entry.command);
           await guard();
           if (firebaseAuth?.currentUser?.uid !== uid) break;
-          await removeCommand(uid, entry.operationId);
+          await deleteOutboxEntry(uid, entry.operationId);
           waiting.delete(entry.operationId);
           continue;
         }
@@ -114,7 +124,7 @@ export async function flushOutbox(uid: string) {
         assertReceipt(result, entry.command);
         await guard();
         if (firebaseAuth?.currentUser?.uid !== uid) break;
-        await removeCommand(uid, entry.operationId);
+        await deleteOutboxEntry(uid, entry.operationId);
         waiting.delete(entry.operationId);
       } catch (failure) {
         if (failure instanceof OutboxLeadershipLostError || firebaseAuth?.currentUser?.uid !== uid) break;

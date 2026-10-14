@@ -71,6 +71,11 @@ test('GOAL-01 version 4 upgrade does not resurrect already sent legacy commands'
   await page.goto('/entrar');
   const result = await page.evaluate(async () => {
     await new Promise<void>((resolve, reject) => {
+      const del = indexedDB.deleteDatabase('leve-local-v1');
+      del.onsuccess = () => resolve();
+      del.onerror = () => reject(del.error);
+    });
+    await new Promise<void>((resolve, reject) => {
       const request = indexedDB.open('leve-local-v1', 4);
       request.onupgradeneeded = () => {
         const db = request.result;

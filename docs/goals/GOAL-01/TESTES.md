@@ -14,7 +14,7 @@
 | `npm run lint` | PASS — ESLint e limites arquiteturais, 55 fontes TypeScript |
 | `npm run typecheck` | PASS — cliente e servidor |
 | `npm run build` | PASS — 364 módulos; aviso já conhecido de bundle acima de 500 kB |
-| `npm test` | PASS — 76 arquivos, 891 testes |
+| `npm test` | PASS — 76 arquivos, 895 testes |
 | `npm run test:integration` | PASS — emuladores Auth/Firestore, 11 arquivos, 338 testes |
 | `npm run test:e2e:critical` | PASS — 8 testes Gika críticos |
 | E2E GOAL-01 `goal01-outbox.spec.ts goal01-privacy.spec.ts` | PASS — 12 testes; liderança concorrente/fallback, fencing, upgrade IndexedDB, abort de transação, recuperação de conteúdo, migração, opt-out, logout/login, persistência Firestore e limpeza UID-scoped |
@@ -40,9 +40,12 @@ npm run test:e2e:local -- goal01-outbox.spec.ts goal01-privacy.spec.ts
 
 No HEAD de código `34098ca1a8d619dba8b1ac57bca09127f9a11981`, os workflows CI, CodeQL, Planner E2E e Seasonal E2E, além do check Vercel, terminaram com sucesso. A atualização documental desta revisão cria um novo HEAD; confira no PR #49 os resultados associados ao commit mais recente antes de integrar.
 
-## Revisão independente posterior
+## Resolução dos achados da revisão independente
 
-No código `34098ca` e documentação do HEAD `544fd6d`, a revisão read-only executou dois harnesses determinísticos em memória. O primeiro reproduziu POST de uma operação depois da remoção confirmada em outra aba; o segundo confirmou que a migração marca conclusão com offline desativado enquanto mantém o row legado de sessão no IndexedDB. Não houve alteração de código nessa revisão, e ainda não existem regressões no repositório para esses dois cenários. A sessão legada não é lida com offline desligado e é removida por logout/opt-out/remoção explícita bem-sucedidos.
+Após a auditoria independente, foram implementadas as correções e testes de regressão determinísticos para os dois achados P2:
+1. **Corrida de remoção vs. flush:** coberta em `goal01-outbox-api.test.ts` (descarte antes do envio é ignorado no loop) e em `goal01-local-transaction.test.ts` (fechamento de conexões em versionchange/erros síncronos).
+2. **Purga de sessão legada:** coberta em `goal01-offline-privacy.test.ts` (remoção automática de rows em `session-cache` de contas sem opt-in explícito na migração).
+Adicionalmente, os 12 testes E2E focais do GOAL-01 foram executados e aprovados integralmente no Chromium com emuladores locais.
 
 ## Regressões importantes
 

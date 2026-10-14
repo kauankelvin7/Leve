@@ -1,9 +1,42 @@
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
-const harness = vi.hoisted(() => ({ drafts: new Map<string, unknown>(), persistenceClear: vi.fn(), terminate: vi.fn() }));
-vi.mock('../../apps/web/src/platform/localData', () => ({ DRAFT_STORE: 'drafts', localTransaction: async (_name: string, _mode: string, run: (store: unknown, resolve: (value: unknown) => void, reject: (error: unknown) => void) => void) => new Promise(resolve => {
-  const request = (result: unknown) => { const value = { result, onsuccess: null as null | (() => void) }; queueMicrotask(() => value.onsuccess?.()); return value; };
-  run({ get: (key: string) => request(harness.drafts.get(key)), put: (record: { key: string }) => { harness.drafts.set(record.key, record); return request(undefined); }, delete: (key: string) => { harness.drafts.delete(key); return request(undefined); } }, resolve, () => undefined);
-}) }));
+const harness = vi.hoisted(() => ({ drafts: new Map<string, unknown>(), sessions: new Map<string, unknown>(), persistenceClear: vi.fn(), terminate: vi.fn() }));
+vi.mock('../../apps/web/src/platform/localData', () => ({
+  DRAFT_STORE: 'drafts',
+  SESSION_STORE: 'session-cache',
+  localTransaction: async (name: string, _mode: string, run: (store: unknown, resolve: (value: unknown) => void, reject: (error: unknown) => void) => void) => new Promise(resolve => {
+    const request = (result: unknown) => { const value = { result, onsuccess: null as null | (() => void) }; queueMicrotask(() => value.onsuccess?.()); return value; };
+    if (name === 'session-cache') {
+      const openCursor = () => {
+        const entries = [...harness.sessions.entries()];
+        let index = 0;
+        const cursorRequest = {
+          result: null as null | { value: unknown; delete: () => void; continue: () => void },
+          onsuccess: null as null | (() => void),
+          onerror: null as null | (() => void),
+        };
+        const advance = () => {
+          if (index >= entries.length) {
+            cursorRequest.result = null;
+            cursorRequest.onsuccess?.();
+            return;
+          }
+          const [key, value] = entries[index++]!;
+          cursorRequest.result = {
+            value,
+            delete: () => { harness.sessions.delete(key); },
+            continue: () => { queueMicrotask(advance); },
+          };
+          cursorRequest.onsuccess?.();
+        };
+        queueMicrotask(advance);
+        return cursorRequest;
+      };
+      run({ openCursor, delete: (key: string) => { harness.sessions.delete(key); return request(undefined); } }, resolve, () => undefined);
+      return;
+    }
+    run({ get: (key: string) => request(harness.drafts.get(key)), put: (record: { key: string }) => { harness.drafts.set(record.key, record); return request(undefined); }, delete: (key: string) => { harness.drafts.delete(key); return request(undefined); } }, resolve, () => undefined);
+  }),
+}));
 vi.mock('firebase/app', () => ({ getApps: () => [], initializeApp: () => ({}) }));
 vi.mock('firebase/auth', () => ({ initializeAuth: () => ({}), browserLocalPersistence: {}, browserPopupRedirectResolver: {}, connectAuthEmulator: () => undefined }));
 vi.mock('firebase/firestore', () => ({ getFirestore: () => ({}), initializeFirestore: () => ({}), clearIndexedDbPersistence: harness.persistenceClear, terminate: harness.terminate, connectFirestoreEmulator: () => undefined }));
@@ -54,4 +87,14 @@ it('a cleanup warning causes startup retry even after the migration marker exist
   const policy = await import('../../apps/web/src/platform/offlinePreference'); policy.completeOfflineMigration(); policy.markCleanupFailure();
   const firebase = await import('../../apps/web/src/platform/firebase'); await firebase.firestorePrivacyReady;
   expect(harness.persistenceClear).toHaveBeenCalledOnce(); expect(policy.cleanupWarning()).toBe('');
+});
+it('purges legacy session-cache rows without explicit account opt-in during privacy migration', async () => {
+  const policy = await import('../../apps/web/src/platform/offlinePreference');
+  policy.setOfflinePreference('opted-in-user', true);
+  harness.sessions.set('legacy-user', { uid: 'legacy-user', session: { uid: 'legacy-user' } });
+  harness.sessions.set('opted-in-user', { uid: 'opted-in-user', session: { uid: 'opted-in-user' } });
+  const firebase = await import('../../apps/web/src/platform/firebase');
+  await firebase.firestorePrivacyReady;
+  expect(harness.sessions.has('legacy-user')).toBe(false);
+  expect(harness.sessions.has('opted-in-user')).toBe(true);
 });

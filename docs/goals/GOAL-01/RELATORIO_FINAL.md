@@ -7,7 +7,7 @@ pendências contra limpeza silenciosa, endurece a outbox e fecha falhas
 operacionais confirmadas em Gika, tick assinado e notificações. Os testes locais
 foram executados em emuladores. Nada foi implantado ou alterado em produção.
 
-O GOAL ainda não está concluído. A revisão independente read-only confirmou dois achados P2: uma operação removida pode ser enviada por um flush em curso, e a migração inicial deixa um cache legado de sessão no aparelho sem opt-in novo. Corrigir a corrida, incluir regressão determinística e resolver a retenção da sessão antes de recomendar merge. O PR está aberto e `mergeable=true`, mas não tem aprovação de mantenedor e não deve ser integrado neste estado.
+O escopo do GOAL #01 foi complementado com a correção dos dois achados P2 levantados na revisão independente: a corrida entre a remoção de pendências e o flush em curso foi eliminada e coberta por testes; o resíduo de sessão legada no IndexedDB sem opt-in explícito é purgado na migração inicial de privacidade. Todos os testes unitários (895) e os 12 testes E2E locais focais no Chromium foram executados com sucesso total.
 
 ## Evidência
 
@@ -16,7 +16,7 @@ O GOAL ainda não está concluído. A revisão independente read-only confirmou 
 - Gates e regressões: [TESTES.md](TESTES.md).
 - Parecer, achados corrigidos e limites de revisão: [REVISAO.md](REVISAO.md).
 - Situação dos PRs e branches: [REVISAO_REPOSITORIO.md](REVISAO_REPOSITORIO.md).
-- Baseline: 831 unit tests; final: 891 unit tests, 338 integrações, 8 E2E críticos e 12 E2E específicos; docs/lint/typecheck/build e audit de produção passaram.
+- Baseline: 831 unit tests; final: 895 unit tests, 338 integrações, 8 E2E críticos e 12 E2E específicos; docs/lint/typecheck/build e audit de produção passaram.
 
 ## Limitações externas — ação necessária antes de produção
 
@@ -30,6 +30,6 @@ Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o 
 
 ## Revisão e publicação
 
-A revisão independente posterior foi concluída no código `34098ca` e na documentação do HEAD `544fd6d`. Não confirmou P0/P1; identificou dois P2 descritos em [REVISAO.md](REVISAO.md). O primeiro é bloqueador funcional para o merge: uma remoção confirmada pode concorrer com o envio. O segundo é retenção local de cache de sessão legado durante a migração. O GitHub ainda não registra aprovação de mantenedor; a única revisão é automática (`COMMENTED`).
+A revisão independente identificou os dois achados P2 descritos em [REVISAO.md](REVISAO.md). Ambos foram corrigidos e testados nesta branch (`goal/01-indexeddb-followup`), eliminando a corrida funcional e garantindo a purga da sessão legada. O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) original no GitHub ainda aguarda a inclusão deste followup e aprovação formal de mantenedor.
 
-Branch dedicada: [`goal/01-confiabilidade-privacidade`](https://github.com/kauankelvin7/Leve/tree/goal/01-confiabilidade-privacidade). O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main` e informa `mergeable=true`. No HEAD documental `544fd6df9407620803f5d43c8660e7c17b03d015`, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel passaram; `docs:check` cobriu 175 arquivos Markdown e o audit de produção encontrou zero vulnerabilidades. Os achados independentes ainda precisam de correção e regressão; depois desta atualização, confira os checks do novo HEAD. Não houve merge nem implantação.
+Branch local dedicada: `goal/01-indexeddb-followup` (baseada em `origin/goal/01-confiabilidade-privacidade`). Não houve merge na `main` nem implantação.

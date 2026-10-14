@@ -14,7 +14,7 @@ export function OutboxRecovery({ entries, onRemove, onClose }: { entries: Pendin
     if (!acknowledged || busy) return;
     setBusy(true); setError('');
     try { await onRemove(entry); setConfirmId(null); setAcknowledged(false); }
-    catch { setError('Não foi possível remover. O conteúdo continua neste aparelho.'); }
+    catch (failure) { setError(failure instanceof Error ? failure.message : 'Não foi possível remover. O conteúdo continua neste aparelho.'); }
     finally { setBusy(false); }
   }
   return <ConfirmDialog title="Alterações neste aparelho" onClose={() => { if (!busy) onClose(); }}>

@@ -7,6 +7,7 @@ import type { SessionResult } from '../../../../packages/domain/src/identity';
 export type PendingCommand = { key: string; operationId: string; uid: string; command: CommandEnvelope; createdAt: string };
 
 const channel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel('leve-outbox');
+import { withOutboxLeadership } from './outboxLeadership';
 export { withOutboxLeadership } from './outboxLeadership';
 
 function announceChange() {
@@ -69,14 +70,44 @@ export async function pendingCommands(uid: string): Promise<PendingCommand[]> {
   });
 }
 
-export async function removeCommand(uid: string, operationId: string) {
-  await localTransaction<void>(OUTBOX_STORE, 'readwrite', (store, resolve, reject) => { const request = store.delete(`${uid}:${operationId}`); request.onsuccess = () => resolve(); request.onerror = () => reject(request.error); });
+export async function deleteOutboxEntry(uid: string, operationId: string) {
+  await localTransaction<void>(OUTBOX_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.delete(`${uid}:${operationId}`);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
   announceChange();
+}
+
+export async function removeCommand(uid: string, operationId: string) {
+  const acquired = await withOutboxLeadership(uid, async () => {
+    await deleteOutboxEntry(uid, operationId);
+    return true;
+  });
+  if (!acquired) {
+    throw new Error('A sincronização está em andamento. Aguarde antes de remover.');
+  }
 }
 
 export async function clearCachedSession(uid: string) {
   await localTransaction<void>(SESSION_STORE, 'readwrite', (store, resolve, reject) => {
     const request = store.delete(uid); request.onsuccess = () => resolve(); request.onerror = () => reject(request.error);
+  });
+}
+
+export async function clearLegacySessionCache() {
+  await localTransaction<void>(SESSION_STORE, 'readwrite', (store, resolve, reject) => {
+    const request = store.openCursor();
+    request.onsuccess = () => {
+      const cursor = request.result;
+      if (!cursor) { resolve(); return; }
+      const record = cursor.value as { uid?: string } | undefined;
+      if (!record?.uid || !offlineEnabled(record.uid)) {
+        cursor.delete();
+      }
+      cursor.continue();
+    };
+    request.onerror = () => reject(request.error);
   });
 }
 
