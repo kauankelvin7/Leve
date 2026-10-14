@@ -614,4 +614,4 @@ goal01_reliability_privacy:
   plan: docs/goals/GOAL-01/EXECPLAN.md
   evidence: docs/goals/GOAL-01/RELATORIO_FINAL.md
   gates: "corepack npm ci, docs, lint, typecheck, build, 891 unit, 338 integration, 8 critical E2E, 12 GOAL-01 E2E, production audit PASS."
-  next_action: "Aguardar revisão do PR #49; manter sem merge e sem implantação."
+  next_action: "Pedir revisão independente do HEAD atual do PR #49; consultar docs/goals/GOAL-01/REVISAO_REPOSITORIO.md para PRs e branches. Investigar falhas de #41/#44/#45/#46. Não integrar em main sem revisar o efeito de deployment e obter autorização correspondente. Manter video/product-film até decisão sobre os commits V3/revert."

@@ -1,10 +1,10 @@
-# GOAL #01 — revisão independente e regressões
+# GOAL #01 — revisão do diff e regressões
 
 ## Procedimento
 
-Uma revisão read-only anterior, realizada sem editar a implementação, comparou a branch com a base e encontrou quatro lacunas concretas: reassociação concorrente do mesmo token FCM; `account.import`/registro de notificação sem exigência de e-mail verificado; conteúdo de comando expirado sem caminho acessível de recuperação; sessão de atividade legada ausente da contagem de limpeza. As correções foram implementadas e ganharam testes.
+Na revisão read-only inicial, feita antes da instrução para não delegar, foram encontradas quatro lacunas concretas: reassociação concorrente do mesmo token FCM; `account.import`/registro de notificação sem exigência de e-mail verificado; conteúdo de comando expirado sem caminho acessível de recuperação; sessão de atividade legada ausente da contagem de limpeza. As correções foram implementadas e ganharam testes.
 
-Após o pedido de não delegar agentes, a revisão final foi feita pelo agente principal em uma passada separada sobre o diff completo. As áreas verificadas foram: privacidade/migração, isolamento UID e troca de conta, transações/leases/recibos, regras de notificação, autorização sensível, quota Gika, HMAC/replay, logs e compatibilidade de dados. O revisor read-only inicial encerrou antes de emitir uma segunda aprovação pós-correção; esta limitação fica registrada e não é descrita como uma nova aprovação por pares.
+Como não foram autorizados novos agentes, a passada final sobre o diff completo ficou a cargo do agente principal. Foram relidos privacidade e migração, isolamento por UID, troca de conta, transações, leases, recibos, notificações, autorização, quota Gika, HMAC/replay, logs e compatibilidade de dados. O revisor inicial não fez uma segunda leitura depois das correções. Portanto, ainda falta aprovação independente pós-correção.
 
 ## Achados e fechamento
 
@@ -24,6 +24,10 @@ Após o pedido de não delegar agentes, a revisão final foi feita pelo agente p
 - Novos estados server-only: `usageBuckets/{uid}_gika_recovery`, `maintenance/internalTickReplay` e `notificationTokenOwners/{sha256(token)}`. Rules testadas continuam negando leitura/gravação do cliente nas coleções internas.
 - `clearFirestorePersistence` pode falhar enquanto outra aba/instância usa o cache. A falha não marca a migração concluída nem descarta outbox/drafts; UI orienta fechar outras abas e tentar novamente.
 
-## Parecer
+## Resultado da revisão local
 
-Não encontrei bloqueador P0/P1 comprovado restante no diff final. Todos os novos gates locais e focais relevantes passaram. A proteção por IP/WAF, controle volumétrico antes do Express, credenciais/secrets, IAM e disponibilidade de Firestore/Gemini reais dependem de ambiente externo e permanecem fora desta revisão local; estão listados no relatório final. A revisão pós-correção de outra pessoa não foi realizada por causa da instrução explícita de não delegar.
+Não foi encontrado bloqueador P0/P1 comprovado restante no diff local, e os
+gates relevantes passaram. Isso não encerra a revisão exigida: outro mantenedor
+precisa conferir o HEAD final do PR. WAF, controle volumétrico na borda, secrets,
+IAM e disponibilidade de Firestore/Gemini reais dependem de ambiente externo e
+continuam fora desta validação.

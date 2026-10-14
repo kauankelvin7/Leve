@@ -1,5 +1,31 @@
 # Leve — ponto exato de retomada
 
+## Estado atual — GOAL #01 e pull requests (14/10/2026)
+
+O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) está aberto para `main`.
+No HEAD consultado nesta revisão, CI, CodeQL, Planner E2E, Seasonal E2E e Vercel
+estavam aprovados. Ainda não há aprovação de outro mantenedor após as correções;
+por isso o GOAL não está pronto para merge. Nenhuma implantação foi solicitada.
+
+A situação dos demais PRs e branches está em
+[`docs/goals/GOAL-01/REVISAO_REPOSITORIO.md`](docs/goals/GOAL-01/REVISAO_REPOSITORIO.md).
+Os PRs #48, #47, #43, #42 e #40 passaram os checks consultados, mas qualquer
+integração em `main` pode iniciar um deployment da Vercel. Não foram integrados.
+Os PRs #46 e #45 falham em CodeQL; #44 e #41 falham durante `npm ci`.
+
+Próximos passos:
+
+1. Pedir a outro mantenedor uma revisão do HEAD atual do PR #49 e corrigir achados.
+2. Investigar as falhas dos PRs #46, #45, #44 e #41 antes de reavaliá-los.
+3. Para os PRs com checks aprovados, confirmar a revisão e a autorização necessária
+   antes de integrar, pois o merge pode iniciar deployment de produção.
+4. Manter branches com trabalho exclusivo. A exclusão de `video/product-film`
+   foi barrada pela revisão automática por conter commits divergentes; não tentar
+   apagá-la por outro caminho.
+
+O checkout local de `main` tem alterações do usuário ainda não commitadas. Elas
+foram preservadas e não fazem parte do PR #49.
+
 ## Entrega — clareza do dia consultado (07/10/2026)
 
 Entrada dedf0d7. Usuário confirmou seleção de outro dia e aprovou remover botão
