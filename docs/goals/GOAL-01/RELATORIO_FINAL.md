@@ -5,7 +5,7 @@
 A implementação desta branch corrige a divergência do opt-in offline, protege
 pendências contra limpeza silenciosa, endurece a outbox e fecha falhas
 operacionais confirmadas em Gika, tick assinado e notificações. Os testes locais
-foram executados em emuladores. Nada foi implantado ou alterado em produção.
+foram executados em emuladores. A execução original não alterou manualmente produção, credenciais ou infraestrutura. A integração posterior na `main` exige conferência separada do estado de deployment.
 
 O escopo do GOAL #01 foi complementado com a correção dos dois achados P2 levantados na revisão independente: a corrida entre a remoção de pendências e o flush em curso foi eliminada e coberta por testes; o resíduo de sessão legada no IndexedDB sem opt-in explícito é purgado na migração inicial de privacidade. Todos os testes unitários (895) e os 12 testes E2E locais focais no Chromium foram executados com sucesso total.
 
@@ -30,6 +30,4 @@ Nenhuma configuração externa foi alterada. Antes de qualquer implantação, o 
 
 ## Revisão e publicação
 
-A revisão independente identificou os dois achados P2 descritos em [REVISAO.md](REVISAO.md). Ambos foram corrigidos e testados nesta branch (`goal/01-indexeddb-followup`), eliminando a corrida funcional e garantindo a purga da sessão legada. O PR [#49](https://github.com/kauankelvin7/Leve/pull/49) original no GitHub ainda aguarda a inclusão deste followup e aprovação formal de mantenedor.
-
-Branch local dedicada: `goal/01-indexeddb-followup` (baseada em `origin/goal/01-confiabilidade-privacidade`). Não houve merge na `main` nem implantação.
+A revisão independente identificou os dois achados P2 descritos em [REVISAO.md](REVISAO.md). Ambos foram corrigidos e testados nesta branch (`goal/01-indexeddb-followup`), eliminando a corrida funcional e garantindo a purga da sessão legada. O follow-up `1d7c8d1` foi publicado na branch do PR [#49](https://github.com/kauankelvin7/Leve/pull/49), cujos workflows CI, CodeQL, Planner E2E e Seasonal E2E passaram. O PR #49 foi integrado à `main` por squash no commit `1b51202` em 14/10/2026. A publicação automática e os controles externos de produção devem ser verificados separadamente; merge não equivale a homologação de release.
