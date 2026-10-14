@@ -2,6 +2,11 @@
 
 Data: 2026-10-07. Branch: `video/product-film`. Produto base: `33707a4e72b863f1689113f51e95118a5568bebe`; iteração sobre V1 `e60717960455a37903e356f9e78ce09475a900c9`.
 
+Este relatório descreve a entrega e o comportamento observados em 07/10/2026.
+O PR #49 prepara a mudança do offline para opt-in por UID/aparelho, mas ainda
+está aberto; as referências ao padrão anterior não descrevem o conteúdo atual
+da branch do GOAL #01.
+
 **QA APPROVED — 0 P0, 0 P1.** Loop realizado: primeiro master V2 REJECTED por recorte da mensagem offline; câmera corrigida; master integral renderizado novamente e revisado independentemente. Evidências em `06-qa.md`.
 
 ## Arquivos finais
