@@ -54,6 +54,7 @@ function inputFields(source: Record<string, unknown>, shape: Record<string, unkn
 }
 
 export async function importAccount(identity: DecodedIdToken, command: CommandEnvelope): Promise<CommandResult> {
+  await requireActiveVerifiedAccount(identity);
   const input = accountImportSchema.parse(command.payload);
   const archive = input.archive;
   if (Buffer.byteLength(JSON.stringify(archive), 'utf8') > 5 * 1024 * 1024) throw new AppError(413, 'IMPORT_TOO_LARGE', 'O arquivo excede o limite de 5 MB.');
@@ -236,6 +237,13 @@ async function completeAccountDeletion(uid: string) {
     deleteQuery(db.collection('maintenanceReceipts').where('uid', '==', uid)),
     deleteQuery(db.collection('usageBuckets').orderBy(FieldPath.documentId()).startAt(`${uid}_`).endAt(`${uid}_\uf8ff`)),
   ]);
+  // Reassignment can race with deletion. Delete a shared token ownership record
+  // only if it still belongs to this account at the transactional commit.
+  const owners = await db.collection('notificationTokenOwners').where('uid', '==', uid).get();
+  for (const owner of owners.docs) await db.runTransaction(async transaction => {
+    const current = await transaction.get(owner.ref);
+    if (current.data()?.uid === uid) transaction.delete(owner.ref);
+  });
   await db.recursiveDelete(root);
   await db.doc(`memberships/${uid}`).delete();
   await deletionJob.update({ state: 'data-deleted', updatedAt: new Date().toISOString() });

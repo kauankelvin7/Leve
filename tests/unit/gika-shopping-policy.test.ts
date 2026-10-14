@@ -36,7 +36,7 @@ function fixture(value: unknown, result: unknown = lists, legacy?: ModelAdapter)
   const quota = vi.fn();
   const app = express();
   app.use((_req, res, next) => { res.locals.identity = { uid: 'synthetic-user' }; res.locals.correlationId = 'synthetic-shopping-correlation'; next(); });
-  app.use('/gika', createGikaRouter(legacy ?? createGeminiAdapter(http), repository, quota));
+  app.use('/gika', createGikaRouter(legacy ?? createGeminiAdapter(http), repository, quota, async()=>{}));
   app.use((error: AppError, _req: express.Request, res: express.Response, _next: express.NextFunction) => res.status(error.status ?? 422).json({ code: error.code }));
   return { http, repository, quota, ask: (text: string) => request(app).post('/gika/respond').send({ requestId: crypto.randomUUID(), text }) };
 }

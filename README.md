@@ -82,9 +82,9 @@ Somado a isso, é um sistema de uso pessoal: os dados são isolados por conta, e
 
 ### Uso offline
 
-Desativado por padrão, por ser um dado sensível guardado no aparelho. Ative em **Preferências → Aparelho → Uso offline** enquanto estiver conectado e abra as áreas que quiser consultar depois. A partir daí, a sessão e os dados já carregados funcionam sem internet; novas alterações entram na outbox e sincronizam na reconexão.
+Desativado por padrão, por ser um dado sensível guardado no aparelho. A escolha vale para esta conta neste aparelho. Ative em **Perfil e preferências → Uso offline** enquanto estiver conectado e abra as áreas que quiser consultar depois. A partir daí, a sessão e os dados já carregados ficam salvos neste aparelho; novas alterações elegíveis entram na outbox e sincronizam na reconexão. Ao sair, trocar de conta ou remover esses dados, o Leve avisa se houver alterações ou rascunhos que ainda não foram enviados.
 
-O primeiro acesso e a ativação do modo offline precisam acontecer online.
+O primeiro acesso e a ativação do modo offline precisam acontecer online. Com o modo desligado, rascunhos novos ficam apenas nesta aba até ela ser fechada; rascunhos e alterações de versões anteriores continuam disponíveis para recuperação.
 
 ---
 

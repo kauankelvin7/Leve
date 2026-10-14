@@ -286,7 +286,7 @@ test('alteração offline bloqueia novos gestos até sair da outbox e sincroniza
   await scrollPlannerTo(page, 6 * 60);
   await expect(await plannerEvent(page, title)).toContainText('06:00–07:00');
 
-  await page.evaluate(() => localStorage.setItem('leve.offlineEnabled', 'true'));
+  await page.evaluate(() => { const uid = localStorage.getItem('leve.offlineAccount'); if (!uid) throw new Error('Expected authenticated account'); localStorage.setItem(`leve.offlineEnabled.${uid}`, 'true'); });
   await context.setOffline(true);
   await dragPlannerEvent(page, title, 7 * 60 + 30);
   await expect(page.getByText('Alteração salva neste aparelho. O Planner aguarda a conexão antes de aceitar outro ajuste de horário.', { exact: true })).toBeVisible();

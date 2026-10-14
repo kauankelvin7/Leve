@@ -1,3 +1,22 @@
+## Trabalho atual — GOAL #01 confiabilidade e privacidade offline (14/10/2026)
+
+Branch `goal/01-confiabilidade-privacidade`, base `c7a3de4`. O GOAL corrige o
+registro anterior “offline por padrão”: persistência privada exige opt-in por
+UID/aparelho. README, arquitetura, UI e testes agora descrevem o mesmo padrão.
+Drafts/outbox legados são preservados até recuperação ou descarte confirmado.
+
+Também foram implementados: leases/fencing IndexedDB, ACK/receipt validado,
+recuperação legível da outbox, quota distribuída para recuperação Gika, replay
+HMAC do tick e propriedade atômica de tokens FCM. Testes finais nesta branch:
+888 unitários, 337 integração, 8 E2E críticos e 11 E2E focais PASS; lint,
+typecheck, build, docs e audit de produção PASS. Evidências em
+`docs/goals/GOAL-01/`.
+
+Nenhuma configuração de produção/secret foi alterada. Revisão read-only inicial
+encontrou achados concretos já corrigidos; não houve segunda revisão por pares
+após correções porque o usuário instruiu não delegar. Próximo passo: completar
+revisão do diff, commit, push e abrir PR sem merge. Não implantar.
+
 ## Entrega — clareza do dia consultado (07/10/2026)
 
 Entrada dedf0d7. Usuário confirmou seleção de outro dia e aprovou remover botão

@@ -7,7 +7,7 @@ import { db } from './platform/firebase.ts';
 import { moveScheduleToDate, recurrenceDates, recurrenceDatesThrough, scheduleInstants, type ActivityInput, type RecurrenceRule } from '../packages/domain/src/content.ts';
 import { hashValue } from './hash.ts';
 import { createReminderJobs, reminderJobsForActivity } from './reminder-jobs.ts';
-import { validTickSignature } from './tick-signature.ts';
+import { TICK_VALIDITY_MS, validTickSignature } from './tick-signature.ts';
 
 type ReminderDeliveryResult = {
   successCount: number;
@@ -24,8 +24,9 @@ export function verifyTick(request: Request) {
   const signature = request.header('x-leve-signature') ?? '';
   if (!secret || !/^\d{10,13}$/.test(timestamp) || !/^[a-f0-9]{64}$/.test(signature)) throw new AppError(401, 'AUTH_REQUIRED', 'Assinatura inválida.');
   const milliseconds = timestamp.length === 10 ? Number(timestamp) * 1000 : Number(timestamp);
-  if (Math.abs(Date.now() - milliseconds) > 300_000) throw new AppError(401, 'AUTH_REQUIRED', 'Assinatura expirada.');
+  if (Math.abs(Date.now() - milliseconds) > TICK_VALIDITY_MS) throw new AppError(401, 'AUTH_REQUIRED', 'Assinatura expirada.');
   if (!validTickSignature(secret, timestamp, signature)) throw new AppError(401, 'AUTH_REQUIRED', 'Assinatura inválida.');
+  return { timestamp, signature, milliseconds };
 }
 
 async function invalidateNotificationTokens(uid: string, records: QueryDocumentSnapshot[], now: string) {

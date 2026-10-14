@@ -7,7 +7,7 @@ import { AppError } from '../../server/errors';
 import { gikaRequestSchema, type ReadItem } from '../../packages/domain/src/gika';
 import type { ReadRange } from '../../server/gika/reads';
 import { semanticTurnSchema, type SemanticTurn } from '../../server/gika/semanticTurn';
-import type { ModelCall } from '../../server/gika/model';
+import { GikaFault, type ModelCall } from '../../server/gika/model';
 import { hashValue } from '../../server/hash';
 import { createConfirmationSigner } from '../../server/gika/confirmation';
 
@@ -60,6 +60,32 @@ function fixture(turn: unknown, items: ReadItem[] = [task], partial = false) {
 function expectUncommitted(body: Record<string, unknown>) {
   for (const field of ['createdTask', 'completedTask', 'updatedTask', 'batchResult', 'recurrenceApplied']) expect(body).not.toHaveProperty(field);
 }
+it.each(['/respond', '/recover-confirmation', '/recover-batch', '/choose-recurrence'])('awaits durable recovery quota before receipt reads on %s', async path => {
+  const f = fixture(action());
+  let rejectQuota!: (error: unknown) => void;
+  f.recoveryQuota.mockImplementationOnce(() => new Promise<void>((_resolve, reject) => { rejectQuota = reject; }));
+  const pending = request(f.app).post(`/gika${path}`).send({ requestId: crypto.randomUUID(), text: 'Cria uma tarefa hoje',
+    ...(path === '/choose-recurrence' ? { token: `test.${'a'.repeat(64)}`, scope: 'occurrence' } : {}) }).then(response => response);
+  await vi.waitFor(() => expect(f.recoveryQuota).toHaveBeenCalledExactlyOnceWith('synthetic-user'));
+  expect(f.repository.recoverMutation).not.toHaveBeenCalled();
+  expect(f.repository.recoverBatch).not.toHaveBeenCalled();
+  expect(f.http).not.toHaveBeenCalled();
+  rejectQuota(new GikaFault('GIKA_QUOTA'));
+  const response = await pending;
+  expect(response.status).toBe(429); expect(response.body.code).toBe('GIKA_QUOTA');
+  expect(f.repository.recoverMutation).not.toHaveBeenCalled();
+  expect(f.repository.recoverBatch).not.toHaveBeenCalled();
+});
+it.each(['/respond', '/recover-confirmation', '/recover-batch', '/choose-recurrence'])('fails closed on recovery store failure at %s', async path => {
+  const f = fixture(action());
+  f.recoveryQuota.mockRejectedValueOnce(new Error('PRIVATE_OUTAGE_MESSAGE'));
+  const response = await request(f.app).post(`/gika${path}`).send({ requestId: crypto.randomUUID(), text: 'Cria uma tarefa hoje',
+    ...(path === '/choose-recurrence' ? { token: `test.${'a'.repeat(64)}`, scope: 'occurrence' } : {}) });
+  expect(response.status).toBe(503); expect(response.body.code).toBe('GIKA_UNAVAILABLE');
+  expect(JSON.stringify(response.body)).not.toContain('PRIVATE_OUTAGE_MESSAGE');
+  expect(f.repository.recoverMutation).not.toHaveBeenCalled(); expect(f.repository.recoverBatch).not.toHaveBeenCalled();
+  expect(f.http).not.toHaveBeenCalled();
+});
 afterEach(() => {
   for (const method of Object.values(database)) expect(method).not.toHaveBeenCalled();
   vi.clearAllMocks();

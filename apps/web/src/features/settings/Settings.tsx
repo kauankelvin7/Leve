@@ -1,14 +1,14 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { EmailAuthProvider, GoogleAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup } from 'firebase/auth';
-import { clearIndexedDbPersistence, terminate } from 'firebase/firestore';
 import { accountArchiveSchema, type AccountArchive } from '../../../../../packages/domain/src/archive';
 import type { Category } from '../../../../../packages/domain/src/content';
 import type { CommandEnvelope } from '../../../../../packages/domain/src/identity';
 import { apiRequest, sendCommand } from '../../platform/api';
 import { useUserCollection } from '../content/useUserCollection';
 import { useAuth } from '../identity/AuthProvider';
-import { firestore } from '../../platform/firebase';
-import { clearLocalData, offlineEnabled, pendingCommands } from '../../platform/outbox';
+import { clearFirestorePersistence, firestorePrivacyReady } from '../../platform/firebase';
+import { clearLocalData, offlineEnabled, localWorkCounts, localWorkDescription } from '../../platform/outbox';
+import { setOfflinePreference, cleanupWarning, markCleanupFailure, clearCleanupWarning, legacyOfflinePreference } from '../../platform/offlinePreference';
 import { NotificationSettings } from './NotificationSettings';
 import { PwaSettings } from './PwaSettings';
 import { ThemeSettings } from './ThemeSettings';
@@ -29,6 +29,9 @@ async function importIdFor(content: string) {
 
 export function Settings() {
   const { user, session, refresh, logout } = useAuth(); const { items: categories, error } = useUserCollection<Category>('categories');
+  const [offline, setOffline] = useState(() => offlineEnabled(user?.uid));
+  const [localWork, setLocalWork] = useState({ pending: 0, drafts: 0 });
+  useEffect(() => { if (user) { setOffline(offlineEnabled(user.uid)); void localWorkCounts(user.uid).then(setLocalWork).catch(() => undefined); } }, [user]);
   const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
   const [archive, setArchive] = useState<AccountArchive | null>(null);
   const [importCommand, setImportCommand] = useState<CommandEnvelope | null>(null);
@@ -72,17 +75,42 @@ export function Settings() {
         if (!user.email || !password) throw new Error('Informe sua senha atual.');
         await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
       } else await reauthenticateWithPopup(user, new GoogleAuthProvider());
+      const work = await localWorkCounts(user.uid);
+      if ((work.pending || work.drafts) && !window.confirm(`Excluir a conta também remove ${localWorkDescription(work)} deste aparelho. O que ainda não foi enviado será perdido. Confirma a exclusão?`)) return;
       await sendCommand({ command: 'account.delete', operationId: crypto.randomUUID(), entityId: session.uid, expectedRevision: session.profile!.revision, payload: { confirmation: 'EXCLUIR' } });
-      await logout();
+      await logout({ discardConfirmed: true, expectedFingerprint: work.fingerprint });
     } catch (failure) { setMessage(failure instanceof Error ? failure.message : 'Não foi possível excluir a conta.'); }
     finally { setBusy(false); }
   }
   async function changeOffline(enabled: boolean) {
-    if (!user) return;
-    if (!enabled && (await pendingCommands(user.uid)).length) { setMessage('Sincronize as alterações pendentes antes de remover os dados deste aparelho.'); return; }
-    localStorage.setItem('leve.offlineEnabled', String(enabled));
-    if (!enabled) { await clearLocalData(user.uid).catch(() => undefined); if (firestore) { await terminate(firestore); await clearIndexedDbPersistence(firestore); } }
-    window.location.reload();
+    if (!user || busy) return;
+    setBusy(true);
+    const previous = offlineEnabled(user.uid);
+    try {
+      const work = await localWorkCounts(user.uid); setLocalWork(work);
+      if (!enabled && work.pending) { setMessage('Sincronize as alterações pendentes antes de desativar o uso offline. Nada foi removido.'); return; }
+      if (!enabled && !window.confirm('Remover os dados já carregados neste aparelho? Os rascunhos existentes serão preservados até você salvar ou remover.')) return;
+      await firestorePrivacyReady;
+      if (!enabled) { await clearLocalData(user.uid); await clearFirestorePersistence(); }
+      setOfflinePreference(user.uid, enabled); setOffline(enabled);
+      window.location.reload();
+    } catch {
+      setOfflinePreference(user.uid, previous); setOffline(previous); markCleanupFailure();
+      setMessage(cleanupWarning());
+    } finally { setBusy(false); }
+  }
+  async function removeDeviceData() {
+    if (!user || busy) return;
+    setBusy(true);
+    try {
+      const work = await localWorkCounts(user.uid);
+      if (!window.confirm(`Remover ${localWorkDescription(work)} deste aparelho? O que ainda não foi enviado será perdido. Os dados já salvos na conta continuam disponíveis.`)) return;
+      await clearFirestorePersistence();
+      await clearLocalData(user.uid, { discardUserWork: true, expectedFingerprint: work.fingerprint }).catch(failure => { markCleanupFailure('work'); throw failure; });
+      clearCleanupWarning(true);
+      setOfflinePreference(user.uid, false); window.location.reload();
+    } catch { markCleanupFailure(); setMessage(cleanupWarning()); }
+    finally { setBusy(false); }
   }
   const importCounts = archive ? { categories: archive.data.categories.length, activities: archive.data.activities.length, series: archive.data.series.length, notes: archive.data.notes.length, lists: archive.data.shoppingLists.length, items: archive.data.shoppingLists.reduce((total, list) => total + list.items.length, 0) } : null;
   return <main>
@@ -126,7 +154,7 @@ export function Settings() {
         <div className={styles.sectionGrid}>
           <div className={styles.group}>
             <PwaSettings />
-            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>O Leve mantém o que já foi carregado neste aparelho para continuar funcionando sem internet. As alterações sincronizam quando a conexão voltar.</p><label className="check-label"><input type="checkbox" defaultChecked={offlineEnabled()} onChange={event => void changeOffline(event.target.checked)} /> Permitir uso offline neste aparelho (ativo por padrão)</label></section>
+            <section className="panel content-form"><h2><Icon name="note" />Uso offline</h2><p>Ao ativar, a sessão e os dados carregados ficam salvos neste aparelho para uso sem internet. Alterações pendentes sincronizam quando a conexão voltar. Ative apenas em um aparelho de confiança.</p><label className="check-label"><input type="checkbox" checked={offline} disabled={busy} onChange={event => void changeOffline(event.target.checked)} /> Permitir uso offline desta conta neste aparelho</label><p>Desativado por padrão. Sem esta opção, novos rascunhos ficam apenas nesta aba enquanto ela estiver aberta.</p>{legacyOfflinePreference() !== null || localWork.drafts || localWork.pending ? <p>{legacyOfflinePreference() !== null ? 'A opção antiga não ativa o uso offline desta conta. ' : ''}Há {localWorkDescription(localWork)} neste aparelho. Você pode recuperar esse conteúdo ao usar esta conta ou removê-lo abaixo.</p> : null}{cleanupWarning() ? <p role="alert">{cleanupWarning()}</p> : null}<button type="button" disabled={busy} onClick={() => void removeDeviceData()}>Remover dados desta conta do aparelho</button></section>
           </div>
           <div className={styles.group}>
             <NotificationSettings />

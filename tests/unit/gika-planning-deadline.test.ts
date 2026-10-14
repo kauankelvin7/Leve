@@ -26,7 +26,7 @@ it('two provider phases below their individual deadline fit the bounded organiza
   const quota = vi.fn();
   const app = express();
   app.use((_req, res, next) => { res.locals.identity = { uid: 'synthetic-user' }; next(); });
-  app.use('/gika', createGikaRouter(model, repository, quota));
+  app.use('/gika', createGikaRouter(model, repository, quota, async()=>{}));
   app.use((error: AppError, _req: express.Request, res: express.Response, _next: express.NextFunction) => res.status(error.status).json({ code: error.code }));
   const result = request(app).post('/gika/respond').send({ requestId: crypto.randomUUID(), text: 'Dá uma organizada no meu dia' }).then(response => response);
   await vi.waitFor(() => expect(calls).toBe(1));

@@ -275,6 +275,13 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
   const skipGuide = page.getByRole('button', { name: 'Pular guia', exact: true });
   if (await skipGuide.isVisible()) { await skipGuide.click(); await expect(page.getByRole('dialog', { name: /Guia do Leve/ })).toHaveCount(0); }
 
+  await page.goto('/configuracoes');
+  const offlineToggle = page.getByLabel('Permitir uso offline desta conta neste aparelho');
+  await expect(offlineToggle).not.toBeChecked();
+  await offlineToggle.check();
+  await expect(offlineToggle).toBeChecked();
+  await page.goto('/hoje');
+
   const secondPage = await context.newPage();
   await secondPage.goto('/hoje');
   await expect(secondPage.getByRole('heading', { name: 'Meu dia' })).toBeVisible();
@@ -315,7 +322,7 @@ test('duas abas sincronizam, preservam alteração offline e encerram a mesma se
     await context.unroute('**/google.firestore.v1.Firestore/**');
   }
 
-  expect(await page.evaluate(() => localStorage.getItem('leve.offlineEnabled'))).toBeNull();
+  expect(await page.evaluate(() => { const uid = localStorage.getItem('leve.offlineAccount'); return uid && localStorage.getItem(`leve.offlineEnabled.${uid}`); })).toBe('true');
   await context.setOffline(true);
   await page.getByRole('button', { name: 'Nova atividade' }).click();
   await page.getByLabel('Título').fill(offlineTitle);
