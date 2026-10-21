@@ -6,7 +6,8 @@
   "installCommand": "npm ci --include=dev",
   "git": {
     "deploymentEnabled": {
-      "fix/ci-emulator-readiness-codeql-sync": false
+      "fix/ci-emulator-readiness-codeql-sync": false,
+      "main": false
     }
   },
   "rewrites": [
