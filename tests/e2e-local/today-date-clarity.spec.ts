@@ -26,6 +26,9 @@ test('dia consultado fica explícito e voltar para hoje respeita o fuso da conta
     }
   }
   await page.goto('/hoje');
+  // A navegação recarrega a página; aguarde a restauração de Auth e a agenda
+  // carregar antes de preparar os dados pelo cliente autenticado.
+  await expect(page.getByRole('region', { name: 'Resumo do dia selecionado', exact: true })).toBeVisible();
   await page.evaluate(async () => {
     const path = '/src/platform/api.ts';
     const { sendCommand } = await import(/* @vite-ignore */ path);
