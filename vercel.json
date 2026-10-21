@@ -7,6 +7,8 @@
   "git": {
     "deploymentEnabled": {
       "fix/ci-emulator-readiness-codeql-sync": false,
+      "dependabot/npm_and_yarn/firebase-13.0.0": false,
+      "fix/privacy-offline-default-copy": false,
       "main": false
     }
   },
