@@ -50,25 +50,57 @@ const persistence = process.env.LEVE_EPHEMERAL === 'true' ? [] : [
 const [authRunning, firestoreRunning] = await Promise.all([9099, 8080].map(portOpen));
 const emulatorServices = ['auth', 'firestore'].filter((service, index) => ![authRunning, firestoreRunning][index]);
 if (authRunning || firestoreRunning) console.log(`[Firebase] Reutilizando ${[authRunning && 'Auth', firestoreRunning && 'Firestore'].filter(Boolean).join(' e ')} já ativo(s).`);
-const commands = [
-  ...(emulatorServices.length ? [['Firebase', [node, 'node_modules/firebase-tools/lib/bin/firebase.js', 'emulators:start', '--project', 'demo-leve', '--only', emulatorServices.join(','), ...persistence]]] : []),
-  ['API', [node, 'server/dev.ts']],
-  ['Web', [node, 'node_modules/vite/bin/vite.js', '--config', 'apps/web/vite.config.ts', '--port', '5174', '--strictPort']],
-];
-const children = commands.map(([name, parts]) => {
+let stopping = false;
+const children = [];
+let failStartup;
+function startChild(name, parts) {
   const child = spawn(parts[0], parts.slice(1), { cwd: process.cwd(), env, stdio: 'inherit' });
+  children.push(child);
   child.once('exit', (code, signal) => {
     if (stopping) return;
     stopping = true;
+    failStartup?.(new Error(`[${name}] encerrou antes da inicialização${signal ? ` com ${signal}` : ` (código ${code ?? 0})`}.`));
     for (const other of children) if (other !== child && !other.killed) other.kill('SIGTERM');
     process.exitCode = code ?? (signal ? 1 : 0);
     console.error(`[${name}] encerrou${signal ? ` com ${signal}` : ` (código ${code ?? 0})`}.`);
   });
   return child;
-});
-let stopping = false;
+}
+
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => {
   if (stopping) return;
   stopping = true;
   for (const child of children) if (!child.killed) child.kill(signal);
 });
+
+if (emulatorServices.length) startChild('Firebase', [node, 'node_modules/firebase-tools/lib/bin/firebase.js', 'emulators:start', '--project', 'demo-leve', '--only', emulatorServices.join(','), ...persistence]);
+
+async function waitForEmulators() {
+  const endpoints = [
+    'http://localhost:9099/emulator/v1/projects/demo-leve/config',
+    'http://localhost:8080/',
+  ];
+  const deadline = Date.now() + 120_000;
+  while (Date.now() < deadline) {
+    if (stopping) throw new Error('O processo local encerrou antes de os emuladores ficarem prontos.');
+    const ready = await Promise.all(endpoints.map(async url => {
+      try {
+        await fetch(url, { signal: AbortSignal.timeout(1_000) });
+        return true;
+      } catch {
+        return false;
+      }
+    }));
+    if (ready.every(Boolean)) return;
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  throw new Error('Os emuladores Auth e Firestore não ficaram prontos em 120 segundos.');
+}
+
+await Promise.race([
+  waitForEmulators(),
+  new Promise((_, reject) => { failStartup = reject; }),
+]).finally(() => { failStartup = undefined; });
+
+startChild('API', [node, 'server/dev.ts']);
+startChild('Web', [node, 'node_modules/vite/bin/vite.js', '--config', 'apps/web/vite.config.ts', '--port', '5174', '--strictPort']);
