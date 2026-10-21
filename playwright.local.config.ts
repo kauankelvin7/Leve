@@ -24,6 +24,7 @@ export default defineConfig({
     env: { LEVE_EPHEMERAL: 'true', GEMINI_API_KEY: '', SCHEDULER_HMAC_SECRET: process.env.SCHEDULER_HMAC_SECRET! },
     command: 'node scripts/dev-local.mjs',
     url: 'http://localhost:5174',
+    timeout: 180_000,
     reuseExistingServer: false,
     gracefulShutdown: { signal: 'SIGINT', timeout: 5_000 },
   },
