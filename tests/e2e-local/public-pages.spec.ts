@@ -13,7 +13,10 @@ test('páginas públicas, termos e estados de erro mantêm composição responsi
   ] as const) {
     await page.goto(path);
     await expect(page.locator('#page-title')).toHaveText(title);
-    if (path === '/privacidade') await expect(page.getByText(/O modo offline começa desativado/)).toBeVisible();
+    if (path === '/privacidade') {
+      await expect(page.getByText(/O modo offline começa desativado/)).toBeVisible();
+      await expect(page.getByText(/API Gemini do Google/)).toBeVisible();
+    }
     expect(await new AxeBuilder({ page }).analyze()).toEqual(expect.objectContaining({ violations: [] }));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await expect(page).toHaveScreenshot(`${path === '/rota-inexistente' ? 'not-found' : path.slice(1)}-desktop.png`, {
