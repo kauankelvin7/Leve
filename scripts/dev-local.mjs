@@ -85,8 +85,8 @@ async function waitForEmulators() {
     if (stopping) throw new Error('O processo local encerrou antes de os emuladores ficarem prontos.');
     const ready = await Promise.all(endpoints.map(async url => {
       try {
-        await fetch(url, { signal: AbortSignal.timeout(1_000) });
-        return true;
+        const response = await fetch(url, { signal: AbortSignal.timeout(1_000) });
+        return response.ok;
       } catch {
         return false;
       }
@@ -97,10 +97,18 @@ async function waitForEmulators() {
   throw new Error('Os emuladores Auth e Firestore não ficaram prontos em 120 segundos.');
 }
 
-await Promise.race([
-  waitForEmulators(),
-  new Promise((_, reject) => { failStartup = reject; }),
-]).finally(() => { failStartup = undefined; });
+try {
+  await Promise.race([
+    waitForEmulators(),
+    new Promise((_, reject) => { failStartup = reject; }),
+  ]);
+} catch (error) {
+  stopping = true;
+  for (const child of children) if (!child.killed) child.kill('SIGTERM');
+  throw error;
+} finally {
+  failStartup = undefined;
+}
 
 startChild('API', [node, 'server/dev.ts']);
 startChild('Web', [node, 'node_modules/vite/bin/vite.js', '--config', 'apps/web/vite.config.ts', '--port', '5174', '--strictPort']);
