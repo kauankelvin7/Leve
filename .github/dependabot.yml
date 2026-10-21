@@ -8,8 +8,6 @@ updates:
       time: "09:00"
       timezone: America/Sao_Paulo
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -19,5 +17,8 @@ updates:
       time: "09:30"
       timezone: America/Sao_Paulo
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/init"
+          - "github/codeql-action/analyze"
