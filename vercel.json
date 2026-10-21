@@ -6,7 +6,9 @@
   "installCommand": "npm ci --include=dev",
   "git": {
     "deploymentEnabled": {
-      "fix/privacy-offline-default-copy": false
+      "fix/ci-emulator-readiness-codeql-sync": false,
+      "fix/privacy-offline-default-copy": false,
+      "main": false
     }
   },
   "rewrites": [
