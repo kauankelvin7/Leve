@@ -8,6 +8,7 @@ import { moveScheduleToDate, recurrenceDates, recurrenceDatesThrough, scheduleIn
 import { hashValue } from './hash.ts';
 import { createReminderJobs, reminderJobsForActivity } from './reminder-jobs.ts';
 import { TICK_VALIDITY_MS, validTickSignature } from './tick-signature.ts';
+import { EXPIRED_CONTENT_COLLECTION_GROUPS } from './maintenance-indexes.ts';
 
 type ReminderDeliveryResult = {
   successCount: number;
@@ -241,8 +242,7 @@ export async function materializeRecurringActivities() {
 
 export async function purgeExpiredContent() {
   const now = new Date().toISOString();
-  const groups = ['activities', 'categories', 'notes', 'shoppingLists', 'items', 'series'] as const;
-  const snapshots = await Promise.all(groups.map(group => db.collectionGroup(group).where('purgeAfter', '<=', now).limit(5).get()));
+  const snapshots = await Promise.all(EXPIRED_CONTENT_COLLECTION_GROUPS.map(group => db.collectionGroup(group).where('purgeAfter', '<=', now).limit(5).get()));
   let purged = 0;
   for (const snapshot of snapshots.flatMap(result => result.docs)) {
     const parts = snapshot.ref.path.split('/');

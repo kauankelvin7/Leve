@@ -2,6 +2,12 @@
 
 Auditoria do código em `feat/gika-integration` no checkpoint Glass `e258348c335b584173da7392cac2839d8ad1072c`. Este documento não configura Vercel/Firebase, não altera segredos e não autoriza deploy. Nenhum valor secreto é registrado aqui.
 
+## Incidente do scheduler — 2026-10-22
+
+O Vercel registrou `POST /api/internal/tick` como HTTP 503 em Production, branch `main`, deployment `dpl_EaeEWPyWbwix7bQR2jVexmS7z9R7` (SHA `f6c2dfc7bc879f3c13b93b159ab1af54ac1466c7`). O grupo `backend.unexpected_error` mostra `SERVICE_UNAVAILABLE` e Firestore gRPC `code: 9` (`FAILED_PRECONDITION`). A rotina `purgeExpiredContent()` consulta `purgeAfter` em seis collection groups, incluindo `series`, mas o índice versionado tinha overrides apenas para cinco. A alteração candidata inclui `series/purgeAfter` com escopo `COLLECTION_GROUP` e um teste que exige índice para cada grupo consultado.
+
+O código e o erro são consistentes com índice collection-group ausente. O estado atual dos índices de produção não foi consultado; o snapshot histórico abaixo registrava deploy de índices em produção como **NO**. A correção no repositório não aplica o índice remoto: verificar sua presença e estado `READY` em produção antes de considerar o scheduler recuperado. Nenhum deploy Firebase ou promoção Vercel foi realizado nesta investigação.
+
 ## Variáveis Vercel
 
 Configure os nomes e valores no painel da Vercel, nunca em commits, logs ou `VITE_*` quando forem segredos. Use escopos separados. Produção deve apontar somente para o projeto Firebase de produção; Preview deve apontar para um projeto Firebase isolado, com regras equivalentes e dados sintéticos. Para cada escopo, `FIREBASE_PROJECT_ID` e `VITE_FIREBASE_PROJECT_ID` têm de identificar o mesmo projeto.

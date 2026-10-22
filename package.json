@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=24.0.0 <25"
+    "node": ">=24.12.0 <25"
   },
   "packageManager": "npm@11.19.1",
   "workspaces": [
@@ -16,7 +16,7 @@
     "dev:local": "node scripts/dev-local.mjs",
     "seed:local": "node scripts/seed-local.mjs",
     "migrate:notification-tokens": "node scripts/migrations/001-separate-notification-tokens.ts",
-    "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit && tsc -p api/tsconfig.json --noEmit",
     "build": "npm run typecheck && vite build --config apps/web/vite.config.ts",
     "preview": "vite preview --config apps/web/vite.config.ts",
     "test": "vitest run",
@@ -47,7 +47,7 @@
     "@js-temporal/polyfill": "0.5.1",
     "@rive-app/canvas": "2.44.0",
     "express": "5.3.0",
-    "firebase": "12.19.0",
+    "firebase": "13.0.0",
     "firebase-admin": "14.5.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
     "@eslint/js": "^9.35.0",
-    "@firebase/rules-unit-testing": "5.0.2",
+    "@firebase/rules-unit-testing": "6.0.0",
     "@playwright/test": "1.63.0",
     "@types/express": "5.0.6",
     "@types/node": "22.20.2",
@@ -70,7 +70,7 @@
     "eslint": "^9.35.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "firebase-tools": "15.32.1",
+    "firebase-tools": "15.34.1",
     "supertest": "7.3.1",
     "tsx": "4.23.13",
     "typescript": "7.0.2",
@@ -79,9 +79,6 @@
   },
   "overrides": {
     "source-map-js": "1.2.2",
-    "@firebase/firestore@4.17.2": {
-      "@grpc/grpc-js": "1.14.5"
-    },
     "google-gax@4.6.1": {
       "@grpc/grpc-js": "1.14.5",
       "uuid": "11.1.1"
@@ -91,6 +88,8 @@
     },
     "teeny-request@9.0.0": {
       "uuid": "11.1.1"
-    }
+    },
+    "@grpc/grpc-js": "1.14.5",
+    "@firebase/app": "0.16.3"
   }
 }
