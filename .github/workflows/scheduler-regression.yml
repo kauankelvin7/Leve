@@ -1,0 +1,34 @@
+name: Scheduler regression checks
+
+on:
+  pull_request:
+    paths:
+      - 'server/app.ts'
+      - 'server/reminders.ts'
+      - 'server/tick-replay.ts'
+      - 'firestore.indexes.json'
+      - 'tests/unit/firestore-indexes.test.ts'
+      - '.github/workflows/scheduler-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scheduler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Install with locked dependencies
+        run: npm ci --include=dev
+      - name: Typecheck application and server
+        run: npm run typecheck
+      - name: Scheduler index and replay unit tests
+        run: npx vitest run tests/unit/firestore-indexes.test.ts tests/unit/tick-replay.test.ts
+      - name: Production build
+        run: npm run build
