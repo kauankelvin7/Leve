@@ -30,6 +30,8 @@ jobs:
         run: npm run docs:check
       - name: Production dependency security audit
         run: npm audit --omit=dev --audit-level=moderate
+      - name: Full dependency tree security audit
+        run: npm audit --audit-level=moderate
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
