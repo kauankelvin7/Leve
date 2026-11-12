@@ -58,11 +58,17 @@ app.get('/api/version', (_request, response) => {
   response.json({ release });
 });
 app.post('/api/internal/tick', async (request, response) => {
+  response.locals.schedulerStage = 'replay';
   await claimTickReplay(verifyTick(request));
+  response.locals.schedulerStage = 'reminder-backfill';
   const reminderBackfill = await backfillAutomaticReminderJobs();
+  response.locals.schedulerStage = 'reminders';
   const reminders = await processReminderTick();
+  response.locals.schedulerStage = 'recurrence';
   const recurrence = await materializeRecurringActivities();
+  response.locals.schedulerStage = 'purge';
   const trash = await purgeExpiredContent();
+  response.locals.schedulerStage = 'account-deletions';
   const deletions = await resumeAccountDeletions();
   response.json({ reminderBackfill, reminders, recurrence, trash, deletions });
 });
@@ -144,7 +150,14 @@ app.post('/api/commands', async (request, response) => {
 app.use((_request, _response, next) => next(new AppError(404, 'NOT_FOUND', 'Não foi possível encontrar este recurso.')));
 const errorHandler: ErrorRequestHandler = (error, request, response, _next) => {
   const correlationId = response.locals.correlationId;
-  const context = { correlationId, method: request.method, path: technicalRoute(request.path) };
+  const context = {
+    correlationId,
+    method: request.method,
+    path: technicalRoute(request.path),
+    ...(request.path === '/api/internal/tick' && typeof response.locals.schedulerStage === 'string'
+      ? { schedulerStage: response.locals.schedulerStage }
+      : {}),
+  };
   if (error instanceof ZodError) {
     backendLog('warn', 'request.validation_failed', { ...context, issues: error.issues.map(issue => ({ code: issue.code })) });
     response.status(422).json({ code: 'VALIDATION_ERROR', message: 'Confira os campos informados.', details: error.issues.map(issue => ({ path: issue.path.join('.'), message: issue.message })), correlationId }); return;
